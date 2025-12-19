@@ -14,7 +14,8 @@
         .controls { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 100; display: flex; gap: 10px; background: rgba(15, 23, 42, 0.85); padding: 12px; border-radius: 12px; backdrop-filter: blur(10px); border: 1px solid #475569; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); }
         .btn-active { background-color: #3b82f6 !important; border-color: #60a5fa !important; }
         .mode-btn { border: 1px solid transparent; transition: all 0.3s; }
-        canvas { display: block; touch-action: none; }
+        /* GEÄNDERT: touch-action: pan-y erlaubt vertikales Scrollen der Seite */
+        canvas { display: block; touch-action: pan-y; }
         .formula { font-style: italic; color: #94a3b8; }
     </style>
 </head>
@@ -25,7 +26,7 @@
         <button id="modeVolume" class="mode-btn px-5 py-2 rounded bg-slate-700 text-xs font-bold uppercase">Volumen (VdW)</button>
     </div>
 
-    <!-- Wasser (H2O) -->
+    <!-- Wasser -->
     <div class="mol-container" id="container-water">
         <div class="label-overlay">
             <h2 class="text-xl font-bold text-blue-400">Wasser <span class="formula">(H₂O)</span></h2>
@@ -68,13 +69,11 @@
     </div>
 
     <script>
-        // --- GLOBALE ZUSTÄNDE ---
         var isDragging = false;
         var previousMousePosition = { x: 0, y: 0 };
         var viewMode = 'stick'; 
         var renderers = [], scenes = [], cameras = [], groups = [];
 
-        // Physikalische Daten (Radien in Angström)
         const ATOM_DATA = {
             H: { color: 0xffffff, radius: 0.35, vdw: 1.20 },
             C: { color: 0x333333, radius: 0.55, vdw: 1.70 },
@@ -94,7 +93,6 @@
             },
             {
                 id: 'quartz',
-                // SiO2 Einheit: 1 Si und 2 O
                 atoms: [
                     { type: 'Si', pos: [0, 0, 0] },
                     { type: 'O', pos: [1.55, 0, 0] },
@@ -109,7 +107,6 @@
         ];
 
         function generateRealisticRenisco() {
-            // Renisco C 85 E ist ein Polyolester (Pentaerythritol-Tetraester)
             let atoms = [{ type: 'C', pos: [0, 0, 0] }]; 
             let bonds = [];
             const dirs = [
@@ -121,43 +118,29 @@
             
             dirs.forEach((dirVector) => {
                 let currentPos = new THREE.Vector3(0,0,0);
-                
-                // 1. Kern-Zweig (CH2)
                 currentPos.addScaledVector(dirVector, 1.5);
                 atoms.push({ type: 'C', pos: [currentPos.x, currentPos.y, currentPos.z] });
                 let ch2Idx = atoms.length - 1;
                 bonds.push([0, ch2Idx]);
-
-                // 2. Ester-Sauerstoff
                 currentPos.addScaledVector(dirVector, 1.3);
                 atoms.push({ type: 'O', pos: [currentPos.x, currentPos.y, currentPos.z] });
                 let esterOIdx = atoms.length - 1;
                 bonds.push([ch2Idx, esterOIdx]);
-
-                // 3. Carbonyl-C (C=O)
                 currentPos.addScaledVector(dirVector, 1.3);
                 atoms.push({ type: 'C', pos: [currentPos.x, currentPos.y, currentPos.z] });
                 let carbonylCIdx = atoms.length - 1;
                 bonds.push([esterOIdx, carbonylCIdx]);
-
-                // Carbonyl-O (=O) seitlich versetzt
                 let sideVector = new THREE.Vector3(0, 1, 0).cross(dirVector).normalize();
                 if(sideVector.length() < 0.1) sideVector = new THREE.Vector3(1, 0, 0).cross(dirVector).normalize();
-                
                 atoms.push({ type: 'O', pos: [currentPos.x + sideVector.x*1.2, currentPos.y + sideVector.y*1.2, currentPos.z + sideVector.z*1.2] });
                 bonds.push([carbonylCIdx, atoms.length - 1]);
-
-                // 4. Alkyl-Kette mit Tetraeder-Zick-Zack
                 let chainPos = currentPos.clone();
                 let lastChainIdx = carbonylCIdx;
                 let zigzagOffset = new THREE.Vector3().crossVectors(dirVector, sideVector).normalize();
-
                 for(let k=0; k<7; k++) {
                     let stepVector = dirVector.clone().multiplyScalar(1.3);
-                    // Alternierender Versatz erzeugt die Zick-Zack-Struktur (sp3-Winkel)
                     let offsetScale = (k % 2 === 0) ? 0.6 : -0.6;
                     stepVector.addScaledVector(zigzagOffset, offsetScale);
-                    
                     chainPos.add(stepVector);
                     atoms.push({ type: 'C', pos: [chainPos.x, chainPos.y, chainPos.z] });
                     bonds.push([lastChainIdx, atoms.length - 1]);
@@ -170,58 +153,43 @@
         function setupScene(containerId, molData) {
             const container = document.getElementById('container-' + containerId);
             if (!container || typeof THREE === 'undefined') return;
-
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 1000);
             const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            
             renderer.setSize(container.clientWidth, container.clientHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             container.appendChild(renderer.domElement);
-
             scene.add(new THREE.AmbientLight(0xffffff, 0.95));
             const pl = new THREE.PointLight(0xffffff, 0.4);
             pl.position.set(15, 25, 20);
             scene.add(pl);
-
             const group = new THREE.Group();
             scene.add(group);
-            // MASSSTAB: Alle bei Z=40, damit die relativen Volumina vergleichbar sind
             camera.position.z = 40; 
-
             scenes.push(scene);
             cameras.push(camera);
             renderers.push(renderer);
             groups.push(group);
-
             buildMolecule(group, molData);
         }
 
         function buildMolecule(group, molData) {
             while(group.children.length > 0) group.remove(group.children[0]);
-
             molData.atoms.forEach(atom => {
                 const data = ATOM_DATA[atom.type];
                 const radius = (viewMode === 'stick') ? data.radius : data.vdw;
                 const sphere = new THREE.Mesh(
                     new THREE.SphereGeometry(radius, 32, 32),
-                    new THREE.MeshPhongMaterial({ 
-                        color: data.color, 
-                        shininess: 100,
-                        transparent: viewMode === 'volume',
-                        opacity: viewMode === 'volume' ? 0.75 : 1.0
-                    })
+                    new THREE.MeshPhongMaterial({ color: data.color, shininess: 100, transparent: viewMode === 'volume', opacity: viewMode === 'volume' ? 0.75 : 1.0 })
                 );
                 sphere.position.set(...atom.pos);
                 group.add(sphere);
             });
-
             if (viewMode === 'stick') {
                 molData.bonds.forEach(bond => {
                     const atomA = molData.atoms[bond[0]];
                     const atomB = molData.atoms[bond[1]];
                     if (!atomA || !atomB) return;
-
                     const start = new THREE.Vector3(...atomA.pos);
                     const end = new THREE.Vector3(...atomB.pos);
                     const dir = new THREE.Vector3().subVectors(end, start);
@@ -248,7 +216,6 @@
                 return;
             }
             MOLECULE_DEFS.forEach(m => setupScene(m.id, m));
-
             document.getElementById('modeStick').onclick = function() {
                 viewMode = 'stick';
                 this.classList.add('btn-active');
@@ -261,7 +228,6 @@
                 document.getElementById('modeStick').classList.remove('btn-active');
                 refreshAll();
             };
-
             window.addEventListener('mousedown', () => isDragging = true);
             window.addEventListener('mouseup', () => isDragging = false);
             window.addEventListener('mousemove', (e) => {
@@ -272,6 +238,23 @@
                 }
                 previousMousePosition = { x: e.offsetX, y: e.offsetY };
             });
+            // TOUCH-EVENT LOGIK FÜR MOBILE (Scroll-freundlich)
+            window.addEventListener('touchstart', (e) => { 
+                isDragging = true; 
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY }; 
+            }, { passive: true });
+            window.addEventListener('touchend', () => isDragging = false);
+            window.addEventListener('touchmove', (e) => {
+                if(isDragging) {
+                    var dx = (e.touches[0].clientX - previousMousePosition.x) * 0.01;
+                    var dy = (e.touches[0].clientY - previousMousePosition.y) * 0.01;
+                    // Nur rotieren, wenn die Bewegung horizontal stärker ist (verhindert Scroll-Konflikt)
+                    if (Math.abs(dx) > Math.abs(dy) * 0.5) {
+                        groups.forEach(g => { g.rotation.y += dx; g.rotation.x += dy; });
+                    }
+                }
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }, { passive: true });
 
             animate();
         }
@@ -283,18 +266,7 @@
                 if(renderers[i] && scenes[i] && cameras[i]) renderers[i].render(scenes[i], cameras[i]);
             }
         }
-
         window.onload = init;
-        window.onresize = () => {
-            for(let i=0; i < renderers.length; i++) {
-                const container = document.getElementsByClassName('mol-container')[i];
-                if(cameras[i] && renderers[i]) {
-                    cameras[i].aspect = container.clientWidth / container.clientHeight;
-                    cameras[i].updateProjectionMatrix();
-                    renderers[i].setSize(container.clientWidth, container.clientHeight);
-                }
-            }
-        };
     </script>
 </body>
 </html>
