@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recycling-Trainer | Fachbereich Umwelttechnologe</title>
+    <!-- Tailwind CSS für modernes UI-Design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas-Confetti für Gamification-Feedback -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            scroll-behavior: smooth;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .plastic-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .plastic-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .correct { 
+            border-color: #10b981 !important; 
+            background-color: #ecfdf5; 
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.15); 
+        }
+
+        .incorrect { 
+            border-color: #ef4444 !important; 
+            background-color: #fef2f2; 
+        }
+        
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.2em;
+        }
+
+        .branch-node {
+            border-left: 5px solid #6366f1;
+            padding-left: 1.5rem;
+        }
+
+        .explanation-text {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #475569;
+        }
+
+        .flow-node {
+            transition: all 0.3s ease;
+            border-width: 2px;
+        }
+
+        /* Custom Scrollbar für besseres Design */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-indigo-100 min-h-screen text-slate-900 selection:bg-indigo-100">
+
+    <div id="app" class="max-w-6xl mx-auto p-4 md:p-8">
+        <!-- Header -->
+        <header class="text-center mb-16 pt-8">
+            <span class="inline-block px-4 py-1.5 mb-4 text-xs font-bold tracking-widest text-indigo-700 uppercase bg-indigo-100 rounded-full">
+                Fachbereich Umwelttechnologe
+            </span>
+            <h1 class="text-4xl md:text-6xl font-black text-slate-800 mb-6 tracking-tight">
+                Recycling-Trainer
+            </h1>
+            <p class="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed italic">
+                Lerne die präzisen Verwertungswege von Kunststoffabfällen – von der Erfassung bis zum Sekundärrohstoff.
+            </p>
+        </header>
+
+        <!-- Plastic Type Selection Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16" id="selection-area">
+            <!-- Dynamically populated via JavaScript -->
+        </div>
+
+        <!-- Flowchart / Trainer Section -->
+        <div id="flowchart-container" class="hidden glass-card rounded-[2.5rem] shadow-2xl p-6 md:p-12 border border-slate-200 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-600 via-purple-500 to-emerald-500"></div>
+            
+            <div class="flex flex-col md:flex-row justify-between items-start gap-4 mb-12">
+                <div>
+                    <h2 id="current-title" class="text-4xl font-black text-slate-800"></h2>
+                    <p id="current-subtitle" class="text-indigo-600 mt-2 font-bold tracking-wide uppercase text-sm"></p>
+                </div>
+                <button onclick="closeFlowchart()" class="group bg-slate-100 hover:bg-slate-200 p-3 rounded-2xl transition-all shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-500 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <div id="flow-content" class="flex flex-col items-center gap-4">
+                <!-- Training steps populated via JS -->
+            </div>
+
+            <!-- Footer of the Trainer -->
+            <div class="mt-16 flex flex-col lg:flex-row justify-between items-stretch gap-8">
+                <div class="p-8 bg-indigo-50/50 rounded-3xl border border-indigo-100 shadow-inner flex-1">
+                    <h3 class="text-indigo-900 font-black mb-4 flex items-center gap-2 uppercase tracking-tighter">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                        </svg>
+                        Didaktische Fachbegriffe
+                    </h3>
+                    <ul id="didactic-list" class="text-sm space-y-3">
+                        <!-- Populated dynamically based on material selection -->
+                    </ul>
+                </div>
+                <div class="flex flex-col justify-center">
+                    <button id="check-btn" onclick="checkAnswers()" class="w-full lg:w-64 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-5 rounded-2xl font-black shadow-lg shadow-indigo-200 transition-all hover:scale-105 active:scale-95 text-lg flex items-center justify-center gap-3">
+                        <span>Antworten prüfen</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * DATA DEFINITIONS
+         * Each function returns the specific flowchart steps for a material.
+         */
+
+        const getPEFlow = () => [
+            { key: 'pe_1', label: '1. Abschnitt', options: ['Vorsortierung / Abtrennung von Störstoffen', 'Pyrolyse', 'Verbrennung'], correct: 'Vorsortierung / Abtrennung von Störstoffen', desc: 'Die Materialien müssen in getrennten Linien verarbeitet werden.' },
+            { key: 'pe_2', label: '2. Abschnitt', options: ['Öffnen der Ballen', 'Schreddern', 'Waschen'], correct: 'Öffnen der Ballen', desc: 'Die Umreifungsbänder der Ballen werden manuell entfernt, eventuelle Störstoffe ausgelesen.' },
+            { key: 'pe_3', label: '3. Abschnitt', options: ['Zerkleinerung', 'Sintern', 'Vulkanisation'], correct: 'Zerkleinerung', desc: 'a. Die Abfälle werden auf ein Steigförderband aufgegeben, von dem ein Überbandmagnet Eisenmetalle abscheidet. b. Die Kunststoffanteile fallen vom Förderband in eine Schneidemühle, in der sie in gleich große, etwa daumennagelgroße Stücke geschnitten werden.' },
+            { key: 'pe_4', label: '4. Abschnitt', options: ['Wäsche', 'Destillation', 'Fraktionierung'], correct: 'Wäsche', desc: 'Die Kunststoffstückchen werden in einen Rührbehälter mit Wasser eindosiert, in dem der Kunststoff von Verschmutzungen und anhaftenden Etiketten befreit wird.' },
+            { key: 'pe_5', label: '5. Abschnitt', options: ['Hydrozyklon', 'Magnetscheider', 'Siebtrommel'], correct: 'Hydrozyklon', desc: 'a. Kunststoff-Wasser-Gemisch wird mit 10-facher Erdbeschleunigung in einen Hydrozyklon eingebracht. b. Schwerfraktion (z.B. Steine, Sand, Metalle, PVC) wird in einem abwärts gerichteten Wirbel nach unten befördert. c. leichte Stoffe (PE) werden durch einen aufwärts gerichteten Innenwirbel nach oben ausgetragen.' },
+            { key: 'pe_6', label: '6. Abschnitt', options: ['Trocknung', 'Eindampfen', 'Adsorption'], correct: 'Trocknung', desc: 'a. Mechanische Trocknung (Zentrifugen oder Bogensiebe) oder Thermische Trocknung (heiße Luft). b. PE-Schnipsel mit 0,3 % Restfeuchte werden pneumatisch in ein Vorratssilos befördert.' },
+            { key: 'pe_7', label: '7. Abschnitt', options: ['Extruder', 'Presse', 'Mühle'], correct: 'Extruder', desc: 'a. Beförderung aus dem Silo in den Extruder. b. bei 250 Grad Celsius eingeschmolzen (Schmelze). c. Am Ende wird die Schmelze durch ein Lochsieb gepresst, wodurch dünne Spaghetti entstehen. d. wird durch rotierende Messer in kleine Stückchen geschnitten (Granulat). e. Granulat wird in einem Wasserbad gekühlt, getrocknet. f. in Silos gespeichert oder abgesackt.' },
+            { key: 'pe_8_1', label: '8.1. Abschnitt', options: ['Aufblasverfahren', 'Gießen', 'Kalandrieren'], correct: 'Aufblasverfahren', desc: 'a. Geschmolzenes PE wird in den Blaskopf gepresst. b. PE tritt ringförmig aus dem Werkzeug aus. c. Sofortige äußere Kühlung und Verfestigung durch Luft aus dem Kührring. d. Bildung eines PE-Schlauchs im Blaskopf. e. PE-Schlauch wird über Abquetschwalzen geführt und die Folie wird aufgewickelt.' },
+            { key: 'pe_8_2', label: '8.2. Abschnitt', options: ['Spritzgussverfahren', 'Blasformen', 'Extrusion'], correct: 'Spritzgussverfahren', desc: 'a. PE wird in ein Stahlwerkzeug mit Formhohlraum gespritzt. b. Abkühlen im Werkzeug, Öffnen, Auswurf des fertigen Formteils (z. B. Werkzeugkasten).' },
+            { key: 'pe_8_3', label: '8.3. Abschnitt', options: ['Blasformverfahren', 'Sintern', 'Walzen'], correct: 'Blasformverfahren', desc: 'a. PE wird als Schlauch (Parison) durch ein ringförmiges Werkzeug geformt. b. Durch Einblasen von Luft an die Formwände gedrückt und dort erstarrt.' }
+        ];
+
+        const getPPPSFlow = () => [
+            { key: 'ppps_1', label: '1. Abschnitt', options: ['Erfassung und Vorbereitung', 'Thermische Verwertung', 'Deponierung'], correct: 'Erfassung und Vorbereitung', desc: 'Sammlung von gebrauchten Verkaufsverpackungen wie Joghurt-, Eis- und Margarinebechern.' },
+            { key: 'ppps_2', label: '2. Abschnitt', options: ['Zerkleinerung', 'Agglomerieren', 'Verschmelzen'], correct: 'Zerkleinerung', desc: 'Die Becher werden zu sogenannten "Schnipseln" oder "Flakes" bearbeitet, um die Oberfläche zu vergrößern.' },
+            { key: 'ppps_3', label: '3. Abschnitt', options: ['Waschvorgang', 'Lösemittelbad', 'Destillation'], correct: 'Waschvorgang', desc: 'Entfernung von organischen Anhaftungen und Klebstoffrückständen durch Wasser und Reinigungsmittel.' },
+            { key: 'ppps_4', label: '4. Abschnitt', options: ['Stoffliche Trennung (Schwimm-Sink-Verfahren)', 'Magnetscheidung', 'Wirbelstromtrennung'], correct: 'Stoffliche Trennung (Schwimm-Sink-Verfahren)', desc: 'Dies ist das Herzstück des Prozesses, bei dem die physikalische Eigenschaft der Dichte genutzt wird. <br><b>a. Phasentrennung:</b> Das Gemisch gelangt in ein Wasserbad. <br><b>b. Sedimentation (Absinken):</b> Da PS eine höhere Dichte als Wasser hat, sinkt es zu Boden. <br><b>c. Flotation (Aufschwimmen):</b> Polypropylen (PP) hat eine geringere Dichte als Wasser, somit schwimmt es an der Oberfläche. <br><b>d. Austrag:</b> Ein Rührpaddel sorgt für die Durchmischung; das PS wird am Boden über eine Schnecke abgezogen, das PP wird oben abgeschöpft.' },
+            { key: 'ppps_5', label: '5. Abschnitt', options: ['Trocknung', 'Filtration', 'Kristallisation'], correct: 'Trocknung', desc: 'a. Mechanische Entwässerung (Zentrifuge) b. Thermische Trocknung zur Vermeidung von Gasblasenbildung.' },
+            { key: 'ppps_6', label: '6. Abschnitt', options: ['Zwischenlagerung', 'Direktversand', 'Verpackung'], correct: 'Zwischenlagerung', desc: 'Die getrockneten Fraktionen werden sortenrein in Silos gespeichert.' },
+            { key: 'ppps_7', label: '7. Abschnitt', options: ['Extruder', 'Spritzguss', 'Walzwerk'], correct: 'Extruder', desc: 'a. Beförderung aus dem Silo in den Extruder. b. bei 250 Grad Celsius eingeschmolzen (Schmelze). c. Am Ende wird die Schmelze durch ein Lochsieb gepresst, wodurch dünne Spaghetti entstehen. d. wird durch rotierende Messer in kleine Stückchen geschnitten (Granulat). e. Granulat wird in einem Wasserbad gekühlt, getrocknet. f. in Silos gespeichert oder abgesackt.' }
+        ];
+
+        const getPETFlow = () => [
+            { key: 'pet_1', label: '1. Abschnitt', options: ['Sensorbasierte Vorsortierung', 'Manuelle Sortierung', 'Siebtrommel'], correct: 'Sensorbasierte Vorsortierung', desc: 'Abtrennung von Fremdstoffen und farbreine Trennung in klares und buntes PET.' },
+            { key: 'pet_2', label: '2. Abschnitt', options: ['Dekontamination der Oberfläche', 'Waschen', 'Bleichen'], correct: 'Dekontamination der Oberfläche', desc: 'Thermisches Ablösen der Etiketten und Aufweichen von Klebstoffrückständen.' },
+            { key: 'pet_3', label: '3. Abschnitt', options: ['Mechanische Zerkleinerung in der Schneidemühle', 'Agglomerieren', 'Mahlen'], correct: 'Mechanische Zerkleinerung in der Schneidemühle', desc: 'Produktion von sogenannten "PET-Flakes" (kleine Kunststoffmengen mit definierter Korngröße).' },
+            { key: 'pet_4', label: '4. Abschnitt', options: ['Intensive Reinigung (Heißwäsche)', 'Kaltwäsche', 'Dampfbad'], correct: 'Intensive Reinigung (Heißwäsche)', desc: 'Rückstandlose Entfernung von hartnäckigem Leim und organischen Verschmutzungen in einer alkalischen Waschlauge.' },
+            { key: 'pet_5', label: '5. Abschnitt', options: ['Dichtetrennung', 'Hydrozyklon', 'Magnetscheider'], correct: 'Dichtetrennung', desc: 'Schwimm-Sink-Verfahren im Wasserbad zur Trennung von PET und Polyethylen: a. PET (Flaschenkörper) sinkt im Wasser, b. Polyethylen dagegen schwimmt.' },
+            { key: 'pet_6', label: '6. Abschnitt', options: ['Trocknung', 'Filtration', 'Eindampfen'], correct: 'Trocknung', desc: 'Flakes werden mechanisch und thermisch getrocknet.' },
+            { key: 'pet_7', label: '7. Abschnitt', options: ['Metallabscheidung', 'Wirbelstromtrennung', 'Siebung'], correct: 'Metallabscheidung', desc: 'a. Magnetabscheider: Entfernung von ferromagnetischen Stoffen (Eisen/Stahl). b. Wirbelstromabscheider: Induktive Trennung von Nichteisenmetallen (wie Aluminium-Resten von Verschlüssen).' },
+            { key: 'pet_8', label: '8. Abschnitt', options: ['Homogenisiert und Verpackt', 'Lagerung', 'Direktversand'], correct: 'Homogenisiert und Verpackt', desc: 'Schnitzel werden in grossen Mischern zu Chargen mit genau definierten Werten homogenisiert und in Transportsäcke abgefüllt.' },
+            { key: 'pet_9_1', label: '9.1. Abschnitt', options: ['Schmelzspinnen', 'Extrusion', 'Spritzguss'], correct: 'Schmelzspinnen', desc: 'a. Aufschmelzen im Extruder. b. Mikrofiltration der Schmelze. c. Pressen durch Spinndüsen zu Schmelzefäden. d. Abkühlung und Erstarrung zu Filamenten. e. Verstreckung der Filamente zur Erhöhung der Reißfestigkeit.' },
+            { key: 'pet_9_2', label: '9.2. Abschnitt', options: ['Extruder', 'Granulieren', 'Walzen'], correct: 'Extruder', desc: 'a. Beförderung aus dem Silo in den Extruder. b. bei 250 Grad Celsius eingeschmolzen (Schmelze). c. Am Ende wird die Schmelze durch ein Lochsieb gepresst, wodurch dünne Spaghetti entstehen. d. wird durch rotierende Messer in kleine Stückchen geschnitten (Granulat). e. Granulat wird in einem Wasserbad gekühlt, getrocknet. f. in Silos gespeichert oder abgesackt.' }
+        ];
+
+        const getEPSFlow = () => [
+            { key: 'eps_1', label: '1. Abschnitt', options: ['Dezentrale Erfassung', 'Verbrennung', 'Zentrale Sortierung'], correct: 'Dezentrale Erfassung', desc: 'a. In Wertstoffhöfen, Elektrofachmärkten, Baumärkten usw. in großen Säcken (2 m3) gesammelt. b. Sollen Weiß, sauber, trocken, unbeklebt sein.' },
+            { key: 'eps_2', label: '2. Abschnitt', options: ['Zerkleinerung', 'Verschmelzen', 'Agglomerieren'], correct: 'Zerkleinerung', desc: 'a. Zunächst werden Störstoffe aus dem gesammelten Material entfernt. b. Das EPS wird mithilfe einer Messermühle zu sogenanntem Styropormahlgut verarbeitet.' },
+            { key: 'eps_3_1', label: '3.1. Abschnitt', options: ['Direkte Weiterverarbeitung (Bauindustrie)', 'Pyrolyse', 'Verbrennung'], correct: 'Direkte Weiterverarbeitung (Bauindustrie)', desc: 'Das Mahlgut kann ohne chemische Veränderung direkt stofflich für z.B. Isolierputz genutzt werden.' },
+            { key: 'eps_3_2', label: '3.2. Abschnitt', options: ['Herstellung neuer Formteile (Zumischung)', 'Spritzguss', 'Vakuumformen'], correct: 'Herstellung neuer Formteile (Zumischung)', desc: 'Hierbei wird das Recyclingmaterial (maximal 5 %) wieder in den Produktionsprozess von Styropor integriert.' },
+            { key: 'eps_3_3', label: '3.3. Abschnitt', options: ['Extruder', 'Walzwerk', 'Sintern'], correct: 'Extruder', desc: 'a. Logistik: Zur Platzersparnis beim Transport wird das EPS häufig vorab in Briketts gepresst. b. Schmelzvorgang: Das Material wird im Extruder bei ca. 250 Grad Celsius aufgeschmolzen. c. Granulierung: Die Schmelze wird zu PS-Granulat verarbeitet.' },
+            { key: 'eps_3_4', label: '3.4. Abschnitt', options: ['Loose Fill (Verpackungschips)', 'Verbrennung', 'Häckseln'], correct: 'Loose Fill (Verpackungschips)', desc: 'a. Sammlung: Diese Chips werden getrennt vom restlichen Styropor erfasst. b. Wiederverwendung: Sie werden nicht stofflich aufbereitet, sondern direkt erneut als Verpackungsmaterial eingesetzt.' }
+        ];
+
+        /**
+         * DIDACTIC NOTES
+         */
+        const didacticNotes = {
+            'PE': [
+                { term: 'Hydrozyklon', def: 'Zentrifugalabscheider, der mittels Wirbelströmung Stoffe unterschiedlicher Dichte trennt.' },
+                { term: 'Parison', def: 'Technischer Fachbegriff für den schlauchförmigen Vorformling beim Blasformverfahren.' },
+                { term: 'Pneumatische Förderung', def: 'Transport von Feststoffen mithilfe eines Luftstroms durch Rohrleitungen.' }
+            ],
+            'PP_PS': [
+                { term: 'Phasentrennung', def: 'Trennung eines heterogenen Stoffgemisches aufgrund physikalischer Unterschiede.' },
+                { term: 'Sedimentation', def: 'Absinken von Partikeln, wenn deren Dichte größer ist als die des Mediums.' },
+                { term: 'Flotation', def: 'Aufschwimmen von Partikeln, deren Dichte geringer ist als die der Flüssigkeit.' }
+            ],
+            'PET': [
+                { term: 'Wirbelstromabscheider', def: 'Nutzt Induktion, um Nicht-Eisenmetalle (Aluminium) magnetisch abzustoßen.' },
+                { term: 'Filamente', def: 'Bezeichnet Fasern mit nahezu unendlicher Länge (typisch für Fleece).' },
+                { term: 'Verstreckung', def: 'Mechanisches Ziehen der Fasern zur Ausrichtung der Molekülketten.' }
+            ],
+            'EPS': [
+                { term: 'Mahlgut', def: 'Das durch Zerkleinerung in einer Mühle entstandene körnige Material.' },
+                { term: 'Brikettierung', def: 'Mechanische Verdichtung von leichtem EPS zu festen Blöcken zur Platzersparnis.' },
+                { term: 'Loose Fill', def: 'Verpackungschips, die ohne Aufbereitung direkt mehrfach verwendet werden.' }
+            ]
+        };
+
+        const plastics = {
+            'PE': { name: 'PE (Polyethylen)', subtitle: 'Hohlkörper / Folien', icon: '🧴', color: 'from-blue-600 to-blue-800', examples: 'Duschgelflaschen, Kanister, Rohre', steps: getPEFlow() },
+            'PP_PS': { name: 'PP & PS (Polypropylen & Polystyrol)', subtitle: 'Becher / Formteile', icon: '🥣', color: 'from-emerald-500 to-emerald-700', examples: 'Joghurtbecher, Eisbecher', steps: getPPPSFlow() },
+            'EPS': { name: 'EPS (Styropor)', subtitle: 'Schutzverpackung', icon: '📦', color: 'from-slate-500 to-slate-700', examples: 'Dämmplatten, TV-Verpackung', steps: getEPSFlow() },
+            'PET': { name: 'PET (Polyester)', subtitle: 'Getränkeflaschen', icon: '💧', color: 'from-cyan-500 to-indigo-600', examples: 'Wasserflaschen, Fleece', steps: getPETFlow() }
+        };
+
+        let activePlastic = null;
+
+        /**
+         * INITIALIZATION
+         */
+        function init() {
+            const area = document.getElementById('selection-area');
+            Object.keys(plastics).forEach(key => {
+                const data = plastics[key];
+                const card = document.createElement('div');
+                card.className = "plastic-card bg-white rounded-[2rem] p-8 shadow-xl border border-slate-100 cursor-pointer group relative overflow-hidden";
+                card.onclick = () => showFlowchart(key);
+                card.innerHTML = `
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${data.color} opacity-10 rounded-bl-[3rem] -mr-8 -mt-8 transition-all group-hover:scale-150 group-hover:opacity-20"></div>
+                    <div class="w-20 h-20 rounded-2xl bg-gradient-to-br ${data.color} flex items-center justify-center text-4xl mb-6 shadow-lg group-hover:rotate-6 transition-all text-white relative z-10">${data.icon}</div>
+                    <h3 class="text-2xl font-black text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors">${data.name}</h3>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-6">${data.examples}</p>
+                    <div class="flex items-center text-indigo-500 font-black text-xs uppercase tracking-tighter gap-1">
+                        Trainer öffnen
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </div>
+                `;
+                area.appendChild(card);
+            });
+        }
+
+        /**
+         * UI CONTROLS
+         */
+        function showFlowchart(key) {
+            activePlastic = key;
+            const data = plastics[key];
+            document.getElementById('current-title').innerText = data.name;
+            document.getElementById('current-subtitle').innerText = `Prozesspfad: ${data.subtitle}`;
+            document.getElementById('selection-area').classList.add('opacity-30', 'pointer-events-none');
+            
+            const container = document.getElementById('flowchart-container');
+            container.classList.remove('hidden');
+            
+            // Scroll smoothly to trainer
+            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            const content = document.getElementById('flow-content');
+            content.innerHTML = '';
+
+            // Populating Didactic Notes
+            const didacticList = document.getElementById('didactic-list');
+            didacticList.innerHTML = '';
+            const notes = didacticNotes[key] || [];
+            notes.forEach(note => {
+                const li = document.createElement('li');
+                li.className = "flex items-start gap-2 text-slate-700";
+                li.innerHTML = `<span class="text-indigo-500 font-black">▶</span> <div><span class="font-bold underline decoration-indigo-200 underline-offset-2">${note.term}:</span> ${note.def}</div>`;
+                didacticList.appendChild(li);
+            });
+            
+            // Generate Flow Steps
+            data.steps.forEach((step, index) => {
+                const node = document.createElement('div');
+                node.className = "flex flex-col items-center w-full max-w-4xl mb-4";
+                
+                // Branching Logic for Section Headers
+                const isPEBranch = (key === 'PE' && step.key === 'pe_8_1');
+                const isPETBranch = (key === 'PET' && step.key === 'pet_9_1');
+                const isEPSBranch = (key === 'EPS' && step.key === 'eps_3_1');
+
+                if (isPEBranch || isPETBranch || isEPSBranch) {
+                    let headerText = "Verarbeitung";
+                    if (key === 'PE') headerText = "8. Abschnitt: Weiterverarbeitung des Regranulats";
+                    if (key === 'PET') headerText = "9. Abschnitt: Produktherstellung aus PET-Flakes";
+                    if (key === 'EPS') headerText = "3. Abschnitt: Verwertungswege des Mahlguts";
+                        
+                    const header = document.createElement('div');
+                    header.className = "w-full text-center py-10 font-black text-indigo-700 border-t-4 border-dashed border-indigo-100 mt-16 branch-header uppercase tracking-widest text-sm";
+                    header.innerText = headerText;
+                    content.appendChild(header);
+                }
+
+                const optionsHtml = step.options.sort(() => Math.random() - 0.5).map(opt => `<option value="${opt}">${opt}</option>`).join('');
+                const isBranchNode = step.key.includes('_8_') || step.key.includes('_9_') || step.key.includes('_3_');
+
+                node.innerHTML = `
+                    ${index > 0 && !isBranchNode ? '<div class="w-1.5 h-10 bg-indigo-100 rounded-full mb-4"></div>' : ''}
+                    <div class="flow-node bg-white p-8 rounded-[2.5rem] border-2 border-slate-100 shadow-sm flex flex-col md:flex-row gap-6 w-full ${isBranchNode ? 'branch-node bg-indigo-50/20' : ''}" id="step-${index}">
+                        <div class="flex-1">
+                            <div class="w-full relative mb-4">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-black text-xs">${index + 1}</span>
+                                    <label class="text-[11px] uppercase font-black text-indigo-400 tracking-widest">${step.label}</label>
+                                </div>
+                                <select class="w-full p-5 border-2 border-slate-100 rounded-3xl bg-slate-50 text-indigo-900 font-extrabold focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 outline-none transition-all appearance-none text-base shadow-inner">
+                                    <option value="">Wähle das korrekte Verfahren...</option>
+                                    ${optionsHtml}
+                                </select>
+                            </div>
+                            <div class="w-full p-5 bg-slate-100/50 rounded-[2rem] border border-slate-100">
+                                <p class="explanation-text italic text-slate-500 font-medium leading-relaxed">${step.desc}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                content.appendChild(node);
+            });
+        }
+
+        function closeFlowchart() {
+            document.getElementById('flowchart-container').classList.add('hidden');
+            document.getElementById('selection-area').classList.remove('opacity-30', 'pointer-events-none');
+            activePlastic = null;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /**
+         * LOGIC & FEEDBACK
+         */
+        function checkAnswers() {
+            const data = plastics[activePlastic];
+            let allCorrect = true;
+            data.steps.forEach((step, index) => {
+                const container = document.getElementById(`step-${index}`);
+                const select = container.querySelector('select');
+                if (select.value === step.correct) {
+                    container.classList.remove('incorrect');
+                    container.classList.add('correct');
+                } else {
+                    container.classList.remove('correct');
+                    container.classList.add('incorrect');
+                    allCorrect = false;
+                }
+            });
+
+            if (allCorrect) {
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#4f46e5', '#10b981', '#f59e0b']
+                });
+            } else {
+                // Focus first incorrect element
+                const firstWrong = document.querySelector('.incorrect');
+                if (firstWrong) firstWrong.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
