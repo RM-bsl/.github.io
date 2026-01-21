@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- GitHub/SEO Metadata -->
+    <title>PP (Polypropylen) - Interaktiver Chemie-Explorer</title>
+    <meta name="description" content="Eine interaktive 3D-Visualisierung der Polypropylen-Struktur für den Chemieunterricht.">
+    <meta name="author" content="Gemini AI Lab">
+    <meta property="og:title" content="PP (Polypropylen) Explorer">
+    <meta property="og:description" content="Strukturanalyse der Methyl-Seitengruppen und Taktizität im 3D-Modell.">
+    
+    <!-- Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --emerald-accent: #10b981;
+            --slate-bg: #020617;
+        }
+        
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            background-color: var(--slate-bg); 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            color: white; 
+        }
+
+        canvas { 
+            display: block; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            z-index: 1; 
+        }
+
+        /* GitHub-Style Glass Panel */
+        .glass-panel { 
+            background: rgba(15, 23, 42, 0.8); 
+            backdrop-filter: blur(16px); 
+            border: 1px solid rgba(16, 185, 129, 0.2); 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7);
+        }
+
+        .ui-layer { 
+            position: absolute; 
+            inset: 0; 
+            z-index: 50; 
+            pointer-events: none; 
+        }
+
+        .ui-content { pointer-events: auto; }
+        
+        .sidebar {
+            width: 17rem;
+            max-height: 90vh;
+        }
+
+        /* Smooth Accordion */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            opacity: 0;
+        }
+        .accordion-open .accordion-content {
+            max-height: 800px;
+            opacity: 1;
+            padding-bottom: 1rem;
+        }
+        .rotate-icon { transition: transform 0.4s ease; }
+        .accordion-open .rotate-icon { transform: rotate(180deg); }
+
+        .term-highlight { color: var(--emerald-accent); font-weight: 700; }
+        
+        /* Custom Scrollbar for Sidebar */
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-track { background: transparent; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.3); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div id="analysis-view" class="ui-layer p-4 md:p-6">
+    <div class="ui-content flex flex-col justify-start h-full">
+        
+        <!-- Sidebar Navigation -->
+        <div class="sidebar glass-panel rounded-3xl p-5 border border-emerald-500/10 overflow-y-auto">
+            <header class="mb-4 border-b border-emerald-500/20 pb-2">
+                <h1 class="text-xl font-black text-emerald-400 tracking-tighter uppercase flex items-center gap-2">
+                    PP (Polypropylen)
+                </h1>
+                <p class="text-[9px] text-slate-500 uppercase tracking-widest font-bold">Struktur-Explorer</p>
+            </header>
+
+            <div class="space-y-1">
+                <!-- Sektion: Strukturformel -->
+                <div class="accordion-item border-b border-slate-800/50" id="acc-formula">
+                    <button onclick="toggleAccordion('acc-formula')" class="w-full py-2.5 flex justify-between items-center text-[10px] font-bold text-slate-400 hover:text-emerald-400 transition-colors uppercase tracking-widest">
+                        Strukturformel
+                        <svg class="rotate-icon w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="bg-slate-950/50 p-3 rounded-2xl border border-emerald-500/10 mt-1">
+                            <svg width="100%" height="110" viewBox="0 0 200 150" class="mx-auto">
+                                <line x1="10" y1="75" x2="35" y2="75" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="4 2"/>
+                                <line x1="165" y1="75" x2="190" y2="75" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="4 2"/>
+                                <path d="M 45 25 L 35 25 L 35 125 L 45 125" fill="none" stroke="#64748b" stroke-width="2"/>
+                                <path d="M 155 25 L 165 25 L 165 125 L 155 125" fill="none" stroke="#64748b" stroke-width="2"/>
+                                
+                                <!-- CH2-Einheit -->
+                                <text x="70" y="83" fill="#38bdf8" font-weight="bold" font-size="24" text-anchor="middle">C</text>
+                                <line x1="70" y1="60" x2="70" y2="45" stroke="#ffffff" stroke-width="1.5"/>
+                                <text x="70" y="38" fill="#10b981" font-size="18" text-anchor="middle">H</text>
+                                <line x1="70" y1="95" x2="70" y2="110" stroke="#ffffff" stroke-width="1.5"/>
+                                <text x="70" y="128" fill="#10b981" font-size="18" text-anchor="middle">H</text>
+                                
+                                <line x1="88" y1="75" x2="112" y2="75" stroke="#ffffff" stroke-width="2"/>
+                                
+                                <!-- CH-CH3-Einheit -->
+                                <text x="130" y="83" fill="#38bdf8" font-weight="bold" font-size="24" text-anchor="middle">C</text>
+                                <line x1="130" y1="60" x2="130" y2="45" stroke="#ffffff" stroke-width="1.5"/>
+                                <text x="130" y="38" fill="#38bdf8" font-weight="bold" font-size="14" text-anchor="middle">CH3</text>
+                                <line x1="130" y1="95" x2="130" y2="110" stroke="#ffffff" stroke-width="1.5"/>
+                                <text x="130" y="128" fill="#10b981" font-size="18" text-anchor="middle">H</text>
+                                
+                                <text x="172" y="130" fill="#10b981" font-style="italic" font-weight="bold" font-size="18">n</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sektion: Analyse -->
+                <div class="accordion-item" id="acc-analysis">
+                    <button onclick="toggleAccordion('acc-analysis')" class="w-full py-2.5 flex justify-between items-center text-[10px] font-bold text-slate-400 hover:text-emerald-400 transition-colors uppercase tracking-widest">
+                        Analyse & Begriffe
+                        <svg class="rotate-icon w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="space-y-3 text-[10px] text-slate-400 leading-tight pt-2">
+                            
+                            <section class="p-2.5 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
+                                <h4 class="text-emerald-400 font-bold uppercase text-[8px] mb-1 italic">Taktizitaet</h4>
+                                <p>Beschreibt die räumliche Anordnung der <span class="term-highlight">Methylgruppen (CH3)</span>. Wenn alle Gruppen auf einer Seite liegen (isotaktisch), kann der Kunststoff kristalline Bereiche bilden, was ihn fest und hitzebeständig macht.</p>
+                            </section>
+                            
+                            <section class="p-2.5 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
+                                <h4 class="text-emerald-400 font-bold uppercase text-[8px] mb-1 italic">Sterische Hinderung</h4>
+                                <p>Die CH3-Gruppe ist deutlich sperriger als ein Wasserstoffatom. Sie schränkt die Drehbarkeit der Kette ein. Diese <span class="term-highlight">Hinderung</span> führt zu einer höheren Steifigkeit im Vergleich zu Polyethylen.</p>
+                            </section>
+
+                            <section class="p-2.5 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
+                                <h4 class="text-emerald-400 font-bold uppercase text-[8px] mb-1 italic">sp3-Hybridisierung</h4>
+                                <p>Alle Kohlenstoffatome nutzen vier gleichwertige Orbitale zur Bindung. Dies resultiert in einer tetraedrischen Geometrie mit Winkeln von ca. 109 Grad, was die Zick-Zack-Form der Hauptkette erklärt.</p>
+                            </section>
+
+                            <section class="p-2.5 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
+                                <h4 class="text-emerald-400 font-bold uppercase text-[8px] mb-1 italic">Van-der-Waals-Kraefter</h4>
+                                <p>Da Polypropylen unpolar ist, halten die langen Ketten nur durch schwache temporäre Dipolkräfte zusammen. Die Summe dieser Kräfte über die gesamte Kettenlänge sorgt dennoch für eine hohe Materialstabilität.</p>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+    /**
+     * Polypropylen Explorer
+     * Ein interaktives 3D-Modell für pädagogische Zwecke.
+     * Optimiert für GitHub Pages.
+     */
+
+    let scene, camera, renderer, molecule;
+    let targetRotationX = 0.3, targetRotationY = 0.5, isMouseDown = false;
+
+    // UI Logic
+    function toggleAccordion(id) {
+        const item = document.getElementById(id);
+        const isOpen = item.classList.contains('accordion-open');
+        document.querySelectorAll('.accordion-item').forEach(el => el.classList.remove('accordion-open'));
+        if (!isOpen) item.classList.add('accordion-open');
+    }
+
+    window.onload = () => {
+        initThreeJS();
+        toggleAccordion('acc-analysis');
+    };
+
+    // Three.js Core Setup
+    function initThreeJS() {
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 55; // Verkleinerte Ansicht
+        
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        document.body.appendChild(renderer.domElement);
+        
+        // Lighting
+        scene.add(new THREE.AmbientLight(0x475569, 1.4));
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        dirLight.position.set(15, 30, 20);
+        scene.add(dirLight);
+        
+        createMolecule();
+        animate();
+        
+        // Input Management
+        document.addEventListener('mousedown', () => isMouseDown = true);
+        document.addEventListener('mouseup', () => isMouseDown = false);
+        document.addEventListener('mousemove', (e) => { 
+            if(isMouseDown) { 
+                targetRotationY += e.movementX * 0.005; 
+                targetRotationX += e.movementY * 0.005; 
+            }
+        });
+        
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    }
+
+    /**
+     * Erstellt die Molekülgeometrie
+     * CPK-Farbstandard (angepasst): C=Blau, H=Grün
+     */
+    function createMolecule() {
+        molecule = new THREE.Group();
+        const carbonMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.3, metalness: 0.2 });
+        const hydrogenMat = new THREE.MeshStandardMaterial({ color: 0x10b981, roughness: 0.5 }); 
+        const bondMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 });
+        
+        const cSize = 0.85, hSize = 0.45, bRad = 0.15;
+        const units = 9; 
+        const segmentX = 4.5;
+        
+        let cur = new THREE.Vector3(-18, 0, 0);
+        let firstUnitAtoms = [];
+
+        for (let i = 0; i < units; i++) {
+            // Kohlenstoff-Backbone
+            const c = new THREE.Mesh(new THREE.SphereGeometry(cSize, 32, 32), carbonMat);
+            c.position.copy(cur);
+            molecule.add(c);
+            if (i < 2) firstUnitAtoms.push(c);
+            
+            if (i % 2 === 1) {
+                // CH-Einheit mit Methyl-Seitengruppe
+                const methylC = new THREE.Mesh(new THREE.SphereGeometry(cSize, 32, 32), carbonMat);
+                const mPos = cur.clone().add(new THREE.Vector3(0, 4, 1));
+                methylC.position.copy(mPos);
+                molecule.add(methylC);
+                addBond(cur, mPos, bRad, bondMat, molecule);
+                if (i < 2) firstUnitAtoms.push(methylC);
+                
+                // H-Atome an Seitengruppe
+                const hOffs = [
+                    new THREE.Vector3(1.5, 1, 0), 
+                    new THREE.Vector3(-1, 1.5, 1.2), 
+                    new THREE.Vector3(-0.5, 1, -1.5)
+                ];
+                hOffs.forEach(off => {
+                    const hPos = mPos.clone().add(off);
+                    const h = new THREE.Mesh(new THREE.SphereGeometry(hSize * 0.8, 24, 24), hydrogenMat);
+                    h.position.copy(hPos); molecule.add(h);
+                    addBond(mPos, hPos, bRad * 0.6, bondMat, molecule);
+                    if (i < 2) firstUnitAtoms.push(h);
+                });
+
+                // Tertiärer Wasserstoff
+                const hTerPos = cur.clone().add(new THREE.Vector3(0, -2.5, -1.2));
+                const hTer = new THREE.Mesh(new THREE.SphereGeometry(hSize, 24, 24), hydrogenMat);
+                hTer.position.copy(hTerPos); molecule.add(hTer);
+                addBond(cur, hTerPos, bRad * 0.6, bondMat, molecule);
+                if (i < 2) firstUnitAtoms.push(hTer);
+                
+            } else {
+                // CH2-Einheit
+                const h1p = cur.clone().add(new THREE.Vector3(0, 2.5, 1.5));
+                const h2p = cur.clone().add(new THREE.Vector3(0, -2.5, -1.5));
+                [h1p, h2p].forEach(p => {
+                    const h = new THREE.Mesh(new THREE.SphereGeometry(hSize, 24, 24), hydrogenMat);
+                    h.position.copy(p); molecule.add(h);
+                    addBond(cur, p, bRad * 0.6, bondMat, molecule);
+                    if (i < 2) firstUnitAtoms.push(h);
+                });
+            }
+
+            // Verbindung zum nächsten Glied (Zick-Zack-Muster)
+            const nxt = new THREE.Vector3(cur.x + segmentX, (i % 2 === 0 ? 2.8 : -2.8), 0);
+            if (i < units - 1) {
+                addBond(cur, nxt, bRad, bondMat, molecule);
+                cur.copy(nxt);
+            }
+        }
+
+        // CRU-Rahmen (Repetiereinheit Visualisierung)
+        const unitBox = new THREE.Box3();
+        firstUnitAtoms.forEach(atom => unitBox.expandByObject(atom));
+        const boxSize = new THREE.Vector3(); unitBox.getSize(boxSize);
+        const boxCenter = new THREE.Vector3(); unitBox.getCenter(boxCenter);
+        boxSize.addScalar(1.5); 
+
+        const boxGeo = new THREE.BoxGeometry(boxSize.x, boxSize.y, boxSize.z);
+        const frame = new THREE.Mesh(boxGeo, new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.08 }));
+        frame.position.copy(boxCenter);
+        molecule.add(frame);
+
+        const edges = new THREE.EdgesGeometry(boxGeo);
+        const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.6 }));
+        line.position.copy(boxCenter);
+        molecule.add(line);
+
+        molecule.position.y = -4; 
+        molecule.position.x = 2;
+        scene.add(molecule);
+    }
+
+    /**
+     * Erstellt eine Bindung (Zylinder) zwischen zwei Atomen
+     */
+    function addBond(v1, v2, rad, mat, group) {
+        const dist = v1.distanceTo(v2);
+        const geo = new THREE.CylinderGeometry(rad, rad, dist, 12);
+        const m = new THREE.Mesh(geo, mat);
+        m.position.copy(v1).lerp(v2, 0.5);
+        m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), v2.clone().sub(v1).normalize());
+        group.add(m);
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        if(molecule) { 
+            molecule.rotation.y += (targetRotationY - molecule.rotation.y) * 0.05; 
+            molecule.rotation.x += (targetRotationX - molecule.rotation.x) * 0.05; 
+            if(!isMouseDown) targetRotationY += 0.0008; 
+        }
+        renderer.render(scene, camera);
+    }
+</script>
+</body>
+</html>
