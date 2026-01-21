@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PS (Polystyrol) Explorer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #1e293b; font-family: 'Inter', sans-serif; }
+        canvas { display: block; }
+        
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-track { background: transparent; }
+        .sidebar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+        }
+        .accordion-open .accordion-content {
+            max-height: 1200px;
+            padding-bottom: 1rem;
+        }
+        .rotate-icon {
+            transition: transform 0.3s ease;
+        }
+        .accordion-open .rotate-icon {
+            transform: rotate(180deg);
+        }
+        
+        .term-highlight { color: #38bdf8; font-weight: 600; }
+        .h-highlight { color: #10b981; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<!-- UI Kasten (Floating Menu) -->
+<div class="fixed top-4 left-4 z-20 w-80 sidebar max-h-[92vh] overflow-y-auto pointer-events-none">
+    <div class="bg-slate-900/90 backdrop-blur-md border border-slate-700/50 rounded-2xl shadow-2xl p-4 text-white pointer-events-auto">
+        <header class="mb-4 border-b border-slate-700/50 pb-2">
+            <h1 class="text-xl font-bold text-sky-400 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.5"/><path d="M14 2v7.5"/><path d="M8.5 2h7"/><path d="M14 9.5a2 2 0 1 1-4 0"/><path d="M5.5 20h13"/><path d="M7 20h10l-1-7.5h-8L7 20Z"/></svg>
+                PS (Polystyrol)
+            </h1>
+        </header>
+
+        <div class="space-y-2">
+            <!-- Strukturformel mit Klammern und n -->
+            <div class="accordion-item border-b border-slate-800" id="acc-formula">
+                <button onclick="toggleAccordion('acc-formula')" class="w-full py-2 flex justify-between items-center text-[10px] font-bold text-slate-400 hover:text-white transition-colors uppercase tracking-widest">
+                    Strukturformel
+                    <svg class="rotate-icon w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div class="accordion-content">
+                    <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800 shadow-inner mt-1">
+                        <svg width="200" height="160" viewBox="0 0 220 180" class="mx-auto" style="transform: scaleX(-1);">
+                            <!-- Auslaufende Bindungen -->
+                            <line x1="10" y1="80" x2="30" y2="80" stroke="#ffffff" stroke-width="2" stroke-dasharray="4 2" />
+                            <line x1="190" y1="80" x2="210" y2="80" stroke="#ffffff" stroke-width="2" stroke-dasharray="4 2" />
+                            
+                            <!-- Eckige Klammern (Repetiereinheit) -->
+                            <path d="M 40 20 L 30 20 L 30 140 L 40 140" fill="none" stroke="#64748b" stroke-width="2.5" />
+                            <path d="M 180 20 L 190 20 L 190 140 L 180 140" fill="none" stroke="#64748b" stroke-width="2.5" />
+                            
+                            <!-- Index n (Positioniert rechts unten) -->
+                            <text x="22" y="155" fill="#38bdf8" font-family="serif" font-style="italic" font-weight="bold" font-size="20" style="transform: scaleX(-1); transform-origin: 22px 0;">n</text>
+
+                            <!-- CH2 segment -->
+                            <text x="65" y="90" fill="#38bdf8" font-family="Arial" font-weight="bold" font-size="24" text-anchor="middle" style="transform: scaleX(-1); transform-origin: 65px 0;">C</text>
+                            <line x1="65" y1="65" x2="65" y2="45" stroke="#ffffff" stroke-width="2" />
+                            <text x="65" y="38" fill="#10b981" font-family="Arial" font-size="18" text-anchor="middle" style="transform: scaleX(-1); transform-origin: 65px 0;">H</text>
+                            <line x1="65" y1="100" x2="65" y2="120" stroke="#ffffff" stroke-width="2" />
+                            <text x="65" y="138" fill="#10b981" font-family="Arial" font-size="18" text-anchor="middle" style="transform: scaleX(-1); transform-origin: 65px 0;">H</text>
+                            
+                            <line x1="85" y1="80" x2="115" y2="80" stroke="#ffffff" stroke-width="3" />
+                            
+                            <!-- CH + Phenyl -->
+                            <text x="135" y="90" fill="#38bdf8" font-family="Arial" font-weight="bold" font-size="24" text-anchor="middle" style="transform: scaleX(-1); transform-origin: 135px 0;">C</text>
+                            <line x1="135" y1="65" x2="135" y2="45" stroke="#ffffff" stroke-width="2" />
+                            <text x="135" y="38" fill="#10b981" font-family="Arial" font-size="18" text-anchor="middle" style="transform: scaleX(-1); transform-origin: 135px 0;">H</text>
+                            
+                            <line x1="135" y1="100" x2="135" y2="115" stroke="#ffffff" stroke-width="2.5" />
+                            <polygon points="135,115 120,125 120,145 135,155 150,145 150,125" fill="none" stroke="#38bdf8" stroke-width="2" />
+                            <!-- Der Ring-Kreis (Aromatizität) -->
+                            <circle cx="135" cy="135" r="8" fill="none" stroke="#38bdf8" stroke-width="0.8" stroke-dasharray="2 1" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schüler-Analyse -->
+            <div class="accordion-item border-b border-slate-800" id="acc-didactic">
+                <button onclick="toggleAccordion('acc-didactic')" class="w-full py-2 flex justify-between items-center text-[10px] font-bold text-slate-400 hover:text-white transition-colors uppercase tracking-widest">
+                    Analyse für Schüler
+                    <svg class="rotate-icon w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div class="accordion-content">
+                    <div class="space-y-4 text-[10px] text-slate-400 leading-relaxed pt-1">
+                        
+                        <section class="p-2 bg-sky-500/5 rounded-lg border border-sky-500/10">
+                            <h4 class="text-sky-300 font-bold mb-1 italic">Der Kreis im Ring</h4>
+                            <p>Der Kreis symbolisiert die <span class="term-highlight">Aromatizität</span>. 6 Elektronen verteilen sich völlig frei über den ganzen Ring (<span class="term-highlight">delokalisiert</span>). Dies verleiht dem Phenylrest eine extreme chemische Stabilität.</p>
+                        </section>
+
+                        <section class="p-2 bg-sky-500/5 rounded-lg border border-slate-700">
+                            <h4 class="text-sky-300 font-bold mb-1 italic">Härte und Sprödigkeit</h4>
+                            <p>Der große <span class="term-highlight">Phenylrest</span> wirkt wie ein Anker. Er verhindert, dass Molekülketten aneinander vorbeigleiten. Das nennt man <span class="term-highlight">sterische Hinderung</span>.</p>
+                        </section>
+
+                        <section class="p-2 bg-sky-500/5 rounded-lg border border-sky-500/10">
+                            <h4 class="text-sky-300 font-bold mb-1 italic">Warum glasklar?</h4>
+                            <p>Polystyrol ist <span class="term-highlight">amorph</span> (ungeordnet). Da es keine kristallinen Gitter gibt, die das Licht brechen, ist es so transparent wie Glas.</p>
+                        </section>
+
+                        <div class="border-t border-slate-800 pt-2 opacity-60 text-center">
+                            <h4 class="font-bold text-slate-300 uppercase text-[8px] mb-1 tracking-tighter italic">Struktur bestimmt Eigenschaft</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleAccordion(id) {
+        const item = document.getElementById(id);
+        const isOpen = item.classList.contains('accordion-open');
+        document.querySelectorAll('.accordion-item').forEach(el => el.classList.remove('accordion-open'));
+        if (!isOpen) item.classList.add('accordion-open');
+    }
+
+    window.onload = () => {
+        init();
+        toggleAccordion('acc-didactic');
+    };
+
+    let scene, camera, renderer, molecule;
+    let targetRotationX = 0, targetRotationY = 0, isMouseDown = false;
+
+    function init() {
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        
+        // Distanz beibehalten (kleines Modell)
+        camera.position.z = 40; 
+        
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.body.appendChild(renderer.domElement);
+
+        scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+        const light = new THREE.DirectionalLight(0xffffff, 1.0);
+        light.position.set(5, 5, 20);
+        scene.add(light);
+
+        createMolecule();
+        addEvents();
+        animate();
+    }
+
+    function createMolecule() {
+        molecule = new THREE.Group();
+        const carbonMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.3, metalness: 0.2 });
+        const hydrogenMat = new THREE.MeshStandardMaterial({ color: 0x10b981, roughness: 0.5 });
+        const bondMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 });
+
+        // Kohlenstoff-Backbone
+        const c2 = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 32), carbonMat);
+        c2.position.set(-1, 2, 0); 
+        molecule.add(c2);
+
+        const c1 = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 32), carbonMat);
+        c1.position.set(2.0, -0.5, 0); 
+        molecule.add(c1);
+        
+        addBond(c1.position, c2.position, 0.18, bondMat, molecule);
+
+        // H-Atome (Grün)
+        const h1 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 24, 24), hydrogenMat);
+        h1.position.set(3.5, 1.0, 0); 
+        molecule.add(h1);
+        addBond(c1.position, h1.position, 0.12, bondMat, molecule);
+
+        const h2 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 24, 24), hydrogenMat);
+        h2.position.set(2.5, -2.5, 0); 
+        molecule.add(h2);
+        addBond(c1.position, h2.position, 0.12, bondMat, molecule);
+
+        const h3 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 24, 24), hydrogenMat);
+        h3.position.set(-1.5, 5, 0); 
+        molecule.add(h3);
+        addBond(c2.position, h3.position, 0.12, bondMat, molecule);
+
+        // Phenylring (Benzol)
+        const ring = new THREE.Group();
+        const ringRadius = 3.5;
+        const ringPoints = [];
+        for (let k = 0; k < 6; k++) {
+            const angle = (k / 6) * Math.PI * 2;
+            const rx = Math.cos(angle) * ringRadius;
+            const ry = Math.sin(angle) * ringRadius;
+            const rc = new THREE.Mesh(new THREE.SphereGeometry(0.85, 24, 24), carbonMat);
+            rc.position.set(rx, ry, 0);
+            ring.add(rc);
+            ringPoints.push(new THREE.Vector3(rx, ry, 0));
+
+            if (k > 0) {
+                const hp = new THREE.Vector3(rx * 1.6, ry * 1.6, 0);
+                const rh = new THREE.Mesh(new THREE.SphereGeometry(0.45, 16, 16), hydrogenMat);
+                rh.position.copy(hp);
+                ring.add(rh);
+                addBond(rc.position, hp, 0.08, bondMat, ring);
+            }
+        }
+        for (let k = 0; k < 6; k++) {
+            addBond(ringPoints[k], ringPoints[(k + 1) % 6], 0.15, bondMat, ring);
+        }
+
+        ring.position.set(-6.1, -2, 0); 
+        ring.rotation.set(0, 0, 0); 
+        
+        addBond(c2.position, ring.position.clone().add(ringPoints[0]), 0.18, bondMat, molecule);
+        molecule.add(ring);
+
+        // POSITIONIERUNG DES MODELLS: y-Wert gesenkt für "Modell nach unten"
+        molecule.position.y = -3;
+        molecule.position.x = 0;
+        scene.add(molecule);
+    }
+
+    function addBond(v1, v2, rad, mat, group) {
+        const dist = v1.distanceTo(v2);
+        const geo = new THREE.CylinderGeometry(rad, rad, dist, 12);
+        const m = new THREE.Mesh(geo, mat);
+        m.position.copy(v1).lerp(v2, 0.5);
+        m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), v2.clone().sub(v1).normalize());
+        group.add(m);
+    }
+
+    function addEvents() {
+        document.addEventListener('mousedown', () => isMouseDown = true);
+        document.addEventListener('mouseup', () => isMouseDown = false);
+        document.addEventListener('mousemove', e => { 
+            if (isMouseDown) { 
+                targetRotationY += e.movementX * 0.005; 
+                targetRotationX += e.movementY * 0.005; 
+            }
+        });
+        window.addEventListener('resize', () => { 
+            camera.aspect = window.innerWidth / window.innerHeight; 
+            camera.updateProjectionMatrix(); 
+            renderer.setSize(window.innerWidth, window.innerHeight); 
+        });
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        molecule.rotation.y += (targetRotationY - molecule.rotation.y) * 0.05;
+        molecule.rotation.x += (targetRotationX - molecule.rotation.x) * 0.05;
+        renderer.render(scene, camera);
+    }
+</script>
+</body>
+</html>
