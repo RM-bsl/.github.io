@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recycling-Quiz: Werkstoffliche Verwertung</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
+        :root {
+            --primary: #2563eb;
+            --success: #059669;
+            --error: #dc2626;
+            --warning: #d97706;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+        }
+
+        /* Container mit festem Seitenverhältnis für die Bildstabilität */
+        .quiz-aspect-ratio {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            aspect-ratio: 1000 / 690;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            overflow: hidden;
+        }
+
+        .bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Dropdown Styling - Verkleinert auf 190px */
+        .quiz-select {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            width: 190px;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            outline: none;
+            text-align-last: center;
+        }
+
+        .quiz-select:hover {
+            transform: translate(-50%, -50%) scale(1.02);
+            background: #fff;
+            z-index: 10;
+        }
+
+        .quiz-select.correct {
+            border-color: var(--success);
+            background-color: #ecfdf5;
+            color: #065f46;
+        }
+
+        .quiz-select.incorrect {
+            border-color: var(--error);
+            background-color: #fef2f2;
+            color: #991b1b;
+        }
+
+        /* Button & Feedback */
+        .action-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 50;
+            background: linear-gradient(to bottom right, #1e40af, #2563eb);
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 800;
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.5);
+        }
+
+        .status-pill {
+            position: fixed;
+            bottom: 6rem;
+            right: 2rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 700;
+            display: none;
+            animation: fadeIn 0.3s ease;
+            z-index: 50;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="text-center py-8">
+        <h1 class="text-3xl font-extrabold text-slate-900">Verfahrenstechnik: Kunststoffrecycling</h1>
+        <p class="text-slate-500 mt-2">Ordnen Sie die fachgerechten Prozessschritte zu</p>
+    </header>
+
+    <!-- Upload Bereich -->
+    <div id="setup" class="bg-white p-8 rounded-2xl shadow-sm border-2 border-dashed border-blue-200 text-center max-w-md mx-auto mb-10">
+        <div class="text-blue-500 mb-4">
+            <svg class="w-10 h-10 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+        </div>
+        <h2 class="text-lg font-bold mb-2">Diagramm laden</h2>
+        <input type="file" id="imageLoader" accept="image/*" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+    </div>
+
+    <!-- Quiz Bereich -->
+    <main id="quiz-container" class="hidden flex flex-col items-center mb-20">
+        <div class="quiz-aspect-ratio" id="wrapper">
+            <img id="mainImage" class="bg-image" alt="Prozessablauf">
+            <div id="overlays"></div>
+        </div>
+    </main>
+
+    <div id="status" class="status-pill"></div>
+    <button id="checkBtn" class="action-btn hidden" onclick="validate()">Prüfe deine Lösung</button>
+
+    <script>
+        const config = [
+            // Reihe 1
+            { y: 20.2, x: 29.5, ans: "Steigförderband", dist: ["Rüttelsieb", "Schüttgutrampe"] },
+            { y: 20.2, x: 61.2, ans: "Steigförderband", dist: ["Becherwerk", "Handbeschickung"] },
+            { y: 20.2, x: 86.0, ans: "Steigförderband", dist: ["Kettenförderer", "Saugförderung"] },
+            
+            // Reihe 2
+            { y: 35.3, x: 29.5, ans: "Teile fallen in die Schneidemühle", dist: ["Schredder-Prozess", "Hammermühle"] },
+            { y: 35.3, x: 61.2, ans: "Teile fallen in die Messmühle", dist: ["Walzenbrecher", "Prallmühle"] },
+            { y: 35.3, x: 86.0, ans: "Teile fallen in die Schneidemühle", dist: ["Backenbrecher", "Feinmahlung"] },
+            
+            // Reihe 3
+            { y: 47.0, x: 29.5, ans: "Eindosieren in den Rührbehälter mit Wasser", dist: ["Dampfreinigung", "Trockenreinigung"] },
+            { y: 47.0, x: 61.2, ans: "Entfällt", dist: ["Kaltwäsche", "Bürstenreinigung"] },
+            { y: 47.0, x: 84.5, ans: "Heißwäsche mit Natronlauge im Waschbecken", dist: ["Säurebad", "Ultraschall"] },
+            
+            // Reihe 4
+            { y: 64.2, x: 20.5, ans: "Trennung mit Flüssigwirbel im Hydrozyklon", dist: ["Magnetabscheidung", "Elektrostatik"] },
+            { y: 64.2, x: 42.5, ans: "Schwimm-Sink-Verfahren im Becken", dist: ["Nahinfrarot", "Luftsichtung"] },
+            { y: 64.2, x: 63.5, ans: "Entfällt", dist: ["Flotation", "Siebung"] },
+            { y: 64.2, x: 84.5, ans: "Trennung im Becken mittels Schwimm-Sink-Verfahren", dist: ["Wirbelstrom", "Dichtetrennung"] },
+            
+            // Reihe 5
+            { y: 79.2, x: 30.5, ans: "mechanische Trocknung (Zentrifuge) thermische Trocknung (heiße Luft)", dist: ["Vakuumtrocknung", "Infrarot"] },
+            { y: 79.2, x: 61.2, ans: "Entfällt", dist: ["Gefriertrocknung", "Sonnentrocknung"] },
+            { y: 79.2, x: 84.5, ans: "mechanische Trocknung (Zentrifuge) thermische Trocknung (heiße Luft)", dist: ["Mikrowelle", "Wirbelschicht"] },
+            
+            // Reihe 6
+            { y: 94.8, x: 32.5, ans: "Schnipsel werden in einen Extruder transportiert", dist: ["Direktabfüllung", "Ballenpresse"] },
+            { y: 94.8, x: 84.5, ans: "Extrusion oder Schmelzspindel", dist: ["Spritzguss", "Blasformen"] }
+        ];
+
+        const loader = document.getElementById('imageLoader');
+        const setup = document.getElementById('setup');
+        const quizContainer = document.getElementById('quiz-container');
+        const mainImage = document.getElementById('mainImage');
+        const checkBtn = document.getElementById('checkBtn');
+        const overlays = document.getElementById('overlays');
+
+        loader.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                mainImage.src = event.target.result;
+                setup.classList.add('hidden');
+                quizContainer.classList.remove('hidden');
+                checkBtn.classList.remove('hidden');
+                buildQuiz();
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function buildQuiz() {
+            overlays.innerHTML = '';
+            config.forEach((item, idx) => {
+                const sel = document.createElement('select');
+                sel.className = 'quiz-select';
+                sel.style.top = item.y + '%';
+                sel.style.left = item.x + '%';
+                sel.id = `q-${idx}`;
+
+                let opts = [item.ans, ...item.dist].sort(() => Math.random() - 0.5);
+                
+                const placeholder = document.createElement('option');
+                placeholder.value = "";
+                placeholder.text = "--- Wählen ---";
+                placeholder.disabled = true;
+                placeholder.selected = true;
+                sel.appendChild(placeholder);
+
+                opts.forEach(o => {
+                    const opt = document.createElement('option');
+                    opt.value = o;
+                    opt.text = o;
+                    sel.appendChild(opt);
+                });
+                overlays.appendChild(sel);
+            });
+        }
+
+        function validate() {
+            let score = 0;
+            const status = document.getElementById('status');
+            
+            config.forEach((item, idx) => {
+                const el = document.getElementById(`q-${idx}`);
+                if (el.value === item.ans) {
+                    el.classList.add('correct');
+                    el.classList.remove('incorrect');
+                    score++;
+                } else {
+                    el.classList.add('incorrect');
+                    el.classList.remove('correct');
+                }
+            });
+
+            status.style.display = 'block';
+            if (score === config.length) {
+                status.innerText = "🎉 Perfekt! Alles richtig.";
+                status.style.backgroundColor = "#059669";
+            } else {
+                status.innerText = `⚠️ ${score} von ${config.length} richtig.`;
+                status.style.backgroundColor = "#d97706";
+            }
+            status.style.color = "white";
+        }
+    </script>
+</body>
+</html>
