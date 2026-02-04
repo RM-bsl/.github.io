@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wissenschaftliche Analyse: Einschneckenextruder</title>
+    <title>Wissenschaftliche Analyse: Aufbau eines Extruders</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
@@ -11,6 +11,7 @@
         :root {
             --primary-blue: #2563eb;
             --slate-dark: #1e293b;
+            --highlight-gold: #fbbf24;
         }
 
         body {
@@ -21,7 +22,7 @@
 
         .label-interactive {
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             font-size: 14px;
             fill: var(--slate-dark);
             user-select: none;
@@ -30,25 +31,29 @@
         .label-interactive:hover {
             fill: var(--primary-blue);
             font-weight: 800;
-            filter: drop-shadow(0 0 2px rgba(37, 99, 235, 0.2));
         }
 
         .indicator-line {
-            stroke: #64748b;
-            stroke-width: 2.5;
+            stroke: #94a3b8;
+            stroke-width: 2;
             fill: none;
             stroke-linecap: round;
+            opacity: 0.6;
         }
 
         .anchor-dot {
             fill: var(--slate-dark);
-            transition: r 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            r: 5;
         }
 
-        .label-interactive:hover + .indicator-line + .anchor-dot,
-        .label-interactive:hover ~ .anchor-dot {
+        /* Dynamische Highlight-Klasse für den aktiven Punkt */
+        .anchor-dot.active {
             fill: var(--primary-blue);
-            r: 6;
+            r: 8;
+            stroke: white;
+            stroke-width: 2;
+            filter: drop-shadow(0 0 4px rgba(37, 99, 235, 0.6));
         }
 
         #info-display {
@@ -73,7 +78,7 @@
 
     <div class="max-w-6xl mx-auto">
         <header class="mb-12 border-l-4 border-blue-600 pl-6">
-            <h1 class="text-3xl font-black text-slate-800 tracking-tight uppercase">Systematik des Einschneckenextruders</h1>
+            <h1 class="text-3xl font-black text-slate-800 tracking-tight uppercase">Aufbau eines Extruders</h1>
             <p class="text-slate-500 text-lg">Werkstoffliche Verwertung von Thermoplasten im Recyclingprozess</p>
         </header>
 
@@ -108,7 +113,6 @@
                     <!-- Schneckengeometrie -->
                     <g fill="#1e293b" opacity="0.6">
                         <rect x="230" y="282" width="520" height="16" />
-                        <!-- Stege der Schnecke -->
                         <path d="M260 250 L285 250 L275 330 L250 330 Z" />
                         <path d="M315 250 L340 250 L330 330 L305 330 Z" />
                         <path d="M370 250 L395 250 L385 330 L360 330 Z" />
@@ -149,55 +153,55 @@
 
                     <!-- INTERAKTIVE BESCHRIFTUNGEN & PFADE -->
                     
-                    <!-- Gruppe Antrieb -->
+                    <!-- Antrieb -->
                     <text x="60" y="100" class="label-interactive font-bold" onmouseover="showInfo('antrieb')">Antrieb</text>
                     <line x1="90" y1="110" x2="140" y2="220" class="indicator-line" />
-                    <circle cx="140" cy="220" r="5" class="anchor-dot" />
+                    <circle id="dot-antrieb" cx="140" cy="220" class="anchor-dot" />
 
-                    <!-- Gruppe Trichter -->
+                    <!-- Trichter -->
                     <text x="160" y="60" class="label-interactive font-bold" onmouseover="showInfo('trichter')">Befülltrichter</text>
                     <line x1="210" y1="70" x2="270" y2="130" class="indicator-line" />
-                    <circle cx="270" cy="130" r="5" class="anchor-dot" />
+                    <circle id="dot-trichter" cx="270" cy="130" class="anchor-dot" />
 
-                    <!-- Gruppe Granulat -->
+                    <!-- Granulat -->
                     <text x="360" y="60" class="label-interactive font-bold" onmouseover="showInfo('granulat')">Granulat</text>
                     <line x1="380" y1="70" x2="300" y2="170" class="indicator-line" />
-                    <circle cx="300" cy="170" r="5" class="anchor-dot" />
+                    <circle id="dot-granulat" cx="300" cy="170" class="anchor-dot" />
 
-                    <!-- Gruppe Zylinder -->
+                    <!-- Zylinder -->
                     <text x="500" y="60" class="label-interactive font-bold" onmouseover="showInfo('zylinder')">Zylinder</text>
                     <line x1="530" y1="70" x2="530" y2="250" class="indicator-line" />
-                    <circle cx="530" cy="250" r="5" class="anchor-dot" />
+                    <circle id="dot-zylinder" cx="530" cy="250" class="anchor-dot" />
 
-                    <!-- Gruppe Sensoren -->
+                    <!-- Sensoren -->
                     <text x="640" y="60" class="label-interactive font-bold" onmouseover="showInfo('sensor')">Temperatursensor</text>
                     <line x1="710" y1="70" x2="640" y2="225" class="indicator-line" />
-                    <circle cx="640" cy="225" r="5" class="anchor-dot" />
+                    <circle id="dot-sensor" cx="640" cy="225" class="anchor-dot" />
 
-                    <!-- Gruppe Schnecke -->
+                    <!-- Schnecke -->
                     <text x="230" y="470" class="label-interactive font-bold" onmouseover="showInfo('schnecke')">Schnecke</text>
                     <line x1="270" y1="455" x2="270" y2="310" class="indicator-line" />
-                    <circle cx="270" cy="310" r="5" class="anchor-dot" />
+                    <circle id="dot-schnecke" cx="270" cy="310" class="anchor-dot" />
 
-                    <!-- Gruppe Schmelze -->
+                    <!-- Schmelze -->
                     <text x="400" y="470" class="label-interactive font-bold" onmouseover="showInfo('schmelze')">plastifizierter Kunststoff</text>
                     <line x1="490" y1="455" x2="580" y2="315" class="indicator-line" />
-                    <circle cx="580" cy="315" r="5" class="anchor-dot" />
+                    <circle id="dot-schmelze" cx="580" cy="315" class="anchor-dot" />
 
-                    <!-- Gruppe Heizbänder -->
+                    <!-- Heizbänder -->
                     <text x="650" y="470" class="label-interactive font-bold" onmouseover="showInfo('heizung')">Heizbänder</text>
                     <line x1="695" y1="455" x2="700" y2="330" class="indicator-line" />
-                    <circle cx="700" cy="330" r="5" class="anchor-dot" />
+                    <circle id="dot-heizung" cx="700" cy="330" class="anchor-dot" />
 
-                    <!-- Gruppe Düse -->
+                    <!-- Düse -->
                     <text x="820" y="200" class="label-interactive font-bold" onmouseover="showInfo('duese')">Düse</text>
                     <line x1="840" y1="210" x2="785" y2="260" class="indicator-line" />
-                    <circle cx="785" cy="260" r="5" class="anchor-dot" />
+                    <circle id="dot-duese" cx="785" cy="260" class="anchor-dot" />
 
-                    <!-- Gruppe Extrudat -->
+                    <!-- Extrudat -->
                     <text x="840" y="370" class="label-interactive font-bold" onmouseover="showInfo('extrudat')">Extrudat</text>
                     <line x1="875" y1="355" x2="875" y2="300" class="indicator-line" />
-                    <circle cx="875" cy="300" r="5" class="anchor-dot" />
+                    <circle id="dot-extrudat" cx="875" cy="300" class="anchor-dot" />
 
                 </svg>
             </div>
@@ -211,16 +215,9 @@
             <div class="absolute top-4 right-6 text-blue-100 font-black text-6xl select-none">DATA</div>
         </div>
 
-        <footer class="mt-12 text-slate-400 text-sm text-center">
-            &copy; Maschinentechnik & Kunststoff-Recycling | Fachdidaktische Visualisierung
-        </footer>
     </div>
 
     <script>
-        /**
-         * Fachwissenschaftliche Datenbasis
-         * Quellen orientiert an: Wortberg/Michaeli (Extrusionstechnik)
-         */
         const techDatabase = {
             antrieb: {
                 title: "Elektrische Antriebseinheit",
@@ -269,10 +266,8 @@
             const display = document.getElementById('info-display');
             const content = document.getElementById('info-content');
             
-            // CSS Animation Reset
+            // 1. Text aktualisieren
             display.classList.remove('visible');
-            
-            // Kurze Verzögerung für den Übergangseffekt
             setTimeout(() => {
                 content.innerHTML = `
                     <h2 class="text-blue-600 font-black text-2xl mb-4 flex items-center">
@@ -285,6 +280,16 @@
                 `;
                 display.classList.add('visible');
             }, 50);
+
+            // 2. Ankerpunkte zurücksetzen und nur den gewählten Punkt hervorheben
+            document.querySelectorAll('.anchor-dot').forEach(dot => {
+                dot.classList.remove('active');
+            });
+            
+            const activeDot = document.getElementById('dot-' + key);
+            if (activeDot) {
+                activeDot.classList.add('active');
+            }
         }
     </script>
 </body>
