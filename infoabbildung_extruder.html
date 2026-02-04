@@ -23,7 +23,7 @@
         .label-interactive {
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 14px;
+            font-size: 18px; /* Vergrößerte Schriftgröße an der Abbildung */
             fill: var(--slate-dark);
             user-select: none;
         }
@@ -212,7 +212,6 @@
             <div id="info-content">
                 <!-- Inhalt wird per JavaScript eingefügt -->
             </div>
-            <div class="absolute top-4 right-6 text-blue-100 font-black text-6xl select-none">DATA</div>
         </div>
 
     </div>
@@ -274,7 +273,7 @@
                         <span class="w-1.5 h-8 bg-blue-600 mr-4 rounded-full"></span>
                         ${data.title}
                     </h2>
-                    <p class="text-slate-700 text-lg leading-relaxed antialiased">
+                    <p class="text-slate-700 text-xl leading-relaxed antialiased">
                         ${data.description}
                     </p>
                 `;
