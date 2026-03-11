@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktives Lernprogramm: Quadratische Ergänzung</title>
+    
+    <!-- Tailwind CSS für das Design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Eigene Animationen, da wir das Tailwind-Animate Plugin hier nicht standardmäßig zur Verfügung haben -->
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        .animate-slide-in {
+            animation: slideInDown 0.5s ease-out forwards;
+        }
+        /* Mathematische Textformatierung */
+        .math-text {
+            font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+            font-size: 1.125rem;
+            letter-spacing: 0.025em;
+        }
+        .math-sup {
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen py-8 px-4 font-sans text-slate-900 selection:bg-blue-200">
+
+    <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col min-h-[600px]">
+        
+        <!-- Header -->
+        <header class="bg-slate-900 text-white p-6 relative">
+            <h1 class="text-2xl font-bold mb-2">Die Quadratische Ergänzung</h1>
+            <h2 class="text-slate-400 font-medium">Interaktiver Lernpfad</h2>
+            
+            <div class="absolute bottom-0 left-0 w-full h-1.5 bg-slate-800">
+                <div id="progress-bar" class="h-full bg-blue-500 transition-all duration-500 ease-out" style="width: 0%;"></div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="p-6 sm:p-8 flex-grow flex flex-col justify-center" id="main-content">
+            <!-- Dynamischer Inhalt wird hier von JS injiziert -->
+        </div>
+
+        <!-- Footer Navigation -->
+        <footer id="main-footer" class="bg-slate-50 border-t border-slate-200 p-4 sm:p-6 flex justify-between items-center mt-auto">
+            <button id="btn-prev" onclick="handlePrev()" class="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors text-slate-600 hover:bg-slate-200 hover:text-slate-900">
+                <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                Zurück
+            </button>
+            
+            <div id="step-counter" class="text-sm font-medium text-slate-400 hidden sm:block">
+                Schritt 1 von 7
+            </div>
+
+            <button id="btn-next" onclick="handleNext()" class="flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-all bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow-md">
+                Weiter
+                <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            </button>
+        </footer>
+    </div>
+
+    <!-- JavaScript Logik -->
+    <script>
+        // ==========================================
+        // 1. STATE MANAGEMENT
+        // ==========================================
+        let currentStep = 0;
+        let showGlossary = false;
+        let interactionState = {};
+
+        // ==========================================
+        // 2. HELPER FUNCTIONS
+        // ==========================================
+        const MathText = (content) => `<span class="math-text">${content}</span>`;
+        const Sup = (content) => `<sup class="math-sup">${content}</sup>`;
+
+        window.handleInteract = (key, value) => {
+            interactionState[key] = value;
+            renderApp();
+        };
+
+        window.toggleGlossary = (show) => {
+            showGlossary = show;
+            renderApp();
+        };
+
+        window.handleNext = () => {
+            if (currentStep < STEP_CONFIG.length - 1) {
+                currentStep++;
+                interactionState = {}; // Reset interactions for new step
+                renderApp();
+            }
+        };
+
+        window.handlePrev = () => {
+            if (currentStep > 0) {
+                currentStep--;
+                interactionState = {}; // Reset interactions for previous step
+                renderApp();
+            }
+        };
+
+        window.resetApp = () => {
+            currentStep = 0;
+            interactionState = {};
+            renderApp();
+        };
+
+        // ==========================================
+        // 3. GLOSSAR & LERNSCHRITT-TEMPLATES
+        // ==========================================
+        const renderGlossary = () => `
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8 shadow-sm animate-fade-in">
+                <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <i data-lucide="book-open" class="text-blue-600 w-6 h-6"></i>
+                    Wichtige Fachbegriffe
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-slate-700">
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100">
+                        <strong class="text-blue-700 block mb-1">Der Term</strong>
+                        Ein sinnvoller mathematischer Ausdruck, der Zahlen, Variablen (wie ${MathText('x')}) und Rechenzeichen enthält.
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100">
+                        <strong class="text-blue-700 block mb-1">Der Koeffizient</strong>
+                        Die Zahl, die als "Begleiter" direkt vor einer Variablen steht und mit ihr malgenommen wird (z.B. die 6 bei ${MathText('6x')}).
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100">
+                        <strong class="text-blue-700 block mb-1">Binomische Formel</strong>
+                        Normalerweise zum Ausmultiplizieren: ${MathText('(a+b)' + Sup('2') + ' = a' + Sup('2') + ' + 2ab + b' + Sup('2'))}. Wir nutzen sie hier "rückwärts", um den Term wieder in eine Klammer zu packen.
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100">
+                        <strong class="text-blue-700 block mb-1">Die Nullergänzung</strong>
+                        Der "Trick" dieser Methode: Wir rechnen ${MathText('+ Zahl - selbe Zahl')}. Der Wert ändert sich nicht (es ist 0), aber das Aussehen hilft uns weiter.
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-100 md:col-span-2">
+                        <strong class="text-blue-700 block mb-1">Normalform & Scheitelpunktform</strong>
+                        Zwei Schreibweisen für denselben Term. Die <em>Normalform</em> (z.B. ${MathText('x'+Sup('2') + '+6x+5')}) hat keine Klammern. Die <em>Scheitelpunktform</em> (z.B. ${MathText('(x+3)'+Sup('2') + '-4')}) enthält ein Binom und lässt uns den tiefsten/höchsten Punkt einer Parabel direkt ablesen.
+                    </div>
+                </div>
+                <button onclick="toggleGlossary(false)" class="mt-6 w-full py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg font-medium transition-colors">
+                    Verstanden, weiter geht's!
+                </button>
+            </div>
+        `;
+
+        const renderStepStart = () => `
+            <div class="space-y-6">
+                <p class="text-lg text-slate-700">
+                    Willkommen! Bevor wir losrechnen, schauen wir uns an, <strong>wohin</strong> die Reise geht. 
+                    Mit der quadratischen Ergänzung verwandeln wir einen Term in die sogenannte Scheitelpunktform.
+                </p>
+                <div class="bg-white p-6 rounded-xl border-2 border-blue-100 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-emerald-400"></div>
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div class="flex-1 text-center w-full bg-slate-50 p-4 rounded-lg border border-slate-200 relative">
+                            <p class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">Der Anfang</p>
+                            <div class="text-2xl math-text text-slate-800">x${Sup('2')} + 6x + 5</div>
+                            <p class="text-xs text-slate-500 mt-2">("Normalform")</p>
+                        </div>
+                        <div class="flex flex-col items-center justify-center text-blue-400 py-2">
+                            <span class="text-[10px] font-bold uppercase tracking-widest mb-1 text-blue-600 hidden md:block">Quadratische Ergänzung</span>
+                            <i data-lucide="arrow-right" class="w-8 h-8 rotate-90 md:rotate-0 stroke-2"></i>
+                        </div>
+                        <div class="flex-1 text-center w-full bg-emerald-50 p-4 rounded-lg border border-emerald-200 shadow-inner">
+                            <p class="text-sm font-bold text-emerald-700 uppercase tracking-wider mb-2">Unser Ziel</p>
+                            <div class="text-2xl math-text text-emerald-900 font-bold">(x + 3)${Sup('2')} - 4</div>
+                            <p class="text-xs text-emerald-600 mt-2">("Scheitelpunktform")</p>
+                        </div>
+                    </div>
+                    <p class="text-center text-sm text-slate-600 mt-6 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                        <strong>Der Plan:</strong> Wir "packen" das verstreute ${MathText('x')} mithilfe einer binomischen Formel platzsparend in eine Klammer.
+                    </p>
+                </div>
+                <p class="text-sm text-blue-800 flex items-start gap-2 bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <i data-lucide="alert-circle" class="w-5 h-5 shrink-0 mt-0.5 text-blue-600"></i>
+                    <span><strong>Wichtige Voraussetzung:</strong> Vor dem ${MathText('x'+Sup('2'))} darf keine Zahl stehen (außer unsichtbar eine 1). Das ist hier der Fall! Es kann also sofort losgehen.</span>
+                </p>
+                <button onclick="toggleGlossary(true)" class="flex items-center justify-center gap-2 text-blue-600 font-medium hover:text-blue-800 transition-colors w-full p-3 border-2 border-dashed border-blue-200 rounded-xl hover:bg-blue-50">
+                    <i data-lucide="book-open" class="w-5 h-5"></i> Wichtige Fachbegriffe anzeigen (Empfohlen)
+                </button>
+            </div>
+        `;
+
+        const renderStepCoefficient = (state) => `
+            <div class="space-y-6">
+                <p class="text-lg text-slate-700">
+                    Schau dir unseren Term genau an. Wir suchen den <strong>Koeffizienten von x</strong>. Das ist die Zahl, die vor dem "normalen" ${MathText('x')} steht (ohne das hoch 2).
+                </p>
+                <div class="text-3xl text-center my-6 math-text bg-slate-50 py-6 rounded-xl border border-slate-200">
+                    x${Sup('2')} + 6x + 5
+                </div>
+                
+                ${!state.answered ? `
+                    <div class="bg-white p-6 rounded-xl border-2 border-dashed border-blue-200 text-center space-y-4">
+                        <h4 class="font-semibold text-slate-800">Interaktive Frage:</h4>
+                        <p>Welche Zahl ist hier der Koeffizient von ${MathText('x')}?</p>
+                        <div class="flex justify-center gap-4">
+                            ${[1, 5, 6].map(num => `
+                                <button onclick="handleInteract('answered', ${num})" class="w-16 h-16 rounded-full bg-slate-100 hover:bg-blue-100 text-xl font-bold text-slate-700 transition-all border-2 border-slate-200 hover:border-blue-400">
+                                    ${num}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : `
+                    <div class="p-6 rounded-xl border-2 ${state.answered === 6 ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200 animate-fade-in'}">
+                        ${state.answered === 6 ? `
+                            <div class="flex flex-col items-center text-green-800 space-y-2 animate-fade-in">
+                                <i data-lucide="check-circle" class="w-8 h-8 text-green-500"></i>
+                                <p class="text-lg font-bold">Richtig!</p>
+                                <p>Die gesuchte Zahl vor dem ${MathText('x')} ist die <strong>6</strong>.</p>
+                            </div>
+                        ` : `
+                            <div class="flex flex-col items-center text-red-800 space-y-4">
+                                <p class="text-lg font-bold">Nicht ganz!</p>
+                                <p>Du hast ${state.answered} gewählt. Wir suchen aber die Zahl direkt vor dem ${MathText('x')}.</p>
+                                <button onclick="handleInteract('answered', null)" class="px-4 py-2 bg-red-100 rounded-lg font-medium hover:bg-red-200">
+                                    Nochmal versuchen
+                                </button>
+                            </div>
+                        `}
+                    </div>
+                `}
+            </div>
+        `;
+
+        const renderStepHalfSquare = (state) => `
+            <div class="space-y-6">
+                <p class="text-lg text-slate-700">
+                    Wir haben unsere Zahl gefunden: die <strong>6</strong>. Jetzt müssen wir diese Zahl <strong>halbieren</strong> und das Ergebnis <strong>quadrieren</strong> (hoch 2 nehmen). Das wird unsere "quadratische Ergänzung".
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl border shadow-sm flex flex-col items-center text-center space-y-3">
+                        <div class="text-sm font-bold text-slate-500 uppercase tracking-wider">1. Halbieren</div>
+                        ${!state.halfRevealed ? `
+                            <button onclick="handleInteract('halfRevealed', true)" class="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 w-full">
+                                Was ist die Hälfte von 6?
+                            </button>
+                        ` : `
+                            <div class="text-2xl font-bold text-blue-600 animate-fade-in">
+                                6 : 2 = <span class="text-3xl">3</span>
+                            </div>
+                        `}
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border shadow-sm flex flex-col items-center text-center space-y-3 transition-opacity duration-500 ${!state.halfRevealed ? 'opacity-30 pointer-events-none' : 'opacity-100'}">
+                        <div class="text-sm font-bold text-slate-500 uppercase tracking-wider">2. Quadrieren</div>
+                        ${!state.squaredRevealed ? `
+                            <button onclick="handleInteract('squaredRevealed', true)" class="px-6 py-3 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 w-full">
+                                Ergebnis quadrieren
+                            </button>
+                        ` : `
+                            <div class="text-2xl font-bold text-emerald-600 animate-fade-in math-text">
+                                3${Sup('2')}
+                            </div>
+                        `}
+                    </div>
+                </div>
+                ${state.squaredRevealed ? `
+                    <div class="bg-emerald-50 text-emerald-900 p-4 rounded-lg mt-6 flex items-start gap-3 border border-emerald-200 animate-slide-in">
+                        <i data-lucide="lightbulb" class="w-5 h-5 shrink-0 text-emerald-600"></i>
+                        <p><strong>Tipp:</strong> Wir rechnen die ${MathText('3'+Sup('2'))} absichtlich noch nicht zu 9 aus. Wir lassen sie als Potenz stehen, das macht den übernächsten Schritt viel einfacher!</p>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+
+        const renderStepZeroAddition = (state) => `
+            <div class="space-y-6">
+                <p class="text-lg text-slate-700">
+                    Jetzt kommt der eigentliche "Trick". Wir schreiben unseren Start-Term ab. Dann fügen wir unsere Ergänzung (${MathText('3'+Sup('2'))}) einmal mit <strong>Plus</strong> und sofort danach mit <strong>Minus</strong> ein.
+                </p>
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 math-text text-2xl md:text-3xl text-center leading-loose">
+                    <div>x${Sup('2')} + 6x <span class="text-slate-300">___</span> + 5</div>
+                    ${!state.revealed ? `
+                        <button onclick="handleInteract('revealed', true)" class="mt-6 text-base font-sans font-medium px-6 py-3 bg-blue-100 text-blue-800 rounded-lg hover:bg-blue-200">
+                            Nullergänzung (+ 3² - 3²) einfügen
+                        </button>
+                    ` : `
+                        <div class="mt-4 pt-4 border-t border-slate-200 animate-slide-in text-slate-800">
+                            x${Sup('2')} + 6x <span class="text-blue-600 font-bold bg-blue-100 px-2 rounded">+ 3${Sup('2')} - 3${Sup('2')}</span> + 5
+                        </div>
+                    `}
+                </div>
+                ${state.revealed ? `
+                    <p class="text-slate-600 italic text-center mt-4 animate-fade-in">
+                        (Durch das ${MathText('+ 3'+Sup('2')+' - 3'+Sup('2'))} haben wir eigentlich nur ${MathText('+ 0')} gerechnet. Der Wert bleibt gleich!)
+                    </p>
+                ` : ''}
+            </div>
+        `;
+
+        const renderStepBinomial = (state) => `
+            <div class="space-y-6">
+                <p class="text-lg text-slate-700">
+                    Jetzt räumen wir auf! Die ersten <strong>drei</strong> Teile unseres Terms bilden jetzt eine perfekte Binomische Formel. Wir packen sie in eine Klammer: ${MathText('( )'+Sup('2'))}.
+                </p>
+                <div class="math-text text-2xl text-center p-4 bg-slate-50 rounded-xl mb-6 border border-slate-200">
+                    <span class="bg-amber-100 border-b-2 border-amber-400 px-2">x${Sup('2')} + 6x + 3${Sup('2')}</span> - 3${Sup('2')} + 5
+                </div>
+                
+                ${!state.step1 ? `
+                    <button onclick="handleInteract('step1', true)" class="w-full py-3 bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium rounded-lg border border-blue-200">
+                        1. Nimm das x (vom x²)
+                    </button>
+                ` : `
+                    <div class="space-y-4 animate-fade-in">
+                        <div class="flex items-center gap-4 bg-white p-4 rounded-lg shadow-sm border border-slate-100">
+                            <div class="w-8 h-8 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center font-bold">1</div>
+                            <div class="text-xl math-text">( x</div>
+                        </div>
+                        
+                        ${!state.step2 ? `
+                            <button onclick="handleInteract('step2', true)" class="w-full py-3 bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium rounded-lg border border-blue-200 animate-fade-in">
+                                2. Nimm das Vorzeichen der Mitte (+ 6x)
+                            </button>
+                        ` : `
+                            <div class="space-y-4 animate-fade-in">
+                                <div class="flex items-center gap-4 bg-white p-4 rounded-lg shadow-sm border border-slate-100">
+                                    <div class="w-8 h-8 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center font-bold">2</div>
+                                    <div class="text-xl math-text">( x <span class="text-blue-600 font-bold">+</span></div>
+                                </div>
+                                
+                                ${!state.step3 ? `
+                                    <button onclick="handleInteract('step3', true)" class="w-full py-3 bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium rounded-lg border border-blue-200 animate-fade-in">
+                                        3. Nimm die quadrierte Zahl (3) und schließe ab
+                                    </button>
+                                ` : `
+                                    <div class="bg-green-50 p-6 rounded-xl border border-green-200 text-center space-y-4 animate-slide-in">
+                                        <p class="text-green-800 font-medium">Das fertige Binom mit dem Rest dahinter:</p>
+                                        <div class="text-3xl math-text text-slate-800">
+                                            <span class="text-green-700 font-bold">(x + 3)${Sup('2')}</span> - 3${Sup('2')} + 5
+                                        </div>
+                                    </div>
+                                `}
+                            </div>
+                        `}
+                    </div>
+                `}
+            </div>
+        `;
+
+        const renderStepCalculate = (state) => `
+            <div class="space-y-6">
+                <p class="text-lg text-slate-700">
+                    Fast geschafft! Unser Term ist nun fast fertig. Wir müssen nur noch die normalen Zahlen hinter der Klammer zusammenrechnen.
+                </p>
+                <div class="math-text text-2xl text-center p-6 bg-slate-50 rounded-xl border border-slate-200">
+                    (x + 3)${Sup('2')} <span class="bg-yellow-100 px-2 font-bold">- 3${Sup('2')} + 5</span>
+                </div>
+                <div class="bg-red-50 text-red-900 p-4 rounded-lg border border-red-200 flex items-start gap-3">
+                    <i data-lucide="alert-circle" class="w-5 h-5 shrink-0 text-red-600"></i>
+                    <p><strong>Achtung:</strong> Das Minus vor der 3 wird <em>nicht</em> mit quadriert! Es steht ${MathText('- (3'+Sup('2')+')')} und nicht ${MathText('(-3)'+Sup('2'))}.</p>
+                </div>
+                
+                ${!state.calc1 ? `
+                    <button onclick="handleInteract('calc1', true)" class="w-full py-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 shadow-sm">
+                        Quadrat ausrechnen (Was ist 3²?)
+                    </button>
+                ` : `
+                    <div class="space-y-6 animate-fade-in">
+                        <div class="math-text text-2xl text-center p-4">(x + 3)${Sup('2')} - 9 + 5</div>
+                        
+                        ${!state.calc2 ? `
+                            <button onclick="handleInteract('calc2', true)" class="w-full py-4 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 shadow-sm animate-fade-in">
+                                Rest zusammenrechnen (-9 + 5)
+                            </button>
+                        ` : `
+                            <div class="bg-emerald-100 p-8 rounded-xl text-center border-2 border-emerald-300 animate-slide-in shadow-md">
+                                <p class="text-emerald-800 font-bold mb-4 uppercase tracking-widest text-sm">Endergebnis</p>
+                                <div class="text-4xl math-text text-slate-800">(x + 3)${Sup('2')} - 4</div>
+                            </div>
+                        `}
+                    </div>
+                `}
+            </div>
+        `;
+
+        const renderStepSummary = () => `
+            <div class="space-y-6">
+                <div class="flex justify-center mb-6">
+                    <div class="bg-green-100 text-green-600 p-4 rounded-full">
+                        <i data-lucide="check-circle" class="w-12 h-12"></i>
+                    </div>
+                </div>
+                <h3 class="text-2xl font-bold text-center text-slate-800 mb-8">Zusammenfassung im Schnelldurchlauf</h3>
+                <div class="space-y-4 math-text text-lg bg-slate-50 p-6 rounded-xl border border-slate-200">
+                    <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                        <span class="text-slate-500 font-sans text-sm uppercase">1. Start</span>
+                        <span>x${Sup('2')} + 6x + 5</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                        <span class="text-slate-500 font-sans text-sm uppercase">2. Nullergänzung</span>
+                        <span>x${Sup('2')} + 6x <span class="text-blue-600">+ 3${Sup('2')} - 3${Sup('2')}</span> + 5</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                        <span class="text-slate-500 font-sans text-sm uppercase">3. Binom bilden</span>
+                        <span><span class="text-green-600 font-bold">(x + 3)${Sup('2')}</span> - 3${Sup('2')} + 5</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-2">
+                        <span class="text-slate-500 font-sans text-sm uppercase font-bold text-emerald-700">4. Ergebnis</span>
+                        <span class="font-bold text-2xl text-slate-800">(x + 3)${Sup('2')} - 4</span>
+                    </div>
+                </div>
+                <button onclick="resetApp()" class="w-full mt-8 py-4 bg-slate-800 text-white font-medium rounded-lg hover:bg-slate-900 transition-colors">
+                    Nochmal von vorne üben
+                </button>
+            </div>
+        `;
+
+        // ==========================================
+        // 4. SCHRITT-KONFIGURATION
+        // ==========================================
+        const STEP_CONFIG = [
+            {
+                title: "Start & Unser Ziel",
+                render: renderStepStart,
+                isCompleted: () => true
+            },
+            {
+                title: "Schritt 1: Den Koeffizienten finden",
+                render: renderStepCoefficient,
+                isCompleted: (state) => state.answered === 6
+            },
+            {
+                title: "Schritt 2: Halbieren und Quadrieren",
+                render: renderStepHalfSquare,
+                isCompleted: (state) => state.squaredRevealed
+            },
+            {
+                title: "Schritt 3: Die Nullergänzung durchführen",
+                render: renderStepZeroAddition,
+                isCompleted: (state) => state.revealed
+            },
+            {
+                title: "Schritt 4: Das Binom bilden",
+                render: renderStepBinomial,
+                isCompleted: (state) => state.step3
+            },
+            {
+                title: "Schritt 5: Den Rest ausrechnen",
+                render: renderStepCalculate,
+                isCompleted: (state) => state.calc2
+            },
+            {
+                title: "Geschafft! Zusammenfassung",
+                render: renderStepSummary,
+                isCompleted: () => true
+            }
+        ];
+
+        // ==========================================
+        // 5. HAUPT-RENDER-LOGIK
+        // ==========================================
+        function renderApp() {
+            const contentDiv = document.getElementById('main-content');
+            const footerDiv = document.getElementById('main-footer');
+            const progressBar = document.getElementById('progress-bar');
+            const stepCounter = document.getElementById('step-counter');
+            const btnPrev = document.getElementById('btn-prev');
+            const btnNext = document.getElementById('btn-next');
+
+            // 1. Fortschrittsbalken aktualisieren
+            const progress = (currentStep / (STEP_CONFIG.length - 1)) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            // 2. Main Content rendern (Glossar oder aktueller Schritt)
+            if (showGlossary) {
+                contentDiv.innerHTML = renderGlossary();
+                footerDiv.style.display = 'none'; // Footer im Glossar ausblenden
+            } else {
+                const currentConfig = STEP_CONFIG[currentStep];
+                contentDiv.innerHTML = `
+                    <div class="animate-fade-in">
+                        <h2 class="text-xl font-bold text-blue-800 mb-6 uppercase tracking-wider text-sm border-b pb-2">
+                            ${currentConfig.title}
+                        </h2>
+                        ${currentConfig.render(interactionState)}
+                    </div>
+                `;
+                
+                // Footer Status aktualisieren
+                footerDiv.style.display = 'flex';
+                stepCounter.innerText = `Schritt ${currentStep + 1} von ${STEP_CONFIG.length}`;
+                
+                // Zurück-Button Status
+                if (currentStep === 0) {
+                    btnPrev.disabled = true;
+                    btnPrev.className = "flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors text-slate-300 cursor-not-allowed";
+                } else {
+                    btnPrev.disabled = false;
+                    btnPrev.className = "flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors text-slate-600 hover:bg-slate-200 hover:text-slate-900";
+                }
+
+                // Weiter-Button Status (Validierung nach didaktischem Konzept)
+                const isNextDisabled = currentStep === STEP_CONFIG.length - 1 || !currentConfig.isCompleted(interactionState);
+                if (isNextDisabled) {
+                    btnNext.disabled = true;
+                    btnNext.className = "flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-all bg-slate-100 text-slate-400 cursor-not-allowed";
+                } else {
+                    btnNext.disabled = false;
+                    btnNext.className = "flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-all bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow-md";
+                }
+            }
+
+            // 3. Lucide Icons im neu gerenderten HTML initialisieren
+            lucide.createIcons();
+        }
+
+        // App beim ersten Laden initialisieren
+        document.addEventListener('DOMContentLoaded', () => {
+            renderApp();
+        });
+
+    </script>
+</body>
+</html>
