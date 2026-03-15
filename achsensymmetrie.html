@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achsensymmetrie - Interaktiver Lernzettel</title>
+    
+    <!-- Tailwind CSS für modernes Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- KaTeX für mathematische Formeln -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    
+    <script>
+        // Konfiguration für das Rendern der Mathe-Formeln
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError : false
+            });
+            showStep(1); // Starte mit Schritt 1
+        });
+
+        // --- NEU: Logik für die Schritt-für-Schritt Navigation ---
+        let currentStep = 1;
+        const totalSteps = 9;
+
+        function showStep(step) {
+            // Alle Schritte ausblenden
+            for (let i = 1; i <= totalSteps; i++) {
+                const el = document.getElementById('step-' + i);
+                if (el) el.classList.add('hidden');
+            }
+            // Aktuellen Schritt einblenden
+            const currentEl = document.getElementById('step-' + step);
+            if (currentEl) {
+                currentEl.classList.remove('hidden');
+                currentEl.classList.add('fade-in');
+            }
+            
+            // Buttons aktualisieren
+            const btnPrev = document.getElementById('btn-prev');
+            const btnNext = document.getElementById('btn-next');
+            
+            if(btnPrev) {
+                btnPrev.disabled = step === 1;
+                btnPrev.classList.toggle('opacity-30', step === 1);
+                btnPrev.classList.toggle('cursor-not-allowed', step === 1);
+            }
+            
+            if(btnNext) {
+                if (step === totalSteps) {
+                    btnNext.classList.add('hidden');
+                } else {
+                    btnNext.classList.remove('hidden');
+                }
+            }
+
+            // Fortschrittsbalken aktualisieren
+            const progress = (step / totalSteps) * 100;
+            const progressBar = document.getElementById('progress-bar');
+            if(progressBar) progressBar.style.width = progress + '%';
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Logik für das interaktive Quiz
+        function answerQuiz(questionId, userGuess, actualAnswer, explanation) {
+            const resultDiv = document.getElementById('quiz-result-' + questionId);
+            const btnYes = document.getElementById('btn-yes-' + questionId);
+            const btnNo = document.getElementById('btn-no-' + questionId);
+            
+            // Buttons deaktivieren nach Antwort
+            btnYes.disabled = true;
+            btnNo.disabled = true;
+            btnYes.classList.add('opacity-50', 'cursor-not-allowed');
+            btnNo.classList.add('opacity-50', 'cursor-not-allowed');
+
+            if (userGuess === actualAnswer) {
+                resultDiv.innerHTML = `<span class="flex items-center text-green-700 font-bold bg-green-100 p-3 rounded-lg mt-3">✅ Richtig! ${explanation}</span>`;
+            } else {
+                resultDiv.innerHTML = `<span class="flex items-center text-red-700 font-bold bg-red-100 p-3 rounded-lg mt-3">❌ Falsch. ${explanation}</span>`;
+            }
+        }
+    </script>
+    
+    <style>
+        /* Sanfte Animationen für interaktive Elemente */
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased pb-32">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white py-8 px-6 shadow-lg mb-6">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight mb-2">
+                🔍 Achsensymmetrie zur y-Achse
+            </h1>
+            <p class="text-lg md:text-xl font-light text-blue-100">
+                Schritt-für-Schritt rechnerisch prüfen & verstehen.
+            </p>
+        </div>
+    </header>
+
+    <!-- Progress Bar (Neu) -->
+    <div class="max-w-4xl mx-auto px-6 mb-8">
+        <div class="w-full bg-slate-200 rounded-full h-3">
+            <div id="progress-bar" class="bg-indigo-600 h-3 rounded-full transition-all duration-500" style="width: 12.5%"></div>
+        </div>
+        <p class="text-right text-xs font-bold text-slate-500 mt-2 uppercase tracking-wide">Lernfortschritt</p>
+    </div>
+
+    <main class="max-w-4xl mx-auto px-6 space-y-12">
+
+        <!-- NEU: Einführungsseite (Advance Organizer) -->
+        <div id="step-1" class="step-container hidden">
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                    🎯 Willkommen & Lernziele
+                </h2>
+                <p class="text-slate-600 mb-4 leading-relaxed">
+                    Bevor wir in die Mathematik eintauchen, verschaffen wir uns einen Überblick. Dieser Lernzettel nutzt das Prinzip des <strong>Advance Organizers</strong> (Ausubel, 1960): Wer das Ziel und den Weg kennt, lernt deutlich leichter!
+                </p>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-5 rounded-r-lg mb-6">
+                    <h3 class="font-bold text-blue-900 mb-2">Dein Lernziel für diese Einheit:</h3>
+                    <p class="text-blue-800">
+                        Du kannst am Ende die Achsensymmetrie einer ganzrationalen Funktion zur y-Achse selbstständig und fehlerfrei <strong>rechnerisch überprüfen und mathematisch korrekt begründen</strong>.
+                    </p>
+                </div>
+                <h3 class="font-bold text-slate-800 mb-3">Die wichtigsten Inhalte im Überblick:</h3>
+                <ul class="list-disc pl-5 space-y-2 text-slate-600 mb-4">
+                    <li><strong>Das Prinzip:</strong> Was bedeutet Symmetrie mathematisch? ($f(x) = f(-x)$)</li>
+                    <li><strong>Das Handwerkszeug:</strong> Welche Fachbegriffe (wie <em>Substituieren</em>) brauchst du?</li>
+                    <li><strong>Der Fahrplan:</strong> Ein sicherer 4-Schritte-Algorithmus zur Lösung.</li>
+                    <li><strong>Das Beispiel:</strong> Wir rechnen gemeinsam die Funktion $g(x) = x^4 + 2x^3 - 3x^2 - 5x + 1$ durch.</li>
+                </ul>
+            </section>
+        </div>
+
+        <!-- Intro -->
+        <div id="step-2" class="step-container hidden">
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                    <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Das Grundprinzip
+                </h2>
+                <p class="text-slate-600 mb-4 leading-relaxed">
+                    Stell dir vor, du faltest ein Blatt Papier genau in der Mitte. Wenn die linke und die rechte Seite eines Graphen beim Falten an der y-Achse exakt übereinanderliegen, nennen wir das <strong>Achsensymmetrie zur y-Achse</strong>.
+                </p>
+                <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-lg my-6">
+                    <p class="font-semibold text-indigo-900 mb-2">Die mathematische Bedingung lautet:</p>
+                    <div class="text-2xl text-center my-4">$$ f(-x) = f(x) $$</div>
+                    <p class="text-sm text-indigo-800">
+                        <strong>Logische Bedeutung:</strong> Egal, ob du eine positive Zahl (z. B. $3$) oder ihre negative Gegenzahl (z. B. $-3$) in die Funktion einsetzt – es muss exakt derselbe y-Wert herauskommen.
+                    </p>
+                </div>
+            </section>
+        </div>
+
+        <!-- Fachbegriffe (Glossar) -->
+        <div id="step-3" class="step-container hidden">
+            <section>
+                <h2 class="text-2xl font-bold text-slate-900 mb-6">📚 Wichtige Fachbegriffe</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                        <h3 class="font-bold text-blue-700 mb-2">Funktion $f(x)$ oder $g(x)$</h3>
+                        <p class="text-sm text-slate-600">Eine mathematische Maschine. Du wirfst einen x-Wert hinein, sie rechnet nach einer festen Regel und spuckt einen y-Wert aus.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                        <h3 class="font-bold text-blue-700 mb-2">Achsensymmetrie</h3>
+                        <p class="text-sm text-slate-600">Eine Spiegelungseigenschaft. Ein Objekt sieht links von einer Spiegelachse genauso aus wie rechts davon.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                        <h3 class="font-bold text-blue-700 mb-2">Substituieren</h3>
+                        <p class="text-sm text-slate-600">Wir ersetzen einen Platzhalter ($x$) durch einen anderen Ausdruck ($-x$). <strong>Wichtig:</strong> Beim Einsetzen von Minuszeichen immer Klammern setzen!</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                        <h3 class="font-bold text-blue-700 mb-2">Exponent (Hochzahl)</h3>
+                        <p class="text-sm text-slate-600">Gibt an, wie oft eine Basis mit sich selbst multipliziert wird (z. B. $x^3 = x \cdot x \cdot x$).</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Schritt 1 -->
+        <div id="step-4" class="step-container hidden">
+            <section>
+                <h2 class="text-2xl font-bold text-slate-900 mb-6">🛠️ Der Fahrplan - Schritt 1</h2>
+                <p class="mb-6 text-slate-600">Wir testen nun anhand dieser Beispielfunktion, ob sie achsensymmetrisch ist:<br>
+                    <span class="block text-center text-xl font-bold mt-2">$$ g(x) = x^4 + 2x^3 - 3x^2 - 5x + 1 $$</span>
+                </p>
+                <div class="flex flex-col md:flex-row gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl shrink-0">1</div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-2">Das Original notieren</h3>
+                        <p class="text-slate-600 mb-2">Schreibe dir die Ausgangsfunktion auf. Das ist deine Zielvorgabe für den späteren Vergleich.</p>
+                        <div class="bg-slate-50 p-3 rounded font-mono text-sm border border-slate-200">
+                            g(x) = x⁴ + 2x³ - 3x² - 5x + 1
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Schritt 2 -->
+        <div id="step-5" class="step-container hidden">
+            <section>
+                <h2 class="text-2xl font-bold text-slate-900 mb-6">🛠️ Der Fahrplan - Schritt 2</h2>
+                <div class="flex flex-col md:flex-row gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl shrink-0">2</div>
+                    <div class="w-full">
+                        <h3 class="font-bold text-lg mb-2">Substituieren ($x$ durch $-x$ ersetzen)</h3>
+                        <p class="text-slate-600 mb-2">Schreibe $g(-x)$ auf. Ersetze <strong>jedes</strong> $x$ durch $(-x)$. Vergiss die Klammern nicht!</p>
+                        <div class="bg-red-50 p-3 rounded font-mono text-sm border border-red-200 text-red-900 w-full overflow-x-auto">
+                            g(-x) = (-x)⁴ + 2(-x)³ - 3(-x)² - 5(-x) + 1
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Schritt 3 -->
+        <div id="step-6" class="step-container hidden">
+            <section>
+                <h2 class="text-2xl font-bold text-slate-900 mb-6">🛠️ Der Fahrplan - Schritt 3</h2>
+                <div class="flex flex-col md:flex-row gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl shrink-0">3</div>
+                    <div class="w-full">
+                        <h3 class="font-bold text-lg mb-2">Ausrechnen und Vereinfachen</h3>
+                        <p class="text-slate-600 mb-4">Wende die Potenzgesetze an, um die Klammern aufzulösen.</p>
+                        
+                        <div class="bg-yellow-50 border border-yellow-300 p-4 rounded-lg mb-4">
+                            <h4 class="font-bold text-yellow-800 mb-2">💡 Vorzeichen-Regel für Hochzahlen:</h4>
+                            <ul class="list-disc pl-5 text-sm text-yellow-900 space-y-1">
+                                <li><strong>Gerade Hochzahl</strong> (2, 4, 6...): Das Minus <strong>verschwindet</strong>. $\rightarrow (-x)^2 = x^2$</li>
+                                <li><strong>Ungerade Hochzahl</strong> (1, 3, 5...): Das Minus <strong>bleibt</strong>. $\rightarrow (-x)^3 = -x^3$</li>
+                            </ul>
+                        </div>
+                        
+                        <p class="text-slate-600 mb-2">Wir setzen das in unsere Rechnung ein:</p>
+                        <ul class="list-disc pl-5 text-sm text-slate-600 mb-4 space-y-1">
+                            <li>$(-x)^4$ wird zu $x^4$</li>
+                            <li>$2 \cdot (-x)^3$ wird zu $-2x^3$</li>
+                            <li>$-3 \cdot (-x)^2$ wird zu $-3x^2$</li>
+                            <li>$-5 \cdot (-x)$ wird zu $+5x$</li>
+                        </ul>
+                        <p class="text-slate-600 mb-2 font-bold">Vereinfacht:</p>
+                        <div class="bg-purple-50 p-3 rounded font-mono text-sm border border-purple-200 text-purple-900 overflow-x-auto">
+                            g(-x) = x⁴ - 2x³ - 3x² + 5x + 1
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Schritt 4 -->
+        <div id="step-7" class="step-container hidden">
+            <section>
+                <h2 class="text-2xl font-bold text-slate-900 mb-6">🛠️ Der Fahrplan - Schritt 4</h2>
+                <div class="flex flex-col md:flex-row gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl shrink-0">4</div>
+                    <div class="w-full">
+                        <h3 class="font-bold text-lg mb-2">Das große Finale (Vergleichen)</h3>
+                        <p class="text-slate-600 mb-4">Vergleiche nun das Ergebnis mit dem Original.</p>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                            <div class="p-3 bg-slate-100 rounded border border-slate-300">
+                                <span class="text-xs font-bold text-slate-500 block mb-1">Original g(x)</span>
+                                <span class="font-mono text-sm">x⁴ + 2x³ - 3x² - 5x + 1</span>
+                            </div>
+                            <div class="p-3 bg-purple-100 rounded border border-purple-300">
+                                <span class="text-xs font-bold text-purple-600 block mb-1">Ergebnis g(-x)</span>
+                                <span class="font-mono text-sm">x⁴ - 2x³ - 3x² + 5x + 1</span>
+                            </div>
+                        </div>
+                        
+                        <p class="font-bold text-slate-800">Sind beide Terme exakt identisch?</p>
+                        <p class="text-red-600 font-bold mb-4">Nein! (Aus $+2x^3$ wurde $-2x^3$ und aus $-5x$ wurde $+5x$).</p>
+
+                        <div class="bg-indigo-600 text-white p-5 rounded-xl shadow-md text-center">
+                            <h4 class="text-xl font-bold mb-2">🎯 Fazit</h4>
+                            <p>Da $g(-x) \neq g(x)$ gilt, ist der Graph der Funktion $g$ <strong>NICHT</strong> achsensymmetrisch zur y-Achse.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Interaktiver Wissenstest -->
+        <div id="step-8" class="step-container hidden">
+            <section class="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 md:p-8 mt-4">
+                <h2 class="text-2xl font-bold text-emerald-900 mb-2">🧠 Der Schnelltest (Wissens-Check)</h2>
+                <p class="text-emerald-800 mb-6">
+                    <strong>Didaktischer Hinweis:</strong> Ein Polynom ist <em>nur dann</em> achsensymmetrisch zur y-Achse, wenn <strong>ausschließlich gerade Exponenten</strong> vorkommen (Zahlen ohne $x$ zählen als $x^0$, also gerade). Teste dein Wissen:
+                </p>
+
+                <!-- Quiz Frage 1 -->
+                <div class="bg-white p-4 rounded-xl shadow-sm mb-4">
+                    <p class="text-lg mb-3">Ist $$ f(x) = x^4 + 3x^2 - 5 $$ achsensymmetrisch?</p>
+                    <div class="flex gap-3">
+                        <button id="btn-yes-1" onclick="answerQuiz(1, true, true, 'Alle Exponenten (4, 2, 0) sind gerade!')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium transition">Ja</button>
+                        <button id="btn-no-1" onclick="answerQuiz(1, false, true, 'Schau dir die Exponenten an: 4 und 2 sind gerade. -5 ist eine Konstante ($x^0$). Es ist symmetrisch!')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-lg font-medium transition">Nein</button>
+                    </div>
+                    <div id="quiz-result-1"></div>
+                </div>
+
+                <!-- Quiz Frage 2 -->
+                <div class="bg-white p-4 rounded-xl shadow-sm">
+                    <p class="text-lg mb-3">Ist $$ h(x) = 2x^4 - x^3 + 1 $$ achsensymmetrisch?</p>
+                    <div class="flex gap-3">
+                        <button id="btn-yes-2" onclick="answerQuiz(2, true, false, 'Achtung: Der Term $-x^3$ hat eine ungerade Hochzahl (3). Daher kippt die Symmetrie!')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium transition">Ja</button>
+                        <button id="btn-no-2" onclick="answerQuiz(2, false, false, 'Korrekt! Wegen dem $x^3$ (ungerader Exponent) ist die Funktion nicht achsensymmetrisch.')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-lg font-medium transition">Nein</button>
+                    </div>
+                    <div id="quiz-result-2"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Wissenschaftlicher Hintergrund -->
+        <div id="step-9" class="step-container hidden">
+            <section class="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 mt-4 text-sm text-slate-600">
+                <h3 class="font-bold text-lg text-slate-800 mb-4">📚 Quellen & Didaktischer Hintergrund</h3>
+                <ul class="list-disc pl-5 space-y-3">
+                    <li><strong>Advance Organizer (Ausubel, 1960):</strong> Vorabinformationen, die als gedankliche Brücke dienen. Werden Ziele und Struktur vorher transparent gemacht, können neue Inhalte besser im Gedächtnis verankert werden. <em>(Ausubel, D. P. (1960). The use of advance organizers in the learning and retention of meaningful verbal material. Journal of Educational Psychology, 51(5), 267–272.)</em></li>
+                    <li><strong>Segmenting Principle (Mayer, 2009):</strong> Das Aufteilen von Inhalten in benutzergesteuerte, kleine Segmente verhindert eine kognitive Überlastung und fördert das tiefe Verständnis. <em>(Mayer, R. E. (2009). Multimedia learning (2nd ed.). Cambridge University Press.)</em></li>
+                    <li><strong>Cognitive Load Theory (Sweller, 1988):</strong> Die Schritt-für-Schritt-Unterteilung und das Auslagern der Fachbegriffe reduziert die kognitive Überlastung des Arbeitsgedächtnisses. <em>(Sweller, J. (1988). Cognitive load during problem solving: Effects on learning. Cognitive science, 12(2), 257-285.)</em></li>
+                    <li><strong>Worked-Example Effect (Renkl, 1997):</strong> Komplexe Problemlösefähigkeiten werden am besten durch vollständig ausgearbeitete Lösungsbeispiele erlernt. <em>(Renkl, A. (1997). Learning from worked-out examples: A study on individual differences. Cognitive science, 21(1), 1-29.)</em></li>
+                </ul>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- Navigation Bottom Bar (Neu) -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] z-50">
+        <div class="max-w-4xl mx-auto flex justify-between items-center px-2">
+            <button id="btn-prev" onclick="prevStep()" class="px-5 py-3 rounded-lg font-bold text-slate-700 bg-slate-100 border border-slate-300 hover:bg-slate-200 transition disabled:opacity-30 disabled:cursor-not-allowed">
+                &larr; Zurück
+            </button>
+            <button id="btn-next" onclick="nextStep()" class="px-8 py-3 rounded-lg font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md hover:shadow-lg transition">
+                Weiter &rarr;
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>
