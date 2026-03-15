@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punktsymmetrie - Interaktiver Lernzettel</title>
+    
+    <!-- Tailwind CSS für modernes Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- KaTeX für mathematische Formeln -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    
+    <script>
+        // Konfiguration für das Rendern der Mathe-Formeln
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError : false
+            });
+            showStep(1); // Starte mit Schritt 1
+        });
+
+        // Logik für die Schritt-für-Schritt Navigation
+        let currentStep = 1;
+        const totalSteps = 9;
+
+        function showStep(step) {
+            // Alle Schritte ausblenden
+            for (let i = 1; i <= totalSteps; i++) {
+                const el = document.getElementById('step-' + i);
+                if (el) el.classList.add('hidden');
+            }
+            // Aktuellen Schritt einblenden
+            const currentEl = document.getElementById('step-' + step);
+            if (currentEl) {
+                currentEl.classList.remove('hidden');
+                currentEl.classList.add('fade-in');
+            }
+            
+            // Buttons aktualisieren
+            const btnPrev = document.getElementById('btn-prev');
+            const btnNext = document.getElementById('btn-next');
+            
+            if(btnPrev) {
+                btnPrev.disabled = step === 1;
+                btnPrev.classList.toggle('opacity-30', step === 1);
+                btnPrev.classList.toggle('cursor-not-allowed', step === 1);
+            }
+            
+            if(btnNext) {
+                if (step === totalSteps) {
+                    btnNext.classList.add('hidden');
+                } else {
+                    btnNext.classList.remove('hidden');
+                }
+            }
+
+            // Fortschrittsbalken aktualisieren
+            const progress = (step / totalSteps) * 100;
+            const progressBar = document.getElementById('progress-bar');
+            if(progressBar) progressBar.style.width = progress + '%';
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Logik für das interaktive Quiz
+        function answerQuiz(questionId, userGuess, actualAnswer, explanation) {
+            const resultDiv = document.getElementById('quiz-result-' + questionId);
+            const btnYes = document.getElementById('btn-yes-' + questionId);
+            const btnNo = document.getElementById('btn-no-' + questionId);
+            
+            // Buttons deaktivieren nach Antwort
+            btnYes.disabled = true;
+            btnNo.disabled = true;
+            btnYes.classList.add('opacity-50', 'cursor-not-allowed');
+            btnNo.classList.add('opacity-50', 'cursor-not-allowed');
+
+            if (userGuess === actualAnswer) {
+                resultDiv.innerHTML = `<span class="flex items-center text-green-700 font-bold bg-green-100 p-3 rounded-lg mt-3">✅ Richtig! ${explanation}</span>`;
+            } else {
+                resultDiv.innerHTML = `<span class="flex items-center text-red-700 font-bold bg-red-100 p-3 rounded-lg mt-3">❌ Falsch. ${explanation}</span>`;
+            }
+        }
+    </script>
+    
+    <style>
+        /* Sanfte Animationen für interaktive Elemente */
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased pb-32">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-violet-700 to-fuchsia-800 text-white py-8 px-6 shadow-lg mb-6">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight mb-2">
+                🔄 Punktsymmetrie zum Ursprung
+            </h1>
+            <p class="text-lg md:text-xl font-light text-violet-100">
+                Schritt-für-Schritt rechnerisch prüfen & verstehen.
+            </p>
+        </div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="max-w-4xl mx-auto px-6 mb-8">
+        <div class="w-full bg-slate-200 rounded-full h-3">
+            <div id="progress-bar" class="bg-violet-600 h-3 rounded-full transition-all duration-500" style="width: 11%"></div>
+        </div>
+        <p class="text-right text-xs font-bold text-slate-500 mt-2 uppercase tracking-wide">Lernfortschritt</p>
+    </div>
+
+    <main class="max-w-4xl mx-auto px-6 space-y-12">
+
+        <!-- Schritt 1: Einführungsseite (Advance Organizer) -->
+        <div id="step-1" class="step-container hidden">
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                    🎯 Willkommen & Lernziele
+                </h2>
+                <p class="text-slate-600 mb-4 leading-relaxed">
+                    Bevor wir in die Mathematik eintauchen, verschaffen wir uns einen Überblick. Dieser Lernzettel nutzt das Prinzip des <strong>Advance Organizers</strong> (Ausubel, 1960): Wer das Ziel und den Weg kennt, lernt deutlich leichter!
+                </p>
+                <div class="bg-violet-50 border-l-4 border-violet-500 p-5 rounded-r-lg mb-6">
+                    <h3 class="font-bold text-violet-900 mb-2">Dein Lernziel für diese Einheit:</h3>
+                    <p class="text-violet-800">
+                        Du kannst am Ende die Punktsymmetrie einer ganzrationalen Funktion zum Ursprung selbstständig und fehlerfrei <strong>rechnerisch überprüfen und mathematisch korrekt begründen</strong>.
+                    </p>
+                </div>
+                <h3 class="font-bold text-slate-800 mb-3">Die wichtigsten Inhalte im Überblick:</h3>
+                <ul class="list-disc pl-5 space-y-2 text-slate-600 mb-4">
+                    <li><strong>Das Prinzip:</strong> Was bedeutet Punktsymmetrie mathematisch? ($f(-x) = -f(x)$)</li>
+                    <li><strong>Das Handwerkszeug:</strong> Neue Fachbegriffe wie das <em>Negieren einer Funktion</em>.</li>
+                    <li><strong>Der Fahrplan:</strong> Ein sicherer 4-Schritte-Algorithmus zur Lösung.</li>
+                    <li><strong>Das Beispiel:</strong> Wir rechnen gemeinsam die Funktion $f(x) = 2x^3 + 4x^2 - 3x - 1$ durch.</li>
+                </ul>
+            </section>
+        </div>
+
+        <!-- Schritt 2: Intro -->
+        <div id="step-2" class="step-container hidden">
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                    <svg class="w-6 h-6 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    Das Grundprinzip
+                </h2>
+                <p class="text-slate-600 mb-4 leading-relaxed">
+                    Stell dir vor, du stichst mit einer Nadel genau in den Nullpunkt des Koordinatensystems (den Ursprung) und <strong>drehst das Blatt Papier um exakt 180° (auf den Kopf)</strong>. Wenn der Graph danach exakt so aussieht wie vorher, sprechen wir von <strong>Punktsymmetrie zum Ursprung</strong>.
+                </p>
+                <div class="bg-violet-50 border-l-4 border-violet-500 p-4 rounded-r-lg my-6">
+                    <p class="font-semibold text-violet-900 mb-2">Die mathematische Bedingung lautet:</p>
+                    <div class="text-2xl text-center my-4">$$ f(-x) = -f(x) $$</div>
+                    <p class="text-sm text-violet-800">
+                        <strong>Logische Bedeutung:</strong> Setzt du das <em>Negative</em> eines x-Wertes ein (linke Seite der Gleichung), so muss als Ergebnis exakt der <em>negative</em> y-Wert der Ausgangsfunktion (rechte Seite) herauskommen.
+                    </p>
+                </div>
+            </section>
+        </div>
+
+        <!-- Schritt 3: Fachbegriffe (Glossar) -->
+        <div id="step-3" class="step-container hidden">
+            <section>
+                <h2 class="text-2xl font-bold text-slate-900 mb-6">📚 Wichtige Fachbegriffe</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                        <h3 class="font-bold text-violet-700 mb-2">Ursprung $(0|0)$</h3>
+                        <p class="text-sm text-slate-600">Der Punkt im Koordinatensystem, an dem sich die x-Achse und die y-Achse exakt in der Mitte kreuzen.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                        <h3 class="font-bold text-violet-700 mb-2">Die Funktion "negieren" ($-f(x)$)</h3>
+                        <p class="text-sm text-slate-600">Wir setzen ein Minuszeichen vor die <em>gesamte</em> Funktion. Wichtig: Dafür muss die komplette Funktion in eine Klammer gesetzt werden. Dadurch drehen sich <strong>alle</strong> Vorzeichen um!</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                        <h3 class="font-bold text-violet-700 mb-2">Punktsymmetrie</h3>
+                        <p class="text-sm text-slate-600">Eine Eigenschaft, bei der eine Figur (Graph) nach einer halben Drehung (180°) um einen Symmetriepunkt wieder mit sich selbst zur Deckung kommt.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                        <h3 class="font-bold text-violet-700 mb-2">Substituieren</h3>
+                        <p class="text-sm text-slate-600">Das Ersetzen des Platzhalters $x$ durch den Ausdruck $(-x)$. Bei Minuszeichen zwingend Klammern verwenden!</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Schritt 4: Fahrplan 1 -->
+        <div id="step-4" class="step-container hidden">
+            <section>
+                <h2 class="text-2xl font-bold text-slate-900 mb-6">🛠️ Der Fahrplan - Schritt 1</h2>
+                <p class="mb-6 text-slate-600">Wir testen nun anhand dieser Beispielfunktion, ob sie punktsymmetrisch ist:<br>
+                    <span class="block text-center text-xl font-bold mt-2 text-violet-900">$$ f(x) = 2x^3 + 4x^2 - 3x - 1 $$</span>
+                </p>
+                <div class="flex flex-col md:flex-row gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div class="bg-violet-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl shrink-0">1</div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-2">Das Original notieren</h3>
+                        <p class="text-slate-600 mb-2">Schreibe dir die Ausgangsfunktion klar auf. Sie ist die Basis für unsere beiden nächsten Rechenschritte.</p>
+                        <div class="bg-slate-50 p-3 rounded font-mono text-sm border border-slate-200">
+                            f(x) = 2x³ + 4x² - 3x - 1
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Schritt 5: Fahrplan 2 -->
+        <div id="step-5" class="step-container hidden">
+            <section>
+                <h2 class="text-2xl font-bold text-slate-900 mb-6">🛠️ Der Fahrplan - Schritt 2</h2>
+                <div class="flex flex-col md:flex-row gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div class="bg-violet-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl shrink-0">2</div>
+                    <div class="w-full">
+                        <h3 class="font-bold text-lg mb-2">Linke Seite berechnen: $f(-x)$</h3>
+                        <p class="text-slate-600 mb-2">Genau wie bei der Achsensymmetrie ersetzen wir jedes $x$ durch $(-x)$ und vereinfachen.</p>
+                        
+                        <div class="bg-yellow-50 border border-yellow-300 p-3 rounded-lg mb-4 text-sm text-yellow-900">
+                            <strong>Erinnerung:</strong> Ungerade Hochzahlen behalten das Minus, gerade Hochzahlen "schlucken" es!
+                        </div>
+
+                        <div class="bg-blue-50 p-3 rounded font-mono text-sm border border-blue-200 text-blue-900 w-full overflow-x-auto mb-2">
+                            Eingesetzt: f(-x) = 2(-x)³ + 4(-x)² - 3(-x) - 1
+                        </div>
+                        
+                        <p class="text-slate-600 mb-1 font-bold">Vereinfacht merken wir uns:</p>
+                        <div class="bg-blue-100 p-3 rounded font-mono text-sm border border-blue-300 text-blue-900 overflow-x-auto">
+                            f(-x) = -2x³ + 4x² + 3x - 1
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Schritt 6: Fahrplan 3 -->
+        <div id="step-6" class="step-container hidden">
+            <section>
+                <h2 class="text-2xl font-bold text-slate-900 mb-6">🛠️ Der Fahrplan - Schritt 3</h2>
+                <div class="flex flex-col md:flex-row gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div class="bg-violet-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl shrink-0">3</div>
+                    <div class="w-full">
+                        <h3 class="font-bold text-lg mb-2">Rechte Seite berechnen: $-f(x)$</h3>
+                        <p class="text-slate-600 mb-4">Jetzt negieren wir die Originalfunktion komplett. Wir setzen ein großes Minus vor eine Klammer mit der gesamten Funktion.</p>
+                        
+                        <div class="bg-red-50 p-3 rounded font-mono text-sm border border-red-200 text-red-900 overflow-x-auto mb-2">
+                            Eingesetzt: -f(x) = -(2x³ + 4x² - 3x - 1)
+                        </div>
+                        
+                        <p class="text-slate-600 mb-2"><strong>Achtung:</strong> Das Minuszeichen vor der Klammer dreht <em>jedes einzelne</em> Vorzeichen in der Klammer um!</p>
+                        
+                        <p class="text-slate-600 mb-1 font-bold">Vereinfacht merken wir uns:</p>
+                        <div class="bg-red-100 p-3 rounded font-mono text-sm border border-red-300 text-red-900 overflow-x-auto">
+                            -f(x) = -2x³ - 4x² + 3x + 1
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Schritt 7: Fahrplan 4 -->
+        <div id="step-7" class="step-container hidden">
+            <section>
+                <h2 class="text-2xl font-bold text-slate-900 mb-6">🛠️ Der Fahrplan - Schritt 4</h2>
+                <div class="flex flex-col md:flex-row gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div class="bg-violet-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl shrink-0">4</div>
+                    <div class="w-full">
+                        <h3 class="font-bold text-lg mb-2">Das große Finale (Vergleichen)</h3>
+                        <p class="text-slate-600 mb-4">Vergleiche nun die vereinfachte linke Seite mit der vereinfachten rechten Seite.</p>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                            <div class="p-3 bg-blue-50 rounded border border-blue-300">
+                                <span class="text-xs font-bold text-blue-600 block mb-1">Linke Seite f(-x)</span>
+                                <span class="font-mono text-sm">-2x³ <span class="text-red-500 font-bold bg-red-100">+ 4x²</span> + 3x <span class="text-red-500 font-bold bg-red-100">- 1</span></span>
+                            </div>
+                            <div class="p-3 bg-red-50 rounded border border-red-300">
+                                <span class="text-xs font-bold text-red-600 block mb-1">Rechte Seite -f(x)</span>
+                                <span class="font-mono text-sm">-2x³ <span class="text-red-500 font-bold bg-red-100">- 4x²</span> + 3x <span class="text-red-500 font-bold bg-red-100">+ 1</span></span>
+                            </div>
+                        </div>
+                        
+                        <p class="font-bold text-slate-800">Sind beide Terme exakt identisch?</p>
+                        <p class="text-red-600 font-bold mb-4">Nein! Bei $4x^2$ und $1$ unterscheiden sich die Vorzeichen.</p>
+
+                        <div class="bg-violet-600 text-white p-5 rounded-xl shadow-md text-center">
+                            <h4 class="text-xl font-bold mb-2">🎯 Fazit</h4>
+                            <p>Da $f(-x) \neq -f(x)$ gilt, ist der Graph der Funktion $f$ <strong>NICHT</strong> punktsymmetrisch zum Ursprung.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Schritt 8: Interaktiver Wissenstest -->
+        <div id="step-8" class="step-container hidden">
+            <section class="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 md:p-8 mt-4">
+                <h2 class="text-2xl font-bold text-emerald-900 mb-2">🧠 Der Schnelltest (Wissens-Check)</h2>
+                <p class="text-emerald-800 mb-6">
+                    <strong>Didaktischer Hinweis:</strong> Ein Polynom ist <em>nur dann</em> punktsymmetrisch zum Ursprung, wenn <strong>ausschließlich UNGERADE Exponenten</strong> vorkommen. <br><br>
+                    <strong>WICHTIG:</strong> Zahlen ohne $x$ (Konstanten wie $-1$ oder $+5$) zählen mathematisch als $x^0$. Da $0$ eine gerade Zahl ist, zerstören Konstanten am Ende einer Funktion IMMER die Punktsymmetrie zum Ursprung!
+                </p>
+
+                <!-- Quiz Frage 1 -->
+                <div class="bg-white p-4 rounded-xl shadow-sm mb-4">
+                    <p class="text-lg mb-3">Ist $$ p(x) = x^5 - 2x^3 + 7x $$ punktsymmetrisch zum Ursprung?</p>
+                    <div class="flex gap-3">
+                        <button id="btn-yes-1" onclick="answerQuiz(1, true, true, 'Korrekt! Alle Exponenten (5, 3 und 1) sind ungerade. Die Funktion ist punktsymmetrisch!')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium transition">Ja</button>
+                        <button id="btn-no-1" onclick="answerQuiz(1, false, true, 'Falsch. Schau genau hin: $x^5$, $x^3$ und $x^1$. Alle Hochzahlen sind ungerade!')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-lg font-medium transition">Nein</button>
+                    </div>
+                    <div id="quiz-result-1"></div>
+                </div>
+
+                <!-- Quiz Frage 2 -->
+                <div class="bg-white p-4 rounded-xl shadow-sm">
+                    <p class="text-lg mb-3">Ist $$ q(x) = 4x^3 + x^2 $$ punktsymmetrisch zum Ursprung?</p>
+                    <div class="flex gap-3">
+                        <button id="btn-yes-2" onclick="answerQuiz(2, true, false, 'Falsch. Der Exponent 2 bei $x^2$ ist gerade. Daher kippt die Symmetrie!')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium transition">Ja</button>
+                        <button id="btn-no-2" onclick="answerQuiz(2, false, false, 'Super! Wegen dem $x^2$ (gerader Exponent) ist die Funktion nicht punktsymmetrisch.')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-lg font-medium transition">Nein</button>
+                    </div>
+                    <div id="quiz-result-2"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Schritt 9: Wissenschaftlicher Hintergrund -->
+        <div id="step-9" class="step-container hidden">
+            <section class="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 mt-4 text-sm text-slate-600">
+                <h3 class="font-bold text-lg text-slate-800 mb-4">📚 Quellen & Didaktischer Hintergrund</h3>
+                <p class="mb-4 text-slate-500">Dieser Lernzettel basiert auf etablierten Erkenntnissen der pädagogischen Psychologie und aktuellen Publikationen aus Fachzeitschriften:</p>
+                <ul class="list-disc pl-5 space-y-3">
+                    <li><strong>Advance Organizer (Ausubel, 1960):</strong> Vorabinformationen, die als gedankliche Brücke dienen. Werden Ziele und Struktur vorher transparent gemacht, können neue Inhalte besser im Gedächtnis verankert werden. <em>(Ausubel, D. P. (1960). The use of advance organizers in the learning and retention of meaningful verbal material. Journal of Educational Psychology, 51(5), 267–272.)</em></li>
+                    <li><strong>Segmenting Principle (Mayer, 2009):</strong> Das Aufteilen von Inhalten in benutzergesteuerte, kleine Segmente verhindert eine kognitive Überlastung und fördert das tiefe Verständnis. <em>(Mayer, R. E. (2009). Multimedia learning (2nd ed.). Cambridge University Press.)</em></li>
+                    <li><strong>Cognitive Load Theory (Sweller, 1988):</strong> Die Schritt-für-Schritt-Unterteilung und das Auslagern der Fachbegriffe reduziert die kognitive Überlastung des Arbeitsgedächtnisses. <em>(Sweller, J. (1988). Cognitive load during problem solving: Effects on learning. Cognitive science, 12(2), 257-285.)</em></li>
+                    <li><strong>Worked-Example Effect (Renkl, 1997):</strong> Komplexe Problemlösefähigkeiten werden am besten durch vollständig ausgearbeitete Lösungsbeispiele erlernt. <em>(Renkl, A. (1997). Learning from worked-out examples: A study on individual differences. Cognitive science, 21(1), 1-29.)</em></li>
+                </ul>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- Navigation Bottom Bar -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] z-50">
+        <div class="max-w-4xl mx-auto flex justify-between items-center px-2">
+            <button id="btn-prev" onclick="prevStep()" class="px-5 py-3 rounded-lg font-bold text-slate-700 bg-slate-100 border border-slate-300 hover:bg-slate-200 transition disabled:opacity-30 disabled:cursor-not-allowed">
+                &larr; Zurück
+            </button>
+            <button id="btn-next" onclick="nextStep()" class="px-8 py-3 rounded-lg font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-md hover:shadow-lg transition">
+                Weiter &rarr;
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>
