@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schritt-für-Schritt: Polynomdivision (Grad 3)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif:italic&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; background-color: #fcfdfe; color: #334155; }
+        .math-font { font-family: 'Noto Serif', serif; font-style: italic; }
+        .mono-font { font-family: 'Fira Code', monospace; }
+        
+        .step-card { 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        
+        .step-card:hover:not(.active) {
+            transform: translateY(-4px);
+            border-color: #cbd5e1;
+            background-color: #ffffff;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+        }
+
+        .active {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.1);
+        }
+
+        .pulse-indicator {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modern-shadow { box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const MathTerm = ({ children }) => (
+            <span className="math-font text-[1.1em] text-slate-900">{children}</span>
+        );
+
+        const Graph = ({ showZeros = false }) => {
+            const points = [];
+            for (let x = -2.6; x <= 1.8; x += 0.05) {
+                const y = Math.pow(x, 3) - 3 * x + 2;
+                const px = (x + 3) * 70; 
+                const py = 140 - y * 25; 
+                if (py > 10 && py < 190) points.push(`${px},${py}`);
+            }
+
+            return (
+                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm mb-8">
+                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
+                        {showZeros ? "Analyse-Ergebnis: Schnitt- und Berührstelle" : "Ausgangslage: Der Funktionsgraph"}
+                    </h3>
+                    <div className="text-center mb-4">
+                        <span className="px-3 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-500 border border-slate-200">
+                             Untersuchte Funktion: <MathTerm>f(x) = x³ - 3x + 2</MathTerm>
+                        </span>
+                    </div>
+                    <div className="flex justify-center">
+                        <svg viewBox="0 0 400 200" className="w-full max-w-xl h-auto overflow-visible">
+                            <line x1="20" y1="140" x2="380" y2="140" stroke="#cbd5e1" strokeWidth="1.5" />
+                            <line x1="210" y1="20" x2="210" y2="190" stroke="#cbd5e1" strokeWidth="1.5" />
+                            <polyline points="375,135 380,140 375,145" fill="none" stroke="#cbd5e1" strokeWidth="1.5" />
+                            <polyline points="205,25 210,20 215,25" fill="none" stroke="#cbd5e1" strokeWidth="1.5" />
+                            <text x="385" y="145" fontSize="12" fill="#94a3b8" className="math-font">x</text>
+                            <text x="190" y="25" fontSize="12" fill="#94a3b8" className="math-font">f(x)</text>
+                            <polyline points={points.join(' ')} fill="none" stroke="#6366f1" strokeWidth="2.5" strokeLinecap="round" />
+                            {showZeros && (
+                                <g>
+                                    <circle cx="70" cy="140" r="5" fill="#f43f5e" />
+                                    <circle cx="280" cy="140" r="5" fill="#f43f5e" />
+                                    <text x="55" y="160" fontSize="12" fill="#f43f5e" fontWeight="bold">x = -2</text>
+                                    <text x="275" y="160" fontSize="12" fill="#f43f5e" fontWeight="bold">x = 1</text>
+                                    <path d="M260,120 Q280,110 300,120" fill="none" stroke="#f43f5e" strokeWidth="1" strokeDasharray="4" />
+                                </g>
+                            )}
+                        </svg>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [activeStep, setActiveStep] = useState(0);
+
+            const steps = [
+                {
+                    title: "1. Die Glückszahl",
+                    header: "Nullstelle durch Raten finden",
+                    content: "Suche durch Probieren eine erste Zahl, für die f(x) = 0 ergibt. Orientiere dich dabei an den Teilern des Absolutglieds (hier die 2).",
+                    formula: "f(1) = 1³ - 3·1 + 2 = 0",
+                    merksatz: "Rate klug und probier' die Eins – oft ist sie die Lösung deines Seins!",
+                    color: "bg-indigo-50/50 border-indigo-100"
+                },
+                {
+                    title: "2. Der Linearfaktor",
+                    header: "Den Teiler konstruieren",
+                    content: "Bilde aus deiner gefundenen Nullstelle den Teiler (Linearfaktor). Achtung: Das Vorzeichen dreht sich um!",
+                    formula: "x₁ = 1 \u2192 Teiler: (x - 1)",
+                    merksatz: "Ist die Nullstelle positiv und fein, muss im Teiler ein Minus sein.",
+                    color: "bg-emerald-50/50 border-emerald-100"
+                },
+                {
+                    title: "3. Der Rechen-Prozess",
+                    header: "Division im Detail",
+                    content: "Führe die Division schrittweise durch. Wichtig: Schreibe fehlende Potenzen (hier x²) als '0x²' auf, um die Übersicht zu behalten.",
+                    formula: "(x³ + 0x² - 3x + 2) : (x - 1) = x² + x - 2",
+                    merksatz: "Rhythmus: Geteilt, Mal, Minus, Herunternehmen. Klammern nicht vergessen!",
+                    isDetailed: true,
+                    color: "bg-amber-50/50 border-amber-100"
+                },
+                {
+                    title: "4. Das Finale",
+                    header: "Restpolynom lösen",
+                    content: "Das Ergebnis der Division ist ein Grad niedriger (quadratisch). Löse dieses Restpolynom nun mit der Mitternachtsformel.",
+                    formula: "x² + x - 2 = 0 \u2192 x\u2082 = 1, x\u2083 = -2",
+                    merksatz: "Die Mitternachtsformel macht den Rest – das ist der finale Nullstellen-Test!",
+                    color: "bg-rose-50/50 border-rose-100"
+                }
+            ];
+
+            return (
+                <div className="max-w-4xl mx-auto p-6 md:p-12 text-slate-700">
+                    <header className="mb-10 text-center">
+                        <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.2em] block mb-2">Mathematik didaktisch</span>
+                        <h1 className="text-4xl font-bold text-slate-800 mb-4 tracking-tight">Polynomdivision bei Grad 3</h1>
+                        
+                        <div className="max-w-2xl mx-auto bg-white p-6 rounded-3xl border border-slate-100 shadow-sm text-left mb-8">
+                            <div className="flex gap-4 items-start">
+                                <div className="p-3 bg-indigo-50 rounded-2xl text-indigo-500">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                </div>
+                                <div className="space-y-3 text-sm">
+                                    <p className="font-bold text-slate-800 uppercase tracking-tight text-xs">Warum Polynomdivision?</p>
+                                    <p className="text-slate-600 leading-relaxed italic">
+                                        Wähle unten einen Schritt aus, um die Details der Berechnung zu erkunden.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    <Graph showZeros={false} />
+
+                    <div className="space-y-6 mb-12">
+                        {steps.map((step, idx) => {
+                            const isActive = activeStep === idx;
+                            return (
+                                <div 
+                                    key={idx}
+                                    onClick={() => setActiveStep(idx)}
+                                    className={`step-card relative p-6 rounded-3xl border cursor-pointer ${isActive ? step.color + ' active border-opacity-100' : 'bg-white border-slate-100 opacity-70 hover:opacity-100'}`}
+                                >
+                                    {/* Klick-Indikator oben rechts */}
+                                    {!isActive && (
+                                        <div className="absolute top-4 right-4 flex items-center gap-2 text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-full border border-slate-100 transition-opacity">
+                                            <span>Details anzeigen</span>
+                                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+                                        </div>
+                                    )}
+
+                                    {isActive && (
+                                        <div className="absolute top-4 right-4 flex items-center gap-2 text-[10px] font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-100 pulse-indicator">
+                                            <span>Ausgewählt</span>
+                                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                                        </div>
+                                    )}
+
+                                    <div className="flex items-center gap-4 mb-2">
+                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${isActive ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                                            {idx + 1}
+                                        </div>
+                                        <h2 className="font-bold text-slate-800 text-lg">{step.title}</h2>
+                                    </div>
+                                    
+                                    <h3 className="text-xs font-semibold text-slate-400 uppercase mb-4 tracking-wider pl-12">{step.header}</h3>
+                                    
+                                    <div className={`grid md:grid-cols-2 gap-6 pl-12 transition-all duration-500 ${isActive ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+                                        <div className="space-y-4">
+                                            <p className="text-sm text-slate-600 leading-relaxed">{step.content}</p>
+                                            <div className="bg-white/60 p-4 rounded-2xl border border-slate-100 flex items-center justify-center text-center">
+                                                <MathTerm>{step.formula}</MathTerm>
+                                            </div>
+                                        </div>
+
+                                        {step.isDetailed && (
+                                            <div className="bg-slate-900 text-slate-300 p-6 rounded-2xl mono-font text-xs leading-relaxed overflow-x-auto shadow-inner border border-slate-700">
+                                                <div className="mb-2 text-indigo-400 font-bold tracking-widest text-[10px] uppercase underline underline-offset-4">Schritt-für-Schritt Rechnung</div>
+                                                <div className="whitespace-pre">
+{` (x³ + 0x² - 3x + 2) : (x - 1) = x² + x - 2
+-(x³ - 1x²)   <-- (x² · (x-1))
+-----------
+      x² - 3x
+    -(x² - 1x)  <-- (x · (x-1))
+    ----------
+         -2x + 2
+       -(-2x + 2) <-- (-2 · (x-1))
+       ----------
+                0  <-- Fertig!`}
+                                                </div>
+                                                <div className="mt-4 pt-4 border-t border-slate-700 space-y-1">
+                                                    <p className="text-[10px]"><span className="text-amber-400">1.</span> x³ : x = <span className="text-white font-bold">x²</span></p>
+                                                    <p className="text-[10px]"><span className="text-amber-400">2.</span> x² : x = <span className="text-white font-bold">x</span></p>
+                                                    <p className="text-[10px]"><span className="text-amber-400">3.</span> -2x : x = <span className="text-white font-bold">-2</span></p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {isActive && (
+                                        <div className="mt-6 flex items-center gap-3 p-3 bg-white/40 rounded-xl italic text-xs text-slate-500 border border-white/50 ml-12 animate-pulse">
+                                            <span className="text-indigo-400">●</span>
+                                            <strong>Memo:</strong> {step.merksatz}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    <section className="bg-slate-900 p-8 rounded-[2.5rem] text-white modern-shadow relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+                        <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+                            <span className="w-2 h-2 bg-rose-400 rounded-full"></span>
+                            Befund: Vielfachheit & Graphverlauf
+                        </h2>
+
+                        <div className="grid md:grid-cols-2 gap-10 items-center">
+                            <div className="space-y-6">
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/10">
+                                        <MathTerm><span className="text-white">x = -2</span></MathTerm>
+                                        <span className="text-[10px] font-bold px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full border border-indigo-500/30 uppercase">Vielfachheit 1</span>
+                                    </div>
+                                    <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/10">
+                                        <MathTerm><span className="text-white">x = 1</span></MathTerm>
+                                        <span className="text-[10px] font-bold px-3 py-1 bg-rose-500/20 text-rose-300 rounded-full border border-rose-500/30 uppercase">Vielfachheit 2</span>
+                                    </div>
+                                </div>
+
+                                <div className="p-5 bg-indigo-500/5 rounded-2xl border border-indigo-500/10 text-xs leading-relaxed italic text-indigo-100/70">
+                                    Da die Nullstelle <MathTerm><span className="text-white">x=1</span></MathTerm> sowohl beim Raten als auch bei der Mitternachtsformel auftaucht, ist sie doppelt. Der Graph <strong>berührt</strong> die x-Achse hier nur.
+                                </div>
+                            </div>
+                            <Graph showZeros={true} />
+                        </div>
+                    </section>
+
+                    <footer className="mt-12 text-center text-[10px] font-bold text-slate-300 uppercase tracking-[0.3em]">
+                        Mathematik-Modul • BS+ Bayern • Polynomdivision Grad 3
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
