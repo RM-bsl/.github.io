@@ -1,15 +1,15 @@
-<!DOCTYPE html>
+
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nullstellen-Navigator: Polynomdivision</title>
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS für erstklassiges Design -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- React & ReactDOM -->
+    <!-- React 18 & ReactDOM (Produktions-Builds) -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <!-- Babel für In-Browser JSX -->
+    <!-- Babel Standalone zur Übersetzung von JSX im Browser -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
     <style>
@@ -20,6 +20,7 @@
         .math-font { font-family: 'Noto Serif', serif; font-style: italic; }
         .mono-font { font-family: 'Fira Code', monospace; }
         
+        /* Sanfte Animationen für interaktive Lernkarten */
         .step-card { 
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
         }
@@ -53,6 +54,7 @@
     <div id="root"></div>
 
     <script type="text/babel">
+        // Globale Destrukturierung der React-Hooks (verhindert Modulfehler)
         const { useState } = React;
 
         const MathTerm = ({ children }) => (
