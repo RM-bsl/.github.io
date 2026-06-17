@@ -2,75 +2,988 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Polynomdivision BS+</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktives Lernprogramm: Polynomdivision an der BS+</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
-        .hidden { display: none; }
-        .c-dividend { color: #2563eb; font-weight: bold; }
-        .c-divisor { color: #9333ea; font-weight: bold; }
-        .c-quotient { color: #059669; font-weight: bold; }
-        .c-subtract { color: #e11d48; font-weight: bold; }
+        /* Systemschriftart entsprechend des Microsoft Windows Fluent Design Standards */
+        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+            background-color: #f3f3f3; /* Ruhige, hellgraue Fluent-Design-Basis */
+        }
+
+        /* Mica Material-Effekt: Halbtransparente Glaselemente mit Tiefenunschärfe */
+        .mica-container {
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+        }
+
+        /* Fluent Cards mit sanften Schatten und abgerundeten Ecken (8px) */
+        .fluent-card {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .fluent-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+            transform: translateY(-1px);
+        }
+
+        /* Reveal Highlight Hover-Effekt für die linke Navigationsleiste */
+        .reveal-item {
+            position: relative;
+            transition: all 0.15s ease-in-out;
+        }
+        .reveal-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 15%;
+            height: 70%;
+            width: 4px;
+            background-color: transparent;
+            border-radius: 2px;
+            transition: background-color 0.15s ease-in-out;
+        }
+        .reveal-item.active::before {
+            background-color: #0078d4; /* Microsoft Accent Blue */
+        }
+
+        /* CSS-Bruch-Formatierung für saubere, fehlerfreie mathematische Formeln */
+        .math-fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            padding: 0 4px;
+        }
+        .math-numerator {
+            border-bottom: 1.5px solid #201f1e;
+            width: 100%;
+            text-align: center;
+            padding-bottom: 2px;
+            padding-left: 6px;
+            padding-right: 6px;
+        }
+        .math-denominator {
+            width: 100%;
+            text-align: center;
+            padding-top: 2px;
+            padding-left: 6px;
+            padding-right: 6px;
+        }
+
+        /* Custom Highlight-Farben für die mathematischen Terme im Lernpfad */
+        .c-dividend { color: #0078d4; font-weight: 600; } /* Microsoft Accent Blue */
+        .c-divisor { color: #8e24aa; font-weight: 600; }  /* Tiefes Violett */
+        .c-quotient { color: #107c41; font-weight: 600; } /* Microsoft Green für Ergebnisse */
+        .c-subtract { color: #d83b01; font-weight: 600; } /* Microsoft Crimson/Red für Subtraktion */
+
+        /* Sanfte Einblend-Animationen für Tab-Wechsel */
+        .tab-content {
+            animation: fluentFadeIn 0.2s ease-in-out;
+        }
+        @keyframes fluentFadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
-<body class="bg-slate-50 p-8">
-    <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-lg">
-        <h1 class="text-2xl font-bold mb-6">Polynomdivision</h1>
+<body class="text-[#201f1e] min-h-screen flex flex-col">
 
-        <div class="space-y-4 mb-8">
-            <div class="border border-slate-200 rounded-lg">
-                <button onclick="toggle('wieso')" class="w-full p-4 text-left font-bold text-blue-900">+ Wieso benutze ich die Polynomdivision?</button>
-                <div id="wieso" class="hidden p-4 text-sm text-slate-700 border-t">Sie dient der Gradreduktion. Da es für Gleichungen ab dem 3. Grad (x hoch 3) keine Standardformeln gibt, spalten wir einen Faktor ab, um den Grad zu senken.</div>
+    <header class="mica-container sticky top-0 z-50 py-6 px-6 border-b border-[#e0e0e0] shadow-sm">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <span class="text-xs font-semibold text-[#0078d4] uppercase tracking-wider block mb-1">Grundlernpfad Analysis · BS+</span>
+                <h1 class="text-3xl font-bold text-[#1f1f1f] tracking-tight">Die Polynomdivision</h1>
+                <p class="text-[#605e5c] text-sm mt-1 max-w-2xl">
+                    Gradreduzierung ganzrationaler Funktionen strukturiert erarbeiten. Visualisiert nach den UI/UX-Prinzipien des Microsoft Fluent Design Systems.
+                </p>
             </div>
-            <div class="border border-slate-200 rounded-lg">
-                <button onclick="toggle('wann')" class="w-full p-4 text-left font-bold text-slate-900">+ Wann benutze ich die Polynomdivision?</button>
-                <div id="wann" class="hidden p-4 text-sm text-slate-700 border-t">Wenn einfaches Ausklammern (wegen eines Absolutglieds) oder Substitution (wegen ungerader Exponenten) nicht funktionieren.</div>
+            <div class="hidden md:flex items-center space-x-2 text-[#0078d4]">
+                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                </svg>
             </div>
         </div>
+    </header>
 
-        <div class="overflow-x-auto mb-8">
-            <table class="mx-auto text-lg text-center font-mono border-separate border-spacing-2">
-                <tr class="font-bold text-blue-600"><td>(</td><td>x hoch 3</td><td>-4x hoch 2</td><td>+x</td><td>+6</td><td>) : (x-2) = x hoch 2 - 2x - 3</td></tr>
-                <tr class="text-red-600 border-b border-red-300"><td>-(</td><td>x hoch 3</td><td>-2x hoch 2</td><td></td><td></td><td>)</td></tr>
-                <tr><td></td><td></td><td>-2x hoch 2</td><td>+x</td><td></td><td></td></tr>
-                <tr class="text-red-600 border-b border-red-300"><td>-(</td><td></td><td>-2x hoch 2</td><td>+4x</td><td></td><td>)</td></tr>
-                <tr><td></td><td></td><td></td><td>-3x</td><td>+6</td><td></td></tr>
-                <tr class="text-red-600 border-b border-red-300"><td>-(</td><td></td><td></td><td>-3x</td><td>+6</td><td>)</td></tr>
-                <tr><td></td><td></td><td></td><td></td><td>0</td><td></td></tr>
-            </table>
-        </div>
+    <main class="max-w-6xl w-full mx-auto px-4 py-8 flex-grow grid grid-cols-1 md:grid-cols-12 gap-8">
+        
+        <nav class="col-span-12 md:col-span-3 flex flex-col gap-1" aria-label="Hauptnavigation">
+            <span class="text-[11px] font-bold text-[#605e5c] uppercase tracking-wider px-3 mb-2 hidden md:block">Navigation</span>
+            
+            <button id="tab-guided-btn" onclick="switchTab('guided')" class="reveal-item active w-full text-left py-3 px-4 rounded font-medium text-sm hover:bg-[#eaeaea] transition duration-150 flex items-center space-x-3 h-11" role="tab" aria-selected="true">
+                <svg class="w-4 h-4 text-[#0078d4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                <span>1. Systematischer Lernpfad</span>
+            </button>
+            
+            <button id="tab-calculator-btn" onclick="switchTab('calculator')" class="reveal-item w-full text-left py-3 px-4 rounded font-medium text-sm text-[#605e5c] hover:bg-[#eaeaea] hover:text-[#201f1e] transition duration-150 flex items-center space-x-3 h-11" role="tab" aria-selected="false">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                <span>2. Dynamischer Rechner</span>
+            </button>
+            
+            <button id="tab-quiz-btn" onclick="switchTab('quiz')" class="reveal-item w-full text-left py-3 px-4 rounded font-medium text-sm text-[#605e5c] hover:bg-[#eaeaea] hover:text-[#201f1e] transition duration-150 flex items-center space-x-3 h-11" role="tab" aria-selected="false">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span>3. Fehler-Prävention (Quiz)</span>
+            </button>
+        </nav>
 
-        <div class="space-y-6">
-            <h2 class="font-bold">Detaillierte Zwischenschritte:</h2>
-            <div>
-                <h3 class="font-semibold text-emerald-600">1. Zyklus (x hoch 2)</h3>
-                <ul class="list-disc ml-5 text-sm">
-                    <li>Dividieren: x hoch 3 : x = x hoch 2</li>
-                    <li>Rückmultiplizieren: x hoch 2 * (x - 2) = x hoch 3 - 2x hoch 2</li>
-                    <li>Subtraktion: -4x hoch 2 - (-2x hoch 2) = -2x hoch 2</li>
-                </ul>
+        <div class="col-span-12 md:col-span-9 mica-container p-6 md:p-8 rounded-xl shadow-md min-h-[500px]">
+
+            <div id="tab-guided" class="tab-content space-y-8">
+                
+                <div class="space-y-3">
+                    
+                    <div class="bg-white border border-[#e0e0e0] rounded-lg overflow-hidden shadow-sm">
+                        <button onclick="toggleDropdown('dropdown-wieso')" class="w-full text-left p-4 flex justify-between items-center hover:bg-slate-50 transition min-h-[48px]" aria-expanded="false" aria-controls="dropdown-wieso">
+                            <span class="font-bold text-[#0078d4] text-base">Wieso benutze ich die Polynomdivision?</span>
+                            <span id="dropdown-wieso-icon" class="text-[#0078d4] font-bold text-xl transition-transform duration-200">+</span>
+                        </button>
+                        <div id="dropdown-wieso" class="hidden p-4 text-[#201f1e] text-sm leading-relaxed border-t border-[#f3f3f3] bg-[#fafafa]">
+                            Für quadratische Gleichungen (ax² + bx + c = 0) besitzen wir zuverlässige Formeln wie die pq-Formel oder Mitternachtsformel. Bei Gleichungen ab dem 3. Grad (x³, x⁴, etc.) fehlen diese. Durch die Polynomdivision spalten wir einen bekannten Faktor ab und reduzieren den Exponenten um eine Stufe nach unten, damit die bekannten Verfahren wieder greifen. Dies wird auch als Gradreduktion bezeichnet.
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-[#e0e0e0] rounded-lg overflow-hidden shadow-sm">
+                        <button onclick="toggleDropdown('dropdown-wann')" class="w-full text-left p-4 flex justify-between items-center hover:bg-slate-50 transition min-h-[48px]" aria-expanded="false" aria-controls="dropdown-wann">
+                            <span class="font-bold text-[#201f1e] text-base">Wann benutze ich die Polynomdivision?</span>
+                            <span id="dropdown-wann-icon" class="text-[#605e5c] font-bold text-xl transition-transform duration-200">+</span>
+                        </button>
+                        <div id="dropdown-wann" class="hidden p-4 text-[#201f1e] text-sm leading-relaxed border-t border-[#f3f3f3] bg-[#fafafa]">
+                            Sie ist das Werkzeug der letzten Wahl. Wir nutzen sie exakt dann, wenn einfachere Verfahren scheitern: Ausklammern klappt nicht, weil ein konstantes Glied ohne x existiert (wie die +6 im Beispiel). Substitution scheitert ebenfalls, weil die Exponenten ungerade und gemischt vorliegen (z.B. x³ und x²).
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="fluent-card p-6 border border-[#e0e0e0]">
+                    <h2 class="text-xl font-bold text-[#1f1f1f] mb-3">Beispielfunktion: f(x) = x³ - 4x² + x + 6</h2>
+                    <p class="text-[#605e5c] text-sm mb-4">
+                        Nutzen Sie diese farbcodierte Orientierungshilfe für den Rechenweg:
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs font-semibold">
+                        <div class="flex items-center p-3 bg-blue-50 rounded border border-blue-100">
+                            <div class="w-3 h-3 rounded-full bg-[#0078d4] mr-2 flex-shrink-0"></div>
+                            <span class="c-dividend">Ausgangsfunktion (Dividend)</span>
+                        </div>
+                        <div class="flex items-center p-3 bg-purple-50 rounded border border-purple-100">
+                            <div class="w-3 h-3 rounded-full bg-[#8e24aa] mr-2 flex-shrink-0"></div>
+                            <span class="c-divisor">Teiler (Divisor)</span>
+                        </div>
+                        <div class="flex items-center p-3 bg-emerald-50 rounded border border-emerald-100">
+                            <div class="w-3 h-3 rounded-full bg-[#107c41] mr-2 flex-shrink-0"></div>
+                            <span class="c-quotient">Ergebnis (Quotient)</span>
+                        </div>
+                        <div class="flex items-center p-3 bg-rose-50 rounded border border-rose-100">
+                            <div class="w-3 h-3 rounded-full bg-[#d83b01] mr-2 flex-shrink-0"></div>
+                            <span class="c-subtract">Subtraktions-Term</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between border-b border-[#e0e0e0] pb-2">
+                    <h3 class="font-bold text-[#605e5c] uppercase tracking-wider text-xs">Schritt-für-Schritt Algorithmus</h3>
+                    <div class="flex space-x-4">
+                        <button onclick="setAllStepsState(true)" class="text-xs font-semibold text-[#0078d4] hover:underline min-h-[44px]">Alle öffnen</button>
+                        <button onclick="setAllStepsState(false)" class="text-xs font-semibold text-[#605e5c] hover:underline min-h-[44px]">Alle schließen</button>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    
+                    <div class="fluent-card border border-[#e0e0e0] overflow-hidden">
+                        <button class="w-full text-left p-5 flex justify-between items-center hover:bg-slate-50 transition focus:outline-none min-h-[48px]" onclick="toggleStep('step1')">
+                            <div class="flex items-center space-x-3">
+                                <span class="bg-[#f3f3f3] text-[#201f1e] font-bold w-8 h-8 rounded-full flex items-center justify-center text-sm border border-[#e0e0e0]">1</span>
+                                <span class="font-semibold text-[#201f1e]">Vorbereitung: Die erste Nullstelle finden</span>
+                            </div>
+                            <span id="step1-arrow" class="text-[#605e5c] font-bold text-xl transition-all">+</span>
+                        </button>
+                        <div id="step1" class="hidden border-t border-[#f3f3f3] p-5 bg-[#fafafa]/50 space-y-4">
+                            <p class="text-sm text-[#201f1e] leading-relaxed">
+                                Um ein Polynom dritten Grades zu reduzieren, benötigen wir eine erste ganzzahlige Nullstelle. Diese "erraten" wir durch systematisches Testen der Teiler des Absolutglieds (+6), also ±1, ±2, ±3, ±6. Wir prüfen x = 2:
+                            </p>
+                            <div class="bg-white border border-[#e0e0e0] p-4 rounded-md shadow-inner text-center font-semibold text-base">
+                                f(2) = 2³ - 4 &middot; 2² + 2 + 6 = 8 - 16 + 2 + 6 = 0
+                            </div>
+
+                            <div class="bg-blue-50 border-l-4 border-[#0078d4] p-4 text-xs text-[#004b87] rounded space-y-2">
+                                <span class="font-bold block text-sm">
+                                    Schul-Praxistipp: Systematisches Testen per Taschenrechner
+                                </span>
+                                <p class="leading-relaxed">
+                                    Statt jeden Teiler mühsam von Hand in die Formel einzusetzen, kannst du die <strong>Wertetabelle (TABLE-Funktion)</strong> deines wissenschaftlichen Taschenrechners nutzen. 
+                                    Gib dort einfach den Funktionsterm ein, wähle als Startwert <code class="font-mono bg-white/60 px-1 rounded">-6</code>, als Endwert <code class="font-mono bg-white/60 px-1 rounded">6</code> und als Schrittweite (Step) <code class="font-mono bg-white/60 px-1 rounded">1</code>. 
+                                    Der Taschenrechner zeigt dir nun alle Funktionswerte auf einen glance. Du musst in der Tabelle nur noch nach dem Eintrag suchen, bei dem der Funktionswert genau <strong>0</strong> beträgt.
+                                </p>
+                            </div>
+
+                            <div class="bg-emerald-50 border-l-4 border-[#107c41] p-4 text-xs text-[#0e5c30] rounded">
+                                <span class="font-bold">Strukturwissen:</span> Da das Ergebnis f(2) = 0 ist, wissen wir nach dem Linearfaktorsatz, dass sich das Polynom ohne Rest durch den Term <span class="c-divisor font-bold">(x - 2)</span> teilen lässt.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fluent-card border border-[#e0e0e0] overflow-hidden">
+                        <button class="w-full text-left p-5 flex justify-between items-center hover:bg-slate-50 transition focus:outline-none min-h-[48px]" onclick="toggleStep('step2')">
+                            <div class="flex items-center space-x-3">
+                                <span class="bg-[#f3f3f3] text-[#201f1e] font-bold w-8 h-8 rounded-full flex items-center justify-center text-sm border border-[#e0e0e0]">2</span>
+                                <span class="font-semibold text-[#201f1e]">Der erste Divisions-Schritt</span>
+                            </div>
+                            <span id="step2-arrow" class="text-[#605e5c] font-bold text-xl transition-all">+</span>
+                        </button>
+                        <div id="step2" class="hidden border-t border-[#f3f3f3] p-5 bg-[#fafafa]/50 space-y-4">
+                            <p class="text-sm text-[#605e5c]">
+                                Wir betrachten ausschließlich den vordersten Term des Dividenden (<span class="c-dividend">x³</span>) und teilen diesen durch das führende Glied des Divisors (<span class="c-divisor">x</span>).
+                            </p>
+                            <div class="bg-white border border-[#e0e0e0] p-4 rounded-md shadow-inner text-center font-semibold text-lg overflow-x-auto">
+                                ( <span class="c-dividend">x³</span> - 4x² + x + 6 ) : ( <span class="c-divisor">x</span> - 2 ) = <span class="c-quotient">x²</span>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-white border border-[#e0e0e0] p-3 rounded text-xs">
+                                    <span class="font-bold text-[#605e5c]">1. Dividieren:</span><br>
+                                    <span class="c-dividend">x³</span> : <span class="c-divisor">x</span> = <span class="c-quotient">x²</span>
+                                </div>
+                                <div class="bg-white border border-[#e0e0e0] p-3 rounded text-xs">
+                                    <span class="font-bold text-[#605e5c]">2. Rückmultiplizieren:</span><br>
+                                    <span class="c-quotient">x²</span> · (x - 2) = <span class="c-subtract">x³ - 2x²</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fluent-card border border-[#e0e0e0] overflow-hidden">
+                        <button class="w-full text-left p-5 flex justify-between items-center hover:bg-slate-50 transition focus:outline-none min-h-[48px]" onclick="toggleStep('step3')">
+                            <div class="flex items-center space-x-3">
+                                <span class="bg-[#f3f3f3] text-[#201f1e] font-bold w-8 h-8 rounded-full flex items-center justify-center text-sm border border-[#e0e0e0]">3</span>
+                                <span class="font-semibold text-[#201f1e]">Subtrahieren und Herunterholen</span>
+                            </div>
+                            <span id="step3-arrow" class="text-[#605e5c] font-bold text-xl transition-all">+</span>
+                        </button>
+                        <div id="step3" class="hidden border-t border-[#f3f3f3] p-5 bg-[#fafafa]/50 space-y-4">
+                            <p class="text-sm text-[#605e5c]">
+                                Der zurückmultiplizierte Term wird vom Dividenden abgezogen. Die Tabellenlinie markiert das Ergebnis dieser Subtraktion. Danach holen wir das nächste Glied (<span class="c-dividend">+ x</span>) herunter.
+                            </p>
+                            
+                            <div class="bg-white border border-[#e0e0e0] p-4 rounded-md shadow-inner overflow-x-auto">
+                                <table class="mx-auto font-mono text-sm border-separate border-spacing-x-2 text-right">
+                                    <tr>
+                                        <td>(</td>
+                                        <td class="c-dividend">x³</td>
+                                        <td class="c-dividend">- 4x²</td>
+                                        <td class="c-dividend">+ x</td>
+                                        <td class="c-dividend">+ 6</td>
+                                        <td>) : (x - 2) = <span class="c-quotient">x²</span></td>
+                                    </tr>
+                                    <tr class="text-rose-600">
+                                        <td>- (</td>
+                                        <td class="border-b-2 border-rose-500">x³</td>
+                                        <td class="border-b-2 border-rose-500">- 2x²</td>
+                                        <td>)</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="font-bold text-[#201f1e]">- 2x²</td>
+                                        <td class="c-dividend">+ x</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="bg-rose-50 border-l-4 border-[#d83b01] p-4 text-xs text-[#a80000] rounded">
+                                <span class="font-bold">⚠️ Vorzeichen-Falle (Minusklammer):</span><br>
+                                Wir rechnen spaltenweise:<br>
+                                Für die x³-Spalte: x³ - x³ = 0.<br>
+                                Für die x²-Spalte: -4x² - (-2x²) = -4x² + 2x² = <strong>-2x²</strong>. Achte darauf, dass sich das Vorzeichen in der Klammer umdreht!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fluent-card border border-[#e0e0e0] overflow-hidden">
+                        <button class="w-full text-left p-5 flex justify-between items-center hover:bg-slate-50 transition focus:outline-none min-h-[48px]" onclick="toggleStep('step4')">
+                            <div class="flex items-center space-x-3">
+                                <span class="bg-[#f3f3f3] text-[#201f1e] font-bold w-8 h-8 rounded-full flex items-center justify-center text-sm border border-[#e0e0e0]">4</span>
+                                <span class="font-semibold text-[#201f1e]">Schleifen-Wiederholung (Zweiter Zyklus)</span>
+                            </div>
+                            <span id="step4-arrow" class="text-[#605e5c] font-bold text-xl transition-all">+</span>
+                        </button>
+                        <div id="step4" class="hidden border-t border-[#f3f3f3] p-5 bg-[#fafafa]/50 space-y-4">
+                            <p class="text-sm text-[#605e5c]">
+                                Wir wiederholen die drei Grundschritte (Dividieren, Multiplizieren, Subtrahieren) mit unserem neuen Restpolynom <span class="c-dividend">-2x² + x</span>.
+                            </p>
+
+                            <div class="bg-white border border-[#e0e0e0] p-4 rounded-md shadow-inner overflow-x-auto">
+                                <table class="mx-auto font-mono text-sm border-separate border-spacing-x-2 text-right">
+                                    <tr>
+                                        <td>(</td>
+                                        <td>x³</td>
+                                        <td>- 4x²</td>
+                                        <td>+ x</td>
+                                        <td>+ 6</td>
+                                        <td>) : (x - 2) = x² <span class="c-quotient">- 2x</span></td>
+                                    </tr>
+                                    <tr class="opacity-50">
+                                        <td>- (</td>
+                                        <td>x³</td>
+                                        <td>- 2x²</td>
+                                        <td>)</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="c-dividend">- 2x²</td>
+                                        <td class="c-dividend">+ x</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="text-rose-600">
+                                        <td></td>
+                                        <td>- (</td>
+                                        <td class="border-b-2 border-rose-500">- 2x²</td>
+                                        <td class="border-b-2 border-rose-500">+ 4x</td>
+                                        <td>)</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="font-bold text-[#201f1e]">- 3x</td>
+                                        <td class="c-dividend">+ 6</td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fluent-card border border-[#e0e0e0] overflow-hidden">
+                        <button class="w-full text-left p-5 flex justify-between items-center hover:bg-slate-50 transition focus:outline-none min-h-[48px]" onclick="toggleStep('step5')">
+                            <div class="flex items-center space-x-3">
+                                <span class="bg-[#f3f3f3] text-[#201f1e] font-bold w-8 h-8 rounded-full flex items-center justify-center text-sm border border-[#e0e0e0]">5</span>
+                                <span class="font-semibold text-[#201f1e]">Dritter Durchlauf und Restprüfung</span>
+                            </div>
+                            <span id="step5-arrow" class="text-[#605e5c] font-bold text-xl transition-all">+</span>
+                        </button>
+                        <div id="step5" class="hidden border-t border-[#f3f3f3] p-5 bg-[#fafafa]/50 space-y-4">
+                            <p class="text-sm text-[#605e5c]">
+                                Ein letztes Mal dividieren wir den verbleibenden Rest <span class="c-dividend">-3x + 6</span> durch <span class="c-divisor">x - 2</span>.
+                            </p>
+
+                            <div class="bg-white border border-[#e0e0e0] p-4 rounded-md shadow-inner overflow-x-auto">
+                                <table class="mx-auto font-mono text-sm border-separate border-spacing-x-2 text-right">
+                                    <tr>
+                                        <td>(</td>
+                                        <td>x³</td>
+                                        <td>- 4x²</td>
+                                        <td>+ x</td>
+                                        <td>+ 6</td>
+                                        <td>) : (x - 2) = x² - 2x <span class="c-quotient">- 3</span></td>
+                                    </tr>
+                                    <tr class="opacity-30">
+                                        <td>- (</td>
+                                        <td>x³</td>
+                                        <td>- 2x²</td>
+                                        <td>)</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="opacity-35">
+                                        <td></td>
+                                        <td></td>
+                                        <td>- 2x²</td>
+                                        <td>+ x</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="opacity-30">
+                                        <td></td>
+                                        <td>- (</td>
+                                        <td>- 2x²</td>
+                                        <td>+ 4x</td>
+                                        <td>)</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="c-dividend">- 3x</td>
+                                        <td class="c-dividend">+ 6</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="text-rose-600">
+                                        <td></td>
+                                        <td></td>
+                                        <td>- (</td>
+                                        <td class="border-b-2 border-rose-500">- 3x</td>
+                                        <td class="border-b-2 border-rose-500">+ 6</td>
+                                        <td>)</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="font-bold text-emerald-600 text-base">0</td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="bg-emerald-50 border-l-4 border-[#107c41] p-4 text-xs text-[#0e5c30] rounded">
+                                <span class="font-bold">Ergebnis verifiziert:</span> Weil der finale Rest genau null ist, wissen wir, dass der Rechenweg vollständig aufgegangen ist. Das verbleibende reduzierte Polynom lautet <span class="c-quotient">x² - 2x - 3</span>.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fluent-card border border-[#e0e0e0] overflow-hidden">
+                        <button class="w-full text-left p-5 flex justify-between items-center hover:bg-slate-50 transition focus:outline-none min-h-[48px]" onclick="toggleStep('step6')">
+                            <div class="flex items-center space-x-3">
+                                <span class="bg-[#f3f3f3] text-[#201f1e] font-bold w-8 h-8 rounded-full flex items-center justify-center text-sm border border-[#e0e0e0]">6</span>
+                                <span class="font-semibold text-[#201f1e]">Berechnung der verbleibenden Nullstellen</span>
+                            </div>
+                            <span id="step6-arrow" class="text-[#605e5c] font-bold text-xl transition-all">+</span>
+                        </button>
+                        <div id="step6" class="hidden border-t border-[#f3f3f3] p-5 bg-[#fafafa]/50 space-y-4">
+                            <p class="text-sm text-[#201f1e]">
+                                Nach der Gradreduzierung setzen wir den gewonnenen Quotienten gleich null, um die verbleibenden Nullstellen mit der bekannten pq-Formel zu lösen:
+                            </p>
+                            
+                            <div class="bg-white border border-[#e0e0e0] p-6 rounded-md shadow-inner text-center space-y-6">
+                                <div class="font-bold text-lg c-quotient">x² - 2x - 3 = 0</div>
+                                <div class="text-[#605e5c] text-xs">Anwendung der pq-Formel mit p = -2 und q = -3:</div>
+                                
+                                <div class="flex flex-col items-center space-y-6">
+                                    <div class="flex items-center font-mono text-sm sm:text-base">
+                                        <span class="mr-2 font-semibold">x<sub>2,3</sub> =</span>
+                                        <div class="math-fraction">
+                                            <span class="math-numerator">-(-2) &plusmn; &radic;[ (-2)² - 4 &middot; 1 &middot; (-3) ]</span>
+                                            <span class="math-denominator">2 &middot; 1</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center font-mono text-sm sm:text-base">
+                                        <span class="mr-2 font-semibold">x<sub>2,3</sub> =</span>
+                                        <div class="math-fraction">
+                                            <span class="math-numerator">2 &plusmn; &radic;[ 4 + 12 ]</span>
+                                            <span class="math-denominator">2</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center font-mono text-sm sm:text-base">
+                                        <span class="mr-2 font-semibold">x<sub>2,3</sub> =</span>
+                                        <div class="math-fraction">
+                                            <span class="math-numerator">2 &plusmn; 4</span>
+                                            <span class="math-denominator">2</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="font-bold text-[#1f1f1f] text-base border-t border-[#f3f3f3] pt-4 w-full text-center flex justify-center gap-8">
+                                        <span>x₂ = 3</span>
+                                        <span>x₃ = -1</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <p class="text-xs text-[#605e5c] mt-2">
+                                Die vollständige Lösungsmenge der kubischen Ausgangsfunktion lautet somit: <strong>L = {-1; 2; 3}</strong> (inklusive der anfangs geratenen Nullstelle x = 2).
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
-            <div>
-                <h3 class="font-semibold text-emerald-600">2. Zyklus (-2x)</h3>
-                <ul class="list-disc ml-5 text-sm">
-                    <li>Dividieren: -2x hoch 2 : x = -2x</li>
-                    <li>Rückmultiplizieren: -2x * (x - 2) = -2x hoch 2 + 4x</li>
-                    <li>Subtraktion: x - (4x) = -3x</li>
-                </ul>
+
+            <div id="tab-calculator" class="hidden tab-content space-y-6">
+                <div class="fluent-card p-6 border border-[#e0e0e0]">
+                    <h2 class="text-xl font-bold text-[#1f1f1f] mb-2">Dynamischer Rechner (Fehlerfrei)</h2>
+                    <p class="text-sm text-[#605e5c] mb-6">
+                        Geben Sie die Koeffizienten für eine kubische Funktion der Form <strong>a x³ + b x² + c x + d</strong> sowie einen Divisor-Wert <strong>n</strong> ein. Der Rechner generiert ein pixelgenau bündiges mathematisches Raster mit dynamischen Formel-Brüchen.
+                    </p>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-6">
+                        <div>
+                            <label class="block text-xs font-bold text-[#605e5c] uppercase mb-1" for="calc-a">a (für x³)</label>
+                            <input type="number" id="calc-a" value="1" class="w-full px-3 py-2 border border-[#e0e0e0] rounded focus:ring-2 focus:ring-[#0078d4] focus:outline-none bg-[#fafafa] font-medium h-10">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-[#605e5c] uppercase mb-1" for="calc-b">b (für x²)</label>
+                            <input type="number" id="calc-b" value="-4" class="w-full px-3 py-2 border border-[#e0e0e0] rounded focus:ring-2 focus:ring-[#0078d4] focus:outline-none bg-[#fafafa] font-medium h-10">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-[#605e5c] uppercase mb-1" for="calc-c">c (für x)</label>
+                            <input type="number" id="calc-c" value="1" class="w-full px-3 py-2 border border-[#e0e0e0] rounded focus:ring-2 focus:ring-[#0078d4] focus:outline-none bg-[#fafafa] font-medium h-10">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-[#605e5c] uppercase mb-1" for="calc-d">d (Zahl)</label>
+                            <input type="number" id="calc-d" value="6" class="w-full px-3 py-2 border border-[#e0e0e0] rounded focus:ring-2 focus:ring-[#0078d4] focus:outline-none bg-[#fafafa] font-medium h-10">
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label class="block text-xs font-bold text-[#8e24aa] uppercase mb-1" for="calc-n">Divisor n (für x - n)</label>
+                            <input type="number" id="calc-n" value="2" class="w-full px-3 py-2 border border-purple-200 bg-purple-50 rounded focus:ring-2 focus:ring-[#8e24aa] focus:outline-none font-bold h-10">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="calculatePolynomial()" class="bg-[#0078d4] hover:bg-[#005a9e] text-white font-semibold px-6 py-2.5 rounded transition shadow-sm text-sm h-11 flex items-center">
+                            Division berechnen
+                        </button>
+                        <button onclick="resetCalculator()" class="border border-[#e0e0e0] hover:bg-slate-50 text-[#605e5c] px-4 py-2 rounded transition text-sm h-11 flex items-center">
+                            Werte zurücksetzen
+                        </button>
+                    </div>
+                </div>
+
+                <div id="calc-result-box" class="hidden fluent-card p-6 border border-[#e0e0e0] space-y-6">
+                    <div class="flex items-center justify-between border-b border-[#f3f3f3] pb-3">
+                        <h3 class="font-bold text-lg text-[#1f1f1f]">Schrittweise Auswertung</h3>
+                        <span id="calc-status-badge" class="px-3 py-1 text-xs font-semibold rounded-full border"></span>
+                    </div>
+
+                    <div id="calc-math-output" class="p-6 bg-[#fafafa] rounded border border-[#e0e0e0] overflow-x-auto">
+                        </div>
+
+                    <div class="border-t border-[#f3f3f3] pt-4">
+                        <h4 class="font-bold text-sm text-[#201f1e] mb-2">Verbleibende Nullstellen berechnen:</h4>
+                        <div id="calc-pedagogy-notes" class="text-sm space-y-3">
+                            </div>
+                    </div>
+                </div>
             </div>
+
+            <div id="tab-quiz" class="hidden tab-content space-y-6">
+                <div class="fluent-card p-6 border border-[#e0e0e0]">
+                    <h2 class="text-xl font-bold text-[#1f1f1f] mb-2">Interaktives Vorzeichen-Training</h2>
+                    <p class="text-sm text-[#605e5c] mb-6">
+                        Die doppelte Vorzeicheninvertierung bei der Subtraktion (Minusklammer) ist die Hauptursache für mathematische Berechnungsfehler. Festigen Sie diese kognitive Hürde hier spielerisch.
+                    </p>
+
+                    <div id="quiz-alert" class="hidden p-4 rounded-md mb-6 font-medium text-sm flex items-center justify-between transition-all">
+                        <span id="quiz-alert-text"></span>
+                        <button onclick="closeQuizAlert()" class="text-lg font-bold ml-2 hover:opacity-75 h-11 w-11 flex items-center justify-center" aria-label="Hinweis schließen">&times;</button>
+                    </div>
+
+                    <div class="space-y-6">
+                        
+                        <div class="bg-[#fafafa] p-5 rounded-lg border border-[#e0e0e0]">
+                            <span class="text-xs font-semibold text-[#0078d4] uppercase tracking-wider">Szenario 1</span>
+                            <h4 class="font-bold text-[#201f1e] mt-1 mb-4 text-sm sm:text-base">
+                                Sie subtrahieren den Term -( -3x² + 6x ) von der Zeile darüber: -3x² + 4x.
+                            </h4>
+                            <p class="text-xs text-[#605e5c] mb-4">Welcher korrekte Term wandert in die nächste Zeile?</p>
+                            
+                            <div class="space-y-3">
+                                <label class="flex items-center p-3 bg-white rounded border border-[#e0e0e0] hover:bg-slate-50 cursor-pointer transition min-h-[44px]">
+                                    <input type="radio" name="q1" value="wrong1" class="text-[#0078d4] focus:ring-[#0078d4] mr-3 h-4 w-4">
+                                    <span class="text-sm font-medium">-6x² - 2x</span>
+                                </label>
+                                <label class="flex items-center p-3 bg-white rounded border border-[#e0e0e0] hover:bg-slate-50 cursor-pointer transition min-h-[44px]">
+                                    <input type="radio" name="q1" value="correct" class="text-[#0078d4] focus:ring-[#0078d4] mr-3 h-4 w-4">
+                                    <span class="text-sm font-medium">-2x</span>
+                                </label>
+                                <label class="flex items-center p-3 bg-white rounded border border-[#e0e0e0] hover:bg-slate-50 cursor-pointer transition min-h-[44px]">
+                                    <input type="radio" name="q1" value="wrong2" class="text-[#0078d4] focus:ring-[#0078d4] mr-3 h-4 w-4">
+                                    <span class="text-sm font-medium">-6x² + 10x</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="bg-[#fafafa] p-5 rounded-lg border border-[#e0e0e0]">
+                            <span class="text-xs font-semibold text-[#0078d4] uppercase tracking-wider">Szenario 2</span>
+                            <h4 class="font-bold text-[#201f1e] mt-1 mb-4 text-sm sm:text-base">
+                                Sie dividieren den führenden Term 2x³ durch das x des Divisors (x - 3). Was ist das Zwischenergebnis?
+                            </h4>
+                            
+                            <div class="space-y-3">
+                                <label class="flex items-center p-3 bg-white rounded border border-[#e0e0e0] hover:bg-slate-50 cursor-pointer transition min-h-[44px]">
+                                    <input type="radio" name="q2" value="wrong1" class="text-[#0078d4] focus:ring-[#0078d4] mr-3 h-4 w-4">
+                                    <span class="text-sm font-medium">2x</span>
+                                </label>
+                                <label class="flex items-center p-3 bg-white rounded border border-[#e0e0e0] hover:bg-slate-50 cursor-pointer transition min-h-[44px]">
+                                    <input type="radio" name="q2" value="correct" class="text-[#0078d4] focus:ring-[#0078d4] mr-3 h-4 w-4">
+                                    <span class="text-sm font-medium">2x²</span>
+                                </label>
+                                <label class="flex items-center p-3 bg-white rounded border border-[#e0e0e0] hover:bg-slate-50 cursor-pointer transition min-h-[44px]">
+                                    <input type="radio" name="q2" value="wrong2" class="text-[#0078d4] focus:ring-[#0078d4] mr-3 h-4 w-4">
+                                    <span class="text-sm font-medium">-2x²</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button onclick="checkQuizAnswers()" class="bg-[#0078d4] hover:bg-[#005a9e] text-white font-semibold px-6 py-2.5 rounded transition shadow-sm text-sm h-11 flex items-center">
+                            Wissensstand überprüfen
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="bg-[#201f1e] text-[#a19f9d] py-12 px-6 border-t border-[#323130] mt-auto">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-xs sm:text-sm">
             <div>
-                <h3 class="font-semibold text-emerald-600">3. Zyklus (-3)</h3>
-                <ul class="list-disc ml-5 text-sm">
-                    <li>Dividieren: -3x : x = -3</li>
-                    <li>Rückmultiplizieren: -3 * (x - 2) = -3x + 6</li>
-                    <li>Subtraktion: 6 - 6 = 0</li>
-                </ul>
+                <p class="font-semibold text-[#f3f3f3]">Lernportal für den Mathematikunterricht an der BS+</p>
+                <p class="mt-1">Kognitiv aktivierende, strukturierte Übungsreihen für die Fachhochschulreife.</p>
+            </div>
+            <div class="flex items-center space-x-6 text-[#c8c6c4]">
+                <span>Lehrplanrichtlinien Bayern 2025/2026</span>
             </div>
         </div>
-    </div>
+    </footer>
 
     <script>
-        function toggle(id) {
-            document.getElementById(id).classList.toggle('hidden');
+        // Tab-Umschaltlogik (Führt flüssige Transitions aus)
+        function switchTab(tabName) {
+            const tabs = ['guided', 'calculator', 'quiz'];
+            tabs.forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}-btn`).classList.remove('active', 'text-[#201f1e]');
+                document.getElementById(`tab-${t}-btn`).classList.add('text-[#605e5c]');
+            });
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabName}-btn`).classList.add('active', 'text-[#201f1e]');
+            document.getElementById(`tab-${tabName}-btn`).classList.remove('text-[#605e5c]');
+        }
+
+        // Steuert das Öffnen und Schließen von FAQ-Akkordeons
+        function toggleDropdown(id) {
+            const el = document.getElementById(id);
+            const icon = document.getElementById(id + '-icon');
+            const isHidden = el.classList.contains('hidden');
+
+            if (isHidden) {
+                el.classList.remove('hidden');
+                icon.textContent = '−';
+                icon.style.transform = "rotate(180deg)";
+            } else {
+                el.classList.add('hidden');
+                icon.textContent = '+';
+                icon.style.transform = "rotate(0deg)";
+            }
+        }
+
+        // Steuert die einzelnen Schritte des geführten Lernpfads (Step 1-6)
+        function toggleStep(id) {
+            const el = document.getElementById(id);
+            const arrow = document.getElementById(id + '-arrow');
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                arrow.textContent = '−';
+                arrow.classList.add('text-[#0078d4]');
+            } else {
+                el.classList.add('hidden');
+                arrow.textContent = '+';
+                arrow.classList.remove('text-[#0078d4]');
+            }
+        }
+
+        // Massensteuererung (Alle öffnen / Alle schließen) für Schritte 1-6
+        function setAllStepsState(openState) {
+            const steps = ['step1', 'step2', 'step3', 'step4', 'step5', 'step6'];
+            steps.forEach(id => {
+                const el = document.getElementById(id);
+                const arrow = document.getElementById(id + '-arrow');
+                if (openState) {
+                    el.classList.remove('hidden');
+                    arrow.textContent = '−';
+                    arrow.classList.add('text-[#0078d4]');
+                } else {
+                    el.classList.add('hidden');
+                    arrow.textContent = '+';
+                    arrow.classList.remove('text-[#0078d4]');
+                }
+            });
+        }
+
+        // Beispieldatenstruktur zur automatischen Befüllung des Rechners
+        const calculatorDefaults = {
+            a: 1,
+            b: -4,
+            c: 1,
+            d: 6,
+            n: 2
+        };
+
+        function resetCalculator() {
+            document.getElementById('calc-a').value = calculatorDefaults.a;
+            document.getElementById('calc-b').value = calculatorDefaults.b;
+            document.getElementById('calc-c').value = calculatorDefaults.c;
+            document.getElementById('calc-d').value = calculatorDefaults.d;
+            document.getElementById('calc-n').value = calculatorDefaults.n;
+            document.getElementById('calc-result-box').classList.add('hidden');
+            closeQuizAlert();
+        }
+
+        // Hilfsfunktion zur Formatierung mathematischer Terme mit Unicode-Exponent (ohne Hochzeichen)
+        function formatUnicodeTerm(coeff, power, isFirst = false) {
+            if (coeff === 0) return '';
+            let sign = coeff >= 0 ? '+' : '-';
+            if (isFirst) sign = coeff >= 0 ? '' : '-';
+            
+            let absCoeff = Math.abs(coeff);
+            let coeffStr = (absCoeff === 1 && power > 0) ? '' : absCoeff.toString();
+            
+            let powerStr = '';
+            if (power === 1) powerStr = 'x';
+            else if (power === 2) powerStr = 'x²';
+            else if (power === 3) powerStr = 'x³';
+            else if (power > 3) powerStr = 'x' + power;
+
+            return `${sign} ${coeffStr}${powerStr}`.trim();
+        }
+
+        // Rechnet die Polynomdivision dynamisch aus und erzeugt eine spaltenbündige HTML-Tabelle
+        function calculatePolynomial() {
+            const a = parseFloat(document.getElementById('calc-a').value) || 0;
+            const b = parseFloat(document.getElementById('calc-b').value) || 0;
+            const c = parseFloat(document.getElementById('calc-c').value) || 0;
+            const d = parseFloat(document.getElementById('calc-d').value) || 0;
+            const n = parseFloat(document.getElementById('calc-n').value) || 0;
+
+            const resultBox = document.getElementById('calc-result-box');
+            const mathOutput = document.getElementById('calc-math-output');
+            const pedagogyNotes = document.getElementById('calc-pedagogy-notes');
+            const statusBadge = document.getElementById('calc-status-badge');
+
+            // Division-Algorithmus (Mathematische Koeffizienten bestimmen)
+            const q2 = a;
+            const s1_3 = a;
+            const s1_2 = -a * n;
+            const r1_2 = b - s1_2;
+
+            const q1 = r1_2;
+            const s2_2 = r1_2;
+            const s2_1 = -r1_2 * n;
+            const r2_1 = c - s2_1;
+
+            const q0 = r2_1;
+            const s3_1 = r2_1;
+            const s3_0 = -r2_1 * n;
+            const r3_0 = d - s3_0;
+
+            // Formatter-Abkürzung
+            const F = (coeff, pow, first = false) => formatUnicodeTerm(coeff, pow, first);
+
+            // Generiere ein hochgradig stabiles, spaltenausgerichtetes HTML-Tabelle-Layout (Ohne fehlerhaftes LaTeX)
+            let divisorText = n < 0 ? `x + ${Math.abs(n)}` : `x - ${Math.abs(n)}`;
+            let quotientText = `${F(q2, 2, true)} ${F(q1, 1)} ${F(q0, 0)}`.trim();
+            if (!quotientText) quotientText = "0";
+
+            let tableHTML = `
+                <table class="mx-auto font-mono text-base border-separate border-spacing-x-4 border-spacing-y-1 text-right">
+                    <tr class="text-slate-900">
+                        <td class="text-left">(</td>
+                        <td class="c-dividend">${F(a, 3, true)}</td>
+                        <td class="c-dividend">${F(b, 2)}</td>
+                        <td class="c-dividend">${F(c, 1)}</td>
+                        <td class="c-dividend">${F(d, 0)}</td>
+                        <td>)</td>
+                        <td class="text-left font-sans text-sm">
+                            : (<span class="c-divisor">${divisorText}</span>) = <span class="c-quotient">${quotientText}</span>
+                        </td>
+                    </tr>
+                    
+                    <tr class="text-rose-600">
+                        <td>- (</td>
+                        <td class="border-b border-rose-400">${F(s1_3, 3, true)}</td>
+                        <td class="border-b border-rose-400">${F(s1_2, 2)}</td>
+                        <td>)</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td class="font-bold">${F(r1_2, 2, true)}</td>
+                        <td class="c-dividend">${F(c, 1)}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr class="text-rose-600">
+                        <td></td>
+                        <td>- (</td>
+                        <td class="border-b border-rose-400">${F(s2_2, 2, true)}</td>
+                        <td class="border-b border-rose-400">${F(s2_1, 1)}</td>
+                        <td>)</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="font-bold">${F(r2_1, 1, true)}</td>
+                        <td class="c-dividend">${F(d, 0)}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr class="text-rose-600">
+                        <td></td>
+                        <td></td>
+                        <td>- (</td>
+                        <td class="border-b border-rose-400">${F(s3_1, 1, true)}</td>
+                        <td class="border-b border-rose-400">${F(s3_0, 0)}</td>
+                        <td>)</td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="font-bold text-lg ${r3_0 === 0 ? 'text-emerald-600' : 'text-rose-600'}">
+                            ${r3_0}
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            `;
+
+            mathOutput.innerHTML = tableHTML;
+
+            // Didaktische Erläuterungen generieren
+            let disc = q1 * q1 - 4 * q2 * q0;
+            let bSquared = q1 * q1;
+            let fourAC = 4 * q2 * q0;
+
+            let resultSectionHTML = `
+                <div class="space-y-4">
+                    <p class="text-[#605e5c] text-xs">Wir setzen das verbleibende quadratische Polynom <strong>${F(q2, 2, true)} ${F(q1, 1)} ${F(q0, 0)} = 0</strong>.</p>
+                    
+                    <div class="bg-white border border-[#e0e0e0] p-6 rounded-md shadow-inner text-center">
+                        <div class="flex flex-col items-center space-y-6">
+                            <div class="flex items-center font-mono text-sm sm:text-base">
+                                <span class="mr-2 font-semibold">x<sub>2,3</sub> =</span>
+                                <div class="math-fraction">
+                                    <span class="math-numerator">-(${q1}) &plusmn; &radic;[ (${q1})² - 4 &middot; ${q2} &middot; (${q0}) ]</span>
+                                    <span class="math-denominator">2 &middot; ${q2}</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center font-mono text-sm sm:text-base">
+                                <span class="mr-2 font-semibold">x<sub>2,3</sub> =</span>
+                                <div class="math-fraction">
+                                    <span class="math-numerator">${-q1} &plusmn; &radic;[ ${bSquared} - (${fourAC}) ]</span>
+                                    <span class="math-denominator">${2 * q2}</span>
+                                </div>
+                            </div>
+            `;
+
+            if (disc < 0) {
+                resultSectionHTML += `
+                            <div class="text-rose-600 font-bold mt-4">
+                                Keine reellen Nullstellen vorhanden, da der Wert unter der Wurzel (Diskriminante = ${disc}) negativ ist!
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            } else {
+                let sqrtDisc = Math.round(Math.sqrt(disc) * 100) / 100;
+                let divisorVal = 2 * q2;
+                let val2 = Math.round(((-q1 + Math.sqrt(disc)) / divisorVal) * 100) / 100;
+                let val3 = Math.round(((-q1 - Math.sqrt(disc)) / divisorVal) * 100) / 100;
+
+                resultSectionHTML += `
+                            <div class="flex items-center font-mono text-sm sm:text-base">
+                                <span class="mr-2 font-semibold">x<sub>2,3</sub> =</span>
+                                <div class="math-fraction">
+                                    <span class="math-numerator">${-q1} &plusmn; ${sqrtDisc}</span>
+                                    <span class="math-denominator">${divisorVal}</span>
+                                </div>
+                            </div>
+
+                            <div class="font-bold text-[#1f1f1f] text-base border-t border-[#f3f3f3] pt-4 w-full text-center flex justify-center gap-8">
+                                <span>x₂ = ${val2}</span>
+                                <span>x₃ = ${val3}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            pedagogyNotes.innerHTML = resultSectionHTML;
+
+            // Status-Badge aktualisieren
+            if (r3_0 === 0) {
+                statusBadge.textContent = "Lupenrein (Kein Rest)";
+                statusBadge.className = "px-3 py-1 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-700 border-emerald-200";
+            } else {
+                statusBadge.textContent = `Rest vorhanden (${r3_0})`;
+                statusBadge.className = "px-3 py-1 text-xs font-semibold rounded-full bg-rose-50 text-rose-700 border-rose-200";
+            }
+
+            resultBox.classList.remove('hidden');
+        }
+
+        // Quiz-Prüfung
+        function checkQuizAnswers() {
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            const q2 = document.querySelector('input[name="q2"]:checked');
+            
+            if (!q1 || !q2) {
+                showQuizAlert("Bitte wählen Sie für beide Szenarien eine Antwort aus.", "warning");
+                return;
+            }
+
+            let correctCount = 0;
+            if (q1.value === "correct") correctCount++;
+            if (q2.value === "correct") correctCount++;
+
+            if (correctCount === 2) {
+                showQuizAlert("Ausgezeichnet! Beide Vorzeichen-Hürden wurden fehlerfrei überwunden. Sie beherrschen die Strukturierung sicher.", "success");
+            } else {
+                let msg = `Sie haben ${correctCount} von 2 Fragen richtig beantwortet.<br>`;
+                if (q1.value !== "correct") {
+                    msg += `<strong class="text-rose-800">Korrektur Szenario 1:</strong> Beachten Sie die doppelte Negation. Es wird gerechnet: +4x - (+6x) = -2x. Die quadratischen Glieder heben sich durch -3x² - (-3x²) = 0 vollständig auf.`;
+                }
+                showQuizAlert(msg, "error");
+            }
+        }
+
+        function showQuizAlert(message, type) {
+            const alertBox = document.getElementById('quiz-alert');
+            const alertText = document.getElementById('quiz-alert-text');
+            alertBox.className = "p-4 rounded-md mb-6 font-medium text-sm flex items-center justify-between border transition-all"; 
+
+            alertText.innerHTML = message;
+            if (type === "success") {
+                alertBox.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
+            } else if (type === "error") {
+                alertBox.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
+            } else {
+                alertBox.classList.add('bg-amber-50', 'text-amber-800', 'border-amber-200');
+            }
+            alertBox.classList.remove('hidden');
+        }
+
+        function closeQuizAlert() {
+            document.getElementById('quiz-alert').classList.add('hidden');
         }
     </script>
 </body>
