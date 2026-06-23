@@ -3,199 +3,1023 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schritt-für-Schritt: Substitution (Grad 4)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <title>Interaktive Lernapp: Substitutionsverfahren</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif:italic&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #fcfdfe; color: #334155; }
-        .math-font { font-family: 'Noto Serif', serif; font-style: italic; }
-        .step-card { transition: all 0.3s ease; }
-        .modern-shadow { box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05); }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #F5F5F7;
+            color: #1C1C1E;
+            padding-bottom: 150px; /* Platz für das fixierte Protokoll-Dashboard */
+        }
+
+        /* Zwei-Spalten-Grid Architektur */
+        .app-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Linke Spalte (Statisch im Sichtfeld) */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.25s ease-in-out;
+        }
+
+        .card:hover {
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .brand-card h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #1C1C1E;
+        }
+
+        .brand-card p {
+            font-size: 0.9rem;
+            color: #5F6368;
+            line-height: 1.5;
+        }
+
+        .parameter-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .slider-group {
+            margin-bottom: 20px;
+        }
+
+        .slider-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: #E5E5EA;
+            border-radius: 3px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -6px;
+            transition: transform 0.1s;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* Farbbrücke Steuerung */
+        .slider-a::-webkit-slider-thumb { background: #1A73E8; }
+        .slider-b::-webkit-slider-thumb { background: #1E8E3E; }
+        .slider-c::-webkit-slider-thumb { background: #F9AB00; }
+
+        .canvas-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .canvas-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            align-self: flex-start;
+        }
+
+        .canvas-container {
+            width: 100%;
+            background: #FAFAFA;
+            border-radius: 12px;
+            border: 1px solid #E5E5EA;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        /* Rechte Spalte (Interaktiver Lernpfad) */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Horizontale Schritt-Navigation */
+        .step-navigation {
+            display: flex;
+            background: #E5E5EA;
+            padding: 4px;
+            border-radius: 24px;
+            gap: 4px;
+        }
+
+        .step-pill {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 12px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease-in-out;
+            color: #1C1C1E;
+        }
+
+        .step-pill.active {
+            background: #1C1C1E;
+            color: #FFFFFF;
+        }
+
+        .step-pill:hover:not(.active) {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Dynamischer Inhaltsbereich */
+        .main-content-card {
+            min-height: 450px;
+        }
+
+        .step-panel {
+            display: none;
+        }
+
+        .step-panel.active {
+            display: block;
+        }
+
+        .step-panel h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .step-panel p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #3A3A3C;
+            margin-bottom: 16px;
+        }
+
+        /* Semantische Farbbrücke Textklassen */
+        .param-a { color: #1A73E8; font-weight: 600; }
+        .param-b { color: #1E8E3E; font-weight: 600; }
+        .param-c { color: #F9AB00; font-weight: 600; }
+        .result-null { color: #7F39FB; font-weight: 600; }
+
+        /* Mathematische Formel-Typografie & Bruch-Architektur */
+        .math-equation {
+            display: inline-flex;
+            align-items: center;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-size: 1.3rem;
+            line-height: 1;
+            margin: 15px 0;
+            background: #F8F9FA;
+            padding: 14px 20px;
+            border-radius: 12px;
+            border-left: 4px solid #1C1C1E;
+        }
+
+        .math-fraction {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            text-align: center;
+            padding: 0 8px;
+        }
+
+        .math-numerator {
+            border-bottom: 1.8px solid #1C1C1E;
+            padding-bottom: 4px;
+            margin-bottom: 4px;
+        }
+
+        .math-denominator {
+            padding-top: 2px;
+        }
+
+        .math-sqrt {
+            display: inline-flex;
+            align-items: flex-start;
+        }
+
+        .math-sqrt .radical {
+            font-size: 1.2em;
+            line-height: 0.9;
+            margin-right: -2px;
+        }
+
+        .math-sqrt .radicand {
+            border-top: 1.8px solid #1C1C1E;
+            padding-top: 2px;
+            margin-top: 2px;
+        }
+
+        /* Gestuftes Hilfe-System (Scaffolding) */
+        .scaffolding-container {
+            margin-top: 32px;
+            border-top: 1px solid #E5E5EA;
+            padding-top: 20px;
+        }
+
+        .scaffolding-container h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #1C1C1E;
+        }
+
+        .tip-box {
+            margin-bottom: 8px;
+        }
+
+        .tip-trigger {
+            width: 100%;
+            background: #F2F2F7;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s;
+            color: #1C1C1E;
+        }
+
+        .tip-trigger:hover {
+            background: #E5E5EA;
+        }
+
+        .tip-content {
+            display: none;
+            background: #FFFFFF;
+            border: 1px solid #E5E5EA;
+            border-top: none;
+            padding: 16px;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #3A3A3C;
+        }
+
+        .tip-box.open .tip-trigger {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            background: #E5E5EA;
+        }
+
+        .tip-box.open .tip-content {
+            display: block;
+        }
+
+        /* Warnmeldungen (Stolpersteine) */
+        .warning-box {
+            background: #FDF2F2;
+            border: 1px solid #FDE8E8;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .warning-text {
+            color: #D93025;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* Android Material Design Icons Container */
+        .icon-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            color: #FFFFFF;
+            flex-shrink: 0;
+        }
+
+        .icon-container-small {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            color: #FFFFFF;
+            flex-shrink: 0;
+        }
+
+        .bg-info { background-color: #1A73E8; }
+        .bg-tip-1 { background-color: #F9AB00; }
+        .bg-tip-2 { background-color: #7F39FB; }
+        .bg-success { background-color: #1E8E3E; }
+        .bg-warning { background-color: #D93025; }
+        .bg-log { background-color: #5F6368; }
+
+        /* Action Buttons */
+        .action-button {
+            background: #1E8E3E;
+            color: #FFFFFF;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            transition: background 0.2s;
+        }
+
+        .action-button:hover {
+            background: #176B2F;
+        }
+
+        /* Unterer Bereich (Echtzeit-Protokoll) */
+        .bottom-dashboard {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 130px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 16px 24px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .log-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #5F6368;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .log-viewport {
+            flex: 1;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #1C1C1E;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .log-item {
+            display: flex;
+            gap: 10px;
+        }
+
+        .log-timestamp {
+            color: #8E8E93;
+            flex-shrink: 0;
+        }
+
+        .log-message {
+            word-break: break-word;
+        }
     </style>
 </head>
 <body>
-    <div id="root"></div>
 
-    <script type="text/babel">
-        const { useState } = React;
+    <div class="app-container">
+        
+        <aside class="sidebar">
+            
+            <div class="card brand-card">
+                <h2>Gleichungen höheren Grades</h2>
+                <p>Willkommen im digitalen Zeitalter des mathematischen Verstehens. Tauche ein in die funktionale Landschaft biquadratischer Gleichungen. Entdecke interaktiv, wie das Substitutionsverfahren das Tor zu versteckten Nullstellen öffnet.</p>
+            </div>
 
-        // Globale Hilfskomponente für mathematische Begriffe
-        const MathTerm = ({ children }) => (
-            <span className="math-font text-[1.1em] text-slate-900">{children}</span>
-        );
+            <div class="card parameter-card">
+                <h3>Funktionsparameter bestimmen</h3>
+                
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Koeffizient <span class="param-a">a</span> (x<sup>4</sup>)</span>
+                        <span id="label-val-a" class="param-a">1.0</span>
+                    </div>
+                    <input type="range" id="param-slider-a" class="slider-a" min="-3" max="3" step="0.1" value="1.0">
+                </div>
 
-        const Graph = ({ showZeros = false }) => {
-            // Skalierung für SVG
-            // f(x) = x^4 - 2x^2 + 1
-            const points = [];
-            for (let x = -1.6; x <= 1.6; x += 0.05) {
-                const y = Math.pow(x, 4) - 2 * Math.pow(x, 2) + 1;
-                const px = (x + 2) * 100 - 25; 
-                const py = 160 - y * 40; 
-                if (py > 10 && py < 190) points.push(`${px},${py}`);
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Koeffizient <span class="param-b">b</span> (x<sup>2</sup>)</span>
+                        <span id="label-val-b" class="param-b">-5.0</span>
+                    </div>
+                    <input type="range" id="param-slider-b" class="slider-b" min="-10" max="10" step="0.1" value="-5.0">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Konstante <span class="param-c">c</span></span>
+                        <span id="label-val-c" class="param-c">4.0</span>
+                    </div>
+                    <input type="range" id="param-slider-c" class="slider-c" min="-10" max="10" step="0.1" value="4.0">
+                </div>
+            </div>
+
+            <div class="card canvas-card">
+                <h3>Dynamischer Funktionsgraph</h3>
+                <div class="canvas-container">
+                    <canvas id="graphCanvas"></canvas>
+                </div>
+            </div>
+
+        </aside>
+
+        <main class="main-content">
+            
+            <nav class="step-navigation">
+                <button class="step-pill active" id="pill-1" onclick="navigateToStep(1)">
+                    <span class="icon-container-small bg-success" id="pill-check-1" style="display:none;">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </span>
+                    1. Einordnung & Kriterien
+                </button>
+                <button class="step-pill" id="pill-2" onclick="navigateToStep(2)">
+                    <span class="icon-container-small bg-success" id="pill-check-2" style="display:none;">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </span>
+                    2. Substitution
+                </button>
+                <button class="step-pill" id="pill-3" onclick="navigateToStep(3)">
+                    <span class="icon-container-small bg-success" id="pill-check-3" style="display:none;">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </span>
+                    3. Quadratische Lösung
+                </button>
+                <button class="step-pill" id="pill-4" onclick="navigateToStep(4)">
+                    <span class="icon-container-small bg-success" id="pill-check-4" style="display:none;">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </span>
+                    4. Resubstitution
+                </button>
+            </nav>
+
+            <div class="card main-content-card">
+                
+                <div class="warning-box" id="global-warning" style="display:none;">
+                    <div class="icon-container bg-warning">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    </div>
+                    <div class="warning-text" id="global-warning-text">Warnungstext</div>
+                </div>
+
+                <div class="step-panel active" id="panel-1">
+                    <h3>
+                        <div class="icon-container bg-info" style="margin-right:12px;">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        </div>
+                        Schritt 1: Ausgangslage analysieren
+                    </h3>
+                    <p>Bevor wir rechnerisch vorgehen, betrachten wir die Struktur der Funktion. Das Erkennen von Mustern bildet den echten Schlüssel zur algebraischen Vereinfachung.</p>
+                    
+                    <p><strong>Mathematische Bedeutung:</strong><br>
+                    Das Bestimmen von Nullstellen ist ein fundamentaler Meilenstein jeder Kurvenuntersuchung. Gleichungen vierten Grades wirken anfangs komplex. Das Verfahren bricht diese Komplexität systematisch herunter. Es überführt die Struktur in ein überschaubares, quadratisches System.</p>
+                    
+                    <p><strong>Anwendungskriterien (Wann wende ich es an?):</strong><br>
+                    Du musst klare, unmissverständliche strukturelle Indikatoren erkennen. Das Verfahren greift ausschließlich, wenn:
+                    <br>1. Die Gleichung der Grundform <span class="param-a">a</span>x<sup>4</sup> + <span class="param-b">b</span>x<sup>2</sup> + <span class="param-c">c</span> = 0 entspricht.
+                    <br>2. Nur gerade Exponenten (4 und 2) sowie ein konstantes Glied <span class="param-c">c</span> existieren.
+                    <br>3. Ungerade Exponenten wie x<sup>3</sup> oder x komplett fehlen.</p>
+
+                    <div class="scaffolding-container">
+                        <h4>Unterstützung & Hilfestellungen</h4>
+                        <div class="tip-box" id="tip-1-1">
+                            <button class="tip-trigger" onclick="toggleTip('1-1')">
+                                <span class="icon-container-small bg-tip-1"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21h6M12 3a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V19H8v-3.26A6.98 6.98 0 0 1 5 10a7 7 0 0 1 7-7z"></path></svg></span>
+                                Tipp 1: Strategischer Hinweis
+                            </button>
+                            <div class="tip-content">Suche im Funktionsterm gezielt nach dem Verhältnis der Exponenten. Fällt dir auf, dass der höchste Exponent genau das Doppelte des mittleren Exponenten beträgt?</div>
+                        </div>
+                        <div class="tip-box" id="tip-1-2">
+                            <button class="tip-trigger" onclick="toggleTip('1-2')">
+                                <span class="icon-container-small bg-tip-2"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h4l4-14 4 14h4"></path><path d="M12 11h4"></path></svg></span>
+                                Tipp 2: Formelstütze
+                            </button>
+                            <div class="tip-content">Die mathematische Struktur lautet: <span class="param-a">a</span>·(x<sup>2</sup>)<sup>2</sup> + <span class="param-b">b</span>·(x<sup>2</sup>) + <span class="param-c">c</span> = 0. Das zeigt die versteckte quadratische Natur.</div>
+                        </div>
+                    </div>
+                    <button class="action-button" onclick="completeStep(1)">
+                        Meilenstein sichern & weiter
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </button>
+                </div>
+
+                <div class="step-panel" id="panel-2">
+                    <h3>Schritt 2: Substitution durchführen</h3>
+                    <p>Wir verändern nun die Perspektive auf unsere Gleichung. Um das Gehirn visuell zu entlasten, maskieren wir die Variable x<sup>2</sup> mit einem neuen Namen.</p>
+                    
+                    <p>Wir definieren die fundamentale Transformation: <strong>x<sup>2</sup> = <span class="result-null">z</span></strong>. Daraus folgt automatisch, dass x<sup>4</sup> durch <strong><span class="result-null">z<sup>2</sup></span></strong> ersetzt wird.</p>
+                    
+                    <p>Deine aktuell eingestellte Gleichung lautet:</p>
+                    <div class="math-equation">
+                        <span class="param-a" id="math2-a">1.0</span>x<sup>4</sup> <span id="math2-sign-b"></span> <span class="param-b" id="math2-b">5.0</span>x<sup>2</sup> <span id="math2-sign-c"></span> <span class="param-c" id="math2-c">4.0</span> = 0
+                    </div>
+
+                    <p>Nach dem Ersetzen der Potenzen entsteht dieses neue quadratische System:</p>
+                    <div class="math-equation">
+                        <span class="param-a" id="math2-suba">1.0</span><span class="result-null">z<sup>2</sup></span> <span id="math2-subsign-b"></span> <span class="param-b" id="math2-subb">5.0</span><span class="result-null">z</span> <span id="math2-subsign-c"></span> <span class="param-c" id="math2-subc">4.0</span> = 0
+                    </div>
+
+                    <div class="scaffolding-container">
+                        <h4>Unterstützung & Hilfestellungen</h4>
+                        <div class="tip-box" id="tip-2-1">
+                            <button class="tip-trigger" onclick="toggleTip('2-1')">
+                                <span class="icon-container-small bg-tip-1"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21h6M12 3a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V19H8v-3.26A6.98 6.98 0 0 1 5 10a7 7 0 0 1 7-7z"></path></svg></span>
+                                Tipp 1: Strategischer Hinweis
+                            </button>
+                            <div class="tip-content">Die Substitution ändert nichts am mathematischen Wert, sie kleidet die Variablen nur temporär übersichtlicher ein, um bekannte Lösungsverfahren anwendbar zu machen.</div>
+                        </div>
+                    </div>
+                    <button class="action-button" onclick="completeStep(2)">
+                        Meilenstein sichern & weiter
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </button>
+                </div>
+
+                <div class="step-panel" id="panel-3">
+                    <h3>Schritt 3: Quadratische Gleichung lösen</h3>
+                    <p>Jetzt bestimmen wir die Zwischenwerte für die Variable <span class="result-null">z</span>. Hierzu verwenden wir die klassische Mitternachtsformel.</p>
+                    
+                    <div class="math-equation">
+                        <span class="result-null">z<sub>1,2</sub></span> = 
+                        <div class="math-fraction">
+                            <div class="math-numerator">
+                                −<span class="param-b">b</span> ± 
+                                <div class="math-sqrt">
+                                    <span class="radical">√</span>
+                                    <span class="radicand"><span class="param-b">b<sup>2</sup></span> − 4<span class="param-a">a</span><span class="param-c">c</span></span>
+                                </div>
+                            </div>
+                            <div class="math-denominator">
+                                2<span class="param-a">a</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p>Mit deinen gewählten Werten gefüllt, sieht die Berechnung wie folgt aus:</p>
+                    
+                    <div class="math-equation">
+                        <span class="result-null">z<sub>1,2</sub></span> = 
+                        <div class="math-fraction">
+                            <div class="math-numerator">
+                                −(<span class="param-b" id="math3-b">−5.0</span>) ± 
+                                <div class="math-sqrt">
+                                    <span class="radical">√</span>
+                                    <span class="radicand">(<span class="param-b" id="math3-bsq">−5.0</span>)<sup>2</sup> − 4·<span class="param-a" id="math3-a">1.0</span>·<span class="param-c" id="math3-c">4.0</span></span>
+                                </div>
+                            </div>
+                            <div class="math-denominator">
+                                2·<span class="param-a" id="math3-a2">1.0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p>Der berechnete Inhalt unter dem Radikand-Dach (Diskriminante) lautet: <strong id="math3-disc">9.00</strong>.</p>
+                    <p>Das liefert die beiden Zwischenergebnisse im substituierten Raum:</p>
+                    <div class="math-equation" style="border-left-color: #7F39FB; display: block; font-size: 1.1rem; line-height: 1.6;">
+                        • <span class="result-null">z<sub>1</sub></span> = <span id="math3-z1" class="result-null">4.00</span><br>
+                        • <span class="result-null">z<sub>2</sub></span> = <span id="math3-z2" class="result-null">1.00</span>
+                    </div>
+
+                    <div class="scaffolding-container">
+                        <h4>Unterstützung & Hilfestellungen</h4>
+                        <div class="tip-box" id="tip-3-1">
+                            <button class="tip-trigger" onclick="toggleTip('3-1')">
+                                <span class="icon-container-small bg-tip-1"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21h6M12 3a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V19H8v-3.26A6.98 6.98 0 0 1 5 10a7 7 0 0 1 7-7z"></path></svg></span>
+                                Tipp 1: Strategischer Hinweis
+                            </button>
+                            <div class="tip-content">Achte genau auf das Vorzeichen unter der Wurzel. Ist die Diskriminante negativ, stoppt der reelle Lösungsweg hier vorzeitig.</div>
+                        </div>
+                    </div>
+                    <button class="action-button" onclick="completeStep(3)">
+                        Meilenstein sichern & weiter
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </button>
+                </div>
+
+                <div class="step-panel" id="panel-4">
+                    <h3>Schritt 4: Resubstitution & Nullstellen</h3>
+                    <p>Im finalen Meilenstein lüften wir die Maskierung, um die echten Nullstellen in unserer x-Landschaft zu lokalisieren. Da anfänglich z = x<sup>2</sup> festgelegt wurde, gilt nun die Umkehrung:</p>
+                    
+                    <div class="math-equation">
+                        x = ±
+                        <div class="math-sqrt">
+                            <span class="radical">√</span>
+                            <span class="radicand"><span class="result-null">z</span></span>
+                        </div>
+                    </div>
+
+                    <p>Das bedeutet: Wir ziehen die Wurzel aus unseren berechneten z-Werten, sofern diese positiv oder null sind.</p>
+                    
+                    <div id="math4-dynamic-details" style="background: #F8F9FA; padding: 16px; border-radius: 12px; margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">
+                        </div>
+
+                    <p>Die endgültigen Nullstellen der Funktion lauten:</p>
+                    <div style="font-size: 1.5rem; padding: 12px 24px; background: #F3E8FF; border-radius: 12px; color: #7F39FB; font-weight: bold; margin-top: 8px; display: inline-block; border-left: 4px solid #7F39FB;" id="math4-final-roots">
+                        ...
+                    </div>
+
+                    <div class="scaffolding-container">
+                        <h4>Unterstützung & Hilfestellungen</h4>
+                        <div class="tip-box" id="tip-4-1">
+                            <button class="tip-trigger" onclick="toggleTip('4-1')">
+                                <span class="icon-container-small bg-tip-1"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21h6M12 3a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V19H8v-3.26A6.98 6.98 0 0 1 5 10a7 7 0 0 1 7-7z"></path></svg></span>
+                                Tipp 1: Strategischer Hinweis
+                            </button>
+                            <div class="tip-content">Jeder positive z-Wert liefert durch das ±-Zeichen beim Wurzelziehen zwei symmetrische x-Nullstellen. Negative z-Werte entfallen komplett.</div>
+                        </div>
+                    </div>
+                    <button class="action-button" style="background:#1C1C1E;" onclick="completeStep(4)">
+                        Lernpfad erfolgreich beenden
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </button>
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <div class="bottom-dashboard">
+        <div class="log-title">
+            <div class="icon-container-small bg-log">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            Live-Lernstand-Log
+        </div>
+        <div class="log-viewport" id="logViewport">
+            </div>
+    </div>
+
+    <script>
+        // App-Status und Protokoll-Engine
+        let activeStep = 1;
+        const completedSteps = {1: false, 2: false, 3: false, 4: false};
+
+        function writeLog(message) {
+            const viewport = document.getElementById('logViewport');
+            const now = new Date();
+            const timestamp = now.toTimeString().split(' ')[0];
+            
+            const item = document.createElement('div');
+            item.className = 'log-item';
+            item.innerHTML = `<span class="log-timestamp">[${timestamp}]</span><span class="log-message">${message}</span>`;
+            
+            viewport.appendChild(item);
+            viewport.scrollTop = viewport.scrollHeight;
+        }
+
+        function navigateToStep(stepNum) {
+            document.getElementById(`panel-${activeStep}`).classList.remove('active');
+            document.getElementById(`pill-${activeStep}`).classList.remove('active');
+            
+            activeStep = stepNum;
+            
+            document.getElementById(`panel-${activeStep}`).classList.add('active');
+            document.getElementById(`pill-${activeStep}`).classList.add('active');
+            
+            writeLog(`Schritt ${stepNum} im interaktiven Lernpfad geöffnet.`);
+        }
+
+        function completeStep(stepNum) {
+            completedSteps[stepNum] = true;
+            document.getElementById(`pill-check-${stepNum}`).style.display = 'inline-flex';
+            writeLog(`Meilenstein: Schritt ${stepNum} erfolgreich verifiziert.`);
+            
+            if(stepNum < 4) {
+                navigateToStep(stepNum + 1);
+            } else {
+                writeLog('Faszinierend! Du hast den gesamten algebraischen Lösungspfad erfolgreich absolviert.');
+            }
+        }
+
+        function toggleTip(tipId) {
+            const box = document.getElementById(`tip-${tipId}`);
+            if(box.classList.contains('open')) {
+                box.classList.remove('open');
+            } else {
+                box.classList.add('open');
+                writeLog(`Hilfestellung genutzt: Tipp ${tipId.split('-')[1]} in Schritt ${tipId.split('-')[0]} freigeschaltet.`);
+            }
+        }
+
+        // Mathematische Berechnungen & Canvas Rendering Engine
+        function formatSign(value, isFirst = false) {
+            if (value >= 0) return isFirst ? `${value.toFixed(1)}` : `+ ${value.toFixed(1)}`;
+            return isFirst ? `-${Math.abs(value).toFixed(1)}` : `− ${Math.abs(value).toFixed(1)}`;
+        }
+
+        function updateMathCalculations() {
+            const a = parseFloat(document.getElementById('param-slider-a').value);
+            const b = parseFloat(document.getElementById('param-slider-b').value);
+            const c = parseFloat(document.getElementById('param-slider-c').value);
+
+            // Labels aktualisieren
+            document.getElementById('label-val-a').innerText = a.toFixed(1);
+            document.getElementById('label-val-b').innerText = b.toFixed(1);
+            document.getElementById('label-val-c').innerText = c.toFixed(1);
+
+            // Warnsystem zurücksetzen/aktivieren
+            const warningBox = document.getElementById('global-warning');
+            const warningText = document.getElementById('global-warning-text');
+            warningBox.style.display = 'none';
+
+            if (a === 0) {
+                warningBox.style.display = 'flex';
+                warningText.innerText = "Achtung: Wenn der Parameter a = 0 ist, kollabiert der Grad der Funktion. Es handelt sich nicht mehr um eine Gleichung 4. Grades!";
             }
 
-            return (
-                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm mb-8">
-                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
-                        {showZeros ? "Analyse-Ergebnis: Die doppelten Nullstellen" : "Ausgangslage: Der Funktionsgraph"}
-                    </h3>
-                    <div className="flex justify-center">
-                        <svg viewBox="0 0 400 200" className="w-full max-w-xl h-auto overflow-visible">
-                            {/* Achsen */}
-                            <line x1="20" y1="160" x2="380" y2="160" stroke="#cbd5e1" strokeWidth="1.5" />
-                            <line x1="175" y1="20" x2="175" y2="190" stroke="#cbd5e1" strokeWidth="1.5" />
-                            
-                            {/* Pfeile */}
-                            <polyline points="375,155 380,160 375,165" fill="none" stroke="#cbd5e1" strokeWidth="1.5" />
-                            <polyline points="170,25 175,20 180,25" fill="none" stroke="#cbd5e1" strokeWidth="1.5" />
+            // Schritt 2 Formeln befüllen
+            document.getElementById('math2-a').innerText = a.toFixed(1);
+            document.getElementById('math2-b').innerText = Math.abs(b).toFixed(1);
+            document.getElementById('math2-sign-b').innerText = b >= 0 ? '+' : '−';
+            document.getElementById('math2-c').innerText = Math.abs(c).toFixed(1);
+            document.getElementById('math2-sign-c').innerText = c >= 0 ? '+' : '−';
 
-                            {/* Beschriftung */}
-                            <text x="385" y="165" fontSize="12" fill="#94a3b8" className="math-font">x</text>
-                            <text x="155" y="25" fontSize="12" fill="#94a3b8" className="math-font">f(x)</text>
-                            
-                            {/* Graph */}
-                            <polyline points={points.join(' ')} fill="none" stroke="#6366f1" strokeWidth="2.5" strokeLinecap="round" />
-                            
-                            {showZeros && (
-                                <g>
-                                    <circle cx="75" cy="160" r="5" fill="#f43f5e" /> {/* x=-1 */}
-                                    <circle cx="275" cy="160" r="5" fill="#f43f5e" /> {/* x=1 */}
-                                    <text x="60" y="180" fontSize="12" fill="#f43f5e" fontWeight="bold">x = -1</text>
-                                    <text x="270" y="180" fontSize="12" fill="#f43f5e" fontWeight="bold">x = 1</text>
-                                </g>
-                            )}
-                        </svg>
-                    </div>
-                </div>
-            );
-        };
+            document.getElementById('math2-suba').innerText = a.toFixed(1);
+            document.getElementById('math2-subb').innerText = Math.abs(b).toFixed(1);
+            document.getElementById('math2-subsign-b').innerText = b >= 0 ? '+' : '−';
+            document.getElementById('math2-subc').innerText = Math.abs(c).toFixed(1);
+            document.getElementById('math2-subsign-c').innerText = c >= 0 ? '+' : '−';
 
-        const App = () => {
-            const [activeStep, setActiveStep] = useState(0);
+            // Schritt 3 Formeln befüllen
+            document.getElementById('math3-b').innerText = b.toFixed(1);
+            document.getElementById('math3-bsq').innerText = b.toFixed(1);
+            document.getElementById('math3-a').innerText = a.toFixed(1);
+            document.getElementById('math3-c').innerText = c.toFixed(1);
+            document.getElementById('math3-a2').innerText = a.toFixed(1);
 
-            const steps = [
-                {
-                    title: "1. Die Struktur-Analyse",
-                    header: "Prüfung auf biquadratische Form",
-                    content: "Suche nach dem Muster x⁴ und x². Es dürfen keine ungeraden Exponenten (x³ oder x¹) vorkommen. Ein Absolutglied (Zahl ohne x) am Ende ist erlaubt.",
-                    formula: "f(x) = x⁴ - 2x² + 1",
-                    merksatz: "Sind die Hochzahlen 4, 2 und leer? Die Substitution hilft dir sehr!",
-                    color: "bg-indigo-50/50 border-indigo-100"
-                },
-                {
-                    title: "2. Der Tausch-Trick",
-                    header: "Substitution durchführen",
-                    content: "Wir führen eine Hilfsvariable u ein. Wir setzen u = x². Damit wird aus x⁴ automatisch u². Die Gleichung wird dadurch quadratisch.",
-                    formula: "u = x² \u2192 u² - 2u + 1 = 0",
-                    merksatz: "u ersetzt x² im Nu – so schaust du der Lösung zu.",
-                    color: "bg-emerald-50/50 border-emerald-100"
-                },
-                {
-                    title: "3. Die quadratische Lösung",
-                    header: "Einsatz der Mitternachtsformel",
-                    content: "Löse die Gleichung für u mit der Mitternachtsformel. Da die Diskriminante Null ist, erhalten wir hier nur eine Lösung für u.",
-                    formula: "u\u2081,\u2082 = 1",
-                    merksatz: "Mitternacht bringt u ans Licht – vergiss das x dabei noch nicht!",
-                    color: "bg-amber-50/50 border-amber-100"
-                },
-                {
-                    title: "4. Die Rückverwandlung",
-                    header: "Resubstitution & Wurzelziehen",
-                    content: "Tausche u wieder gegen x² zurück. Um die endgültigen Nullstellen x zu finden, musst du die Wurzel aus u ziehen. Achtung: Plus-Minus beachten!",
-                    formula: "x² = 1 \u2192 x\u2081,\u2082 = \u00B1\u221A1 = \u00B11",
-                    merksatz: "Zieh die Wurzel aus dem u, dann fliegen dir die x-Werte zu.",
-                    color: "bg-rose-50/50 border-rose-100"
+            const disc = b*b - 4*a*c;
+            document.getElementById('math3-disc').innerText = disc.toFixed(2);
+
+            let z1 = null, z2 = null;
+            const z1El = document.getElementById('math3-z1');
+            const z2El = document.getElementById('math3-z2');
+            const step4Details = document.getElementById('math4-dynamic-details');
+            const finalRootsEl = document.getElementById('math4-final-roots');
+
+            if (a === 0) {
+                z1El.innerText = "Nicht definierbar (a=0)";
+                z2El.innerText = "Nicht definierbar (a=0)";
+                step4Details.innerHTML = "Aufgrund von a = 0 kann das quadratische System im z-Raum nicht regulär berechnet werden.";
+                finalRootsEl.innerText = "Keine regulären Nullstellen";
+                renderGraph(a, b, c, []);
+                return;
+            }
+
+            if (disc < 0) {
+                z1El.innerText = "Keine reelle Zahl";
+                z2El.innerText = "Keine reelle Zahl";
+                warningBox.style.display = 'flex';
+                warningText.innerText = "Kognitiver Stolperstein: Die Diskriminante ist negativ! Unter der Wurzel entsteht kein reelles Ergebnis, wodurch das System im z-Raum keine Nullstellen besitzt.";
+                step4Details.innerHTML = "Da keine reellen Zwischenwerte für z existieren, kann keine Resubstitution durchgeführt werden.";
+                finalRootsEl.innerText = "Keine reellen Nullstellen";
+                renderGraph(a, b, c, []);
+                return;
+            }
+
+            z1 = (-b + Math.sqrt(disc)) / (2 * a);
+            z2 = (-b - Math.sqrt(disc)) / (2 * a);
+
+            z1El.innerText = z1.toFixed(2);
+            z2El.innerText = z2.toFixed(2);
+
+            // Schritt 4 Resubstitution ausrechnen
+            let roots = [];
+            let htmlDetails = "";
+
+            htmlDetails += `<strong>Untersuchung von z<sub>1</sub> = ${z1.toFixed(2)}:</strong><br>`;
+            if (z1 >= 0) {
+                let x1 = Math.sqrt(z1);
+                let x2 = -x1;
+                roots.push(x1, x2);
+                htmlDetails += `Daraus folgen die Nullstellen: x<sub>1</sub> = <b>${x1.toFixed(2)}</b> und x<sub>2</sub> = <b>${x2.toFixed(2)}</b>.<br>`;
+            } else {
+                htmlDetails += `Da der Wert negativ ist, ist das Wurzelziehen im reellen Zahlenbereich unmöglich.<br>`;
+            }
+
+            htmlDetails += `<br><strong>Untersuchung von z<sub>2</sub> = ${z2.toFixed(2)}:</strong><br>`;
+            if (z2 >= 0) {
+                let x3 = Math.sqrt(z2);
+                let x4 = -x3;
+                if (!roots.includes(x3)) roots.push(x3);
+                if (!roots.includes(x4)) roots.push(x4);
+                htmlDetails += `Daraus folgen die Nullstellen: x<sub>3</sub> = <b>${x3.toFixed(2)}</b> und x<sub>4</sub> = <b>${x4.toFixed(2)}</b>.`;
+            } else {
+                htmlDetails += `Da der Wert negativ ist, liefert dieser Zweig keine reellen Ergebnisse.`;
+            }
+
+            step4Details.innerHTML = htmlDetails;
+
+            // Nullstellen sortieren für saubere Anzeige
+            roots.sort((m, n) => m - n);
+            if (roots.length > 0) {
+                finalRootsEl.innerHTML = roots.map(r => `x = ${r.toFixed(2)}`).join(" &nbsp;|&nbsp; ");
+            } else {
+                finalRootsEl.innerText = "Keine reellen Nullstellen";
+            }
+
+            renderGraph(a, b, c, roots);
+        }
+
+        function renderGraph(a, b, c, roots) {
+            const canvas = document.getElementById('graphCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // HDPI-Skalierung für kristallklare Kanten
+            const width = 302;
+            const height = 280;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            ctx.scale(dpr, dpr);
+            
+            ctx.imageSmoothingEnabled = true;
+            ctx.lineJoin = 'round';
+            ctx.clearRect(0, 0, width, height);
+
+            const originX = width / 2;
+            const originY = height / 2;
+            
+            // Skalierungsfaktoren (Pixel pro Einheit)
+            const scaleX = 45;
+            const scaleY = 12;
+
+            // Mathematisches Hintergrundgitter (Grid)
+            ctx.strokeStyle = '#E5E5EA';
+            ctx.lineWidth = 0.5;
+
+            for (let x = -4; x <= 4; x++) {
+                let cx = originX + x * scaleX;
+                ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, height); ctx.stroke();
+            }
+            for (let y = -15; y <= 15; y += 3) {
+                let cy = originY - y * scaleY;
+                ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(width, cy); ctx.stroke();
+            }
+
+            // Koordinatenachsen
+            ctx.strokeStyle = '#1C1C1E';
+            ctx.lineWidth = 1.5;
+            
+            // X-Achse
+            ctx.beginPath(); ctx.moveTo(0, originY); ctx.lineTo(width, originY); ctx.stroke();
+            // Y-Achse
+            ctx.beginPath(); ctx.moveTo(originX, 0); ctx.lineTo(originX, height); ctx.stroke();
+
+            // Achsenpfeile & Beschriftung
+            ctx.fillStyle = '#1C1C1E';
+            ctx.font = '10px sans-serif';
+            ctx.fillText('x', width - 10, originY + 12);
+            ctx.fillText('y', originX - 12, 12);
+
+            // Skalenwerte einzeichnen
+            for (let x = -3; x <= 3; x++) {
+                if(x !== 0) ctx.fillText(x, originX + x * scaleX - 3, originY + 12);
+            }
+
+            // Funktionsgraphen zeichnen (f(x) = ax^4 + bx^2 + c)
+            ctx.beginPath();
+            ctx.strokeStyle = '#3A3A3C';
+            ctx.lineWidth = 2.5;
+
+            let firstPoint = true;
+            for (let px = 0; px <= width; px++) {
+                let x = (px - originX) / scaleX;
+                let y = a * Math.pow(x, 4) + b * Math.pow(x, 2) + c;
+                let py = originY - y * scaleY;
+
+                if (px === 0) {
+                    ctx.moveTo(px, py);
+                } else {
+                    ctx.lineTo(px, py);
                 }
-            ];
+            }
+            ctx.stroke();
 
-            return (
-                <div className="max-w-4xl mx-auto p-6 md:p-12">
-                    <header className="mb-10 text-center">
-                        <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.2em] block mb-2">Mathematik didaktisch</span>
-                        <h1 className="text-4xl font-bold text-slate-800 mb-2 tracking-tight">Substitution bei Grad 4</h1>
-                        <p className="text-slate-400 font-medium italic">Strukturanalyse & Vielfachheit von Nullstellen</p>
-                    </header>
+            // Markante Punkte hervorheben (Nullstellen in Material Purple)
+            roots.forEach(r => {
+                let cx = originX + r * scaleX;
+                let cy = originY;
 
-                    <Graph showZeros={false} />
+                if (cx >= 0 && cx <= width) {
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, 5, 0, 2 * Math.PI);
+                    ctx.fillStyle = '#7F39FB';
+                    ctx.fill();
+                    ctx.strokeStyle = '#FFFFFF';
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                }
+            });
+        }
 
-                    <div className="space-y-4 mb-12">
-                        {steps.map((step, idx) => (
-                            <div 
-                                key={idx}
-                                onClick={() => setActiveStep(idx)}
-                                className={`p-6 rounded-3xl border transition-all cursor-pointer step-card ${activeStep === idx ? step.color + ' border-opacity-100 scale-[1.01] shadow-sm' : 'bg-white border-slate-100 opacity-50 hover:opacity-80'}`}
-                            >
-                                <div className="flex items-center justify-between mb-2">
-                                    <h2 className="font-bold text-slate-800">{step.title}</h2>
-                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${activeStep === idx ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-400'}`}>
-                                        {idx + 1}
-                                    </div>
-                                </div>
-                                <h3 className="text-xs font-semibold text-slate-400 uppercase mb-4 tracking-wider">{step.header}</h3>
-                                
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    <p className="text-sm text-slate-600 leading-relaxed">{step.content}</p>
-                                    <div className="bg-white/60 p-4 rounded-2xl border border-slate-100 flex items-center justify-center text-center">
-                                        <MathTerm>{step.formula}</MathTerm>
-                                    </div>
-                                </div>
+        // Event-Zuweisung & Initialisierung
+        const sliders = ['a', 'b', 'c'];
+        sliders.forEach(s => {
+            document.getElementById(`param-slider-${s}`).addEventListener('input', () => {
+                updateMathCalculations();
+                const va = parseFloat(document.getElementById('param-slider-a').value).toFixed(1);
+                const vb = parseFloat(document.getElementById('param-slider-b').value).toFixed(1);
+                const vc = parseFloat(document.getElementById('param-slider-c').value).toFixed(1);
+                writeLog(`Echtzeit-Anpassung: Koeffizienten auf a=${va}, b=${vb}, c=${vc} transformiert.`);
+            });
+        });
 
-                                {activeStep === idx && (
-                                    <div className="mt-4 flex items-center gap-3 p-3 bg-white/40 rounded-xl italic text-xs text-slate-500 border border-white/50">
-                                        <span className="text-indigo-400">●</span>
-                                        <strong>Memo:</strong> {step.merksatz}
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-
-                    <section className="bg-slate-900 p-8 rounded-[2.5rem] text-white modern-shadow relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
-                        <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                            <span className="w-2 h-2 bg-rose-400 rounded-full"></span>
-                            Befund: Vielfachheit & Graphverlauf
-                        </h2>
-
-                        <div className="grid md:grid-cols-2 gap-10 items-center">
-                            <div className="space-y-6">
-                                <div className="space-y-3">
-                                    <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/10">
-                                        <MathTerm><span className="text-white">x = -1</span></MathTerm>
-                                        <span className="text-[10px] font-bold px-3 py-1 bg-rose-500/20 text-rose-300 rounded-full border border-rose-500/30 uppercase">Vielfachheit 2</span>
-                                    </div>
-                                    <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/10">
-                                        <MathTerm><span className="text-white">x = 1</span></MathTerm>
-                                        <span className="text-[10px] font-bold px-3 py-1 bg-rose-500/20 text-rose-300 rounded-full border border-rose-500/30 uppercase">Vielfachheit 2</span>
-                                    </div>
-                                </div>
-
-                                <div className="p-5 bg-indigo-500/5 rounded-2xl border border-indigo-500/10">
-                                    <h4 className="text-sm font-bold text-indigo-300 mb-2 underline underline-offset-4 decoration-indigo-500/30">Hintergrund</h4>
-                                    <p className="text-indigo-100/70 text-xs leading-relaxed italic">
-                                        Da die quadratische Hilfsgleichung nur eine Lösung (<MathTerm><span className="text-white">u=1</span></MathTerm>) hat, verdoppelt sich die Vielfachheit der daraus resultierenden x-Werte. Der Graph <strong>berührt</strong> die x-Achse an diesen Stellen, ohne sie zu schneiden.
-                                    </p>
-                                </div>
-                            </div>
-                            <Graph showZeros={true} />
-                        </div>
-                    </section>
-
-                    <footer className="mt-12 text-center">
-                        <p className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.3em]">
-                            Mathematik-Modul • BS+ Bayern • Substitution Grad 4
-                        </p>
-                    </footer>
-                </div>
-            );
+        window.onload = () => {
+            writeLog("Lernapplikation für mathematische Neurodidaktik erfolgreich initialisiert.");
+            writeLog("Schritt 1 aktiv: Analysiere die strukturellen Anwendungskriterien.");
+            updateMathCalculations();
         };
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
     </script>
 </body>
 </html>
