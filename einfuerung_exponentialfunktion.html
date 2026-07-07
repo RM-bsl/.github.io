@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktives Analyse-Labor: Exponentialfunktionen</title>
+    <style>
+        /* Globales Styling im Fluent & Material Design-Hybrid */
+        :root {
+            --primary-blue: #1A73E8;
+            --primary-green: #1E8E3E;
+            --primary-orange: #F9AB00;
+            --primary-purple: #7F39FB;
+            --primary-red: #D93025;
+            --neutral-gray: #5F6368;
+            --bg-system: #F2F2F7;
+            --bg-card: #FFFFFF;
+            --text-main: #1C1C1E;
+            --text-secondary: #3C3C43;
+            --border-light: rgba(0, 0, 0, 0.1);
+            --radius-m: 12px;
+            --radius-l: 16px;
+            --transition-smooth: all 0.25s ease-in-out;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-system);
+            color: var(--text-main);
+            padding-bottom: 110px; /* Platz für das Echtzeit-Protokoll */
+            line-height: 1.5;
+        }
+
+        /* Globale Layout-Architektur (Zwei-Spalten-Grid) */
+        .app-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Linke Spalte - Festes Kontrollzentrum */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            width: 350px;
+        }
+
+        /* Rechte Spalte - Interaktiver Lernpfad */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Card-Struktur mit Fluent-Tiefe */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius-l);
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: var(--transition-smooth);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .card:hover {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Branding & Fokus (Card 1) */
+        .branding-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .branding-lead {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Parametersteuerung (Card 2) */
+        .control-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 8px;
+        }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .slider-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .slider-label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .slider-context-unit {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            font-weight: normal;
+            min-height: 16px;
+            line-height: 1.2;
+        }
+
+        .slider-input {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #E5E5EA;
+            outline: none;
+            transition: var(--transition-smooth);
+            margin-top: 4px;
+        }
+
+        /* Semantische Farbbrücke für Slider */
+        #slider-a::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--primary-blue); cursor: pointer; }
+        #slider-b::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--primary-green); cursor: pointer; }
+        #slider-c::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--primary-orange); cursor: pointer; }
+        #slider-d::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--neutral-gray); cursor: pointer; }
+        #slider-y0::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--primary-purple); cursor: pointer; }
+
+        /* STRIKTE PLATZIERUNGSREGEL - Canvas-Card am Boden der linken Spalte */
+        .canvas-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .canvas-container {
+            width: 100%;
+            position: relative;
+            aspect-ratio: 1 / 1;
+            background: #FAFAFA;
+            border-radius: var(--radius-m);
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Horizontale Schritt-Navigation (Rechte Spalte oben) */
+        .nav-pills {
+            display: flex;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.03);
+            padding: 6px;
+            border-radius: 24px;
+            align-self: flex-start;
+        }
+
+        .pill-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .pill-button.active {
+            background: #1C1C1E;
+            color: #FFFFFF;
+        }
+
+        .pill-button .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        .pill-button.active .status-dot {
+            background: #FFFFFF;
+        }
+
+        .pill-button.completed .status-dot {
+            background: var(--primary-green) !important;
+        }
+
+        /* Dynamischer Inhaltsbereich */
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mathematische Formel-Anzeigen ohne Behelfsnotation */
+        .math-equation {
+            display: inline-flex;
+            align-items: center;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-size: 1.4rem;
+            line-height: 1;
+            margin: 20px 0;
+            padding: 12px 20px;
+            background: var(--bg-system);
+            border-radius: var(--radius-m);
+            font-weight: 500;
+        }
+
+        .math-exponent {
+            font-size: 0.9rem;
+            vertical-align: super;
+            position: relative;
+            top: -0.4em;
+            margin-left: 1px;
+        }
+
+        /* Semantische Farbbrücke Klassen */
+        .param-a { color: var(--primary-blue); font-weight: 600; }
+        .param-b { color: var(--primary-green); font-weight: 600; }
+        .param-c { color: var(--primary-orange); font-weight: 600; }
+        .param-d { color: var(--neutral-gray); font-weight: 600; }
+        .param-y0 { color: var(--primary-purple); font-weight: 600; }
+
+        /* Material-3-Container für Icons */
+        .icon-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .icon-container.info { background: rgba(26, 115, 232, 0.1); color: var(--primary-blue); }
+        .icon-container.warn { background: rgba(217, 48, 37, 0.1); color: var(--primary-red); }
+        .icon-container.success { background: rgba(30, 142, 62, 0.1); color: var(--primary-green); }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        /* Gestuftes Scaffolding */
+        .scaffolding-box {
+            margin-top: 24px;
+            border-top: 1px solid var(--border-light);
+            padding-top: 16px;
+        }
+
+        .scaffolding-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--neutral-gray);
+            margin-bottom: 12px;
+        }
+
+        .tip-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .tip-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-light);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .tip-btn.active-tip {
+            background: var(--bg-system);
+            border-color: var(--text-main);
+        }
+
+        .tip-content-box {
+            background: #F8F9FA;
+            border-left: 4px solid var(--neutral-gray);
+            padding: 12px 16px;
+            border-radius: 0 var(--radius-m) var(--radius-m) 0;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        /* Preset-Welten für reale Anwendungskontexte */
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .preset-card {
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-m);
+            padding: 16px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            background: #FFFFFF;
+        }
+
+        .preset-card:hover {
+            border-color: var(--primary-blue);
+            background: rgba(26, 115, 232, 0.02);
+        }
+
+        .preset-card.selected {
+            border-color: var(--primary-blue);
+            background: rgba(26, 115, 232, 0.05);
+            box-shadow: 0 2px 8px rgba(26, 115, 232, 0.1);
+        }
+
+        .preset-name {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        .preset-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Labor-Aufgabenliste */
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .task-item {
+            background: #F8F9FA;
+            padding: 14px;
+            border-radius: var(--radius-m);
+            border-left: 4px solid var(--border-light);
+        }
+
+        /* Unterer Bereich (Echtzeit-Protokoll mit Acrylic-Effekt) */
+        .log-dashboard {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 85px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-top: 1px solid var(--border-light);
+            padding: 10px 24px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .log-icon-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(95, 99, 104, 0.1);
+            color: var(--neutral-gray);
+            flex-shrink: 0;
+        }
+
+        .log-stream {
+            flex-grow: 1;
+            height: 100%;
+            overflow-y: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
+        .log-entry {
+            line-height: 1.4;
+            animation: logFadeIn 0.2s ease-out;
+        }
+
+        @keyframes logFadeIn {
+            from { opacity: 0; transform: translateX(-4px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .log-time {
+            color: var(--neutral-gray);
+            margin-right: 8px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <aside class="sidebar">
+            
+            <div class="card">
+                <h1 class="branding-title">Exponentialfunktionen</h1>
+                <p class="branding-lead">Analysiere die funktionale Dynamik im interaktiven Labor und entdecke die verborgenen Regeln der Parameter.</p>
+            </div>
+
+            <div class="card">
+                <h2 class="control-title">Funktionsparameter bestimmen</h2>
+                <div class="slider-group">
+                    
+                    <div class="slider-item">
+                        <div class="slider-label-row">
+                            <span>Faktor <span class="param-a">a</span></span>
+                            <span id="val-a" class="param-a">1.0</span>
+                        </div>
+                        <div class="slider-context-unit" id="ctx-a">Aktivierungszustand im Ursprung</div>
+                        <input type="range" id="slider-a" class="slider-input" min="-5" max="5" step="0.1" value="1.0">
+                    </div>
+
+                    <div class="slider-item">
+                        <div class="slider-label-row">
+                            <span>Basis <span class="param-b">b</span></span>
+                            <span id="val-b" class="param-b">2.0</span>
+                        </div>
+                        <div class="slider-context-unit" id="ctx-b">Wachstums- oder Zerfallsfaktor</div>
+                        <input type="range" id="slider-b" class="slider-input" min="0.1" max="5" step="0.1" value="2.0">
+                    </div>
+
+                    <div class="slider-item">
+                        <div class="slider-label-row">
+                            <span>Modifikator <span class="param-c">c</span></span>
+                            <span id="val-c" class="param-c">1.0</span>
+                        </div>
+                        <div class="slider-context-unit" id="ctx-c">Stauchung/Streckung der X-Achse</div>
+                        <input type="range" id="slider-c" class="slider-input" min="-3" max="3" step="0.1" value="1.0">
+                    </div>
+
+                    <div class="slider-item">
+                        <div class="slider-label-row">
+                            <span>Verschiebung <span class="param-d">d</span></span>
+                            <span id="val-d" class="param-d">0.0</span>
+                        </div>
+                        <div class="slider-context-unit" id="ctx-d">Horizontale Positionierung</div>
+                        <input type="range" id="slider-d" class="slider-input" min="-4" max="4" step="0.1" value="0.0">
+                    </div>
+
+                    <div class="slider-item">
+                        <div class="slider-label-row">
+                            <span>Asymptote <span class="param-y0">y<sub>0</sub></span></span>
+                            <span id="val-y0" class="param-y0">0.0</span>
+                        </div>
+                        <div class="slider-context-unit" id="ctx-y0">Horizontale Grenzschranke</div>
+                        <input type="range" id="slider-y0" class="slider-input" min="-5" max="5" step="0.1" value="0.0">
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card canvas-card">
+                <h2 class="control-title" style="width:100%; text-align:left;">Echtzeit-Graph</h2>
+                <div class="canvas-container">
+                    <canvas id="graphCanvas"></canvas>
+                </div>
+            </div>
+
+        </aside>
+
+        <main class="main-content">
+            
+            <nav class="nav-pills">
+                <button class="pill-button active" id="btn-step1" onclick="switchStep(1)">
+                    <span class="status-dot"></span>
+                    1. Orientierung & Kriterien
+                </button>
+                <button class="pill-button" id="btn-step2" onclick="switchStep(2)">
+                    <span class="status-dot"></span>
+                    2. Reale Anwendungswelten
+                </button>
+                <button class="pill-button" id="btn-step3" onclick="switchStep(3)">
+                    <span class="status-dot"></span>
+                    3. Labor-Analyse
+                </button>
+            </nav>
+
+            <div class="card" style="min-height: 450px;">
+                
+                <div id="step1" class="step-content active">
+                    <div class="section-header">
+                        <div class="icon-container info">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        </div>
+                        <h3>Mathematischer Kompass & Sinnstiftung</h3>
+                    </div>
+                    
+                    <p style="margin-bottom: 14px;">Willkommen im Forschungs-Labor für exponentielle Prozesse. Im Kern beschreiben diese Funktionen Vorgänge, bei denen sich Bestände nicht gleichförmig, sondern proportional zu ihrem aktuellen Wert verändern. Es handelt sich um ein mächtiges mathematisches Werkzeug zur Vorhersage realer Phänomene.</p>
+                    
+                    <div class="task-item" style="border-left-color: var(--primary-blue); margin-bottom: 20px;">
+                        <strong>Wann wende ich diesen Funktionstyp an? (Anwendungskriterien)</strong>
+                        <ul style="margin-left: 20px; margin-top: 6px; font-size: 0.95rem;">
+                            <li>Wenn eine feste prozentuale Zunahme oder Abnahme pro Zeiteinheit vorliegt.</li>
+                            <li>Wenn Prozesse gegen eine natürliche Sättigunggrenze oder Umgebungsschranke streben.</li>
+                            <li>Sobald die mathematische Struktur der Realität der folgenden Gleichungsform entspricht:</li>
+                        </ul>
+                    </div>
+
+                    <div style="text-align: center;">
+                        <div class="math-equation">
+                            f(x) = <span class="param-a">a</span> &middot; <span class="param-b">b</span><span class="math-exponent"><span class="param-c">c</span>(x - <span class="param-d">d</span>)</span> + <span class="param-y0">y<sub>0</sub></span>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 0.95rem; margin-top: 10px; color: var(--text-secondary);">Nutze die Regler auf der linken Seite, um ohne starre Vorgaben zu erforschen, wie sich Form und Lage der Kurve verändern. Übertrage deine visuellen Entdeckungen direkt auf dein Arbeitsblatt.</p>
+
+                    <div class="scaffolding-box">
+                        <div class="scaffolding-title">Unterstützungssystem</div>
+                        <div class="tip-buttons">
+                            <button class="tip-btn" onclick="toggleTip(1, 1)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F9AB00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .6 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path><line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line></svg>
+                                Strategischer Hinweis
+                            </button>
+                            <button class="tip-btn" onclick="toggleTip(1, 2)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7F39FB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z"></path><path d="M6 8h12"></path><path d="M6 12h12"></path></svg>
+                                Formelstütze
+                            </button>
+                            <button class="tip-btn" onclick="toggleTip(1, 3)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1E8E3E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                                Konkreter Zwischenschritt
+                            </button>
+                        </div>
+                        <div id="tip-content-1" class="tip-content-box"></div>
+                    </div>
+                </div>
+
+                <div id="step2" class="step-content">
+                    <div class="section-header">
+                        <div class="icon-container success">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                        </div>
+                        <h3>Simulations-Szenarien & Parameter-Verknüpfung</h3>
+                    </div>
+                    <p style="margin-bottom: 12px;">Wähle eine reale Anwendungswelt aus, um zu sehen, wie theoretische Parameter zu konkreten physikalischen, biologischen oder ökonomischen Messwerten werden. <strong>Nach der Auswahl werden die Einheiten und die präzisen Änderungsraten direkt an den Reglern links eingeblendet.</strong></p>
+                    
+                    <div class="preset-grid">
+                        <div class="preset-card" id="preset-bio" onclick="loadPreset('bio')">
+                            <div class="preset-name" style="color: var(--primary-green);">Mikrobiologie</div>
+                            <div class="preset-desc">Zellteilung einer Bakterienkultur. Untersuche, wie sich die Wachstumsgeschwindigkeit pro Stunde auf die Populationskurve auswirkt.</div>
+                        </div>
+                        <div class="preset-card" id="preset-bip" onclick="loadPreset('bip')">
+                            <div class="preset-name" style="color: var(--primary-blue);">Volkswirtschaft (BIP)</div>
+                            <div class="preset-desc">Langfristige Entwicklung des Bruttoinlandsprodukts. Verstehe den Zinseszinseffekt von jährlichen Wirtschaftswachstumsraten.</div>
+                        </div>
+                        <div class="preset-card" id="preset-physics" onclick="loadPreset('physics')">
+                            <div class="preset-name" style="color: var(--primary-purple);">Thermodynamik</div>
+                            <div class="preset-desc">Abkühlungsprozess eines Heißgetränks. Erforsche das Zusammenspiel aus Becherisolierung und Raumtemperatur.</div>
+                        </div>
+                    </div>
+
+                    <div id="preset-context-info" style="margin-top: 20px; padding: 16px; background: #F2F2F7; border-radius: var(--radius-m); font-size: 0.95rem; border-left: 5px solid var(--text-main); display:none;">
+                    </div>
+
+                    <div class="scaffolding-box">
+                        <div class="scaffolding-title">Unterstützungssystem</div>
+                        <div class="tip-buttons">
+                            <button class="tip-btn" onclick="toggleTip(2, 1)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F9AB00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .6 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path><line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line></svg>
+                                Strategischer Hinweis
+                            </button>
+                            <button class="tip-btn" onclick="toggleTip(2, 2)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7F39FB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z"></path><path d="M6 8h12"></path><path d="M6 12h12"></path></svg>
+                                Formelstütze
+                            </button>
+                            <button class="tip-btn" onclick="toggleTip(2, 3)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1E8E3E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                                Konkreter Zwischenschritt
+                            </button>
+                        </div>
+                        <div id="tip-content-2" class="tip-content-box"></div>
+                    </div>
+                </div>
+
+                <div id="step3" class="step-content">
+                    <div class="section-header">
+                        <div class="icon-container warn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        </div>
+                        <h3>Labor-Analyse & Erkenntnistransfer</h3>
+                    </div>
+                    <p>Führe nun gezielte Experimente durch, um die mathematischen Gesetzmäßigkeiten eigenständig zu entschlüsseln. Nutze den Graphen als visuelle Evidenz für deine Notizen.</p>
+                    
+                    <div class="task-list">
+                        <div class="task-item">
+                            <strong>Forschungsauftrag 1: Der Einfluss von <span class="param-b">b</span></strong><br>
+                            Bewege den grünen Regler auf Werte kleiner als 1 (z.B. 0.5) und danach auf Werte größer als 1. Welche fundamentale Richtungsänderung vollzieht die Kurve? Notiere den Unterschied zwischen Wachstum und Zerfall.
+                        </div>
+                        <div class="task-item">
+                            <strong>Forschungsauftrag 2: Die Schranke <span class="param-y0">y<sub>0</sub></span></strong><br>
+                            Verschiebe das violette Niveau. Welche visuelle Markierung im Koordinatensystem verschiebt sich exakt synchron? Was bedeutet dies für das langfristige Verhalten des Graphen in den Realsituationen?
+                        </div>
+                        <div class="task-item">
+                            <strong>Forschungsauftrag 3: Inversion durch <span class="param-a">a</span> und <span class="param-c">c</span></strong><br>
+                            Stelle <span class="param-a">a</span> auf einen negativen Wert. Vergleiche die Wirkung mit einer Spiegelung, die durch ein negatives <span class="param-c">c</span> (Änderungsrate) hervorgerufen wird.
+                        </div>
+                    </div>
+
+                    <div class="scaffolding-box">
+                        <div class="scaffolding-title">Unterstützungssystem</div>
+                        <div class="tip-buttons">
+                            <button class="tip-btn" onclick="toggleTip(3, 1)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F9AB00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .6 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path><line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line></svg>
+                                Strategischer Hinweis
+                            </button>
+                            <button class="tip-btn" onclick="toggleTip(3, 2)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7F39FB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z"></path><path d="M6 8h12"></path><path d="M6 12h12"></path></svg>
+                                Formelstütze
+                            </button>
+                            <button class="tip-btn" onclick="toggleTip(3, 3)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1E8E3E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                                Konkreter Zwischenschritt
+                            </button>
+                        </div>
+                        <div id="tip-content-3" class="tip-content-box"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <div class="log-dashboard">
+        <div class="log-icon-wrapper">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        </div>
+        <div class="log-stream" id="logStream"></div>
+    </div>
+
+    <script>
+        // App-State definieren
+        const state = {
+            a: 1.0,
+            b: 2.0,
+            c: 1.0,
+            d: 0.0,
+            y0: 0.0,
+            currentStep: 1,
+            completedSteps: new Set(),
+            activePreset: 'default'
+        };
+
+        // DOM Elemente abgreifen
+        const canvas = document.getElementById('graphCanvas');
+        const ctx = canvas.getContext('2d');
+        const logStream = document.getElementById('logStream');
+
+        // Slider-Elemente & Wertanzeigen
+        const sliders = {
+            a: document.getElementById('slider-a'),
+            b: document.getElementById('slider-b'),
+            c: document.getElementById('slider-c'),
+            d: document.getElementById('slider-d'),
+            y0: document.getElementById('slider-y0')
+        };
+
+        const valDisplays = {
+            a: document.getElementById('val-a'),
+            b: document.getElementById('val-b'),
+            c: document.getElementById('val-c'),
+            d: document.getElementById('val-d'),
+            y0: document.getElementById('val-y0')
+        };
+
+        const ctxDisplays = {
+            a: document.getElementById('ctx-a'),
+            b: document.getElementById('ctx-b'),
+            c: document.getElementById('ctx-c'),
+            d: document.getElementById('ctx-d'),
+            y0: document.getElementById('ctx-y0')
+        };
+
+        // Definitionen der kontextuellen Beschriftungen und Einheiten
+        const contextDefinitions = {
+            default: {
+                a: "Aktivierungszustand im Skalierungsursprung",
+                b: "Wachstums- oder Zerfallsfaktor",
+                c: "Stauchung/Streckung der X-Achse",
+                d: "Horizontale Positionierung / Nullpunktverschiebung",
+                y0: "Horizontale Grenzschranke"
+            },
+            bio: {
+                a: "Startpopulation [in Mio. Zellen] &rarr; Skaliert die Anfangsmenge",
+                b: "Basis-Teilungsrate [Faktor] &rarr; Grundverhalten der Zellart",
+                c: "Wachstumstaktung [pro Std.] &rarr; Modifiziert die stündliche Teilungsrate",
+                d: "Verzögerung [in Std.] &rarr; Verschiebt den Startzeitpunkt des Wachstums",
+                y0: "Zusatzbestand [in Mio. Zellen] &rarr; Unabhängige Zellgrundmenge"
+            },
+            bip: {
+                a: "Anfangs-BIP [in Mrd. €] &rarr; Wirtschaftliche Ausgangslage des Basisjahres",
+                b: "Jährlicher Wachstumsfaktor [Faktor] &rarr; Bestimmt die Basis-Dynamik",
+                c: "Konjunktur-Modifikator [Rate] &rarr; Beschleunigt oder bremst das Wachstum",
+                d: "Perioden-Verschiebung [in Jahren] &rarr; Verschiebt den Analyse-Bezugszeitpunkt",
+                y0: "Staatssockel / Subsistenz [in Mrd. €] &rarr; Krisenfestes Mindestniveau"
+            },
+            physics: {
+                a: "Anfangs-Übertemperatur [in °C] &rarr; Differenz zur Umgebung beim Einschenken",
+                b: "Becher-Materialwert [Faktor] &rarr; Grundlegende Isoliereigenschaft",
+                c: "Wärmeübergangsrate [pro Min.] &rarr; Geschwindigkeit des Energieaustauschs",
+                d: "Startzeitpunkt [in Min.] &rarr; Verzögerung bis zum Beginn der Messung",
+                y0: "Umgebungstemperatur [in °C] &rarr; Untere Grenze (Asymptote)"
+            }
+        };
+
+        const scaffoldingData = {
+            1: {
+                tip1: "Achte besonders auf den Kurvenverlauf links und rechts im unendlichen Bereich. Nähert sich die Kurve einer bestimmten Linie an?",
+                tip2: "Die Struktur lautet f(x) = a * b^{c(x-d)} + y0. Jede Farbe im Erklärtext entspricht exakt einem Schieberegler links.",
+                tip3: "Setze im Kopf den gesamten Exponenten auf 0. Jede Zahl hoch 0 ergibt 1. Welcher Punkt bleibt übrig?"
+            },
+            2: {
+                tip1: "Szenarien ändern die reale Bedeutung der Achsen. Schaue links unter die Reglernamen, um die physikalischen/ökonomischen Einheiten abzulesen.",
+                tip2: "Beim BIP entspricht die Basis b dem Wachstum. Ein b von 1.10 bedeutet zum Beispiel 10% Wachstum pro Zeiteinheit.",
+                tip3: "In der Thermodynamik sorgt ein b zwischen 0 und 1 für einen Abkühlungsprozess, der sich an die Raumtemperatur y0 annähert."
+            },
+            3: {
+                tip1: "Untersuche exakt den Unterschied, wenn die Basis b von 1.2 auf 0.8 absinkt. Die Änderungsrate kehrt ihr Vorzeichen um.",
+                tip2: "Die Asymptote wird im Koordinatensystem als violette, gestrichelte horizontale Linie dargestellt.",
+                tip3: "Ein negatives a dreht die Kurve nach unten um. In realen Welten wie dem BIP würde dies einen unaufhaltsamen Verlust bedeuten."
+            }
+        };
+
+        // Initialisierung
+        window.addEventListener('DOMContentLoaded', () => {
+            initCanvas();
+            setupSliderListeners();
+            addLogEntry("Interaktive Lernapp geladen. Orientierungsphase gestartet.");
+            drawGraph();
+        });
+
+        function initCanvas() {
+            const rect = canvas.parentNode.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.width * dpr;
+            ctx.scale(dpr, dpr);
+            ctx.imageSmoothingEnabled = true;
+            ctx.lineJoin = 'round';
+        }
+
+        function setupSliderListeners() {
+            Object.keys(sliders).forEach(key => {
+                sliders[key].addEventListener('input', (e) => {
+                    const parsedVal = parseFloat(e.target.value);
+                    state[key] = parsedVal;
+                    valDisplays[key].innerText = parsedVal.toFixed(1);
+                    
+                    drawGraph();
+                    
+                    if(Math.random() < 0.12) { 
+                        addLogEntry(`Parameter '${key}' modifiziert auf ${parsedVal.toFixed(1)}.`);
+                    }
+                });
+            });
+        }
+
+        // Mathematischer Graph-Renderer via native HTML5 Canvas Engine
+        function drawGraph() {
+            const w = canvas.width / (window.devicePixelRatio || 1);
+            const h = canvas.height / (window.devicePixelRatio || 1);
+            
+            ctx.clearRect(0, 0, w, h);
+            
+            const originX = w * 0.35; 
+            const originY = h * 0.65; 
+            const scaleX = w / 12;   
+            const scaleY = h / 12;   
+            
+            // 1. Hintergrundgitter zeichnen
+            ctx.strokeStyle = '#E5E5EA';
+            ctx.lineWidth = 1;
+            
+            for (let x = -10; x <= 10; x++) {
+                const ptX = originX + x * scaleX;
+                ctx.beginPath(); ctx.moveTo(ptX, 0); ctx.lineTo(ptX, h); ctx.stroke();
+            }
+            for (let y = -10; y <= 10; y++) {
+                const ptY = originY - y * scaleY;
+                ctx.beginPath(); ctx.moveTo(0, ptY); ctx.lineTo(w, ptY); ctx.stroke();
+            }
+            
+            // 2. Achsen zeichnen
+            ctx.strokeStyle = '#8E8E93';
+            ctx.lineWidth = 2;
+            
+            ctx.beginPath(); ctx.moveTo(0, originY); ctx.lineTo(w, originY); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(originX, 0); ctx.lineTo(originX, h); ctx.stroke();
+
+            ctx.fillStyle = '#8E8E93';
+            ctx.font = '12px sans-serif';
+            ctx.fillText('x (Zeit / Input)', w - 90, originY - 8);
+            ctx.fillText('y (Bestand / Output)', originX + 10, 15);
+
+            // 3. Dynamische Asymptote einzeichnen
+            const asymptoteY = originY - state.y0 * scaleY;
+            ctx.strokeStyle = 'rgba(127, 57, 251, 0.65)'; 
+            ctx.lineWidth = 2;
+            ctx.setLineDash([6, 4]);
+            ctx.beginPath(); ctx.moveTo(0, asymptoteY); ctx.lineTo(w, asymptoteY); ctx.stroke();
+            ctx.setLineDash([]); 
+
+            // 4. Funktion plotten: f(x) = a * b^(c*(x-d)) + y0
+            ctx.strokeStyle = '#1C1C1E';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            
+            let first = true;
+            for (let pixelX = 0; pixelX < w; pixelX++) {
+                const mathX = (pixelX - originX) / scaleX;
+                if (state.b <= 0) continue; 
+                
+                const exponent = state.c * (mathX - state.d);
+                const mathY = state.a * Math.pow(state.b, exponent) + state.y0;
+                const pixelY = originY - mathY * scaleY;
+                
+                if (!isNaN(pixelY) && isFinite(pixelY) && pixelY >= -50 && pixelY <= h + 50) {
+                    if (first) {
+                        ctx.moveTo(pixelX, pixelY);
+                        first = false;
+                    } else {
+                        ctx.lineTo(pixelX, pixelY);
+                    }
+                }
+            }
+            ctx.stroke();
+
+            // 5. Markanten Schnittpunkt bei x = d hervorheben (f(d) = a + y0)
+            const specialX = state.d;
+            const specialY = state.a + state.y0;
+            const sPixelX = originX + specialX * scaleX;
+            const sPixelY = originY - specialY * scaleY;
+
+            if (sPixelX >= 0 && sPixelX <= w && sPixelY >= 0 && sPixelY <= h) {
+                ctx.fillStyle = 'var(--primary-blue)';
+                ctx.beginPath(); ctx.arc(sPixelX, sPixelY, 6, 0, 2 * Math.PI); ctx.fill();
+                ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 1.5; ctx.stroke();
+            }
+        }
+
+        // Navigation und Steuerung des Lernpfads
+        function switchStep(stepNum) {
+            state.completedSteps.add(state.currentStep);
+            document.getElementById(`btn-step${state.currentStep}`).classList.add('completed');
+
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.pill-button').forEach(el => el.classList.remove('active'));
+            
+            state.currentStep = stepNum;
+            document.getElementById(`step${stepNum}`).classList.add('active');
+            document.getElementById(`btn-step${stepNum}`).classList.add('active');
+
+            const currentTipBox = document.getElementById(`tip-content-${stepNum}`);
+            if(currentTipBox) tipBoxToggleOff(currentTipBox);
+
+            addLogEntry(`Schritt ${stepNum} geöffnet. Fortschrittsmeilenstein registriert.`);
+        }
+
+        function tipBoxToggleOff(box) {
+            box.style.display = 'none';
+            document.querySelectorAll('.tip-btn').forEach(b => b.classList.remove('active-tip'));
+        }
+
+        function toggleTip(stepNum, tipId) {
+            const tipBox = document.getElementById(`tip-content-${stepNum}`);
+            const clickedBtn = event.currentTarget;
+            
+            const stepArea = document.getElementById(`step${stepNum}`);
+            stepArea.querySelectorAll('.tip-btn').forEach(b => b.classList.remove('active-tip'));
+            
+            let tipKey = "tip" + tipId;
+            let text = scaffoldingData[stepNum][tipKey];
+
+            if (tipBox.style.display === 'block' && tipBox.innerText === text) {
+                tipBox.style.display = 'none';
+                addLogEntry(`Tipp-Auskunft ${tipId} geschlossen.`);
+            } else {
+                tipBox.innerText = text;
+                tipBox.style.display = 'block';
+                clickedBtn.classList.add('active-tip');
+                addLogEntry(`Hilfestellungs-Ebene ${tipId} in Schritt ${stepNum} freigeschaltet.`);
+            }
+        }
+
+        // Präzise Preset-Welten Lade-Engine mit dynamischer Einheitenanpassung
+        function loadPreset(presetKey) {
+            state.activePreset = presetKey;
+            
+            document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById(`preset-${presetKey}`).classList.add('selected');
+
+            const infoBox = document.getElementById('preset-context-info');
+            infoBox.style.display = 'block';
+
+            // Einheiten-Texte an den Parametern austauschen
+            Object.keys(ctxDisplays).forEach(param => {
+                ctxDisplays[param].innerHTML = contextDefinitions[presetKey][param];
+            });
+
+            // Mathematische Modellkonfigurationen und genaue Realbeschreibungen laden
+            if (presetKey === 'bio') {
+                state.a = 1.5; state.b = 2.0; state.c = 0.7; state.d = 0.0; state.y0 = 0.0;
+                infoBox.innerHTML = `<strong>Detaillierte Analyse &mdash; Mikrobiologie (Bakterienwachstum):</strong><br>
+                Hier simulierst du eine Zellkultur. Der Faktor <span class="param-a">a (1.5 Mio. Zellen)</span> bestimmt das Volumen zum Messstart. Die Basis <span class="param-b">b=2.0</span> zeigt, dass sich die Zellen teilen (Verdopplung). Der Modifikator <span class="param-c">c (0.7)</span> bremst oder beschleunigt diesen Takt pro Stunde. Verändere den Schieberegler <span class="param-c">c</span>, um zu sehen, wie eine höhere stündliche Änderungsrate die Kurve steiler nach oben schnellen lässt!`;
+            } 
+            else if (presetKey === 'bip') {
+                state.a = 3.0; state.b = 1.1; state.c = 1.5; state.d = -1.0; state.y0 = 0.5;
+                infoBox.innerHTML = `<strong>Detaillierte Analyse &mdash; Volkswirtschaft (Bruttoinlandsprodukt):</strong><br>
+                Dieses Modell zeigt das Wachstum des BIP eines Staates. Das Start-BIP liegt bei <span class="param-a">a (3.0 Mrd. €)</span>. Die inhärente Wachstumsrate wird durch die Kombination aus Basis <span class="param-b">b (1.1)</span> und Konjunkturwert <span class="param-c">c (1.5)</span> bestimmt. Erhöhe die Basis <span class="param-b">b</span> minimal, um den massiven Zinseszinseffekt über die Jahre hinweg visuell zu begreifen. Die Asymptote <span class="param-y0">y<sub>0</sub> (0.5 Mrd. €)</span> bildet das krisenfeste wirtschaftliche Fundament ab, welches selbst bei schwerer Rezession nicht wegbricht.`;
+            } 
+            else if (presetKey === 'physics') {
+                state.a = 4.0; state.b = 0.6; state.c = 0.8; state.d = 0.0; state.y0 = 2.0;
+                infoBox.innerHTML = `<strong>Detaillierte Analyse &mdash; Thermodynamik (Abkühlung):</strong><br>
+                Simuliert wird ein heißer Kaffee im Zimmer. Die Kaffeetemperatur liegt anfangs um <span class="param-a">a (4.0°C)</span> über der Raumtemperatur. Da der Wärmeübergang ein Verlustgeschäft ist, ist die Basis <span class="param-b">b (0.6)</span> kleiner als 1. Die Abkühlungsgeschwindigkeit pro Minute wird durch den Modifikator <span class="param-c">c</span> reguliert. Reduzierst du <span class="param-c">c</span>, simulierst du eine perfekte Isolierung (Thermosbecher). Der Kaffee nähert sich asymptotisch der Raumtemperatur von <span class="param-y0">y<sub>0</sub> (2.0°C)</span> an.`;
+            }
+
+            // Slider visuell neu einstellen
+            Object.keys(sliders).forEach(key => {
+                sliders[key].value = state[key];
+                valDisplays[key].innerText = state[key].toFixed(1);
+            });
+
+            addLogEntry(`Kontext-Modus '${presetKey}' injiziert. Einheiten & Verlaufsraten aktualisiert.`);
+            drawGraph();
+        }
+
+        function addLogEntry(message) {
+            const now = new Date();
+            const timeStr = now.toTimeString().split(' ')[0];
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-time">[${timeStr}]</span> ${message}`;
+            logStream.appendChild(entry);
+            logStream.scrollTop = logStream.scrollHeight;
+        }
+
+        window.addEventListener('resize', () => {
+            initCanvas();
+            drawGraph();
+        });
+    </script>
+</body>
+</html>
