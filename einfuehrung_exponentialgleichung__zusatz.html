@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sortierspiel: Einfluss der Parameter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .selected-card {
+            border-color: #d97706 !important;
+            background-color: #fef3c7 !important;
+            transform: scale(1.02);
+        }
+        .matched-card {
+            border-color: #10b981 !important;
+            background-color: #ecfdf5 !important;
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between font-sans">
+
+    <header class="bg-white border-b border-slate-200 py-6 px-4 shadow-sm text-center">
+        <h1 class="text-2xl md:text-3xl font-bold text-amber-800">Einfluss der Parameter bei Exponentialfunktionen</h1>
+        <p class="text-slate-500 mt-2 text-sm md:text-base">Klicke zuerst auf einen Parameter und dann auf die dazugehörige Bedeutung des Graphen!</p>
+    </header>
+
+    <main class="max-w-6xl w-full mx-auto p-4 md:p-6 flex-grow">
+        <!-- Fortschritts- und Punkteanzeige -->
+        <div class="flex justify-between items-center mb-6 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+            <div class="text-sm md:text-base font-semibold">Fortschritt: <span id="progress-text">0 / 10</span></div>
+            <div class="w-1/2 bg-slate-200 h-3 rounded-full overflow-hidden">
+                <div id="progress-bar" class="bg-amber-600 h-full w-0 transition-all duration-300"></div>
+            </div>
+            <button id="reset-btn" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-sm font-medium transition">
+                Neustart
+            </button>
+        </div>
+
+        <!-- Spielfeld -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Parameter-Spalte -->
+            <div>
+                <h2 class="text-lg font-bold text-slate-700 mb-3 pl-1">Parameter</h2>
+                <div id="parameter-list" class="space-y-3"></div>
+            </div>
+
+            <!-- Bedeutungs-Spalte -->
+            <div>
+                <h2 class="text-lg font-bold text-slate-700 mb-3 pl-1">Bedeutung für den Graphen</h2>
+                <div id="meaning-list" class="space-y-3"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Erfolgs-Modal -->
+    <div id="victory-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 text-center border border-slate-100 animate-bounce-short">
+            <div class="text-5xl mb-4">🎉</div>
+            <h2 class="text-2xl font-bold text-slate-800 mb-2">Großartig gemacht!</h2>
+            <p class="text-slate-600 mb-6">Du hast alle Parameter erfolgreich ihren mathematischen Bedeutungen zugeordnet.</p>
+            <button onclick="initGame()" class="w-full bg-amber-700 hover:bg-amber-800 text-white font-semibold py-3 rounded-xl transition shadow-md shadow-amber-700/20">
+                Nochmal spielen
+            </button>
+        </div>
+    </div>
+
+    <footer class="text-center py-4 text-xs text-slate-400 bg-white border-t border-slate-200 mt-8">
+        Interaktives Lernspiel &bull; Bereit für GitHub Pages
+    </footer>
+
+    <script>
+        const gameData = [
+            { id: 1, param: "a > 1 / 0 < a < 1", meaning: "Streckung bzw. Stauchung des Graphen in y-Richtung relativ zur Asymptote." },
+            { id: 2, param: "a < 0", meaning: "Spiegelung des Graphen an der Asymptote (bei y₀ = 0 an der x-Achse); aus Wachstum wird fallender Verlauf und umgekehrt." },
+            { id: 3, param: "a = 0", meaning: "Der Exponentialterm entfällt vollständig; es bleibt die konstante Funktion f(x) = y₀." },
+            { id: 4, param: "b > 1", meaning: "Exponentielles Wachstum – der Graph steigt für x → ∞ unbegrenzt." },
+            { id: 5, param: "0 < b < 1", meaning: "Exponentieller Zerfall – der Graph fällt und nähert sich der Asymptote für x → ∞." },
+            { id: 6, param: "c > 1 / 0 < c < 1", meaning: "Stauchung bzw. Streckung des Graphen in x-Richtung (schnelleres bzw. langsameres Wachstum/Zerfall)." },
+            { id: 7, param: "c < 0", meaning: "Spiegelung an der y-Achse: aus Wachstum wird Zerfall und umgekehrt." },
+            { id: 8, param: "c = 0", meaning: "Der Exponent wird stets 0, b⁰ = 1; es bleibt die konstante Funktion f(x) = a + y₀." },
+            { id: 9, param: "d > 0 / d < 0", meaning: "Verschiebung des Graphen entlang der x-Achse nach rechts (d > 0) bzw. nach links (d < 0)." },
+            { id: 10, param: "y₀ > 0 / y₀ < 0", meaning: "Verschiebung des Graphen entlang der y-Achse; die waagerechte Asymptote liegt bei y = y₀." }
+        ];
+
+        let selectedParam = null;
+        let selectedMeaning = null;
+        let matchedCount = 0;
+
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        function initGame() {
+            matchedCount = 0;
+            selectedParam = null;
+            selectedMeaning = null;
+            document.getElementById('victory-modal').classList.add('hidden');
+            updateProgress();
+
+            const paramList = document.getElementById('parameter-list');
+            const meaningList = document.getElementById('meaning-list');
+
+            paramList.innerHTML = '';
+            meaningList.innerHTML = '';
+
+            // Mischen für getrennte Spalten
+            const shuffledParams = shuffle([...gameData]);
+            const shuffledMeanings = shuffle([...gameData]);
+
+            shuffledParams.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm cursor-pointer transition-all hover:border-amber-400 font-mono font-bold text-amber-900 text-center text-lg";
+                card.innerText = item.param;
+                card.dataset.id = item.id;
+                card.onclick = () => selectParam(card);
+                paramList.appendChild(card);
+            });
+
+            shuffledMeanings.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm cursor-pointer transition-all hover:border-amber-400 text-sm md:text-base text-slate-700 leading-relaxed";
+                card.innerText = item.meaning;
+                card.dataset.id = item.id;
+                card.onclick = () => selectMeaning(card);
+                meaningList.appendChild(card);
+            });
+        }
+
+        function selectParam(card) {
+            if (document.querySelector(`#parameter-list [data-id="${card.dataset.id}"]`).classList.contains('matched-card')) return;
+            document.querySelectorAll('#parameter-list > div').forEach(c => c.classList.remove('selected-card'));
+            selectedParam = card;
+            card.classList.add('selected-card');
+            checkMatch();
+        }
+
+        function selectMeaning(card) {
+            if (document.querySelector(`#meaning-list [data-id="${card.dataset.id}"]`).classList.contains('matched-card')) return;
+            document.querySelectorAll('#meaning-list > div').forEach(c => c.classList.remove('selected-card'));
+            selectedMeaning = card;
+            card.classList.add('selected-card');
+            checkMatch();
+        }
+
+        function checkMatch() {
+            if (selectedParam && selectedMeaning) {
+                if (selectedParam.dataset.id === selectedMeaning.dataset.id) {
+                    // Treffer
+                    selectedParam.classList.replace('selected-card', 'matched-card');
+                    selectedMeaning.classList.replace('selected-card', 'matched-card');
+                    matchedCount++;
+                    updateProgress();
+                    
+                    selectedParam = null;
+                    selectedMeaning = null;
+
+                    if (matchedCount === gameData.length) {
+                        setTimeout(() => {
+                            document.getElementById('victory-modal').classList.remove('hidden');
+                        }, 500);
+                    }
+                } else {
+                    // Fehler - Zurücksetzen mit kurzem optischen Feedback
+                    const p = selectedParam;
+                    const m = selectedMeaning;
+                    p.classList.add('border-red-500', 'bg-red-50');
+                    m.classList.add('border-red-500', 'bg-red-50');
+                    
+                    setTimeout(() => {
+                        p.classList.remove('selected-card', 'border-red-500', 'bg-red-50');
+                        m.classList.remove('selected-card', 'border-red-500', 'bg-red-50');
+                    }, 600);
+
+                    selectedParam = null;
+                    selectedMeaning = null;
+                }
+            }
+        }
+
+        function updateProgress() {
+            document.getElementById('progress-text').innerText = `${matchedCount} / ${gameData.length}`;
+            const percentage = (matchedCount / gameData.length) * 100;
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+        }
+
+        document.getElementById('reset-btn').onclick = initGame;
+        window.onload = initGame;
+    </script>
+</body>
+</html>
