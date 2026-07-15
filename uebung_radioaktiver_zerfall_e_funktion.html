@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktives Lernquiz: Exponentieller radioaktiver Zerfall</title>
+    <style>
+        :root {
+            --color-bg: #f4f6f9;
+            --color-card-bg: #ffffff;
+            --color-text-main: #1c1c1e;
+            --color-text-muted: #636366;
+            --color-border: #e5e5ea;
+            
+            /* Semantische Farbbrücke */
+            --color-param-n0: #1a73e8;       /* Material Blue (Anfangsbestand) */
+            --color-param-lambda: #1e8e3e;   /* Material Green (Zerfallskonstante) */
+            --color-param-time: #f9ab00;     /* Material Yellow/Orange (Zeit t) */
+            --color-param-e: #d32f2f;        /* Material Red 700 (Basis e) */
+            --color-result: #7f39fb;         /* Material Purple (Restbestand / Ergebnisse) */
+            
+            /* UI-Farben */
+            --color-dark-pill: #1c1c1e;
+            --color-light-pill: #e5e5ea;
+            --color-success: #33691e;        /* Mattes Dunkelgrün für Meilensteine */
+            --color-tip-bg: #fef7e0;
+            --color-tip-text: #664d03;
+            --color-error-bg: #fce8e6;
+            --color-error-text: #a51d24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text-main);
+            padding: 24px;
+        }
+
+        /* Zwei-Spalten-Grid Layout nach exakter Vorgabe */
+        .app-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Linke Spalte: Festes Kontrollzentrum */
+        .sidebar {
+            display: block;
+        }
+
+        .card {
+            background: var(--color-card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--color-border);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--color-text-main);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-description {
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--color-text-muted);
+        }
+
+        /* Parametersteuerung */
+        .slider-group {
+            margin-top: 16px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .slider-input {
+            width: 100%;
+            margin-bottom: 14px;
+            accent-color: var(--color-param-n0);
+        }
+        
+        .slider-input.lambda-slider {
+            accent-color: var(--color-param-lambda);
+        }
+
+        /* Canvas-Anzeige */
+        .canvas-container {
+            width: 100%;
+            position: relative;
+        }
+
+        canvas {
+            width: 100%;
+            height: 220px;
+            background: #fafafa;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+            display: block;
+        }
+
+        /* Rechte Spalte: Interaktiver Lernpfad */
+        .main-content {
+            display: block;
+        }
+
+        /* Horizontale Schritt-Navigation (Pills) */
+        .navigation-band {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .nav-pill {
+            background-color: var(--color-light-pill);
+            color: var(--color-text-main);
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-pill.active {
+            background-color: var(--color-dark-pill);
+            color: #ffffff;
+        }
+
+        .nav-pill .checkmark {
+            display: none;
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .nav-pill.completed .checkmark {
+            display: inline;
+        }
+
+        /* Dynamischer Inhaltsbereich */
+        .content-display {
+            min-height: 500px;
+        }
+
+        .step-section {
+            display: none;
+        }
+
+        .step-section.active {
+            display: block;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            color: var(--color-text-main);
+        }
+
+        p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #3a3a3c;
+            margin-bottom: 16px;
+        }
+
+        /* Mathematische Formel-Architektur ohne LaTeX */
+        .math-container {
+            background: #f8f9fa;
+            border-left: 4px solid var(--color-param-n0);
+            padding: 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .math-equation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 18px;
+            padding: 10px 0;
+        }
+
+        .math-fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 0 4px;
+            vertical-align: middle;
+        }
+
+        .math-numerator {
+            border-bottom: 1px solid var(--color-text-main);
+            padding-bottom: 2px;
+            width: 100%;
+        }
+
+        .math-denominator {
+            padding-top: 2px;
+            width: 100%;
+        }
+
+        .math-sqrt {
+            display: inline-flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .radical {
+            font-size: 20px;
+            margin-right: -2px;
+        }
+
+        .radicand {
+            border-top: 1px solid var(--color-text-main);
+            padding-top: 1px;
+        }
+
+        /* Semantische Farb-Klassen */
+        .p-n0 { color: var(--color-param-n0); font-weight: bold; }
+        .p-lambda { color: var(--color-param-lambda); font-weight: bold; }
+        .p-time { color: var(--color-param-time); font-weight: bold; }
+        .p-e { color: var(--color-param-e); font-weight: bold; }
+        .p-res { color: var(--color-result); font-weight: bold; }
+
+        /* Drop-down Menüs für didaktisches Scaffolding */
+        .scaffolding-dropdown {
+            margin-top: 14px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .dropdown-trigger {
+            width: 100%;
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: opacity 0.2s ease;
+        }
+
+        .dropdown-trigger:hover {
+            opacity: 0.9;
+        }
+
+        .dropdown-content {
+            padding: 14px 16px;
+            font-size: 13px;
+            line-height: 1.5;
+            display: none;
+        }
+
+        /* Typenkonfiguration für Dropdowns */
+        .type-tip .dropdown-trigger {
+            background-color: var(--color-tip-bg);
+            color: var(--color-tip-text);
+        }
+        .type-tip .dropdown-content {
+            background-color: #fffdf6;
+            color: #543e02;
+            border-top: 1px solid #f6e6be;
+        }
+
+        .type-pitfall .dropdown-trigger {
+            background-color: var(--color-error-bg);
+            color: var(--color-error-text);
+        }
+        .type-pitfall .dropdown-content {
+            background-color: #fffaf9;
+            color: #841419;
+            border-top: 1px solid #fad2cf;
+        }
+
+        .dropdown-trigger::after {
+            content: '▼';
+            margin-left: auto;
+            font-size: 10px;
+            transition: transform 0.2s;
+        }
+
+        .scaffolding-dropdown.open .dropdown-trigger::after {
+            transform: rotate(180deg);
+        }
+
+        .scaffolding-dropdown.open .dropdown-content {
+            display: block;
+        }
+
+        /* Quiz-Spezifische Elemente */
+        .quiz-container {
+            background: #ffffff;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .quiz-question {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-button {
+            background: #f8f9fa;
+            border: 1px solid var(--color-border);
+            padding: 12px 16px;
+            border-radius: 6px;
+            text-align: left;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-button:hover:not(:disabled) {
+            background: #eef3fc;
+            border-color: var(--color-param-n0);
+        }
+
+        .option-button.correct {
+            background: #e8f5e9;
+            border-color: #2e7d32;
+            color: #1b5e20;
+            font-weight: 600;
+        }
+
+        .option-button.wrong {
+            background: #ffebee;
+            border-color: #c62828;
+            color: #b71c1c;
+        }
+
+        .feedback-box {
+            margin-top: 14px;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            line-height: 1.5;
+            display: none;
+        }
+
+        .feedback-box.correct {
+            display: block;
+            background: #e8f5e9;
+            border-left: 4px solid #2e7d32;
+            color: #1b5e20;
+        }
+
+        .feedback-box.wrong {
+            display: block;
+            background: #ffebee;
+            border-left: 4px solid #c62828;
+            color: #b71c1c;
+        }
+
+        /* Aktionsbutton zum Fortfahren */
+        .action-container {
+            margin-top: 24px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-advance {
+            background-color: var(--color-success);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-advance:hover {
+            background-color: #254e14;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- LINKE SPALTE: Fester Kontrollzentrum-Bereich -->
+        <div class="sidebar">
+            
+            <!-- Card 1: Branding & Fokus -->
+            <div class="card">
+                <div class="card-title">Radioaktiver Zerfall</div>
+                <div class="card-description">
+                    Instabile Atomkerne zerfallen rein zufällig über die Zeit. Makroskopisch lässt sich dieser Prozess präzise berechnen. Die Änderungsrate verhält sich dabei proportional zum aktuellen Bestand – ein klassischer exponentieller Prozess.
+                </div>
+            </div>
+
+            <!-- Card 2: Parametersteuerung -->
+            <div class="card">
+                <div class="card-title">Funktionsparameter bestimmen</div>
+                <div class="card-description">
+                    Verändere die Regler, um den mathematischen Einfluss direkt im Funktionsgraphen zu analysieren.
+                </div>
+                
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Anfangsbestand (<span class="p-n0">N<sub>0</sub></span>)</span>
+                        <span id="val-n0">100 %</span>
+                    </div>
+                    <input type="range" id="slider-n0" class="slider-input" min="10" max="100" value="100" step="5">
+                    
+                    <div class="slider-label">
+                        <span>Zerfallskonstante (<span class="p-lambda">&lambda;</span>)</span>
+                        <span id="val-lambda">0.035 1/a</span>
+                    </div>
+                    <input type="range" id="slider-lambda" class="slider-input lambda-slider" min="0.01" max="0.1" value="0.035" step="0.005">
+                </div>
+            </div>
+
+            <!-- Card 3: Dynamischer Funktionsgraph (Canvas) -->
+            <div class="card">
+                <div class="card-title">Dynamischer Funktionsgraph</div>
+                <div class="canvas-container">
+                    <canvas id="graphCanvas"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RECHTE SPALTE: Interaktiver Lernpfad -->
+        <div class="main-content">
+            
+            <!-- Horizontale Schritt-Navigation -->
+            <div class="navigation-band">
+                <button class="nav-pill active" id="pill-step1" onclick="switchStep(1)">
+                    <span class="checkmark">✓</span> 1. Anwendungskriterien
+                </button>
+                <button class="nav-pill" id="pill-step2" onclick="switchStep(2)">
+                    <span class="checkmark">✓</span> 2. Die Halbwertszeit
+                </button>
+                <button class="nav-pill" id="pill-step3" onclick="switchStep(3)">
+                    <span class="checkmark">✓</span> 3. Mathematische Modellierung
+                </button>
+            </div>
+
+            <!-- Dynamischer Inhaltsbereich -->
+            <div class="card content-display">
+                
+                <!-- SCHRITT 1: Anwendungskriterien -->
+                <div id="step1" class="step-section active">
+                    <h2>Anwendungskriterien & Mathematische Bedeutung</h2>
+                    <p>
+                        Wann greift das Modell des exponentiellen Zerfalls? In der Praxis nutzen wir dieses mathematische Werkzeug, wenn die prozentuale Abnahme einer Größe in gleichen Zeitintervallen konstant bleibt. Das bedeutet: Je weniger instabile Kerne vorhanden sind, desto weniger Zerfälle finden statt.
+                    </p>
+                    
+                    <div class="math-container">
+                        <div class="card-title" style="font-size:12px; margin-bottom:4px;">Allgemeine Modellgleichung:</div>
+                        <div class="math-equation">
+                            <span class="p-res">N(<span class="p-time">t</span>)</span> &minus; <span class="p-n0">N<sub>0</sub></span> &middot; <span class="p-e">e</span><sup>&minus;<span class="p-lambda">&lambda;</span>&middot;<span class="p-time">t</span></sup>
+                        </div>
+                    </div>
+
+                    <div class="quiz-container">
+                        <div class="quiz-question">Quiz-Frage 1: Ein Isotop besitzt eine konstante Zerfallsrate. Welche strukturelle Voraussetzung muss erfüllt sein, damit das Gesetz des exponentiellen Zerfalls angewendet werden darf?</div>
+                        <div class="quiz-options">
+                            <button class="option-button" onclick="checkAnswer(1, 0, this)">A) Die Anzahl der zerfallenden Kerne pro Sekunde muss absolut immer identisch sein.</button>
+                            <button class="option-button" onclick="checkAnswer(1, 1, this)">B) Die Wahrscheinlichkeit für den Zerfall eines einzelnen Kerns muss über die Zeit konstant sein, sodass die Abnahme proportional zum aktuellen Bestand ist.</button>
+                            <button class="option-button" onclick="checkAnswer(1, 2, this)">C) Das System muss von außen kontinuierlich mit neuer Energie oder Masse gespeist werden.</button>
+                        </div>
+                        <div id="feedback-1" class="feedback-box"></div>
+                    </div>
+
+                    <!-- Scaffolding Dropdowns -->
+                    <div class="scaffolding-dropdown type-tip">
+                        <button class="dropdown-trigger" onclick="toggleDropdown(this)">💡 Tipp & Strukturhilfe</button>
+                        <div class="dropdown-content">
+                            Achte auf das Wort "proportional". Exponentielles Verhalten bedeutet, dass sich eine Änderung direkt auf die momentan vorhandene Menge bezieht, nicht auf einen festen, starren Wert.
+                        </div>
+                    </div>
+                    
+                    <div class="scaffolding-dropdown type-pitfall">
+                        <button class="dropdown-trigger" onclick="toggleDropdown(this)">⚠️ Stolperfalle & Schülerfehler</button>
+                        <div class="dropdown-content">
+                            Ein häufiger Fehler ist die Verwechslung mit linearem Abbau. Bei linearem Abbau nimmt die Menge jede Stunde um exakt die gleiche Anzahl (z. B. 5 Gramm) ab. Beim radioaktiven Zerfall nimmt sie jedoch um den gleichen Prozentsatz ab!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SCHRITT 2: Die Halbwertszeit -->
+                <div id="step2" class="step-section">
+                    <h2>Die Halbwertszeit (T<sub>1/2</sub>)</h2>
+                    <p>
+                        Die Halbwertszeit gibt die Zeitspanne an, nach der sich die Anzahl der ursprünglich vorhandenen Atomkerne exakt halbiert hat. Sie ist eine stoffspezifische Konstante und völlig unabhängig vom gewählten Anfangsbestand.
+                    </p>
+
+                    <div class="math-container">
+                        <div class="card-title" style="font-size:12px; margin-bottom:4px;">Herleitung aus der Gleichung:</div>
+                        <div class="math-equation">
+                            <span class="p-time">T<sub>1/2</sub></span> = 
+                            <div class="math-fraction">
+                                <div class="math-numerator">ln(2)</div>
+                                <div class="math-denominator"><span class="p-lambda">&lambda;</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quiz-container">
+                        <div class="quiz-question">Quiz-Frage 2: Du verdoppelst den Anfangsbestand <span class="p-n0">N<sub>0</sub></span> eines radioaktiven Präparats. Wie verändert sich dadurch die Halbwertszeit <span class="p-time">T<sub>1/2</sub></span>?</div>
+                        <div class="quiz-options">
+                            <button class="option-button" onclick="checkAnswer(2, 0, this)">A) Die Halbwertszeit verdoppelt sich ebenfalls, da mehr Masse vorhanden ist.</button>
+                            <button class="option-button" onclick="checkAnswer(2, 1, this)">B) Die Halbwertszeit bleibt absolut unverändert, da sie nur von der Zerfallskonstante abhängt.</button>
+                            <button class="option-button" onclick="checkAnswer(2, 2, this)">C) Die Halbwertszeit halbiert sich, weil der Druck im System steigt.</button>
+                        </div>
+                        <div id="feedback-2" class="feedback-box"></div>
+                    </div>
+
+                    <div class="scaffolding-dropdown type-tip">
+                        <button class="dropdown-trigger" onclick="toggleDropdown(this)">💡 Tipp & Strukturhilfe</button>
+                        <div class="dropdown-content">
+                            Schau dir die obige Bruchformel für die Halbwertszeit genau an. Taucht der Parameter <span class="p-n0">N<sub>0</sub></span> irgendwo in dieser Formel auf?
+                        </div>
+                    </div>
+
+                    <div class="scaffolding-dropdown type-pitfall">
+                        <button class="dropdown-trigger" onclick="toggleDropdown(this)">⚠️ Stolperfalle & Schülerfehler</button>
+                        <div class="dropdown-content">
+                            Viele Schüler glauben instinktiv, dass eine größere Stoffmenge länger braucht, um sich zu halbieren. Doch mehr Atomkerne bedeuten gleichzeitig auch proportional mehr Zerfälle pro Zeiteinheit! Die relative Zeit zur Halbierung bleibt konstant.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SCHRITT 3: Mathematische Modellierung -->
+                <div id="step3" class="step-section">
+                    <h2>Praxisnahe Modellierung & Berechnung</h2>
+                    <p>
+                        In technischen Anwendungen oder medizinischen Diagnosen (z.B. Nuklearmedizin) berechnet man den exakten Restbestand nach einer bestimmten Zeit. Nutzen wir die Parameter aus der linken Steuerung, um reale Vorhersagen zu treffen.
+                    </p>
+
+                    <div class="quiz-container">
+                        <div class="quiz-question">Quiz-Frage 3: Ein künstliches Isotop hat eine Zerfallskonstante von <span class="p-lambda">&lambda;</span> = 0.035 1/a. Nach wie vielen Jahren sind näherungsweise noch 50 % der Ausgangskerne vorhanden? (Nutze zur Orientierung auch den Live-Graphen links!)</div>
+                        <div class="quiz-options">
+                            <button class="option-button" onclick="checkAnswer(3, 0, this)">A) Nach ca. 10 Jahren.</button>
+                            <button class="option-button" onclick="checkAnswer(3, 1, this)">B) Nach ca. 20 Jahren.</button>
+                            <button class="option-button" onclick="checkAnswer(3, 2, this)">C) Nach ca. 50 Jahren.</button>
+                        </div>
+                        <div id="feedback-3" class="feedback-box"></div>
+                    </div>
+
+                    <div class="scaffolding-dropdown type-tip">
+                        <button class="dropdown-trigger" onclick="toggleDropdown(this)">💡 Tipp & Strukturhilfe</button>
+                        <div class="dropdown-content">
+                            Stelle den Regler der Zerfallskonstante links exakt auf 0.035 ein. Wandere dann auf der horizontalen Achse des Graphen so weit nach rechts, bis der violette Funktionswert genau bei 50 % liegt. Lies den zugehörigen Zeitwert ab.
+                        </div>
+                    </div>
+
+                    <div class="scaffolding-dropdown type-pitfall">
+                        <button class="dropdown-trigger" onclick="toggleDropdown(this)">⚠️ Stolperfalle & Schülerfehler</button>
+                        <div class="dropdown-content">
+                            Vorsicht bei der Einheit! Die Zerfallskonstante hat die Einheit 1/Jahr (oder s<sup>-1</sup>). Die resultierende Zeit wird folglich in der dazu passenden Zeiteinheit (hier Jahre) ausgegeben. Niemals Einheiten unüberlegt mischen!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aktionsbutton zum Fortfahren -->
+                <div class="action-container">
+                    <button class="btn-advance" id="btnAdvance" onclick="advanceStep()">Abschnitt Verstanden ➜</button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // App State Management
+        let currentStep = 1;
+        const totalSteps = 3;
+        const completedSteps = { 1: false, 2: false, 3: false };
+
+        // Mathematische Antworten-Konfiguration
+        const quizData = {
+            1: { correct: 1, text: "Richtig! Da der Zerfall ein rein statistischer Prozess ist, bleibt die Wahrscheinlichkeit pro Kern identisch. Die Gesamtänderungsrate sinkt proportional mit der Abnahme des Bestands." },
+            2: { correct: 1, text: "Hervorragend! Die Halbwertszeit ist unabhängig von der Ausgangsmenge. Mehr Substanz zerfällt im gleichen Zeitraum absolut schneller, relativ bleibt das Verhältnis exakt gleich." },
+            3: { correct: 1, text: "Großartig berechnet! ln(2) / 0.035 ergibt exakt ca. 19.8 Jahre, also gerundet 20 Jahre. Dies deckt sich perfekt mit der visuellen Evidenz unseres Canvas-Graphen." }
+        };
+
+        // DOM Elemente
+        const sliderN0 = document.getElementById('slider-n0');
+        const sliderLambda = document.getElementById('slider-lambda');
+        const valN0 = document.getElementById('val-n0');
+        const valLambda = document.getElementById('val-lambda');
+        const canvas = document.getElementById('graphCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Event Listener für Echtzeit-Parameteränderungen
+        sliderN0.addEventListener('input', () => {
+            valN0.innerHTML = sliderN0.value + " %";
+            updateGraph();
+        });
+
+        sliderLambda.addEventListener('input', () => {
+            valLambda.innerHTML = sliderLambda.value + " 1/a";
+            updateGraph();
+        });
+
+        // HDPI Canvas Skalierung für gestochen scharfe Graphen (Retina/4K)
+        function setupCanvas() {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+        }
+
+        // Native 2D-Rendering Engine für mathematischen Graphen
+        function updateGraph() {
+            const width = canvas.width / (window.devicePixelRatio || 1);
+            const height = canvas.height / (window.devicePixelRatio || 1);
+            
+            // Clear Canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            const paddingLeft = 40;
+            const paddingBottom = 30;
+            const paddingTop = 20;
+            const paddingRight = 20;
+            
+            const graphWidth = width - paddingLeft - paddingRight;
+            const graphHeight = height - paddingTop - paddingBottom;
+
+            // Parameter holen
+            const N0_val = parseFloat(sliderN0.value);
+            const lambda_val = parseFloat(sliderLambda.value);
+
+            // Koordinatensystem zeichnen (Achsen)
+            ctx.strokeStyle = '#8e8e93';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(paddingLeft, paddingTop);
+            ctx.lineTo(paddingLeft, height - paddingBottom);
+            ctx.lineTo(width - paddingRight, height - paddingBottom);
+            ctx.stroke();
+
+            // Achsenbeschriftung
+            ctx.fillStyle = '#1c1c1e';
+            ctx.font = '10px sans-serif';
+            ctx.fillText('t (a)', width - paddingRight - 10, height - paddingBottom + 15);
+            ctx.fillText('N (%)', paddingLeft - 30, paddingTop + 5);
+
+            // Graphen-Plot mit 5% Rand-Clipping-Schutz
+            ctx.strokeStyle = '#1a73e8';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+
+            const maxTime = 60; // x-Achse geht bis 60 Jahre
+            
+            for (let px = 0; px <= graphWidth * 1.05; px++) {
+                const t_val = (px / graphWidth) * maxTime;
+                // Exponentielle Zerfallsfunktion
+                const N_val = N0_val * Math.exp(-lambda_val * t_val);
+                
+                const cx = paddingLeft + px;
+                const cy = (height - paddingBottom) - (N_val / 100) * graphHeight;
+                
+                if (px === 0) {
+                    ctx.moveTo(cx, cy);
+                } else {
+                    ctx.lineTo(cx, cy);
+                }
+            }
+            ctx.stroke();
+
+            // Berechnung und Markierung der Halbwertszeit (Evidenz-Punkt)
+            const t_half = Math.log(2) / lambda_val;
+            if (t_half <= maxTime) {
+                const hx = paddingLeft + (t_half / maxTime) * graphWidth;
+                const hy = (height - paddingBottom) - ((N0_val / 2) / 100) * graphHeight;
+                
+                // Punkt zeichnen (Material Purple für Ergebnisse/Nullstellen)
+                ctx.fillStyle = '#7f39fb';
+                ctx.beginPath();
+                ctx.arc(hx, hy, 5, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Gestrichelte Hilfslinien zur x- und y-Achse
+                ctx.strokeStyle = 'rgba(127, 57, 251, 0.4)';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([4, 4]);
+                
+                ctx.beginPath();
+                ctx.moveTo(hx, hy);
+                ctx.lineTo(paddingLeft, hy);
+                ctx.moveTo(hx, hy);
+                ctx.lineTo(hx, height - paddingBottom);
+                ctx.stroke();
+                ctx.setLineDash([]); // Reset
+            }
+        }
+
+        // Quiz Logik & Validierung
+        function checkAnswer(questionId, selectedOption, element) {
+            const questionContainer = element.parentElement;
+            const buttons = questionContainer.getElementsByClassName('option-button');
+            const feedbackBox = document.getElementById(`feedback-${questionId}`);
+            
+            // Deaktiviere alle Optionen nach Klick
+            for (let btn of buttons) {
+                btn.disabled = true;
+            }
+
+            const target = quizData[questionId];
+            if (selectedOption === target.correct) {
+                element.classList.add('correct');
+                feedbackBox.className = "feedback-box correct";
+                feedbackBox.innerHTML = target.text;
+                markStepCompleted(questionId);
+            } else {
+                element.classList.add('wrong');
+                buttons[target.correct].classList.add('correct');
+                feedbackBox.className = "feedback-box wrong";
+                feedbackBox.innerHTML = "Leider nicht ganz richtig. Überlege noch einmal oder nutze die Strukturhilfen unten.";
+            }
+        }
+
+        function markStepCompleted(stepId) {
+            completedSteps[stepId] = true;
+            document.getElementById(`pill-step${stepId}`).classList.add('completed');
+        }
+
+        // Navigation Steuerung
+        function switchStep(stepNum) {
+            currentStep = stepNum;
+            
+            // Tabs aktualisieren
+            for (let i = 1; i <= totalSteps; i++) {
+                document.getElementById(`pill-step${i}`).classList.remove('active');
+                document.getElementById(`step${i}`).classList.remove('active');
+            }
+            
+            document.getElementById(`pill-step${stepNum}`).classList.add('active');
+            document.getElementById(`step${stepNum}`).classList.add('active');
+
+            // Button-Text anpassen
+            const advanceBtn = document.getElementById('btnAdvance');
+            if (currentStep === totalSteps) {
+                advanceBtn.innerHTML = "Lernmodul erfolgreich beendet ✓";
+                advanceBtn.style.backgroundColor = "#2e7d32";
+            } else {
+                advanceBtn.innerHTML = "Abschnitt Verstanden ➜";
+                advanceBtn.style.backgroundColor = "var(--color-success)";
+            }
+        }
+
+        function advanceStep() {
+            if (currentStep < totalSteps) {
+                switchStep(currentStep + 1);
+            } else {
+                alert("Hervorragend! Du hast alle Phasen des radioaktiven Zerfalls erfolgreich analysiert.");
+            }
+        }
+
+        // Dropdown Scaffolding Umschalter
+        function toggleDropdown(buttonElement) {
+            const wrapper = buttonElement.parentElement;
+            wrapper.classList.toggle('open');
+        }
+
+        // Initialisierung beim Laden
+        window.addEventListener('resize', () => { setupCanvas(); updateGraph(); });
+        window.addEventListener('load', () => {
+            setupCanvas();
+            updateGraph();
+        });
+    </script>
+</body>
+</html>
