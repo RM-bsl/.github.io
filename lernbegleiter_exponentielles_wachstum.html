@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digitaler Lernbegleiter: Exponentielles Wachstum</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --primary-light: #e0e7ff;
+            --success: #10b981;
+            --success-light: #ecfdf5;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-700: #334155;
+            --slate-800: #1e293b;
+            --slate-900: #0f172a;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--slate-50);
+            color: var(--slate-800);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, #312e81 100%);
+            color: white;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+
+        header p {
+            margin: 0.5rem 0 0 0;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .intro-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 6px solid var(--primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .intro-card h2 {
+            margin-top: 0;
+            color: var(--slate-900);
+        }
+
+        .task-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--slate-100);
+        }
+
+        .task-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--slate-100);
+            padding-bottom: 0.75rem;
+        }
+
+        .task-badge {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            margin-right: 1rem;
+        }
+
+        .task-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin: 0;
+        }
+
+        .formula-box {
+            background-color: var(--slate-50);
+            border: 1px dashed var(--primary);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-family: "Courier New", Courier, monospace;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        details {
+            background: var(--slate-50);
+            border: 1px solid var(--slate-100);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            transition: all 0.2s ease-in-out;
+        }
+
+        details[open] {
+            background: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.08);
+        }
+
+        summary {
+            padding: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary::after {
+            content: '＋';
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary);
+            transition: transform 0.2s ease;
+        }
+
+        details[open] summary::after {
+            content: '－';
+        }
+
+        .hint-content {
+            padding: 0 1rem 1.25rem 1rem;
+            border-top: 1px solid var(--slate-100);
+            padding-top: 1rem;
+        }
+
+        .highlight-blue {
+            background-color: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            padding: 0.75rem 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 0.75rem 0;
+        }
+
+        .highlight-amber {
+            background-color: var(--warning-light);
+            border-left: 4px solid var(--warning);
+            padding: 0.75rem 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 0.75rem 0;
+        }
+
+        .highlight-emerald {
+            background-color: var(--success-light);
+            border-left: 4px solid var(--success);
+            padding: 0.75rem 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 0.75rem 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--slate-700);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--slate-100);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Math-Buddy: Exponentielles Wachstum</h1>
+        <p>Dein digitaler Begleiter für das ETF-Arbeitsblatt</p>
+    </header>
+
+    <main>
+        <section class="intro-card">
+            <h2>Hallo! 👋</h2>
+            <p>Diese App hilft dir dabei, die Aufgaben auf deinem Arbeitsblatt selbstständig zu lösen. Wenn du mal nicht weiterweißt, klicke einfach auf die passende Aufgabe und öffne einen Tipp. Versuche es danach noch einmal selbst!</p>
+        </section>
+
+        <!-- AUFGABE 1 -->
+        <article class="task-container">
+            <div class="task-header">
+                <span class="task-badge">Aufgabe 1</span>
+                <h3 class="task-title">Die Wertetabelle ausfüllen</h3>
+            </div>
+            <p>Hier sollst du das angesparte Kapital im Depot für verschiedene Altersstufen berechnen.</p>
+            
+            <div class="formula-box">
+                K(t) = 36.685,71 &times; (1,07<sup>t &minus; 20</sup> &minus; 1)
+            </div>
+
+            <details>
+                <summary>💡 Tipp 1: Die Formel im Taschenrechner bändigen</summary>
+                <div class="hint-content">
+                    <p>Die Formel sieht komplizierter aus, als sie ist! Gehe beim Eintippen in deinen Taschenrechner immer stufenweise von innen nach außen vor:</p>
+                    <ol>
+                        <li>Rechne zuerst das kleine Paket ganz oben (den Exponenten) aus: <strong>t &minus; 20</strong> (für t setzt du dein gewünschtes Alter ein).</li>
+                        <li>Berechne nun den Wachstumsanteil: Tippe die Basis 1,07 ein, nutze die Hochtaste deines Taschenrechners (oft mit x<sup>y</sup> oder einem kleinen Kasten beschriftet) und setze das Ergebnis aus Schritt 1 als Hochzahl ein: <strong>1,07<sup>Ergebnis aus Schritt 1</sup></strong>.</li>
+                        <li>Ziehe von diesem Wert die Zahl <strong>1</strong> ab.</li>
+                        <li>Multipliziere dieses Zwischenergebnis ganz am Ende mit dem großen Vorfaktor <strong>36.685,71</strong>.</li>
+                    </ol>
+                    <div class="highlight-blue">
+                        <strong>Hinweis:</strong> Der Wert 36.685,71 entsteht, wenn man die jährliche Sparrate (2.568 €) durch den Zinssatz als Dezimalzahl (0,07) teilt.
+                    </div>
+                </div>
+            </details>
+
+            <details>
+                <summary>🔍 Tipp 2: Schritt-für-Schritt-Anleitung für das Alter t = 40</summary>
+                <div class="hint-content">
+                    <p>Lass uns den Wert für das Alter <strong>t = 40</strong> gemeinsam berechnen, damit du ein Gefühl dafür bekommst:</p>
+                    <div class="highlight-amber">
+                        <strong>Schritt A:</strong> Den Exponenten (die Hochzahl) berechnen: <br>
+                        40 &minus; 20 = <strong>20</strong> (Das Geld arbeitet also genau 20 Jahre lang!)
+                    </div>
+                    <div class="highlight-amber">
+                        <strong>Schritt B:</strong> Den Wachstumsfaktor mit der Hochzahl berechnen: <br>
+                        1,07<sup>20</sup> &approx; <strong>3,86968</strong>
+                    </div>
+                    <div class="highlight-amber">
+                        <strong>Schritt C:</strong> Die Basis-Eins abziehen: <br>
+                        3,86968 &minus; 1 = <strong>2,86968</strong>
+                    </div>
+                    <div class="highlight-emerald">
+                        <strong>Schritt D:</strong> Mit dem Vorfaktor multiplizieren: <br>
+                        36.685,71 &times; 2,86968 &approx; <strong>105.276,43 €</strong>
+                    </div>
+                    <p>Trage diesen Wert in deine Tabelle bei 40 Jahren ein und versuche jetzt die Werte für 60 und 80 Jahre auf dieselbe Weise zu berechnen!</p>
+                </div>
+            </details>
+        </article>
+
+        <!-- AUFGABE 2 -->
+        <article class="task-container">
+            <div class="task-header">
+                <span class="task-badge">Aufgabe 2</span>
+                <h3 class="task-title">Den Funktionsgraphen zeichnen</h3>
+            </div>
+            <p>Verwandle deine nackten Zahlen aus der Wertetabelle in eine anschauliche Grafik.</p>
+
+            <details>
+                <summary>📊 Tipp 1: Das Koordinatensystem richtig lesen</summary>
+                <div class="hint-content">
+                    <p>Bevor du zeichnest, schaue dir die Achsen ganz genau an:</p>
+                    <ul>
+                        <li>Die <strong>x-Achse (waagerecht)</strong> zeigt das Lebensalter in Jahren. Sie startet erst bei <strong>20 Jahren</strong>, weil du vorher noch kein Geld sparst!</li>
+                        <li>Die <strong>y-Achse (senkrecht)</strong> zeigt dein Kapital. Jedes große Kästchen nach oben steht für <strong>500.000 €</strong>.</li>
+                    </ul>
+                    <div class="highlight-blue">
+                        <strong>Orientierungshilfe:</strong> Der Wert für 40 Jahre (105.276,43 €) liegt ganz nah an der x-Achse. Der Wert für 60 Jahre (512.662,15 €) liegt minimal über der ersten großen Linie (500.000 €).
+                    </div>
+                </div>
+            </details>
+
+            <details>
+                <summary>✏️ Tipp 2: Kurve zeichnen statt Punkte verbinden</summary>
+                <div class="hint-content">
+                    <p>Wir untersuchen hier ein <strong>exponentielles Wachstum</strong>. Das ist keine gerade Linie!</p>
+                    <div class="highlight-amber">
+                        <strong>Wichtig:</strong> Benutze auf keinen Fall ein Lineal, um die Punkte mit zackigen Linien direkt zu verbinden!
+                    </div>
+                    <p>Zeichne stattdessen eine <strong>weiche, geschwungene Kurve</strong> (eine stetige Funktion). Sie beginnt links sehr flach und biegt sich nach rechts hin immer steiler nach oben durch.</p>
+                </div>
+            </details>
+        </article>
+
+        <!-- AUFGABE 3 -->
+        <article class="task-container">
+            <div class="task-header">
+                <span class="task-badge">Aufgabe 3</span>
+                <h3 class="task-title">Die Wertsteigerung berechnen</h3>
+            </div>
+            <p>Finde heraus, wie viel Euro in den zwei verschiedenen 20-Jahres-Phasen tatsächlich dazugekommen sind.</p>
+
+            <details>
+                <summary>➖ Tipp 1: Was bedeutet "Wertsteigerung"?</summary>
+                <div class="hint-content">
+                    <p>Unter einer Steigerung versteht man den Unterschied zwischen dem Wert am Ende eines Zeitraums und dem Wert am Anfang.</p>
+                    <div class="highlight-blue">
+                        <strong>Die mathematische Zauberformel lautet einfach:</strong><br>
+                        Wertsteigerung = Endwert &minus; Anfangswert
+                    </div>
+                    <p>Nimm also für jede der beiden Phasen den Endwert aus deiner Tabelle und ziehe den Anfangswert davon ab.</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>🔢 Tipp 2: Die richtigen Werte einsetzen</summary>
+                <div class="hint-content">
+                    <p>Setze die Zahlen aus deiner Wertetabelle aus Aufgabe 1 ein:</p>
+                    <div class="highlight-amber">
+                        <strong>1. Zeitraum (t<sub>1</sub> bis t<sub>2</sub>, also 20 bis 40 Jahre):</strong><br>
+                        Kapital mit 40 Jahren &minus; Kapital mit 20 Jahren<br>
+                        <code>K(t<sub>2</sub>) &minus; K(t<sub>1</sub>) = 105.276,43 € &minus; 0,00 € = ...</code>
+                    </div>
+                    <div class="highlight-emerald">
+                        <strong>2. Zeitraum (t<sub>3</sub> bis t<sub>4</sub>, also 60 bis 80 Jahre):</strong><br>
+                        Kapital mit 80 Jahren &minus; Kapital mit 60 Jahren<br>
+                        <code>K(t<sub>4</sub>) &minus; K(t<sub>3</sub>) = 2.089.114,11 € &minus; 512.662,15 € = ...</code>
+                    </div>
+                </div>
+            </details>
+        </article>
+
+        <!-- AUFGABE 4 -->
+        <article class="task-container">
+            <div class="task-header">
+                <span class="task-badge">Aufgabe 4</span>
+                <h3 class="task-title">Den Zinseszins-Effekt erklären</h3>
+            </div>
+            <p>Erforsche das Geheimnis, warum dein Geld im Alter fast von alleine explodiert.</p>
+
+            <details>
+                <summary>🤔 Tipp 1: Vergleiche deine Ergebnisse aus Aufgabe 3</summary>
+                <div class="hint-content">
+                    <p>Schau dir die beiden Ergebnisse aus Aufgabe 3 noch einmal an:</p>
+                    <ul>
+                        <li>In beiden Zeiträumen sparst du exakt <strong>20 Jahre lang</strong>.</li>
+                        <li>In beiden Zeiträumen zahlst du exakt dieselbe Summe aus eigener Tasche ein.</li>
+                    </ul>
+                    <p>Trotzdem ist der Gewinn im zweiten Zeitraum gigantisch viel größer als im ersten! Wie kann das sein, wenn du doch gar nicht mehr eingezahlt hast? Woher kommt das ganze zusätzliche Geld?</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>❄️ Tipp 2: Das Prinzip des Schneeballs</summary>
+                <div class="hint-content">
+                    <p>Stell dir dein Depot wie einen kleinen Schneeball vor, den du einen Hang hinunterrollst:</p>
+                    <div class="highlight-amber">
+                        Am Anfang ist der Schneeball winzig. Er zieht bei jeder Umdrehung nur ganz wenig neuen Schnee an.
+                    </div>
+                    <div class="highlight-emerald">
+                        Nach einer langen Reise ist er riesengroß geworden. Bei einer einzigen Umdrehung am Ende zieht er nun tonnenweise neuen Schnee an!
+                    </div>
+                    <p><strong>Genau das ist der Zinseszins:</strong> Am Anfang bekommst du nur Zinsen auf deine kleine Sparrate. Später bekommst du Zinsen auf dein bereits riesiges Guthaben – und diese Zinsen bringen im nächsten Jahr wieder neue Zinsen. Dein Geld arbeitet also für dich!</p>
+                </div>
+            </details>
+        </article>
+    </main>
+
+    <footer>
+        <p>Erstellt für den Mathematikunterricht (BS+1) &bull; Viel Erfolg beim Lernen!</p>
+    </footer>
+
+</body>
+</html>
