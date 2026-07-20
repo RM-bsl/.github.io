@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeuroMath – Exponentialgleichungen bei Zerfallsprozessen</title>
+  <style>
+    /* Reset & Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f4f5f8;
+      color: #1c1c1e;
+      line-height: 1.5;
+    }
+
+    /* Exponent & Index Formatting */
+    sup {
+      font-size: 0.72em;
+      line-height: 0;
+      position: relative;
+      top: -0.45em;
+      vertical-align: baseline;
+    }
+
+    sub {
+      font-size: 0.72em;
+      line-height: 0;
+      position: relative;
+      top: 0.25em;
+      vertical-align: baseline;
+    }
+
+    /* Global Layout Architecture (Zwei-Spalten-Grid) */
+    .app-container {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    @media (max-width: 960px) {
+      .app-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Card Layouts */
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid #e0e0e6;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #1c1c1e;
+    }
+
+    .card-desc {
+      font-size: 0.88rem;
+      color: #6c6c70;
+      line-height: 1.4;
+    }
+
+    /* Theme Selector Dropdown */
+    .theme-select-box {
+      margin-bottom: 12px;
+    }
+
+    .theme-dropdown {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1.5px solid #1A73E8;
+      background-color: #f8f9fa;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1c1c1e;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .theme-dropdown:focus {
+      border-color: #1557b0;
+    }
+
+    /* Parameter Sliders & Clean Compatibility */
+    .control-group {
+      margin-bottom: 16px;
+    }
+    .control-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .control-subtext {
+      font-size: 0.78rem;
+      color: #8e8e93;
+      margin-bottom: 6px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #e5e5ea;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #1c1c1e;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    /* Canvas Graph */
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      height: 260px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fafafa;
+      border: 1px solid #eaeaea;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Step Navigation Pills */
+    .nav-pills {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .pill-btn {
+      background: #e5e5ea;
+      color: #3a3a3c;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-btn:hover {
+      background: #d1d1d6;
+    }
+
+    .pill-btn.active {
+      background: #1c1c1e;
+      color: #ffffff;
+    }
+
+    .check-icon {
+      display: none;
+      color: #34c759;
+      font-weight: bold;
+    }
+
+    .pill-btn.completed .check-icon {
+      display: inline-block;
+    }
+
+    /* Dynamic Step Area */
+    .step-card {
+      min-height: 480px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .step-header {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #1c1c1e;
+    }
+
+    .step-explanation {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #2c2c2e;
+      margin-bottom: 16px;
+    }
+
+    /* Math Equations Formatting (No LaTeX) */
+    .math-display-box {
+      background: #f8f9fa;
+      border-left: 4px solid #1c1c1e;
+      padding: 18px 24px;
+      border-radius: 8px;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+
+    .math-equation {
+      display: inline-flex;
+      align-items: center;
+      font-family: "Georgia", "Times New Roman", serif;
+      font-size: 1.3rem;
+      gap: 6px;
+    }
+
+    .math-variable {
+      font-style: italic;
+    }
+
+    .math-fraction {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 6px;
+      vertical-align: middle;
+    }
+
+    .math-numerator {
+      border-bottom: 2px solid currentColor;
+      padding: 2px 4px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .math-denominator {
+      padding: 2px 4px;
+      text-align: center;
+      width: 100%;
+    }
+
+    /* Dropdown Menus */
+    .dropdown-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .dropdown-box {
+      border-radius: 10px;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .dropdown-box.tip {
+      background-color: #FEF7E0;
+      color: #664D03;
+      border: 1px solid #FFE082;
+    }
+
+    .dropdown-box.pitfall {
+      background-color: #FCE8E6;
+      color: #A51D24;
+      border: 1px solid #F5C6CB;
+    }
+
+    .dropdown-header {
+      padding: 12px 16px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+    }
+
+    .dropdown-header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dropdown-content {
+      padding: 0 16px 14px 16px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      display: none;
+    }
+
+    .dropdown-box.open .dropdown-content {
+      display: block;
+    }
+
+    .dropdown-arrow {
+      transition: transform 0.2s ease;
+      font-size: 0.8rem;
+    }
+
+    .dropdown-box.open .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+
+    /* Action Button */
+    .btn-finish-step {
+      background-color: #33691E;
+      color: #ffffff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      align-self: flex-start;
+      transition: background-color 0.2s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .btn-finish-step:hover {
+      background-color: #2b5718;
+    }
+
+    .btn-finish-step:active {
+      transform: scale(0.98);
+    }
+
+    /* Color Bridge Classes */
+    .var-a { color: #1A73E8; font-weight: bold; }
+    .var-b { color: #1E8E3E; font-weight: bold; }
+    .var-t { color: #F9AB00; font-weight: bold; }
+    .var-z { color: #E91E63; font-weight: bold; }
+    .var-res { color: #7F39FB; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <div class="sidebar">
+      
+      <div class="card">
+        <div class="card-title">Anwendungsthema wählen</div>
+        <div class="theme-select-box">
+          <select id="themeSelect" class="theme-dropdown" onchange="switchTheme(this.value)">
+            <option value="koffein">1. Koffein-Abbau (Medizin &amp; Biologie)</option>
+            <option value="c14">2. C-14 Altersbestimmung (Archäologie)</option>
+            <option value="smartphone">3. Wertverlust Smartphone (Wirtschaft)</option>
+            <option value="radioaktiv">4. Radioaktiver Kernmüll (Umwelt &amp; Physik)</option>
+          </select>
+        </div>
+        <div class="card-desc" id="themeDesc">
+          </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Funktionsparameter bestimmen</div>
+        
+        <div class="control-group">
+          <div class="control-header">
+            <span id="labelA">Anfangsbestand (<span class="var-a">a</span>)</span>
+            <span id="valA" class="var-a">100</span>
+          </div>
+          <div class="control-subtext" id="subA">Startwert zur Zeit t = 0</div>
+          <input type="range" id="sliderA">
+        </div>
+
+        <div class="control-group">
+          <div class="control-header">
+            <span id="labelB">Zerfallsfaktor (<span class="var-b">b</span>)</span>
+            <span id="valB" class="var-b">0.50</span>
+          </div>
+          <div class="control-subtext" id="subB">Restanteil pro Zeiteinheit</div>
+          <input type="range" id="sliderB">
+        </div>
+
+        <div class="control-group">
+          <div class="control-header">
+            <span id="labelZ">Zielbestand (<span class="var-z">Z<sub>Ziel</sub></span>)</span>
+            <span id="valZ" class="var-z">25</span>
+          </div>
+          <div class="control-subtext" id="subZ">Gesuchter Zielwert nach Zeit t</div>
+          <input type="range" id="sliderZ">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Dynamischer Zerfallsgraph</div>
+        <div class="canvas-container">
+          <canvas id="graphCanvas"></canvas>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="main-content">
+      
+      <div class="nav-pills" id="navPills">
+        </div>
+
+      <div class="card step-card" id="stepContentCard">
+        </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // Theme Data Configurations
+    const themes = {
+      koffein: {
+        title: "Koffein-Abbau im Blut",
+        desc: "Wie lange dauert es, bis der Koffeinspiegel nach einem Energy-Drink auf einen Wert sinkt, der erholsamen Schlaf erlaubt?",
+        unitVal: "mg",
+        unitTime: "Stunden",
+        unitTimeShort: "h",
+        yAxisLabel: "mg Koffein",
+        sliderA: { label: "Koffein-Dosis (a)", sub: "Startwert im Blut bei t = 0", min: 50, max: 300, step: 10, default: 100 },
+        sliderB: { label: "Abbaufaktor (b)", sub: "Restanteil pro Stunde (0.50 = Halbierung)", min: 0.10, max: 0.95, step: 0.05, default: 0.50 },
+        sliderZ: { label: "Ziel-Koffeinwert (Z)", sub: "Maximaler Wert zum Einschlafen", min: 5, max: 250, step: 5, default: 25 },
+        step0Title: "1. Praxis-Szenario: Wann schläfst du entspannt ein?",
+        step0Context: (a, b, Z) => `
+          <p style="margin-bottom: 12px;"><strong>Die Situation:</strong> Du trinkst eine Dose Energy-Drink mit <span class="var-a">${a} mg</span> Koffein. Dein Körper baut den Wirkstoff kontinuierlich ab. Um abends problemlos einzuschlafen, darf dein Blutspiegel höchstens noch <span class="var-z">${Z} mg</span> Koffein enthalten.</p>
+          <div style="background: #f0f4f8; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;">
+            <strong>Anschaulicher Testfall:</strong> Bei <span class="var-a">100 mg</span> Startmenge und einer Halbierung (<span class="var-b">b = 0,50</span>) pro Stunde bleiben nach 1 Std. noch 50 mg und nach 2 Std. genau <span class="var-z">25 mg</span>. Die Rechnung muss gleich exakt <span class="var-res">t = 2.00 Stunden</span> ergeben!
+          </div>
+        `,
+        step1Explain: (a, b, Z) => `Bevor wir die Abbauzeit berechnen, ermitteln wir, welcher Anteil der ursprünglichen Koffeindosis noch im Körper vorhanden sein darf. Dazu teilen wir den Zielwert <span class="var-z">${Z} mg</span> durch die Startdosis <span class="var-a">${a} mg</span>.`,
+        step1Tip: (fraction) => `Der Wert ${fraction} bedeutet: Es dürfen nur noch genau ${(fraction * 100).toFixed(0)}% der ursprünglichen Dosis aktiv im Körper sein.`,
+        step5Conclusion: (a, b, Z, t) => `Nach der Dosis von <span class="var-a">${a} mg</span> Koffein musst du genau <strong><span class="var-res">${t.toFixed(2)} Stunden</span></strong> warten, bis dein Koffeinspiegel auf die angestrebten <span class="var-z">${Z} mg</span> gesunken ist.`
+      },
+      c14: {
+        title: "C-14 Altersbestimmung",
+        desc: "Bestimme das Alter eines archäologischen Knochenfundes durch den Zerfall des radioaktiven Kohlenstoff-Isotops C-14.",
+        unitVal: "%",
+        unitTime: "Jahrtausende",
+        unitTimeShort: "T.J.",
+        yAxisLabel: "% C-14 Gehalt",
+        sliderA: { label: "C-14 Startgehalt (a)", sub: "Ursprünglicher Gehalt (100% bei t = 0)", min: 50, max: 100, step: 10, default: 100 },
+        sliderB: { label: "Zerfallsfaktor (b)", sub: "Restgehalt pro 1000 Jahre (~0.885)", min: 0.70, max: 0.95, step: 0.005, default: 0.885 },
+        sliderZ: { label: "Gemessener Restgehalt (Z)", sub: "C-14 Anteil im Fundstück heute", min: 5, max: 90, step: 5, default: 50 },
+        step0Title: "1. Praxis-Szenario: Wie alt ist das Fossil?",
+        step0Context: (a, b, Z) => `
+          <p style="margin-bottom: 12px;"><strong>Die Situation:</strong> Ein lebender Organismus nimmt ständig Kohlenstoff C-14 auf (<span class="var-a">${a}%</span>). Nach dem Tod zerfällt dieses Isotop stetig. Im Labor wird in einem archäologischen Knochenfund heute noch ein Restgehalt von <span class="var-z">${Z}%</span> C-14 gemessen.</p>
+          <div style="background: #f0f4f8; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;">
+            <strong>Anschaulicher Testfall:</strong> Bei einem Startgehalt von <span class="var-a">100%</span> und einem Ziel-Restgehalt von <span class="var-z">50%</span> (Halbwertszeit von C-14) ergibt die Berechnung exakt das Alter der halben Lebensdauer (~5.7 Jahrtausende)!
+          </div>
+        `,
+        step1Explain: (a, b, Z) => `Wir ermitteln das Verhältnis zwischen dem heute gemessenen C-14 Gehalt (<span class="var-z">${Z}%</span>) und dem ursprünglichen Stand (<span class="var-a">${a}%</span>), um die Zerfallspotenz zu isolieren.`,
+        step1Tip: (fraction) => `Der Quotient ${fraction} zeigt das verbliebene Rest-Verhältnis des Isotops im Fossil an.`,
+        step5Conclusion: (a, b, Z, t) => `Der Knochenfund ist exakt <strong><span class="var-res">${t.toFixed(2)} Jahrtausende</span></strong> (also ca. ${(t * 1000).toFixed(0)} Jahre) alt.`
+      },
+      smartphone: {
+        title: "Wertverlust Smartphone",
+        desc: "Wie viele Jahre dauert es, bis ein neues Oberklasse-Smartphone durch jährlichen Wertverlust deinen Ziel-Verkaufspreis erreicht?",
+        unitVal: "€",
+        unitTime: "Jahre",
+        unitTimeShort: "J.",
+        yAxisLabel: "€ Restwert",
+        sliderA: { label: "Kaufpreis (a)", sub: "Neupreis zum Zeitpunkt t = 0", min: 200, max: 1500, step: 50, default: 800 },
+        sliderB: { label: "Wertfaktor (b)", sub: "Restwertanteil pro Jahr (0.70 = 30% Verlust)", min: 0.40, max: 0.90, step: 0.05, default: 0.70 },
+        sliderZ: { label: "Ziel-Restwert (Z)", sub: "Geplanter Wiederverkaufswert", min: 50, max: 1000, step: 10, default: 200 },
+        step0Title: "1. Praxis-Szenario: Wann verkaufst du dein Gebrauchtgerät?",
+        step0Context: (a, b, Z) => `
+          <p style="margin-bottom: 12px;"><strong>Die Situation:</strong> Du kaufst ein neues Smartphone für <span class="var-a">${a} €</span>. Jedes Jahr verliert das Gerät an Wert. Du planst, das Handy gebraucht zu verkaufen, sobald der Restwert auf genau <span class="var-z">${Z} €</span> gesunken ist.</p>
+          <div style="background: #f0f4f8; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;">
+            <strong>Anschaulicher Testfall:</strong> Bei einem Neupreis von <span class="var-a">800 €</span> und einem jährlichen Werterhalt von <span class="var-b">70%</span> sinkt der Wert im 1. Jahr auf 560 €, im 2. Jahr auf 392 € und erreicht nach knapp 4 Jahren den Zielwert von <span class="var-z">200 €</span>.
+          </div>
+        `,
+        step1Explain: (a, b, Z) => `Um die Dauer in Jahren zu berechnen, ermitteln wir zuerst das relative Verhältnis zwischen Zielpreis (<span class="var-z">${Z} €</span>) und ursprünglichem Neupreis (<span class="var-a">${a} €</span>).`,
+        step1Tip: (fraction) => `Der Wert ${fraction} bedeutet: Das Gerät besitzt noch genau ${(fraction * 100).toFixed(0)}% seines ursprünglichen Kaufpreises.`,
+        step5Conclusion: (a, b, Z, t) => `Es dauert genau <strong><span class="var-res">${t.toFixed(2)} Jahre</span></strong>, bis das Smartphone von ursprünglich <span class="var-a">${a} €</span> auf den Verkaufswert von <span class="var-z">${Z} €</span> gesunken ist.`
+      },
+      radioaktiv: {
+        title: "Radioaktiver Kernmüll",
+        desc: "Berechne die Abklingzeit von hochradioaktivem Abfallmaterial (z. B. Cäsium-137 aus Kernkraftwerken), bis die Aktivität auf ein festgelegtes Sicherheitsniveau gesunken ist.",
+        unitVal: "MBq",
+        unitTime: "Jahre",
+        unitTimeShort: "J.",
+        yAxisLabel: "MBq Aktivität",
+        sliderA: { label: "Start-Aktivität (a)", sub: "Aktivität bei Einlagerung (t = 0)", min: 100, max: 2000, step: 50, default: 1000 },
+        sliderB: { label: "Zerfallsfaktor (b)", sub: "Restaktivität pro Jahr (~0.977 für Cäsium-137)", min: 0.800, max: 0.990, step: 0.005, default: 0.977 },
+        sliderZ: { label: "Sicherheitswert (Z)", sub: "Ziel-Aktivität für gefahrlose Handhabung", min: 10, max: 500, step: 10, default: 100 },
+        step0Title: "1. Praxis-Szenario: Wie lange muss Kernmüll sicher gelagert werden?",
+        step0Context: (a, b, Z) => `
+          <p style="margin-bottom: 12px;"><strong>Die Situation:</strong> Aus einem Kernkraftwerk wird radioaktiver Abfall (z. B. Cäsium-137 mit einer Halbwertszeit von ca. 30 Jahren) eingelagert. Zum Startzeitpunkt beträgt die Strahlungsaktivität <span class="var-a">${a} MBq</span> (Megabecquerel). Der Abfall gilt als hinreichend abgeklungen, wenn die Aktivität auf unter <span class="var-z">${Z} MBq</span> fällt.</p>
+          <div style="background: #f0f4f8; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;">
+            <strong>Anschaulicher Testfall:</strong> Bei einer Startaktivität von <span class="var-a">1000 MBq</span> und einem Zerfallsfaktor von <span class="var-b">0,977</span> pro Jahr benötigt das Isotop rund 100 Jahre Abklingzeit, um auf genau ein Zehntel (<span class="var-z">100 MBq</span>) zu schrumpfen.
+          </div>
+        `,
+        step1Explain: (a, b, Z) => `Um die erforderliche Lagerdauer in Jahren zu ermitteln, berechnen wir zuerst das Verhältnis zwischen der angestrebten Sicherheits-Aktivität (<span class="var-z">${Z} MBq</span>) und der ursprünglichen Start-Aktivität (<span class="var-a">${a} MBq</span>).`,
+        step1Tip: (fraction) => `Der Wert ${fraction} bedeutet: Die Strahlung muss auf genau ${(fraction * 100).toFixed(1)}% des ursprünglichen Ausgangswerts abklingen.`,
+        step5Conclusion: (a, b, Z, t) => `Der radioaktive Abfall muss genau <strong><span class="var-res">${t.toFixed(2)} Jahre</span></strong> sicher im Zwischenlager abklingen, bis die Strahlungsaktivität von <span class="var-a">${a} MBq</span> auf den Sicherheitswert von <span class="var-z">${Z} MBq</span> gesunken ist.`
+      }
+    };
+
+    // Global State
+    let currentThemeKey = "koffein";
+    let activeStep = 0;
+    let completedSteps = [false, false, false, false, false];
+
+    // DOM Elements
+    const sliderA = document.getElementById("sliderA");
+    const sliderB = document.getElementById("sliderB");
+    const sliderZ = document.getElementById("sliderZ");
+    const valA = document.getElementById("valA");
+    const valB = document.getElementById("valB");
+    const valZ = document.getElementById("valZ");
+    const labelA = document.getElementById("labelA");
+    const labelB = document.getElementById("labelB");
+    const labelZ = document.getElementById("labelZ");
+    const subA = document.getElementById("subA");
+    const subB = document.getElementById("subB");
+    const subZ = document.getElementById("subZ");
+    const themeDesc = document.getElementById("themeDesc");
+    const navPillsContainer = document.getElementById("navPills");
+    const stepContentCard = document.getElementById("stepContentCard");
+
+    // Initialize Application
+    function init() {
+      applyThemeConfig(currentThemeKey);
+      setupEventListeners();
+      renderNavPills();
+      updateApp();
+    }
+
+    function switchTheme(themeKey) {
+      currentThemeKey = themeKey;
+      applyThemeConfig(themeKey);
+      updateApp();
+    }
+
+    function applyThemeConfig(themeKey) {
+      const cfg = themes[themeKey];
+      themeDesc.textContent = cfg.desc;
+
+      // Update Slider Attributes & Labels
+      labelA.innerHTML = `${cfg.sliderA.label}`;
+      subA.textContent = cfg.sliderA.sub;
+      sliderA.min = cfg.sliderA.min;
+      sliderA.max = cfg.sliderA.max;
+      sliderA.step = cfg.sliderA.step;
+      sliderA.value = cfg.sliderA.default;
+
+      labelB.innerHTML = `${cfg.sliderB.label}`;
+      subB.textContent = cfg.sliderB.sub;
+      sliderB.min = cfg.sliderB.min;
+      sliderB.max = cfg.sliderB.max;
+      sliderB.step = cfg.sliderB.step;
+      sliderB.value = cfg.sliderB.default;
+
+      labelZ.innerHTML = `${cfg.sliderZ.label}`;
+      subZ.textContent = cfg.sliderZ.sub;
+      sliderZ.min = cfg.sliderZ.min;
+      sliderZ.max = cfg.sliderZ.max;
+      sliderZ.step = cfg.sliderZ.step;
+      sliderZ.value = cfg.sliderZ.default;
+    }
+
+    function setupEventListeners() {
+      sliderA.addEventListener("input", updateApp);
+      sliderB.addEventListener("input", updateApp);
+      sliderZ.addEventListener("input", updateApp);
+      window.addEventListener("resize", drawGraph);
+    }
+
+    function getParams() {
+      let a = parseFloat(sliderA.value);
+      let b = parseFloat(sliderB.value);
+      let Z = parseFloat(sliderZ.value);
+
+      // Clamp Z to strictly less than a to guarantee decay target scenario
+      if (Z >= a) {
+        Z = a - 5;
+        sliderZ.value = Z;
+      }
+
+      const cfg = themes[currentThemeKey];
+      valA.textContent = `${a} ${cfg.unitVal}`;
+      valB.textContent = b.toFixed(3);
+      valZ.textContent = `${Z} ${cfg.unitVal}`;
+
+      const t = Math.log(Z / a) / Math.log(b);
+      return { a, b, Z, t, cfg };
+    }
+
+    function updateApp() {
+      const { a, b, Z, t, cfg } = getParams();
+      renderStepContent(a, b, Z, t, cfg);
+      drawGraph();
+    }
+
+    // Step Logic Renderers
+    const steps = [
+      {
+        id: 0,
+        title: "1. Kompass & Kriterien",
+        render: (a, b, Z, t, cfg) => `
+          <div>
+            <div class="step-header">${cfg.step0Title}</div>
+            <div class="step-explanation">
+              ${cfg.step0Context(a, b, Z)}
+              <p><strong>Wann wende ich das Verfahren an?</strong></p>
+              <ul style="margin-left: 20px; margin-top: 6px; margin-bottom: 12px;">
+                <li>Die gesuchte Dauer <span class="var-t">t</span> steht oben im <strong>Exponenten</strong>.</li>
+                <li>Anfangswert <span class="var-a">a</span> (${cfg.unitVal}) und Zerfallsfaktor <span class="var-b">b</span> sind bekannt.</li>
+                <li>Ein Zielwert <span class="var-z">Z<sub>Ziel</sub></span> ist vorgegeben.</li>
+              </ul>
+            </div>
+            
+            <div class="math-display-box">
+              <div class="math-equation">
+                <span class="var-a">${a}</span> &middot; <span class="var-b">${b}</span><sup><span class="var-t">t</span></sup> = <span class="var-z">${Z}</span>
+              </div>
+            </div>
+
+            <div class="dropdown-container">
+              <div class="dropdown-box tip">
+                <div class="dropdown-header" onclick="toggleDropdown(this)">
+                  <div class="dropdown-header-left">💡 <span>Tipp &amp; Strukturhilfe</span></div>
+                  <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="dropdown-content">
+                  Schreibe dir die Werte mit ihren Einheiten auf: <span class="var-a">a = ${a} ${cfg.unitVal}</span>, <span class="var-b">b = ${b}</span>, <span class="var-z">Z = ${Z} ${cfg.unitVal}</span>.
+                </div>
+              </div>
+              <div class="dropdown-box pitfall">
+                <div class="dropdown-header" onclick="toggleDropdown(this)">
+                  <div class="dropdown-header-left">⚠️ <span>Stolperfalle &amp; Schülerfehler</span></div>
+                  <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="dropdown-content">
+                  Verwechsle nicht den Zerfallsfaktor <span class="var-b">b</span> mit der prozentualen Abnahme! Bei 20% Abnahme pro Zeiteinheit ist der Faktor <span class="var-b">b = 1 &minus; 0,20 = 0,80</span>.
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: 1,
+        title: "2. Potenz isolieren",
+        render: (a, b, Z, t, cfg) => {
+          const ratio = (Z / a).toFixed(3);
+          return `
+          <div>
+            <div class="step-header">2. Die Potenz auf einer Seite isolieren</div>
+            <div class="step-explanation">
+              <p>${cfg.step1Explain(a, b, Z)}</p>
+            </div>
+
+            <div class="math-display-box">
+              <div class="math-equation">
+                <span class="var-b">${b}</span><sup><span class="var-t">t</span></sup> = 
+                <div class="math-fraction">
+                  <div class="math-numerator"><span class="var-z">${Z}</span></div>
+                  <div class="math-denominator"><span class="var-a">${a}</span></div>
+                </div>
+                = <span class="var-z">${ratio}</span>
+              </div>
+            </div>
+
+            <div class="dropdown-container">
+              <div class="dropdown-box tip">
+                <div class="dropdown-header" onclick="toggleDropdown(this)">
+                  <div class="dropdown-header-left">💡 <span>Tipp &amp; Strukturhilfe</span></div>
+                  <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="dropdown-content">
+                  ${cfg.step1Tip(ratio)}
+                </div>
+              </div>
+              <div class="dropdown-box pitfall">
+                <div class="dropdown-header" onclick="toggleDropdown(this)">
+                  <div class="dropdown-header-left">⚠️ <span>Stolperfalle &amp; Schülerfehler</span></div>
+                  <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="dropdown-content">
+                  Rechne NIEMALS <span class="var-a">${a}</span> &middot; <span class="var-b">${b}</span> zusammen! Wegen der Vorrangregel („Potenz vor Multiplikation“) musst du zuerst durch <span class="var-a">${a}</span> teilen.
+                </div>
+              </div>
+            </div>
+          </div>
+          `;
+        }
+      },
+      {
+        id: 2,
+        title: "3. Logarithmus anwenden",
+        render: (a, b, Z, t, cfg) => `
+          <div>
+            <div class="step-header">3. Der Logarithmus als "Werkzeug-Leiter"</div>
+            <div class="step-explanation">
+              <p><strong>Warum brauchen wir jetzt den Logarithmus?</strong></p>
+              <p style="margin-bottom: 10px;">Die gesuchte Dauer <span class="var-t">t</span> sitzt im Exponenten („im Dachgeschoss“) der Potenz <span class="var-b">${b}</span><sup><span class="var-t">t</span></sup> fest. Normale Rechenarten (+, &minus;, &middot;, /) erreichen diesen Bereich nicht.</p>
+              <p>Der Logarithmus (<strong>ln</strong>) dient wie eine Spezial-Leiter: Er ist die einzige mathematische Operation, mit der wir den Exponenten aus der Höhe herunterholen können! Wir wenden ihn auf beiden Seiten an:</p>
+            </div>
+
+            <div class="math-display-box">
+              <div class="math-equation">
+                ln(<span class="var-b">${b}</span><sup><span class="var-t">t</span></sup>) = ln(<span class="var-z">${(Z/a).toFixed(3)}</span>)
+              </div>
+            </div>
+
+            <div class="dropdown-container">
+              <div class="dropdown-box tip">
+                <div class="dropdown-header" onclick="toggleDropdown(this)">
+                  <div class="dropdown-header-left">💡 <span>Tipp &amp; Strukturhilfe</span></div>
+                  <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="dropdown-content">
+                  Keine Sorge vor der ln-Taste: Der Logarithmus ist einfach die Umkehrung des Potenzierens – genau wie das Wurzelziehen die Umkehrung des Quadrierens ist!
+                </div>
+              </div>
+              <div class="dropdown-box pitfall">
+                <div class="dropdown-header" onclick="toggleDropdown(this)">
+                  <div class="dropdown-header-left">⚠️ <span>Stolperfalle &amp; Schülerfehler</span></div>
+                  <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="dropdown-content">
+                  Vergiss nicht, den Logarithmus auf BEIDEN Seiten der Gleichung anzuwenden, damit die Gleichheit erhalten bleibt.
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: 3,
+        title: "4. Logarithmengesetz",
+        render: (a, b, Z, t, cfg) => `
+          <div>
+            <div class="step-header">4. Logarithmengesetz: Zeit t "herunterholen"</div>
+            <div class="step-explanation">
+              <p>Jetzt kommt der entscheidende Befreiungsschritt! Wir nutzen das Gesetz: <strong>ln(x<sup>y</sup>) = y &middot; ln(x)</strong>.</p>
+              <p>Die gesuchte Zeit <span class="var-t">t</span> wandert als gewöhnlicher Faktor vor den Logarithmus. Die Variable steht jetzt auf der normalen Schreibebene!</p>
+            </div>
+
+            <div class="math-display-box">
+              <div class="math-equation">
+                <span class="var-t">t</span> &middot; ln(<span class="var-b">${b}</span>) = ln(<span class="var-z">${(Z/a).toFixed(3)}</span>)
+              </div>
+            </div>
+
+            <div class="dropdown-container">
+              <div class="dropdown-box tip">
+                <div class="dropdown-header" onclick="toggleDropdown(this)">
+                  <div class="dropdown-header-left">💡 <span>Tipp &amp; Strukturhilfe</span></div>
+                  <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="dropdown-content">
+                  Vergleiche mit vorher: Aus der unhandlichen Potenz ${b}<sup>t</sup> ist die einfache Mal-Aufgabe t &middot; Zahl geworden!
+                </div>
+              </div>
+              <div class="dropdown-box pitfall">
+                <div class="dropdown-header" onclick="toggleDropdown(this)">
+                  <div class="dropdown-header-left">⚠️ <span>Stolperfalle &amp; Schülerfehler</span></div>
+                  <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="dropdown-content">
+                  Schreibe <span class="var-t">t</span> nicht in die Klammer hinein. <span class="var-t">t</span> steht als eigenständige Variable VOR dem Ausdruck ln(...).
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: 4,
+        title: "5. Zeit t auflösen",
+        render: (a, b, Z, t, cfg) => {
+          const lnRatio = Math.log(Z / a);
+          const lnB = Math.log(b);
+          return `
+          <div>
+            <div class="step-header">5. Nach der Zeit t auflösen &amp; Ergebnis interpretieren</div>
+            <div class="step-explanation">
+              <p>Um die Zeit <span class="var-t">t</span> isoliert zu berechnen, teilen wir durch ln(<span class="var-b">${b}</span>) und berechnen den Wert:</p>
+            </div>
+
+            <div class="math-display-box">
+              <div class="math-equation">
+                <span class="var-res">t</span> = 
+                <div class="math-fraction">
+                  <div class="math-numerator">ln(${(Z/a).toFixed(3)})</div>
+                  <div class="math-denominator">ln(<span class="var-b">${b}</span>)</div>
+                </div>
+                = 
+                <div class="math-fraction">
+                  <div class="math-numerator">${lnRatio.toFixed(3)}</div>
+                  <div class="math-denominator">${lnB.toFixed(3)}</div>
+                </div>
+                = <span class="var-res">${t.toFixed(2)}</span> ${cfg.unitTime}
+              </div>
+            </div>
+
+            <div style="background: #eef2ff; border-left: 4px solid #7F39FB; padding: 14px 18px; border-radius: 8px; margin: 16px 0; font-size: 0.92rem;">
+              <strong>Fazit aus der Rechnung:</strong> ${cfg.step5Conclusion(a, b, Z, t)}
+            </div>
+
+            <div class="dropdown-container">
+              <div class="dropdown-box tip">
+                <div class="dropdown-header" onclick="toggleDropdown(this)">
+                  <div class="dropdown-header-left">💡 <span>Tipp &amp; Strukturhilfe</span></div>
+                  <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="dropdown-content">
+                  Schau auf das Diagramm links: Der lila Zielpunkt liegt auf der Zeitachse exakt bei t = ${t.toFixed(2)} auf der Zielhöhe von ${Z} ${cfg.unitVal}!
+                </div>
+              </div>
+              <div class="dropdown-box pitfall">
+                <div class="dropdown-header" onclick="toggleDropdown(this)">
+                  <div class="dropdown-header-left">⚠️ <span>Stolperfalle &amp; Schülerfehler</span></div>
+                  <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="dropdown-content">
+                  Keine Sorge wegen der negativen Zwischenwerte: Da Logarithmen von Zahlen kleiner als 1 negativ sind, sind Zähler und Nenner negativ. Minus durch Minus ergibt Plus – die berechnete Dauer t ist immer positiv!
+                </div>
+              </div>
+            </div>
+          </div>
+          `;
+        }
+      }
+    ];
+
+    function renderNavPills() {
+      navPillsContainer.innerHTML = "";
+      steps.forEach((step, index) => {
+        const btn = document.createElement("button");
+        btn.className = `pill-btn ${index === activeStep ? "active" : ""} ${completedSteps[index] ? "completed" : ""}`;
+        btn.onclick = () => selectStep(index);
+        
+        btn.innerHTML = `
+          <span class="check-icon">&check;</span>
+          <span>${step.title}</span>
+        `;
+        navPillsContainer.appendChild(btn);
+      });
+    }
+
+    function selectStep(index) {
+      activeStep = index;
+      renderNavPills();
+      updateApp();
+    }
+
+    function renderStepContent(a, b, Z, t, cfg) {
+      const currentStepObj = steps[activeStep];
+      const htmlContent = currentStepObj.render(a, b, Z, t, cfg);
+
+      stepContentCard.innerHTML = htmlContent + `
+        <button class="btn-finish-step" onclick="finishCurrentStep()">
+          <span>${activeStep === steps.length - 1 ? "Lernpfad abgeschlossen \u2713" : "Abschnitt Verstanden"}</span>
+        </button>
+      `;
+    }
+
+    function finishCurrentStep() {
+      completedSteps[activeStep] = true;
+      if (activeStep < steps.length - 1) {
+        activeStep++;
+      }
+      renderNavPills();
+      updateApp();
+    }
+
+    function toggleDropdown(headerElem) {
+      const box = headerElem.closest('.dropdown-box');
+      box.classList.toggle('open');
+    }
+
+    // HDPI Canvas Renderer
+    function drawGraph() {
+      const canvas = document.getElementById("graphCanvas");
+      if (!canvas) return;
+
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+
+      const ctx = canvas.getContext("2d");
+      ctx.scale(dpr, dpr);
+
+      const w = rect.width;
+      const h = rect.height;
+
+      ctx.clearRect(0, 0, w, h);
+
+      const { a, b, Z, t, cfg } = getParams();
+
+      const maxT = Math.max(6, Math.ceil(t * 1.4));
+      const maxZ = Math.ceil(a * 1.15);
+
+      const paddingLeft = 48;
+      const paddingBottom = 28;
+      const paddingTop = 16;
+      const paddingRight = 16;
+
+      const plotW = w - paddingLeft - paddingRight;
+      const plotH = h - paddingTop - paddingBottom;
+
+      function toX(tVal) {
+        return paddingLeft + (tVal / maxT) * plotW;
+      }
+
+      function toY(zVal) {
+        return paddingTop + plotH - (zVal / maxZ) * plotH;
+      }
+
+      // Grid Lines
+      ctx.strokeStyle = "#eef0f4";
+      ctx.lineWidth = 1;
+
+      const ySteps = 4;
+      for (let i = 0; i <= ySteps; i++) {
+        const val = (maxZ / ySteps) * i;
+        const yPx = toY(val);
+        ctx.beginPath();
+        ctx.moveTo(paddingLeft, yPx);
+        ctx.lineTo(w - paddingRight, yPx);
+        ctx.stroke();
+
+        ctx.fillStyle = "#8e8e93";
+        ctx.font = "10px -apple-system, sans-serif";
+        ctx.textAlign = "right";
+        ctx.fillText(`${Math.round(val)}${cfg.unitVal}`, paddingLeft - 4, yPx + 3);
+      }
+
+      const xSteps = 6;
+      for (let i = 0; i <= xSteps; i++) {
+        const val = (maxT / xSteps) * i;
+        const xPx = toX(val);
+        ctx.beginPath();
+        ctx.moveTo(xPx, paddingTop);
+        ctx.lineTo(xPx, h - paddingBottom);
+        ctx.stroke();
+
+        ctx.fillStyle = "#8e8e93";
+        ctx.font = "10px -apple-system, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(`${val.toFixed(1)}${cfg.unitTimeShort}`, xPx, h - paddingBottom + 14);
+      }
+
+      // Axes
+      ctx.strokeStyle = "#8e8e93";
+      ctx.lineWidth = 1.5;
+
+      // Y-Axis
+      ctx.beginPath();
+      ctx.moveTo(paddingLeft, paddingTop);
+      ctx.lineTo(paddingLeft, h - paddingBottom);
+      ctx.stroke();
+
+      // X-Axis
+      ctx.beginPath();
+      ctx.moveTo(paddingLeft, h - paddingBottom);
+      ctx.lineTo(w - paddingRight, h - paddingBottom);
+      ctx.stroke();
+
+      // Axis Labels
+      ctx.fillStyle = "#1c1c1e";
+      ctx.font = "bold 10px -apple-system, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText(cfg.yAxisLabel, paddingLeft - 40, paddingTop - 4);
+      ctx.textAlign = "right";
+      ctx.fillText(`t (${cfg.unitTimeShort})`, w - paddingRight, h - paddingBottom + 22);
+
+      // Target Horizontal Line (Pink)
+      const targetYPx = toY(Z);
+      ctx.strokeStyle = "#E91E63";
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(paddingLeft, targetYPx);
+      ctx.lineTo(w - paddingRight, targetYPx);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Exponential Decay Curve
+      ctx.strokeStyle = "#1A73E8";
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+
+      const startT = -maxT * 0.02;
+      const endT = maxT * 1.05;
+      const sampleCount = 150;
+
+      for (let i = 0; i <= sampleCount; i++) {
+        const currentT = startT + (i / sampleCount) * (endT - startT);
+        const zVal = a * Math.pow(b, currentT);
+        const px = toX(currentT);
+        const py = toY(zVal);
+
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      // Intersection Point (Purple)
+      const solXPx = toX(t);
+      const solYPx = toY(Z);
+
+      // Vertical Drop Line
+      ctx.strokeStyle = "#7F39FB";
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(solXPx, solYPx);
+      ctx.lineTo(solXPx, h - paddingBottom);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Purple Dot
+      ctx.fillStyle = "#7F39FB";
+      ctx.beginPath();
+      ctx.arc(solXPx, solYPx, 5, 0, 2 * Math.PI);
+      ctx.fill();
+
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Label at X-Axis
+      ctx.fillStyle = "#7F39FB";
+      ctx.font = "bold 10px -apple-system, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(`t ≈ ${t.toFixed(2)}${cfg.unitTimeShort}`, solXPx, h - paddingBottom - 6);
+    }
+
+    // Launch on Load
+    window.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+</html>
