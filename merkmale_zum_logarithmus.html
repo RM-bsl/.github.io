@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktive Lernapp: Der Logarithmus</title>
+    <style>
+        :root {
+            --param-a: #1A73E8;
+            --param-b: #1E8E3E;
+            --param-d: #F9AB00;
+            --param-y0: #29B6F6;
+            --param-e: #D32F2F;
+            --param-num: #E91E63;
+            --result-purple: #7F39FB;
+            --dark-active: #1C1C1E;
+            --btn-success: #33691E;
+            --bg-tips: #FEF7E0;
+            --text-tips: #664D03;
+            --bg-warn: #FCE8E6;
+            --text-warn: #A51D24;
+            --card-bg: #FFFFFF;
+            --page-bg: #F8F9FA;
+            --border-color: #E0E0E0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--page-bg);
+            color: #202124;
+            line-height: 1.5;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #111;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: #5f6368;
+            margin-bottom: 12px;
+        }
+
+        /* Slider Controls */
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 8px;
+        }
+
+        .slider-control {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e0e0e0;
+            outline: none;
+            accent-color: #1A73E8;
+        }
+
+        /* Canvas Graph & Controls */
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #fafafa;
+            border: 1px solid #eee;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .graph-controls-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .toggle-btn {
+            background-color: #e8eaed;
+            color: #3c4043;
+            border: 1px solid #dadce0;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .toggle-btn.active {
+            background-color: #D32F2F;
+            color: #ffffff;
+            border-color: #D32F2F;
+        }
+
+        .graph-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 0.78rem;
+            margin-bottom: 8px;
+            padding: 6px 10px;
+            background: #f1f3f4;
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 600;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 3px;
+            border-radius: 2px;
+        }
+
+        /* Pill Navigation */
+        .pill-nav {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .pill-btn {
+            padding: 10px 18px;
+            border-radius: 20px;
+            border: none;
+            background-color: #e8eaed;
+            color: #3c4043;
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pill-btn:hover {
+            background-color: #d2d6dc;
+        }
+
+        .pill-btn.active {
+            background-color: var(--dark-active);
+            color: #ffffff;
+        }
+
+        .pill-btn .checkmark {
+            display: none;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .pill-btn.completed .checkmark {
+            display: inline;
+        }
+
+        /* Content Sections */
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        .sinnstiftung-box {
+            background-color: #f1f3f4;
+            border-left: 4px solid var(--param-a);
+            padding: 14px 16px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 20px;
+        }
+
+        .sinnstiftung-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+            color: #202124;
+        }
+
+        /* Math Display Formatting */
+        .math-equation {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 1.25rem;
+            margin: 8px 0;
+            flex-wrap: wrap;
+        }
+
+        sup {
+            font-size: 0.75em;
+            line-height: 0;
+            position: relative;
+            vertical-align: baseline;
+            top: -0.5em;
+        }
+
+        sub {
+            font-size: 0.75em;
+            line-height: 0;
+            position: relative;
+            vertical-align: baseline;
+            bottom: -0.25em;
+        }
+
+        .math-fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 0 4px;
+            vertical-align: middle;
+            font-size: 0.95em;
+        }
+
+        .math-numerator {
+            border-bottom: 1.5px solid currentColor;
+            padding-bottom: 2px;
+            width: 100%;
+        }
+
+        .math-denominator {
+            padding-top: 2px;
+            width: 100%;
+        }
+
+        .math-sqrt {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .radical {
+            font-size: 1.1em;
+            margin-right: -1px;
+        }
+
+        .radicand {
+            border-top: 1.5px solid currentColor;
+            padding-top: 1px;
+        }
+
+        /* Semantic Colors */
+        .param-a { color: var(--param-a); font-weight: bold; }
+        .param-b { color: var(--param-b); font-weight: bold; }
+        .param-d { color: var(--param-d); font-weight: bold; }
+        .param-y0 { color: var(--param-y0); font-weight: bold; }
+        .param-e { color: var(--param-e); font-weight: bold; }
+        .param-num { color: var(--param-num); font-weight: bold; }
+        .result-purple { color: var(--result-purple); font-weight: bold; }
+
+        /* Accordion Dropdowns */
+        details {
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-top: 12px;
+            font-size: 0.92rem;
+        }
+
+        summary {
+            font-weight: 700;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details.tips {
+            background-color: var(--bg-tips);
+            color: var(--text-tips);
+        }
+
+        details.warning {
+            background-color: var(--bg-warn);
+            color: var(--text-warn);
+        }
+
+        .details-body {
+            margin-top: 8px;
+            line-height: 1.45;
+        }
+
+        /* Action Button */
+        .understand-btn {
+            background-color: var(--btn-success);
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            margin-top: 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: opacity 0.2s ease, transform 0.1s ease;
+        }
+
+        .understand-btn:hover {
+            opacity: 0.92;
+        }
+
+        .understand-btn:active {
+            transform: scale(0.98);
+        }
+
+        .live-formula-display {
+            background-color: #f8f9fa;
+            border: 1px dashed #ccc;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            margin: 16px 0;
+        }
+
+        .rules-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 14px;
+        }
+
+        .rule-card {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 12px 16px;
+        }
+
+        .rule-card h4 {
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 14px;
+            font-size: 0.9rem;
+        }
+
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #e0e0e0;
+            padding: 10px 12px;
+            text-align: left;
+        }
+
+        .comparison-table th {
+            background-color: #f1f3f4;
+            font-weight: 700;
+        }
+
+        /* Feieranimation Modal Overlay */
+        .celebration-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .celebration-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .celebration-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 36px 32px;
+            text-align: center;
+            max-width: 440px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            transform: translateY(20px) scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .celebration-overlay.active .celebration-card {
+            transform: translateY(0) scale(1);
+        }
+
+        .badge-icon {
+            width: 72px;
+            height: 72px;
+            background: #E8F5E9;
+            color: #2E7D32;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin-bottom: 16px;
+            animation: pulse-badge 1.5s infinite alternate;
+        }
+
+        @keyframes pulse-badge {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); }
+            100% { transform: scale(1.08); box-shadow: 0 0 0 16px rgba(76, 175, 80, 0); }
+        }
+
+        .celebration-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #111;
+            margin-bottom: 8px;
+        }
+
+        .celebration-subtitle {
+            font-size: 0.95rem;
+            color: #5f6368;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .celebration-close-btn {
+            background-color: var(--dark-active);
+            color: #ffffff;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .celebration-close-btn:hover {
+            background-color: #333;
+        }
+
+        /* Particle Canvas Overlay */
+        #confettiCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        @media (max-width: 900px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+            .rules-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <aside class="sidebar">
+        <div class="card">
+            <h1 class="card-title">Der Logarithmus</h1>
+            <p class="card-desc">
+                Entdecke, wie Logarithmen Hochzahlen berechnen und als Umkehroperation zur Exponentialfunktion wirken.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Funktionsparameter bestimmen</h2>
+            <p class="card-desc">Verändere die Regler, um beide Graphen dynamisch anzupassen:</p>
+            
+            <div class="slider-group">
+                <div class="slider-control">
+                    <div class="slider-label">
+                        <span>Streckung (<span class="param-a">a</span>)</span>
+                        <span id="val-a" class="param-a">1.0</span>
+                    </div>
+                    <input type="range" id="slider-a" min="-3" max="3" step="0.1" value="1.0">
+                </div>
+
+                <div class="slider-control">
+                    <div class="slider-label">
+                        <span>Basis (<span class="param-b">b</span>)</span>
+                        <span id="val-b" class="param-b">2.0</span>
+                    </div>
+                    <input type="range" id="slider-b" min="0.2" max="5.0" step="0.1" value="2.0">
+                </div>
+
+                <div class="slider-control">
+                    <div class="slider-label">
+                        <span>X-Verschiebung / Asymptote (<span class="param-d">d</span>)</span>
+                        <span id="val-d" class="param-d">0.0</span>
+                    </div>
+                    <input type="range" id="slider-d" min="-4" max="4" step="0.5" value="0.0">
+                </div>
+
+                <div class="slider-control">
+                    <div class="slider-label">
+                        <span>Y-Verschiebung (<span class="param-y0">y<sub>0</sub></span>)</span>
+                        <span id="val-y0" class="param-y0">0.0</span>
+                    </div>
+                    <input type="range" id="slider-y0" min="-4" max="4" step="0.5" value="0.0">
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="graph-controls-bar">
+                <h2 class="card-title" style="margin-bottom:0;">Funktionsgraph</h2>
+                <button id="toggle-exp-btn" class="toggle-btn active" onclick="toggleExponential()">
+                    <span id="toggle-indicator">✓</span> Potenzfunktion g(x)
+                </button>
+            </div>
+            
+            <div class="graph-legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #1A73E8;"></div>
+                    <span>Logarithmus f(x)</span>
+                </div>
+                <div class="legend-item" id="legend-exp-item">
+                    <div class="legend-color" style="background: #D32F2F;"></div>
+                    <span>Exponential g(x)</span>
+                </div>
+                <div class="legend-item" id="legend-mirror-item">
+                    <div class="legend-color" style="background: #888; border-top: 1px dashed #888;"></div>
+                    <span>Spiegelachse y = x</span>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="graphCanvas"></canvas>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <nav class="pill-nav">
+            <button class="pill-btn active" data-step="1">
+                <span class="checkmark">&#10003;</span> 1. Grundverständnis &amp; Bezeichnungen
+            </button>
+            <button class="pill-btn" data-step="2">
+                <span class="checkmark">&#10003;</span> 2. Schreibweisen (log, lg, ln)
+            </button>
+            <button class="pill-btn" data-step="3">
+                <span class="checkmark">&#10003;</span> 3. Potenz- &amp; Logarithmengesetze
+            </button>
+            <button class="pill-btn" data-step="4">
+                <span class="checkmark">&#10003;</span> 4. Graphenanalyse &amp; Umkehroperation
+            </button>
+            <button class="pill-btn" data-step="5">
+                <span class="checkmark">&#10003;</span> 5. Gleichungen lösen
+            </button>
+        </nav>
+
+        <section class="card">
+            <div id="step-1" class="step-content active">
+                <div class="sinnstiftung-box">
+                    <div class="sinnstiftung-title">Mathematische Bedeutung &amp; Anwendungskriterien</div>
+                    Der Logarithmus ist die Umkehroperation des Potenzierens. Er berechnet die gesuchte Hochzahl (den Exponenten), mit der eine Basis multipliziert werden muss, um einen bestimmten Zielwert zu erreichen.
+                </div>
+
+                <h3>Wann wende ich den Logarithmus an?</h3>
+                <p style="margin-top: 6px;">
+                    Du wendest den Logarithmus immer dann an, wenn die gesuchte Unbekannte im <strong>Exponenten</strong> einer Potenzgleichung steht.
+                </p>
+
+                <div class="live-formula-display">
+                    <div class="math-equation">
+                        log<sub><span class="param-b">b</span></sub>(<span class="param-num">a</span>) = <span class="result-purple">c</span>
+                        &nbsp;&hArr;&nbsp;
+                        <span class="param-b">b</span><sup><span class="result-purple">c</span></sup> = <span class="param-num">a</span>
+                    </div>
+                    <div id="live-calc-display-1" style="margin-top: 12px; color: #333;">
+                        </div>
+                </div>
+
+                <h3>Exakte mathematische Bezeichnungen:</h3>
+                <ul style="margin-left: 20px; margin-top: 8px; line-height: 1.8;">
+                    <li><span class="param-b">Basis (b)</span>: Die Grundzahl der Potenz bzw. des Logarithmus. Muss stets positiv und ungleich 1 sein (<span class="param-b">b</span> &gt; 0 und <span class="param-b">b</span> &ne; 1).</li>
+                    <li><span class="param-num">Numerus (a)</span>: Auch <em>Argument</em> oder <em>Zielwert</em> genannt. Ist der Wert, der durch Potenzieren erzeugt wird. Muss stets strikt positiv sein (<span class="param-num">a</span> &gt; 0).</li>
+                    <li><span class="result-purple">Logarithmus (c)</span>: Der berechnete Wert bzw. der Exponent der Potenz.</li>
+                    <li><strong>Sprechweise:</strong> <em>„Der Logarithmus von <span class="param-num">a</span> zur Basis <span class="param-b">b</span> ist gleich <span class="result-purple">c</span>.“</em></li>
+                </ul>
+
+                <details class="tips">
+                    <summary>💡 Tipps &amp; Strukturhilfen</summary>
+                    <div class="details-body">
+                        Merke dir die Frageansetzung: <em>„<span class="param-b">Basis</span> hoch was ergibt den <span class="param-num">Numerus</span>?“</em>. Beispiel: log<sub>2</sub>(8) = 3, weil 2<sup>3</sup> = 8 entspricht.
+                    </div>
+                </details>
+
+                <details class="warning">
+                    <summary>⚠️ Stolperfallen &amp; Schülerfehler</summary>
+                    <div class="details-body">
+                        Verwechsle niemals log<sub><span class="param-b">b</span></sub>(<span class="param-num">a</span>) mit einer normalen Division! log<sub>2</sub>(8) ist nicht 8 geteilt durch 2 = 4, sondern exakt 3. Auch für den Numerus 0 oder negative Zahlen gibt es im Reellen keinen Logarithmus!
+                    </div>
+                </details>
+
+                <button class="understand-btn" onclick="nextStep(1)">Abschnitt verstanden &rarr;</button>
+            </div>
+
+            <div id="step-2" class="step-content">
+                <div class="sinnstiftung-box">
+                    <div class="sinnstiftung-title">Mathematische Bedeutung &amp; Anwendungskriterien</div>
+                    In der Mathematik und den Naturwissenschaften haben sich für häufig genutzte Basen spezielle Abkürzungen etabliert. Dadurch spart man sich das ständige Anschreiben der Basis.
+                </div>
+
+                <h3>Die drei wichtigsten Logarithmus-Schreibweisen:</h3>
+
+                <div style="margin-top: 14px; line-height: 1.6;">
+                    <div style="background: #f8f9fa; border-radius: 10px; padding: 12px; margin-bottom: 12px; border: 1px solid #e0e0e0;">
+                        <h4 style="color: #111;">1. Dekadischer Logarithmus (<span class="param-a">lg</span> oder <span class="param-a">log</span>)</h4>
+                        <div class="math-equation">lg(x) = log<sub>10</sub>(x)</div>
+                        <p style="font-size: 0.9rem; color: #444;">
+                            <strong>Basis:</strong> b = 10 (Zehner-Logarithmus).<br>
+                            <strong>Anwendung:</strong> Richterskala (Erdbeben), pH-Wert (Chemie), Dezibel (Akustik). Auf deutschen Schul-Taschenrechnern meist als <span class="param-a">lg</span> oder <span class="param-a">log</span> beschriftet.
+                        </p>
+                    </div>
+
+                    <div style="background: #f8f9fa; border-radius: 10px; padding: 12px; margin-bottom: 12px; border: 1px solid #e0e0e0;">
+                        <h4 style="color: #111;">2. Natürlicher Logarithmus (<span class="param-e">ln</span>)</h4>
+                        <div class="math-equation">ln(x) = log<sub><span class="param-e">e</span></sub>(x)</div>
+                        <p style="font-size: 0.9rem; color: #444;">
+                            <strong>Basis:</strong> b = <span class="param-e">e</span> &approx; 2,71828 (Eulersche Zahl).<br>
+                            <strong>Anwendung:</strong> Unverzichtbar in der Oberstufen-Analysis, bei kontinuierlichen Wachstumsprozessen, Radioaktivität und Zinseszins.
+                        </p>
+                    </div>
+
+                    <div style="background: #f8f9fa; border-radius: 10px; padding: 12px; border: 1px solid #e0e0e0;">
+                        <h4 style="color: #111;">3. Allgemeiner &amp; Dualer Logarithmus (<span class="param-b">log<sub>b</sub></span> / <span class="param-b">ld</span>)</h4>
+                        <div class="math-equation">log<sub><span class="param-b">b</span></sub>(x) &nbsp;&nbsp; bzw. &nbsp;&nbsp; ld(x) = log<sub>2</sub>(x)</div>
+                        <p style="font-size: 0.9rem; color: #444;">
+                            <strong>Basis:</strong> Beliebige zugelassene Basis <span class="param-b">b</span>. Der duale Logarithmus <span class="param-b">ld</span> (Basis 2) spielt eine zentrale Rolle in der Informatik (Binärsystem).
+                        </p>
+                    </div>
+                </div>
+
+                <div class="live-formula-display" id="live-calc-display-2">
+                    </div>
+
+                <details class="tips">
+                    <summary>💡 Tipps &amp; Strukturhilfen</summary>
+                    <div class="details-body">
+                        Achte bei Aufgabenstellungen genau auf das Kürzel: Steht dort <span class="param-e">ln</span>, rechne immer mit der Eulerschen Zahl <span class="param-e">e</span>. Steht dort <span class="param-a">lg</span>, ist automatisch die Basis 10 gemeint.
+                    </div>
+                </details>
+
+                <details class="warning">
+                    <summary>⚠️ Stolperfallen &amp; Schülerfehler</summary>
+                    <div class="details-body">
+                        Manche internationale Taschenrechner nutzen „log“ ohne Tiefstellung für log<sub>10</sub>, andere für den natürlichen Logarithmus ln. In deutschen Schulbüchern steht <strong>lg</strong> strikt für Basis 10 und <strong>ln</strong> strikt für Basis e.
+                    </div>
+                </details>
+
+                <button class="understand-btn" onclick="nextStep(2)">Abschnitt verstanden &rarr;</button>
+            </div>
+
+            <div id="step-3" class="step-content">
+                <div class="sinnstiftung-box">
+                    <div class="sinnstiftung-title">Mathematische Bedeutung &amp; Anwendungskriterien</div>
+                    Da der Logarithmus direkt den Exponenten berechnet, entsprechen die Logarithmengesetze exakt den grundlegenden Potenzregeln. Sie ermöglichen das Vereinfachen und Auflösen komplexer Terme.
+                </div>
+
+                <h3>1. Vollständige Übersicht der Potenzregeln für die Schule:</h3>
+                <div class="rules-grid">
+                    <div class="rule-card">
+                        <h4>Gleiche Basis (Multiplikation)</h4>
+                        <div class="math-equation"><span class="param-a">a</span><sup>m</sup> &middot; <span class="param-a">a</span><sup>n</sup> = <span class="param-a">a</span><sup>m &plus; n</sup></div>
+                    </div>
+                    <div class="rule-card">
+                        <h4>Gleiche Basis (Division)</h4>
+                        <div class="math-equation">
+                            <div class="math-fraction">
+                                <div class="math-numerator"><span class="param-a">a</span><sup>m</sup></div>
+                                <div class="math-denominator"><span class="param-a">a</span><sup>n</sup></div>
+                            </div>
+                            = <span class="param-a">a</span><sup>m &minus; n</sup>
+                        </div>
+                    </div>
+                    <div class="rule-card">
+                        <h4>Potenz potenzieren</h4>
+                        <div class="math-equation">(<span class="param-a">a</span><sup>m</sup>)<sup>n</sup> = <span class="param-a">a</span><sup>m &middot; n</sup></div>
+                    </div>
+                    <div class="rule-card">
+                        <h4>Gleicher Exponent (Multiplikation)</h4>
+                        <div class="math-equation"><span class="param-a">a</span><sup>n</sup> &middot; <span class="param-b">b</span><sup>n</sup> = (<span class="param-a">a</span> &middot; <span class="param-b">b</span>)<sup>n</sup></div>
+                    </div>
+                    <div class="rule-card">
+                        <h4>Gleicher Exponent (Division)</h4>
+                        <div class="math-equation">
+                            <div class="math-fraction">
+                                <div class="math-numerator"><span class="param-a">a</span><sup>n</sup></div>
+                                <div class="math-denominator"><span class="param-b">b</span><sup>n</sup></div>
+                            </div>
+                            = (
+                            <div class="math-fraction">
+                                <div class="math-numerator"><span class="param-a">a</span></div>
+                                <div class="math-denominator"><span class="param-b">b</span></div>
+                            </div>
+                            )<sup>n</sup>
+                        </div>
+                    </div>
+                    <div class="rule-card">
+                        <h4>Negativer Exponent</h4>
+                        <div class="math-equation">
+                            <span class="param-a">a</span><sup>&minus;n</sup> = 
+                            <div class="math-fraction">
+                                <div class="math-numerator">1</div>
+                                <div class="math-denominator"><span class="param-a">a</span><sup>n</sup></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rule-card">
+                        <h4>Exponent Null</h4>
+                        <div class="math-equation"><span class="param-a">a</span><sup>0</sup> = 1 &nbsp; (<span class="param-a">a</span> &ne; 0)</div>
+                    </div>
+                    <div class="rule-card">
+                        <h4>Gebrochener Exponent (Wurzel)</h4>
+                        <div class="math-equation">
+                            <span class="param-a">a</span><sup><div class="math-fraction" style="font-size:0.75em;"><div class="math-numerator">m</div><div class="math-denominator">n</div></div></sup> = 
+                            <span class="math-sqrt">
+                                <span class="radical"><sup>n</sup>&radic;</span>
+                                <span class="radicand"><span class="param-a">a</span><sup>m</sup></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 24px;">2. Die korrespondierenden Logarithmengesetze:</h3>
+                <div class="rules-grid">
+                    <div class="rule-card">
+                        <h4>Produktregel</h4>
+                        <div class="math-equation">log<sub><span class="param-b">b</span></sub>(u &middot; v) = log<sub><span class="param-b">b</span></sub>(u) &plus; log<sub><span class="param-b">b</span></sub>(v)</div>
+                    </div>
+                    <div class="rule-card">
+                        <h4>Quotientenregel</h4>
+                        <div class="math-equation">
+                            log<sub><span class="param-b">b</span></sub>(
+                            <div class="math-fraction">
+                                <div class="math-numerator">u</div>
+                                <div class="math-denominator">v</div>
+                            </div>
+                            ) = log<sub><span class="param-b">b</span></sub>(u) &minus; log<sub><span class="param-b">b</span></sub>(v)
+                        </div>
+                    </div>
+                    <div class="rule-card">
+                        <h4>Potenzregel (Exponenten holen)</h4>
+                        <div class="math-equation">log<sub><span class="param-b">b</span></sub>(u<sup>r</sup>) = r &middot; log<sub><span class="param-b">b</span></sub>(u)</div>
+                    </div>
+                    <div class="rule-card">
+                        <h4>Wurzelregel</h4>
+                        <div class="math-equation">
+                            log<sub><span class="param-b">b</span></sub>(
+                            <span class="math-sqrt"><span class="radical"><sup>n</sup>&radic;</span><span class="radicand">u</span></span>
+                            ) = 
+                            <div class="math-fraction">
+                                <div class="math-numerator">1</div>
+                                <div class="math-denominator">n</div>
+                            </div>
+                            &middot; log<sub><span class="param-b">b</span></sub>(u)
+                        </div>
+                    </div>
+                    <div class="rule-card">
+                        <h4>Sonderfälle</h4>
+                        <div class="math-equation">log<sub><span class="param-b">b</span></sub>(1) = 0 &nbsp;&nbsp; und &nbsp;&nbsp; log<sub><span class="param-b">b</span></sub>(<span class="param-b">b</span>) = 1</div>
+                    </div>
+                    <div class="rule-card">
+                        <h4>Basiswechsel-Formel</h4>
+                        <div class="math-equation">
+                            log<sub><span class="param-b">b</span></sub>(x) = 
+                            <div class="math-fraction">
+                                <div class="math-numerator">ln(x)</div>
+                                <div class="math-denominator">ln(<span class="param-b">b</span>)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <details class="tips">
+                    <summary>💡 Tipps &amp; Strukturhilfen</summary>
+                    <div class="details-body">
+                        Die Potenzregel log<sub>b</sub>(u<sup>r</sup>) = r &middot; log<sub>b</sub>(u) ist die wichtigste Regel zum Lösen von Exponentialgleichungen, da sie Unbekannte aus dem Exponenten in die Zeilenebene holt!
+                    </div>
+                </details>
+
+                <details class="warning">
+                    <summary>⚠️ Stolperfallen &amp; Schülerfehler</summary>
+                    <div class="details-body">
+                        Achtung: Summen im Logarithmus kann man <strong>nicht</strong> zerlegen! log(u &plus; v) ist keinesfalls log(u) &plus; log(v). Auch gilt: log(u) / log(v) &ne; log(u &minus; v).
+                    </div>
+                </details>
+
+                <button class="understand-btn" onclick="nextStep(3)">Abschnitt verstanden &rarr;</button>
+            </div>
+
+            <div id="step-4" class="step-content">
+                <div class="sinnstiftung-box">
+                    <div class="sinnstiftung-title">Mathematische Bedeutung &amp; Anwendungskriterien</div>
+                    Der Logarithmus ist die exakte <strong>Umkehroperation des Potenzierens</strong>. Im Graphen zeigt sich dieses Prinzip durch eine perfekte axiale Spiegelung der Logarithmusfunktion an der Winkelhalbierenden (der Gerade y = x).
+                </div>
+
+                <h3>Vergleich: Logarithmusfunktion vs. Exponentialfunktion</h3>
+                <p style="margin-top: 6px;">
+                    Schau dir das linke Diagramm an: Die blaue Kurve f(x) = log<sub><span class="param-b">b</span></sub>(x) und die rote Kurve g(x) = <span class="param-b">b</span><sup>x</sup> verhalten sich wie Bild und Spiegelbild.
+                </p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Eigenschaft</th>
+                            <th style="color: #1A73E8;">Logarithmusfunktion f(x) = log<sub>b</sub>(x)</th>
+                            <th style="color: #D32F2F;">Exponentialfunktion g(x) = b<sup>x</sup></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Eingabe &amp; Ausgabe</strong></td>
+                            <td>Sucht die Hochzahl für einen Zielwert</td>
+                            <td>Berechnet den Zielwert für eine Hochzahl</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Charakteristischer Punkt</strong></td>
+                            <td>Verläuft immer durch <span class="result-purple">(1 | 0)</span></td>
+                            <td>Verläuft immer durch <span class="result-purple">(0 | 1)</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Asymptote (Grenzlinie)</strong></td>
+                            <td>Senkrechte Asymptote bei <span class="param-d">x = 0</span></td>
+                            <td>Waagerechte Asymptote bei <span class="param-d">y = 0</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Definitionsmenge (D)</strong></td>
+                            <td>Strikt positiv: ]0; +&infin;[</td>
+                            <td>Alle reellen Zahlen: &mathbb;R</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Wertemenge (W)</strong></td>
+                            <td>Alle reellen Zahlen: &mathbb;R</td>
+                            <td>Strikt positiv: ]0; +&infin;[</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div id="graph-properties-display" style="line-height: 1.8; margin-top: 16px; background: #fafafa; padding: 14px; border-radius: 10px; border: 1px solid #e0e0e0;">
+                    </div>
+
+                <details class="tips">
+                    <summary>💡 Tipps &amp; Strukturhilfen</summary>
+                    <div class="details-body">
+                        <strong>Didaktische Essenz:</strong> Umkehren bedeutet schlicht <em>„X- und Y-Werte vertauschen“</em>. Wenn die Potenzfunktion aus x = 3 den Wert y = 8 macht (2<sup>3</sup> = 8), macht die Logarithmusfunktion aus x = 8 wieder den Wert y = 3 (log<sub>2</sub>(8) = 3).
+                    </div>
+                </details>
+
+                <details class="warning">
+                    <summary>⚠️ Stolperfallen &amp; Schülerfehler</summary>
+                    <div class="details-body">
+                        Verwechsle nicht die Spiegelung an der Y-Achse mit der Umkehroperation! Die Umkehroperation spiegelt den Graphen immer an der diagonalen Winkelhalbierenden y = x.
+                    </div>
+                </details>
+
+                <button class="understand-btn" onclick="nextStep(4)">Abschnitt verstanden &rarr;</button>
+            </div>
+
+            <div id="step-5" class="step-content">
+                <div class="sinnstiftung-box">
+                    <div class="sinnstiftung-title">Mathematische Bedeutung &amp; Anwendungskriterien</div>
+                    Schritt-für-Schritt-Verfahren zur exakten Bestimmung von unbekannten Exponenten in praxisnahen Gleichungen.
+                </div>
+
+                <h3>Beispielaufgabe:</h3>
+                <p>Löse die Exponentialgleichung: 3 &middot; 2<sup>x</sup> = 24</p>
+
+                <div style="background: #fafafa; border-radius: 12px; padding: 16px; margin-top: 12px; border: 1px solid #eee;">
+                    <p><strong>Schritt 1: Potenz isolieren (beide Seiten durch 3 teilen)</strong></p>
+                    <div class="math-equation">2<sup>x</sup> = 8</div>
+
+                    <p style="margin-top: 10px;"><strong>Schritt 2: Logarithmus (ln) auf beiden Seiten anwenden</strong></p>
+                    <div class="math-equation">ln(2<sup>x</sup>) = ln(8)</div>
+
+                    <p style="margin-top: 10px;"><strong>Schritt 3: Potenzregel anwenden (Exponent x nach vorne holen)</strong></p>
+                    <div class="math-equation">x &middot; ln(2) = ln(8)</div>
+
+                    <p style="margin-top: 10px;"><strong>Schritt 4: Nach x auflösen (durch ln(2) teilen)</strong></p>
+                    <div class="math-equation">
+                        x = 
+                        <div class="math-fraction">
+                            <div class="math-numerator">ln(8)</div>
+                            <div class="math-denominator">ln(2)</div>
+                        </div>
+                        = <span class="result-purple">3</span>
+                    </div>
+                </div>
+
+                <details class="tips">
+                    <summary>💡 Tipps &amp; Strukturhilfen</summary>
+                    <div class="details-body">
+                        Isoliere vor dem Anwenden des Logarithmus stets die Potenz vollständig auf einer Seite der Gleichung!
+                    </div>
+                </details>
+
+                <details class="warning">
+                    <summary>⚠️ Stolperfallen &amp; Schülerfehler</summary>
+                    <div class="details-body">
+                        Vergiss nicht, am Ende das Ergebnis in die Ursprungsgleichung einzusetzen (Probe) und zu prüfen, ob alle Argumente im definierten Bereich liegen.
+                    </div>
+                </details>
+
+                <button class="understand-btn" onclick="nextStep(5)">Modul erfolgreich abgeschlossen! ✓</button>
+            </div>
+        </section>
+    </main>
+</div>
+
+<div id="celebrationModal" class="celebration-overlay">
+    <div class="celebration-card">
+        <canvas id="confettiCanvas"></canvas>
+        <div class="badge-icon">✓</div>
+        <h2 class="celebration-title">Modul abgeschlossen!</h2>
+        <p class="celebration-subtitle">
+            Hervorragend! Du hast das Logarithmus-Modul erfolgreich durchgearbeitet und das Prinzip der Umkehroperation verstanden.
+        </p>
+        <button class="celebration-close-btn" onclick="closeCelebration()">Zurück zur App</button>
+    </div>
+</div>
+
+<script>
+    // State Variables
+    let paramA = 1.0;
+    let paramB = 2.0;
+    let paramD = 0.0;
+    let paramY0 = 0.0;
+    let activeStep = 1;
+    let showExponential = true;
+
+    // DOM Elements
+    const sliderA = document.getElementById('slider-a');
+    const sliderB = document.getElementById('slider-b');
+    const sliderD = document.getElementById('slider-d');
+    const sliderY0 = document.getElementById('slider-y0');
+
+    const valA = document.getElementById('val-a');
+    const valB = document.getElementById('val-b');
+    const valD = document.getElementById('val-d');
+    const valY0 = document.getElementById('val-y0');
+
+    const canvas = document.getElementById('graphCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Toggle Exponential Function Graph
+    function toggleExponential() {
+        showExponential = !showExponential;
+        const btn = document.getElementById('toggle-exp-btn');
+        const indicator = document.getElementById('toggle-indicator');
+        const legendExp = document.getElementById('legend-exp-item');
+        const legendMirror = document.getElementById('legend-mirror-item');
+
+        if (showExponential) {
+            btn.classList.add('active');
+            indicator.textContent = '✓';
+            legendExp.style.display = 'flex';
+            legendMirror.style.display = 'flex';
+        } else {
+            btn.classList.remove('active');
+            indicator.textContent = '✕';
+            legendExp.style.display = 'none';
+            legendMirror.style.display = 'none';
+        }
+        renderGraph();
+    }
+
+    // Event Listeners for Sliders
+    sliderA.addEventListener('input', (e) => {
+        paramA = parseFloat(e.target.value);
+        valA.textContent = paramA.toFixed(1);
+        updateApp();
+    });
+
+    sliderB.addEventListener('input', (e) => {
+        let val = parseFloat(e.target.value);
+        if (Math.abs(val - 1.0) < 0.05) val = val > 1.0 ? 1.1 : 0.9; // Avoid b = 1
+        paramB = val;
+        valB.textContent = paramB.toFixed(1);
+        updateApp();
+    });
+
+    sliderD.addEventListener('input', (e) => {
+        paramD = parseFloat(e.target.value);
+        valD.textContent = paramD.toFixed(1);
+        updateApp();
+    });
+
+    sliderY0.addEventListener('input', (e) => {
+        paramY0 = parseFloat(e.target.value);
+        valY0.textContent = paramY0.toFixed(1);
+        updateApp();
+    });
+
+    // Navigation Step Handler
+    document.querySelectorAll('.pill-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const step = parseInt(btn.getAttribute('data-step'));
+            setStep(step);
+        });
+    });
+
+    function setStep(step) {
+        activeStep = step;
+        document.querySelectorAll('.pill-btn').forEach(btn => {
+            const bStep = parseInt(btn.getAttribute('data-step'));
+            if (bStep === activeStep) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        document.querySelectorAll('.step-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.getElementById(`step-${activeStep}`).classList.add('active');
+    }
+
+    function nextStep(currentStep) {
+        const currentBtn = document.querySelector(`.pill-btn[data-step="${currentStep}"]`);
+        if (currentBtn) currentBtn.classList.add('completed');
+
+        if (currentStep < 5) {
+            setStep(currentStep + 1);
+        } else {
+            triggerCelebration();
+        }
+    }
+
+    // Dynamic Updates
+    function updateApp() {
+        renderGraph();
+        updateStep1Text();
+        updateStep2Text();
+        updateStep4Text();
+    }
+
+    function updateStep1Text() {
+        const display = document.getElementById('live-calc-display-1');
+        const numVal = 8.0;
+        let res = Math.log(numVal) / Math.log(paramB);
+        display.innerHTML = `Berechnungsbeispiel mit aktueller Basis <span class="param-b">b = ${paramB.toFixed(1)}</span>:<br>` +
+            `<div class="math-equation">log<sub><span class="param-b">${paramB.toFixed(1)}</span></sub>(<span class="param-num">8</span>) &approx; <span class="result-purple">${res.toFixed(2)}</span> ` +
+            `&nbsp;&rArr;&nbsp; <span class="param-b">${paramB.toFixed(1)}</span><sup><span class="result-purple">${res.toFixed(2)}</span></sup> &approx; <span class="param-num">8</span></div>`;
+    }
+
+    function updateStep2Text() {
+        const display = document.getElementById('live-calc-display-2');
+        const testX = 10.0;
+        const lgVal = Math.log10(testX);
+        const lnVal = Math.log(testX);
+        const customLogVal = Math.log(testX) / Math.log(paramB);
+
+        display.innerHTML = `
+            <strong>Live-Vergleich für x = 10 mit den Schiebereglern:</strong><br>
+            • Dekadisch (lg): lg(10) = <span class="result-purple">${lgVal.toFixed(2)}</span><br>
+            • Natürlich (ln): ln(10) &approx; <span class="result-purple">${lnVal.toFixed(2)}</span><br>
+            • Zur eingestellten Basis (${paramB.toFixed(1)}): log<sub>${paramB.toFixed(1)}</sub>(10) &approx; <span class="result-purple">${customLogVal.toFixed(2)}</span>
+        `;
+    }
+
+    function updateStep4Text() {
+        const display = document.getElementById('graph-properties-display');
+        const zeroX = paramD + Math.pow(paramB, -paramY0 / (paramA || 0.0001));
+        
+        display.innerHTML = `
+            <strong>Live-Eigenschaften bezogen auf Schieberegler:</strong>
+            <ul style="margin-left: 20px; margin-top: 6px;">
+                <li><strong>Logarithmus-Asymptote:</strong> x = <span class="param-d">${paramD.toFixed(1)}</span> (senkrecht)</li>
+                <li><strong>Exponential-Asymptote:</strong> y = <span class="param-d">${paramD.toFixed(1)}</span> (waagerecht)</li>
+                <li><strong>Gespiegelter Hauptpunkt:</strong> <span class="result-purple">(${ (paramD + 1).toFixed(1)} | ${paramY0.toFixed(1)})</span> spiegelt sich zu <span class="result-purple">(${paramY0.toFixed(1)} | ${(paramD + 1).toFixed(1)})</span></li>
+                <li><strong>Berechnete Logarithmus-Nullstelle:</strong> x &approx; <span class="result-purple">${zeroX > paramD ? zeroX.toFixed(2) : 'Nicht definiert'}</span></li>
+            </ul>
+        `;
+    }
+
+    // Canvas HDPI Rendering & Graph Plotting
+    function renderGraph() {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+
+        const width = rect.width;
+        const height = rect.height;
+
+        // Viewport bounds
+        const minX = -6, maxX = 8;
+        const minY = -6, maxY = 6;
+
+        function toPxX(x) { return ((x - minX) / (maxX - minX)) * width; }
+        function toPxY(y) { return height - ((y - minY) / (maxY - minY)) * height; }
+
+        // Clear Canvas
+        ctx.clearRect(0, 0, width, height);
+
+        // Draw Grid Lines
+        ctx.strokeStyle = '#e0e0e0';
+        ctx.lineWidth = 1;
+
+        for (let x = Math.ceil(minX); x <= maxX; x++) {
+            ctx.beginPath();
+            ctx.moveTo(toPxX(x), 0);
+            ctx.lineTo(toPxX(x), height);
+            ctx.stroke();
+        }
+
+        for (let y = Math.ceil(minY); y <= maxY; y++) {
+            ctx.beginPath();
+            ctx.moveTo(0, toPxY(y));
+            ctx.lineTo(width, toPxY(y));
+            ctx.stroke();
+        }
+
+        // Draw Axes
+        ctx.strokeStyle = '#757575';
+        ctx.lineWidth = 2;
+
+        // X-Axis
+        ctx.beginPath();
+        ctx.moveTo(0, toPxY(0));
+        ctx.lineTo(width, toPxY(0));
+        ctx.stroke();
+
+        // Y-Axis
+        ctx.beginPath();
+        ctx.moveTo(toPxX(0), 0);
+        ctx.lineTo(toPxX(0), height);
+        ctx.stroke();
+
+        if (showExponential) {
+            // 1. Draw Mirror Line y = x (Gray Dashed)
+            ctx.strokeStyle = '#888888';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(toPxX(minX), toPxY(minX));
+            ctx.lineTo(toPxX(maxX), toPxY(maxX));
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // 2. Draw Exponential Horizontal Asymptote (Orange Dashed)
+            ctx.strokeStyle = '#F9AB00';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(0, toPxY(paramD));
+            ctx.lineTo(width, toPxY(paramD));
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        // 3. Draw Logarithm Vertical Asymptote (Orange Dashed)
+        ctx.strokeStyle = '#F9AB00';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(toPxX(paramD), 0);
+        ctx.lineTo(toPxX(paramD), height);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // 4. Draw Logarithm Function Curve f(x) = a * log_b(x - d) + y0 (Blue)
+        ctx.strokeStyle = '#1A73E8';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+
+        let isDrawing = false;
+        const stepPx = 1;
+
+        for (let px = -15; px <= width + 15; px += stepPx) {
+            const x = minX + (px / width) * (maxX - minX);
+            
+            if (x > paramD + 0.0001) {
+                const u = x - paramD;
+                const y = paramA * (Math.log(u) / Math.log(paramB)) + paramY0;
+                const py = toPxY(y);
+
+                if (!isDrawing) {
+                    ctx.moveTo(px, py);
+                    isDrawing = true;
+                } else {
+                    ctx.lineTo(px, py);
+                }
+            }
+        }
+        ctx.stroke();
+
+        if (showExponential) {
+            // 5. Draw Exponential Function Curve g(x) = b^((x - y0)/a) + d (Red)
+            ctx.strokeStyle = '#D32F2F';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+
+            isDrawing = false;
+            for (let px = -15; px <= width + 15; px += stepPx) {
+                const x = minX + (px / width) * (maxX - minX);
+                const exponent = (x - paramY0) / (paramA || 0.0001);
+                
+                if (exponent < 15 && exponent > -15) {
+                    const y = Math.pow(paramB, exponent) + paramD;
+                    const py = toPxY(y);
+
+                    if (!isDrawing) {
+                        ctx.moveTo(px, py);
+                        isDrawing = true;
+                    } else {
+                        ctx.lineTo(px, py);
+                    }
+                }
+            }
+            ctx.stroke();
+        }
+
+        // 6. Highlight Characteristic Points
+        const pLogX = paramD + 1;
+        const pLogY = paramY0;
+
+        const pExpX = paramY0;
+        const pExpY = paramD + 1;
+
+        // Draw Point on Logarithm Curve
+        if (pLogX >= minX && pLogX <= maxX && pLogY >= minY && pLogY <= maxY) {
+            ctx.fillStyle = '#7F39FB';
+            ctx.beginPath();
+            ctx.arc(toPxX(pLogX), toPxY(pLogY), 5, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+
+        if (showExponential && pExpX >= minX && pExpX <= maxX && pExpY >= minY && pExpY <= maxY) {
+            // Draw connection line between mirrored points
+            ctx.strokeStyle = '#7F39FB';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([2, 2]);
+            ctx.beginPath();
+            ctx.moveTo(toPxX(pLogX), toPxY(pLogY));
+            ctx.lineTo(toPxX(pExpX), toPxY(pExpY));
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Draw Mirrored Point on Exponential Curve
+            ctx.fillStyle = '#7F39FB';
+            ctx.beginPath();
+            ctx.arc(toPxX(pExpX), toPxY(pExpY), 5, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+    }
+
+    // Celebration & Confetti Logic
+    let confettiAnimationId = null;
+    let particles = [];
+
+    function triggerCelebration() {
+        const modal = document.getElementById('celebrationModal');
+        modal.classList.add('active');
+        startConfetti();
+    }
+
+    function closeCelebration() {
+        const modal = document.getElementById('celebrationModal');
+        modal.classList.remove('active');
+        stopConfetti();
+    }
+
+    function startConfetti() {
+        const cCanvas = document.getElementById('confettiCanvas');
+        const cCtx = cCanvas.getContext('2d');
+        
+        cCanvas.width = cCanvas.offsetWidth;
+        cCanvas.height = cCanvas.offsetHeight;
+
+        particles = [];
+        const colors = ['#1A73E8', '#1E8E3E', '#F9AB00', '#7F39FB', '#E91E63'];
+
+        for (let i = 0; i < 60; i++) {
+            particles.push({
+                x: cCanvas.width / 2,
+                y: cCanvas.height / 2,
+                vx: (Math.random() - 0.5) * 12,
+                vy: (Math.random() - 0.7) * 12,
+                size: Math.random() * 6 + 4,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                rotation: Math.random() * 360,
+                vRot: (Math.random() - 0.5) * 10
+            });
+        }
+
+        function update() {
+            cCtx.clearRect(0, 0, cCanvas.width, cCanvas.height);
+            let alive = false;
+
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.25; // gravity
+                p.rotation += p.vRot;
+
+                if (p.y < cCanvas.height) alive = true;
+
+                cCtx.save();
+                cCtx.translate(p.x, p.y);
+                cCtx.rotate((p.rotation * Math.PI) / 180);
+                cCtx.fillStyle = p.color;
+                cCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                cCtx.restore();
+            });
+
+            if (alive) {
+                confettiAnimationId = requestAnimationFrame(update);
+            }
+        }
+
+        if (confettiAnimationId) cancelAnimationFrame(confettiAnimationId);
+        update();
+    }
+
+    function stopConfetti() {
+        if (confettiAnimationId) {
+            cancelAnimationFrame(confettiAnimationId);
+            confettiAnimationId = null;
+        }
+    }
+
+    // Initial Setup
+    window.addEventListener('resize', renderGraph);
+    updateApp();
+</script>
+
+</body>
+</html>
