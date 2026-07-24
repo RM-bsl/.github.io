@@ -6,13 +6,14 @@
     <title>Interaktive Lernapp: Der Logarithmus</title>
     <style>
         :root {
-            --param-a: #1A73E8;
-            --param-b: #1E8E3E;
-            --param-d: #F9AB00;
-            --param-y0: #29B6F6;
-            --param-e: #D32F2F;
-            --param-num: #E91E63;
-            --result-purple: #7F39FB;
+            --param-a: #00796B;      /* Dunkeltürkis / Teal (Streckungsfaktor a) */
+            --param-b: #1E8E3E;      /* Material Green (Basis b) */
+            --param-d: #F9AB00;      /* Material Orange (X-Verschiebung / Asymptote d) */
+            --param-y0: #29B6F6;     /* Material Light Blue (Y-Verschiebung y0) */
+            --param-e: #1A73E8;      /* Material Blue (Exponentialfunktion g(x)) */
+            --param-num: #E91E63;    /* Material Pink (Numerus / Argument x) */
+            --result-purple: #7F39FB;/* Material Purple (Ergebnis y / Nullstelle / Punkte) */
+            --graph-fx: #E64A19;     /* Korallenrot / Deep Orange (Logarithmusfunktion f(x)) */
             --dark-active: #1C1C1E;
             --btn-success: #33691E;
             --bg-tips: #FEF7E0;
@@ -79,7 +80,7 @@
             margin-bottom: 12px;
         }
 
-        /* Slider Controls */
+        /* Slider Controls - Modernes Blau */
         .slider-group {
             display: flex;
             flex-direction: column;
@@ -106,7 +107,24 @@
             border-radius: 3px;
             background: #e0e0e0;
             outline: none;
-            accent-color: #1A73E8;
+            accent-color: #2563EB;
+        }
+
+        /* Live Equation Box in Sidebar */
+        .sidebar-equations-box {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 14px;
+            font-size: 0.88rem;
+        }
+
+        .sidebar-equations-title {
+            font-weight: 700;
+            color: #202124;
+            margin-bottom: 8px;
+            font-size: 0.88rem;
         }
 
         /* Canvas Graph & Controls */
@@ -149,9 +167,9 @@
         }
 
         .toggle-btn.active {
-            background-color: #D32F2F;
+            background-color: var(--param-e);
             color: #ffffff;
-            border-color: #D32F2F;
+            border-color: var(--param-e);
         }
 
         .graph-legend {
@@ -232,7 +250,7 @@
 
         .sinnstiftung-box {
             background-color: #f1f3f4;
-            border-left: 4px solid var(--param-a);
+            border-left: 4px solid var(--graph-fx);
             padding: 14px 16px;
             border-radius: 0 12px 12px 0;
             margin-bottom: 20px;
@@ -243,6 +261,16 @@
             font-size: 0.95rem;
             margin-bottom: 4px;
             color: #202124;
+        }
+
+        /* Modernes Gelb für die Umkehrfunktions-Infobox */
+        .intro-easy-box {
+            background-color: #FEF7E0;
+            border-left: 4px solid #F59E0B;
+            padding: 14px 16px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 20px;
+            color: #664D03;
         }
 
         /* Math Display Formatting */
@@ -316,6 +344,7 @@
         .param-y0 { color: var(--param-y0); font-weight: bold; }
         .param-e { color: var(--param-e); font-weight: bold; }
         .param-num { color: var(--param-num); font-weight: bold; }
+        .graph-fx { color: var(--graph-fx); font-weight: bold; }
         .result-purple { color: var(--result-purple); font-weight: bold; }
 
         /* Accordion Dropdowns */
@@ -426,7 +455,7 @@
             font-weight: 700;
         }
 
-        /* Feieranimation Modal Overlay */
+        /* Celebration Modal Overlay */
         .celebration-overlay {
             position: fixed;
             top: 0;
@@ -549,7 +578,7 @@
 
         <div class="card">
             <h2 class="card-title">Funktionsparameter bestimmen</h2>
-            <p class="card-desc">Verändere die Regler, um beide Graphen dynamisch anzupassen:</p>
+            <p class="card-desc">Verändere die Regler, um alle Formeln, Berechnungen und Graphen dynamisch anzupassen:</p>
             
             <div class="slider-group">
                 <div class="slider-control">
@@ -584,6 +613,14 @@
                     <input type="range" id="slider-y0" min="-4" max="4" step="0.5" value="0.0">
                 </div>
             </div>
+
+            <div class="sidebar-equations-box">
+                <div class="sidebar-equations-title">Aktuelle Funktionsgleichungen:</div>
+                <div id="sidebar-f-equation" style="margin-bottom: 8px;">
+                    </div>
+                <div id="sidebar-g-equation">
+                    </div>
+            </div>
         </div>
 
         <div class="card">
@@ -596,16 +633,20 @@
             
             <div class="graph-legend">
                 <div class="legend-item">
-                    <div class="legend-color" style="background: #1A73E8;"></div>
-                    <span>Logarithmus f(x)</span>
+                    <div class="legend-color" style="background: var(--graph-fx);"></div>
+                    <span style="color: var(--graph-fx);">Logarithmus f(x)</span>
                 </div>
                 <div class="legend-item" id="legend-exp-item">
-                    <div class="legend-color" style="background: #D32F2F;"></div>
-                    <span>Exponential g(x)</span>
+                    <div class="legend-color" style="background: var(--param-e);"></div>
+                    <span style="color: var(--param-e);">Exponential g(x)</span>
                 </div>
                 <div class="legend-item" id="legend-mirror-item">
                     <div class="legend-color" style="background: #888; border-top: 1px dashed #888;"></div>
                     <span>Spiegelachse y = x</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--param-d); border-top: 1px dashed var(--param-d);"></div>
+                    <span>Asymptote (<span class="param-d">d</span>)</span>
                 </div>
             </div>
 
@@ -636,9 +677,19 @@
 
         <section class="card">
             <div id="step-1" class="step-content active">
+                
                 <div class="sinnstiftung-box">
                     <div class="sinnstiftung-title">Mathematische Bedeutung &amp; Anwendungskriterien</div>
-                    Der Logarithmus ist die Umkehroperation des Potenzierens. Er berechnet die gesuchte Hochzahl (den Exponenten), mit der eine Basis multipliziert werden muss, um einen bestimmten Zielwert zu erreichen.
+                    Der Logarithmus ist die Umkehroperation des Potenzierens. Er berechnet die gesuchte Hochzahl (den Exponenten <span class="result-purple">y</span>), mit der eine Basis <span class="param-b">b</span> potenziert werden muss, um den Numerus <span class="param-num">x</span> zu erreichen.
+                </div>
+
+                <div class="intro-easy-box">
+                    <div class="sinnstiftung-title" style="color: #664D03;">💡 Einfach erklärt: Was ist eine Umkehrfunktion?</div>
+                    Stell dir eine mathematische Funktion wie eine Vorwärts-Maschine vor: Du gibst eine Startzahl hinein und die Maschine berechnet ein Ergebnis.<br>
+                    Eine <strong>Umkehrfunktion</strong> ist der perfekte <strong>Rückwärtsgang</strong> dieser Maschine: Sie nimmt das Ergebnis und rechnet exakt zur ursprünglichen Startzahl zurück.<br><br>
+                    <strong>Konkretes Beispiel:</strong><br>
+                    • Die Potenzfunktion rechnet vorwärts: <span class="param-b">2</span><sup><span class="result-purple">3</span></sup> = <span class="param-num">8</span>.<br>
+                    • Die Logarithmusfunktion schaltet den Rückwärtsgang ein: log<sub><span class="param-b">2</span></sub>(<span class="param-num">8</span>) = <span class="result-purple">3</span>.
                 </div>
 
                 <h3>Wann wende ich den Logarithmus an?</h3>
@@ -648,9 +699,9 @@
 
                 <div class="live-formula-display">
                     <div class="math-equation">
-                        log<sub><span class="param-b">b</span></sub>(<span class="param-num">a</span>) = <span class="result-purple">c</span>
+                        log<sub><span class="param-b">b</span></sub>(<span class="param-num">x</span>) = <span class="result-purple">y</span>
                         &nbsp;&hArr;&nbsp;
-                        <span class="param-b">b</span><sup><span class="result-purple">c</span></sup> = <span class="param-num">a</span>
+                        <span class="param-b">b</span><sup><span class="result-purple">y</span></sup> = <span class="param-num">x</span>
                     </div>
                     <div id="live-calc-display-1" style="margin-top: 12px; color: #333;">
                         </div>
@@ -659,9 +710,10 @@
                 <h3>Exakte mathematische Bezeichnungen:</h3>
                 <ul style="margin-left: 20px; margin-top: 8px; line-height: 1.8;">
                     <li><span class="param-b">Basis (b)</span>: Die Grundzahl der Potenz bzw. des Logarithmus. Muss stets positiv und ungleich 1 sein (<span class="param-b">b</span> &gt; 0 und <span class="param-b">b</span> &ne; 1).</li>
-                    <li><span class="param-num">Numerus (a)</span>: Auch <em>Argument</em> oder <em>Zielwert</em> genannt. Ist der Wert, der durch Potenzieren erzeugt wird. Muss stets strikt positiv sein (<span class="param-num">a</span> &gt; 0).</li>
-                    <li><span class="result-purple">Logarithmus (c)</span>: Der berechnete Wert bzw. der Exponent der Potenz.</li>
-                    <li><strong>Sprechweise:</strong> <em>„Der Logarithmus von <span class="param-num">a</span> zur Basis <span class="param-b">b</span> ist gleich <span class="result-purple">c</span>.“</em></li>
+                    <li><span class="param-num">Numerus (x)</span>: Auch <em>Argument</em> oder <em>Zielwert</em> genannt. Ist der Wert, der durch Potenzieren erzeugt wird. Muss stets strikt positiv sein (<span class="param-num">x</span> &gt; 0).</li>
+                    <li><span class="result-purple">Logarithmuswert (y)</span>: Der berechnete Wert bzw. der gesuchte Exponent der Potenz.</li>
+                    <li><span class="param-a">Streckungsfaktor (a)</span>: Der dunkeltürkise Parameter <span class="param-a">a</span> vor dem Logarithmenterm streckt, staucht oder spiegelt die Funktion vertikal.</li>
+                    <li><strong>Sprechweise:</strong> <em>„Der Logarithmus von <span class="param-num">x</span> zur Basis <span class="param-b">b</span> ist gleich <span class="result-purple">y</span>.“</em></li>
                 </ul>
 
                 <details class="tips">
@@ -674,7 +726,7 @@
                 <details class="warning">
                     <summary>⚠️ Stolperfallen &amp; Schülerfehler</summary>
                     <div class="details-body">
-                        Verwechsle niemals log<sub><span class="param-b">b</span></sub>(<span class="param-num">a</span>) mit einer normalen Division! log<sub>2</sub>(8) ist nicht 8 geteilt durch 2 = 4, sondern exakt 3. Auch für den Numerus 0 oder negative Zahlen gibt es im Reellen keinen Logarithmus!
+                        Verwechsle niemals log<sub><span class="param-b">b</span></sub>(<span class="param-num">x</span>) mit einer normalen Division! log<sub>2</sub>(8) ist nicht 8 geteilt durch 2 = 4, sondern exakt 3. Auch für den Numerus 0 oder negative Zahlen gibt es im Reellen keinen Logarithmus!
                     </div>
                 </details>
 
@@ -687,32 +739,24 @@
                     In der Mathematik und den Naturwissenschaften haben sich für häufig genutzte Basen spezielle Abkürzungen etabliert. Dadurch spart man sich das ständige Anschreiben der Basis.
                 </div>
 
-                <h3>Die drei wichtigsten Logarithmus-Schreibweisen:</h3>
+                <h3>Die zwei wichtigsten Logarithmus-Schreibweisen:</h3>
 
                 <div style="margin-top: 14px; line-height: 1.6;">
                     <div style="background: #f8f9fa; border-radius: 10px; padding: 12px; margin-bottom: 12px; border: 1px solid #e0e0e0;">
-                        <h4 style="color: #111;">1. Dekadischer Logarithmus (<span class="param-a">lg</span> oder <span class="param-a">log</span>)</h4>
-                        <div class="math-equation">lg(x) = log<sub>10</sub>(x)</div>
+                        <h4 style="color: #111;">1. Dekadischer Logarithmus (<span class="param-e">lg</span> oder <span class="param-e">log</span>)</h4>
+                        <div class="math-equation">lg(<span class="param-num">x</span>) = log<sub>10</sub>(<span class="param-num">x</span>)</div>
                         <p style="font-size: 0.9rem; color: #444;">
                             <strong>Basis:</strong> b = 10 (Zehner-Logarithmus).<br>
-                            <strong>Anwendung:</strong> Richterskala (Erdbeben), pH-Wert (Chemie), Dezibel (Akustik). Auf deutschen Schul-Taschenrechnern meist als <span class="param-a">lg</span> oder <span class="param-a">log</span> beschriftet.
-                        </p>
-                    </div>
-
-                    <div style="background: #f8f9fa; border-radius: 10px; padding: 12px; margin-bottom: 12px; border: 1px solid #e0e0e0;">
-                        <h4 style="color: #111;">2. Natürlicher Logarithmus (<span class="param-e">ln</span>)</h4>
-                        <div class="math-equation">ln(x) = log<sub><span class="param-e">e</span></sub>(x)</div>
-                        <p style="font-size: 0.9rem; color: #444;">
-                            <strong>Basis:</strong> b = <span class="param-e">e</span> &approx; 2,71828 (Eulersche Zahl).<br>
-                            <strong>Anwendung:</strong> Unverzichtbar in der Oberstufen-Analysis, bei kontinuierlichen Wachstumsprozessen, Radioaktivität und Zinseszins.
+                            <strong>Anwendung:</strong> Richterskala (Erdbeben), pH-Wert (Chemie), Dezibel (Akustik). Auf deutschen Schul-Taschenrechnern meist als <span class="param-e">lg</span> oder <span class="param-e">log</span> beschriftet.
                         </p>
                     </div>
 
                     <div style="background: #f8f9fa; border-radius: 10px; padding: 12px; border: 1px solid #e0e0e0;">
-                        <h4 style="color: #111;">3. Allgemeiner &amp; Dualer Logarithmus (<span class="param-b">log<sub>b</sub></span> / <span class="param-b">ld</span>)</h4>
-                        <div class="math-equation">log<sub><span class="param-b">b</span></sub>(x) &nbsp;&nbsp; bzw. &nbsp;&nbsp; ld(x) = log<sub>2</sub>(x)</div>
+                        <h4 style="color: #111;">2. Natürlicher Logarithmus (<span class="param-e">ln</span>)</h4>
+                        <div class="math-equation">ln(<span class="param-num">x</span>) = log<sub><span class="param-e">e</span></sub>(<span class="param-num">x</span>)</div>
                         <p style="font-size: 0.9rem; color: #444;">
-                            <strong>Basis:</strong> Beliebige zugelassene Basis <span class="param-b">b</span>. Der duale Logarithmus <span class="param-b">ld</span> (Basis 2) spielt eine zentrale Rolle in der Informatik (Binärsystem).
+                            <strong>Basis:</strong> b = <span class="param-e">e</span> &approx; 2,71828 (Eulersche Zahl).<br>
+                            <strong>Anwendung:</strong> Unverzichtbar in der Oberstufen-Analysis, bei kontinuierlichen Wachstumsprozessen, Radioaktivität und Zinseszins.
                         </p>
                     </div>
                 </div>
@@ -723,7 +767,7 @@
                 <details class="tips">
                     <summary>💡 Tipps &amp; Strukturhilfen</summary>
                     <div class="details-body">
-                        Achte bei Aufgabenstellungen genau auf das Kürzel: Steht dort <span class="param-e">ln</span>, rechne immer mit der Eulerschen Zahl <span class="param-e">e</span>. Steht dort <span class="param-a">lg</span>, ist automatisch die Basis 10 gemeint.
+                        Achte bei Aufgabenstellungen genau auf das Kürzel: Steht dort <span class="param-e">ln</span>, rechne immer mit der Eulerschen Zahl <span class="param-e">e</span>. Steht dort <span class="param-e">lg</span>, ist automatisch die Basis 10 gemeint.
                     </div>
                 </details>
 
@@ -747,37 +791,37 @@
                 <div class="rules-grid">
                     <div class="rule-card">
                         <h4>Gleiche Basis (Multiplikation)</h4>
-                        <div class="math-equation"><span class="param-a">a</span><sup>m</sup> &middot; <span class="param-a">a</span><sup>n</sup> = <span class="param-a">a</span><sup>m &plus; n</sup></div>
+                        <div class="math-equation"><span class="param-b">b</span><sup>m</sup> &middot; <span class="param-b">b</span><sup>n</sup> = <span class="param-b">b</span><sup>m &plus; n</sup></div>
                     </div>
                     <div class="rule-card">
                         <h4>Gleiche Basis (Division)</h4>
                         <div class="math-equation">
                             <div class="math-fraction">
-                                <div class="math-numerator"><span class="param-a">a</span><sup>m</sup></div>
-                                <div class="math-denominator"><span class="param-a">a</span><sup>n</sup></div>
+                                <div class="math-numerator"><span class="param-b">b</span><sup>m</sup></div>
+                                <div class="math-denominator"><span class="param-b">b</span><sup>n</sup></div>
                             </div>
-                            = <span class="param-a">a</span><sup>m &minus; n</sup>
+                            = <span class="param-b">b</span><sup>m &minus; n</sup>
                         </div>
                     </div>
                     <div class="rule-card">
                         <h4>Potenz potenzieren</h4>
-                        <div class="math-equation">(<span class="param-a">a</span><sup>m</sup>)<sup>n</sup> = <span class="param-a">a</span><sup>m &middot; n</sup></div>
+                        <div class="math-equation">(<span class="param-b">b</span><sup>m</sup>)<sup>n</sup> = <span class="param-b">b</span><sup>m &middot; n</sup></div>
                     </div>
                     <div class="rule-card">
                         <h4>Gleicher Exponent (Multiplikation)</h4>
-                        <div class="math-equation"><span class="param-a">a</span><sup>n</sup> &middot; <span class="param-b">b</span><sup>n</sup> = (<span class="param-a">a</span> &middot; <span class="param-b">b</span>)<sup>n</sup></div>
+                        <div class="math-equation">u<sup>n</sup> &middot; v<sup>n</sup> = (u &middot; v)<sup>n</sup></div>
                     </div>
                     <div class="rule-card">
                         <h4>Gleicher Exponent (Division)</h4>
                         <div class="math-equation">
                             <div class="math-fraction">
-                                <div class="math-numerator"><span class="param-a">a</span><sup>n</sup></div>
-                                <div class="math-denominator"><span class="param-b">b</span><sup>n</sup></div>
+                                <div class="math-numerator">u<sup>n</sup></div>
+                                <div class="math-denominator">v<sup>n</sup></div>
                             </div>
                             = (
                             <div class="math-fraction">
-                                <div class="math-numerator"><span class="param-a">a</span></div>
-                                <div class="math-denominator"><span class="param-b">b</span></div>
+                                <div class="math-numerator">u</div>
+                                <div class="math-denominator">v</div>
                             </div>
                             )<sup>n</sup>
                         </div>
@@ -785,24 +829,24 @@
                     <div class="rule-card">
                         <h4>Negativer Exponent</h4>
                         <div class="math-equation">
-                            <span class="param-a">a</span><sup>&minus;n</sup> = 
+                            <span class="param-b">b</span><sup>&minus;n</sup> = 
                             <div class="math-fraction">
                                 <div class="math-numerator">1</div>
-                                <div class="math-denominator"><span class="param-a">a</span><sup>n</sup></div>
+                                <div class="math-denominator"><span class="param-b">b</span><sup>n</sup></div>
                             </div>
                         </div>
                     </div>
                     <div class="rule-card">
                         <h4>Exponent Null</h4>
-                        <div class="math-equation"><span class="param-a">a</span><sup>0</sup> = 1 &nbsp; (<span class="param-a">a</span> &ne; 0)</div>
+                        <div class="math-equation"><span class="param-b">b</span><sup>0</sup> = 1 &nbsp; (<span class="param-b">b</span> &ne; 0)</div>
                     </div>
                     <div class="rule-card">
                         <h4>Gebrochener Exponent (Wurzel)</h4>
                         <div class="math-equation">
-                            <span class="param-a">a</span><sup><div class="math-fraction" style="font-size:0.75em;"><div class="math-numerator">m</div><div class="math-denominator">n</div></div></sup> = 
+                            <span class="param-b">b</span><sup><div class="math-fraction" style="font-size:0.75em;"><div class="math-numerator">m</div><div class="math-denominator">n</div></div></sup> = 
                             <span class="math-sqrt">
                                 <span class="radical"><sup>n</sup>&radic;</span>
-                                <span class="radicand"><span class="param-a">a</span><sup>m</sup></span>
+                                <span class="radicand"><span class="param-b">b</span><sup>m</sup></span>
                             </span>
                         </div>
                     </div>
@@ -849,14 +893,17 @@
                     <div class="rule-card">
                         <h4>Basiswechsel-Formel</h4>
                         <div class="math-equation">
-                            log<sub><span class="param-b">b</span></sub>(x) = 
+                            log<sub><span class="param-b">b</span></sub>(<span class="param-num">x</span>) = 
                             <div class="math-fraction">
-                                <div class="math-numerator">ln(x)</div>
+                                <div class="math-numerator">ln(<span class="param-num">x</span>)</div>
                                 <div class="math-denominator">ln(<span class="param-b">b</span>)</div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="live-formula-display" id="live-calc-display-3">
+                    </div>
 
                 <details class="tips">
                     <summary>💡 Tipps &amp; Strukturhilfen</summary>
@@ -883,15 +930,15 @@
 
                 <h3>Vergleich: Logarithmusfunktion vs. Exponentialfunktion</h3>
                 <p style="margin-top: 6px;">
-                    Schau dir das linke Diagramm an: Die blaue Kurve f(x) = log<sub><span class="param-b">b</span></sub>(x) und die rote Kurve g(x) = <span class="param-b">b</span><sup>x</sup> verhalten sich wie Bild und Spiegelbild.
+                    Schau dir das linke Diagramm an: Die korallenrote Kurve f(x) = <span class="param-a">a</span> &middot; log<sub><span class="param-b">b</span></sub>(x &minus; <span class="param-d">d</span>) &plus; <span class="param-y0">y<sub>0</sub></span> und die blaue Kurve g(x) = <span class="param-b">b</span><sup>(x &minus; <span class="param-y0">y<sub>0</sub></span>) / <span class="param-a">a</span></sup> &plus; <span class="param-d">d</span> verhalten sich wie Bild und Spiegelbild.
                 </p>
 
                 <table class="comparison-table">
                     <thead>
                         <tr>
                             <th>Eigenschaft</th>
-                            <th style="color: #1A73E8;">Logarithmusfunktion f(x) = log<sub>b</sub>(x)</th>
-                            <th style="color: #D32F2F;">Exponentialfunktion g(x) = b<sup>x</sup></th>
+                            <th style="color: var(--graph-fx);">Logarithmusfunktion f(x)</th>
+                            <th style="color: var(--param-e);">Exponentialfunktion g(x)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -902,23 +949,23 @@
                         </tr>
                         <tr>
                             <td><strong>Charakteristischer Punkt</strong></td>
-                            <td>Verläuft immer durch <span class="result-purple">(1 | 0)</span></td>
-                            <td>Verläuft immer durch <span class="result-purple">(0 | 1)</span></td>
+                            <td>Verläuft durch <span class="result-purple">(<span class="param-d">d</span>&plus;1 | <span class="param-y0">y<sub>0</sub></span>)</span></td>
+                            <td>Verläuft durch <span class="result-purple">(<span class="param-y0">y<sub>0</sub></span> | <span class="param-d">d</span>&plus;1)</span></td>
                         </tr>
                         <tr>
                             <td><strong>Asymptote (Grenzlinie)</strong></td>
-                            <td>Senkrechte Asymptote bei <span class="param-d">x = 0</span></td>
-                            <td>Waagerechte Asymptote bei <span class="param-d">y = 0</span></td>
+                            <td>Senkrechte Asymptote bei <span class="param-d">x = d</span></td>
+                            <td>Waagerechte Asymptote bei <span class="param-d">y = d</span></td>
                         </tr>
                         <tr>
                             <td><strong>Definitionsmenge (D)</strong></td>
-                            <td>Strikt positiv: ]0; +&infin;[</td>
+                            <td>Strikt eingeschränkt: ]<span class="param-d">d</span>; +&infin;[</td>
                             <td>Alle reellen Zahlen: &mathbb;R</td>
                         </tr>
                         <tr>
                             <td><strong>Wertemenge (W)</strong></td>
                             <td>Alle reellen Zahlen: &mathbb;R</td>
-                            <td>Strikt positiv: ]0; +&infin;[</td>
+                            <td>Strikt eingeschränkt: ]<span class="param-d">d</span>; +&infin;[</td>
                         </tr>
                     </tbody>
                 </table>
@@ -949,29 +996,11 @@
                     Schritt-für-Schritt-Verfahren zur exakten Bestimmung von unbekannten Exponenten in praxisnahen Gleichungen.
                 </div>
 
-                <h3>Beispielaufgabe:</h3>
-                <p>Löse die Exponentialgleichung: 3 &middot; 2<sup>x</sup> = 24</p>
+                <h3>Dynamisches Lösungsbeispiel mit deinem Streckungsfaktor <span class="param-a">a</span>:</h3>
+                <p>Löse die Exponentialgleichung basierend auf deinen aktuellen Schiebereglern:</p>
 
-                <div style="background: #fafafa; border-radius: 12px; padding: 16px; margin-top: 12px; border: 1px solid #eee;">
-                    <p><strong>Schritt 1: Potenz isolieren (beide Seiten durch 3 teilen)</strong></p>
-                    <div class="math-equation">2<sup>x</sup> = 8</div>
-
-                    <p style="margin-top: 10px;"><strong>Schritt 2: Logarithmus (ln) auf beiden Seiten anwenden</strong></p>
-                    <div class="math-equation">ln(2<sup>x</sup>) = ln(8)</div>
-
-                    <p style="margin-top: 10px;"><strong>Schritt 3: Potenzregel anwenden (Exponent x nach vorne holen)</strong></p>
-                    <div class="math-equation">x &middot; ln(2) = ln(8)</div>
-
-                    <p style="margin-top: 10px;"><strong>Schritt 4: Nach x auflösen (durch ln(2) teilen)</strong></p>
-                    <div class="math-equation">
-                        x = 
-                        <div class="math-fraction">
-                            <div class="math-numerator">ln(8)</div>
-                            <div class="math-denominator">ln(2)</div>
-                        </div>
-                        = <span class="result-purple">3</span>
+                <div class="live-formula-display" id="live-calc-display-5">
                     </div>
-                </div>
 
                 <details class="tips">
                     <summary>💡 Tipps &amp; Strukturhilfen</summary>
@@ -1013,6 +1042,15 @@
     let paramY0 = 0.0;
     let activeStep = 1;
     let showExponential = true;
+
+    // Strict Color Bridge Matching CSS Root Variables
+    const COLOR_A = '#00796B';      // Dunkeltürkis / Teal (Streckungsfaktor a)
+    const COLOR_B = '#1E8E3E';      // Material Green (Basis b)
+    const COLOR_D = '#F9AB00';      // Material Orange (Asymptote d)
+    const COLOR_Y0 = '#29B6F6';     // Material Light Blue (y0)
+    const COLOR_E = '#1A73E8';      // Material Blue (Exponentialfunktion g(x))
+    const COLOR_FX = '#E64A19';     // Korallenrot / Deep Orange (Logarithmusfunktion f(x))
+    const COLOR_PURPLE = '#7F39FB'; // Material Purple (Ergebnisse / Punkte)
 
     // DOM Elements
     const sliderA = document.getElementById('slider-a');
@@ -1113,21 +1151,40 @@
         }
     }
 
-    // Dynamic Updates
+    // Dynamic Updates Across ALL Tabs & Sidebar
     function updateApp() {
         renderGraph();
+        updateSidebarEquations();
         updateStep1Text();
         updateStep2Text();
+        updateStep3Text();
         updateStep4Text();
+        updateStep5Text();
+    }
+
+    // Live display of full equations in Card 2 (Sidebar)
+    function updateSidebarEquations() {
+        const fElem = document.getElementById('sidebar-f-equation');
+        const gElem = document.getElementById('sidebar-g-equation');
+        
+        const dStr = paramD >= 0 ? `&minus; ${paramD.toFixed(1)}` : `&plus; ${Math.abs(paramD).toFixed(1)}`;
+        const y0Str = paramY0 >= 0 ? `&plus; ${paramY0.toFixed(1)}` : `&minus; ${Math.abs(paramY0).toFixed(1)}`;
+
+        fElem.innerHTML = `<strong>Logarithmus f(x):</strong><br>` +
+            `<span style="color: var(--graph-fx);">f(x)</span> = <span class="param-a">${paramA.toFixed(1)}</span> &middot; log<sub><span class="param-b">${paramB.toFixed(1)}</span></sub>(x ${dStr}) ${y0Str}`;
+
+        gElem.innerHTML = `<strong>Exponential g(x):</strong><br>` +
+            `<span style="color: var(--param-e);">g(x)</span> = <span class="param-b">${paramB.toFixed(1)}</span><sup>(x ${paramY0 >= 0 ? '&minus; ' + paramY0.toFixed(1) : '&plus; ' + Math.abs(paramY0).toFixed(1)}) / <span class="param-a">${paramA.toFixed(1)}</span></sup> ${paramD >= 0 ? '&plus; ' + paramD.toFixed(1) : '&minus; ' + Math.abs(paramD).toFixed(1)}`;
     }
 
     function updateStep1Text() {
         const display = document.getElementById('live-calc-display-1');
-        const numVal = 8.0;
-        let res = Math.log(numVal) / Math.log(paramB);
-        display.innerHTML = `Berechnungsbeispiel mit aktueller Basis <span class="param-b">b = ${paramB.toFixed(1)}</span>:<br>` +
-            `<div class="math-equation">log<sub><span class="param-b">${paramB.toFixed(1)}</span></sub>(<span class="param-num">8</span>) &approx; <span class="result-purple">${res.toFixed(2)}</span> ` +
-            `&nbsp;&rArr;&nbsp; <span class="param-b">${paramB.toFixed(1)}</span><sup><span class="result-purple">${res.toFixed(2)}</span></sup> &approx; <span class="param-num">8</span></div>`;
+        const xVal = 8.0;
+        let yRes = Math.log(xVal) / Math.log(paramB);
+        display.innerHTML = `Berechnungsbeispiel für Numerus <span class="param-num">x = 8</span> mit deinen Reglern:<br>` +
+            `<div class="math-equation">log<sub><span class="param-b">${paramB.toFixed(1)}</span></sub>(<span class="param-num">8</span>) &approx; <span class="result-purple">${yRes.toFixed(2)}</span> ` +
+            `&nbsp;&rArr;&nbsp; <span class="param-b">${paramB.toFixed(1)}</span><sup><span class="result-purple">${yRes.toFixed(2)}</span></sup> &approx; <span class="param-num">8</span></div>` +
+            `<div style="font-size:0.88rem; color:#666; margin-top:4px;">Inklusive Deines Streckungsfaktors: f(8) = <span class="param-a">${paramA.toFixed(1)}</span> &middot; log<sub><span class="param-b">${paramB.toFixed(1)}</span></sub>(8) &approx; <span class="result-purple">${(paramA * yRes).toFixed(2)}</span></div>`;
     }
 
     function updateStep2Text() {
@@ -1138,29 +1195,74 @@
         const customLogVal = Math.log(testX) / Math.log(paramB);
 
         display.innerHTML = `
-            <strong>Live-Vergleich für x = 10 mit den Schiebereglern:</strong><br>
+            <strong>Live-Vergleich für Numerus x = 10:</strong><br>
             • Dekadisch (lg): lg(10) = <span class="result-purple">${lgVal.toFixed(2)}</span><br>
             • Natürlich (ln): ln(10) &approx; <span class="result-purple">${lnVal.toFixed(2)}</span><br>
-            • Zur eingestellten Basis (${paramB.toFixed(1)}): log<sub>${paramB.toFixed(1)}</sub>(10) &approx; <span class="result-purple">${customLogVal.toFixed(2)}</span>
+            • Zum Vergleich (aktuelle Basis <span class="param-b">${paramB.toFixed(1)}</span>): log<sub><span class="param-b">${paramB.toFixed(1)}</span></sub>(10) &approx; <span class="result-purple">${customLogVal.toFixed(2)}</span>
+        `;
+    }
+
+    function updateStep3Text() {
+        const display = document.getElementById('live-calc-display-3');
+        if (!display) return;
+        display.innerHTML = `
+            <strong>Live-Anwendung der Gesetze mit deinen Parametern:</strong><br>
+            • <strong>Potenzregel live:</strong> log<sub><span class="param-b">${paramB.toFixed(1)}</span></sub>(<span class="param-b">${paramB.toFixed(1)}</span><sup><span class="param-a">${paramA.toFixed(1)}</span></sup>) = <span class="param-a">${paramA.toFixed(1)}</span> &middot; log<sub><span class="param-b">${paramB.toFixed(1)}</span></sub>(<span class="param-b">${paramB.toFixed(1)}</span>) = <span class="result-purple">${(paramA * 1).toFixed(1)}</span><br>
+            • <strong>Sonderfälle live:</strong> log<sub><span class="param-b">${paramB.toFixed(1)}</span></sub>(<span class="param-b">${paramB.toFixed(1)}</span>) = <span class="result-purple">1</span> &nbsp;und&nbsp; log<sub><span class="param-b">${paramB.toFixed(1)}</span></sub>(1) = <span class="result-purple">0</span>
         `;
     }
 
     function updateStep4Text() {
         const display = document.getElementById('graph-properties-display');
         const zeroX = paramD + Math.pow(paramB, -paramY0 / (paramA || 0.0001));
+        const isIncreasing = (paramA * Math.log(paramB)) > 0;
         
         display.innerHTML = `
             <strong>Live-Eigenschaften bezogen auf Schieberegler:</strong>
             <ul style="margin-left: 20px; margin-top: 6px;">
-                <li><strong>Logarithmus-Asymptote:</strong> x = <span class="param-d">${paramD.toFixed(1)}</span> (senkrecht)</li>
-                <li><strong>Exponential-Asymptote:</strong> y = <span class="param-d">${paramD.toFixed(1)}</span> (waagerecht)</li>
-                <li><strong>Gespiegelter Hauptpunkt:</strong> <span class="result-purple">(${ (paramD + 1).toFixed(1)} | ${paramY0.toFixed(1)})</span> spiegelt sich zu <span class="result-purple">(${paramY0.toFixed(1)} | ${(paramD + 1).toFixed(1)})</span></li>
-                <li><strong>Berechnete Logarithmus-Nullstelle:</strong> x &approx; <span class="result-purple">${zeroX > paramD ? zeroX.toFixed(2) : 'Nicht definiert'}</span></li>
+                <li><strong>Streckungsfaktor <span class="param-a">a</span>:</strong> <span class="param-a">${paramA.toFixed(1)}</span> (${paramA < 0 ? 'an der X-Achse gespiegelt' : 'normal ausgerichtet'})</li>
+                <li><strong>Logarithmus-Asymptote:</strong> <span class="param-d">x = ${paramD.toFixed(1)}</span> (senkrecht)</li>
+                <li><strong>Exponential-Asymptote:</strong> <span class="param-d">y = ${paramD.toFixed(1)}</span> (waagerecht)</li>
+                <li><strong>Monotonie f(x):</strong> ${isIncreasing ? 'Streng monoton steigend' : 'Streng monoton fallend'}</li>
+                <li><strong>Gespiegelter Hauptpunkt:</strong> <span class="result-purple">(${(paramD + 1).toFixed(1)} | ${paramY0.toFixed(1)})</span> spiegelt sich zu <span class="result-purple">(${paramY0.toFixed(1)} | ${(paramD + 1).toFixed(1)})</span></li>
+                <li><strong>Berechnete Nullstelle f(x):</strong> x &approx; <span class="result-purple">${zeroX > paramD ? zeroX.toFixed(2) : 'Nicht definiert'}</span></li>
             </ul>
         `;
     }
 
-    // Canvas HDPI Rendering & Graph Plotting
+    function updateStep5Text() {
+        const display = document.getElementById('live-calc-display-5');
+        if (!display) return;
+        const absA = Math.abs(paramA) || 1.0;
+        const targetVal = (absA * 8).toFixed(1);
+        const isoVal = (targetVal / absA).toFixed(1);
+        const xSol = (Math.log(isoVal) / Math.log(paramB)).toFixed(2);
+
+        display.innerHTML = `
+            <div class="math-equation">
+                <span class="param-a">${absA.toFixed(1)}</span> &middot; <span class="param-b">${paramB.toFixed(1)}</span><sup>x</sup> = ${targetVal}
+            </div>
+            <div style="text-align: left; margin-top: 10px; line-height: 1.8;">
+                <p><strong>1. Potenz isolieren:</strong> Beide Seiten durch deinen Streckungsfaktor <span class="param-a">a = ${absA.toFixed(1)}</span> teilen:</p>
+                <div class="math-equation"><span class="param-b">${paramB.toFixed(1)}</span><sup>x</sup> = ${isoVal}</div>
+                
+                <p><strong>2. Logarithmieren:</strong> Natürlichen Logarithmus anwenden &amp; Potenzregel nutzen:</p>
+                <div class="math-equation">x &middot; ln(<span class="param-b">${paramB.toFixed(1)}</span>) = ln(${isoVal})</div>
+
+                <p><strong>3. Exakt berechnen:</strong> Durch ln(<span class="param-b">${paramB.toFixed(1)}</span>) teilen:</p>
+                <div class="math-equation">
+                    x = 
+                    <div class="math-fraction">
+                        <div class="math-numerator">ln(${isoVal})</div>
+                        <div class="math-denominator">ln(<span class="param-b">${paramB.toFixed(1)}</span>)</div>
+                    </div>
+                    &approx; <span class="result-purple">${xSol}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    // Canvas HDPI Rendering & Dual Graph Plotting
     function renderGraph() {
         const rect = canvas.getBoundingClientRect();
         const dpr = window.devicePixelRatio || 1;
@@ -1227,8 +1329,8 @@
             ctx.stroke();
             ctx.setLineDash([]);
 
-            // 2. Draw Exponential Horizontal Asymptote (Orange Dashed)
-            ctx.strokeStyle = '#F9AB00';
+            // 2. Draw Exponential Horizontal Asymptote (Identical Orange COLOR_D)
+            ctx.strokeStyle = COLOR_D;
             ctx.lineWidth = 1.5;
             ctx.setLineDash([4, 4]);
             ctx.beginPath();
@@ -1238,8 +1340,8 @@
             ctx.setLineDash([]);
         }
 
-        // 3. Draw Logarithm Vertical Asymptote (Orange Dashed)
-        ctx.strokeStyle = '#F9AB00';
+        // 3. Draw Logarithm Vertical Asymptote (Identical Orange COLOR_D)
+        ctx.strokeStyle = COLOR_D;
         ctx.lineWidth = 1.5;
         ctx.setLineDash([4, 4]);
         ctx.beginPath();
@@ -1248,8 +1350,8 @@
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // 4. Draw Logarithm Function Curve f(x) = a * log_b(x - d) + y0 (Blue)
-        ctx.strokeStyle = '#1A73E8';
+        // 4. Draw Logarithm Function Curve f(x) = a * log_b(x - d) + y0 (Modern Coral COLOR_FX)
+        ctx.strokeStyle = COLOR_FX;
         ctx.lineWidth = 3;
         ctx.beginPath();
 
@@ -1275,8 +1377,8 @@
         ctx.stroke();
 
         if (showExponential) {
-            // 5. Draw Exponential Function Curve g(x) = b^((x - y0)/a) + d (Red)
-            ctx.strokeStyle = '#D32F2F';
+            // 5. Draw Exponential Function Curve g(x) = b^((x - y0)/a) + d (Blue COLOR_E)
+            ctx.strokeStyle = COLOR_E;
             ctx.lineWidth = 3;
             ctx.beginPath();
 
@@ -1300,7 +1402,7 @@
             ctx.stroke();
         }
 
-        // 6. Highlight Characteristic Points
+        // 6. Highlight Characteristic Points & Reflection Line (Purple COLOR_PURPLE)
         const pLogX = paramD + 1;
         const pLogY = paramY0;
 
@@ -1309,7 +1411,7 @@
 
         // Draw Point on Logarithm Curve
         if (pLogX >= minX && pLogX <= maxX && pLogY >= minY && pLogY <= maxY) {
-            ctx.fillStyle = '#7F39FB';
+            ctx.fillStyle = COLOR_PURPLE;
             ctx.beginPath();
             ctx.arc(toPxX(pLogX), toPxY(pLogY), 5, 0, 2 * Math.PI);
             ctx.fill();
@@ -1317,7 +1419,7 @@
 
         if (showExponential && pExpX >= minX && pExpX <= maxX && pExpY >= minY && pExpY <= maxY) {
             // Draw connection line between mirrored points
-            ctx.strokeStyle = '#7F39FB';
+            ctx.strokeStyle = COLOR_PURPLE;
             ctx.lineWidth = 1;
             ctx.setLineDash([2, 2]);
             ctx.beginPath();
@@ -1327,7 +1429,7 @@
             ctx.setLineDash([]);
 
             // Draw Mirrored Point on Exponential Curve
-            ctx.fillStyle = '#7F39FB';
+            ctx.fillStyle = COLOR_PURPLE;
             ctx.beginPath();
             ctx.arc(toPxX(pExpX), toPxY(pExpY), 5, 0, 2 * Math.PI);
             ctx.fill();
@@ -1358,7 +1460,7 @@
         cCanvas.height = cCanvas.offsetHeight;
 
         particles = [];
-        const colors = ['#1A73E8', '#1E8E3E', '#F9AB00', '#7F39FB', '#E91E63'];
+        const colors = [COLOR_A, COLOR_B, COLOR_D, COLOR_PURPLE, COLOR_E, COLOR_FX];
 
         for (let i = 0; i < 60; i++) {
             particles.push({
