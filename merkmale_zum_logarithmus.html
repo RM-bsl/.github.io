@@ -670,9 +670,6 @@
             <button class="pill-btn" data-step="4">
                 <span class="checkmark">&#10003;</span> 4. Graphenanalyse &amp; Umkehroperation
             </button>
-            <button class="pill-btn" data-step="5">
-                <span class="checkmark">&#10003;</span> 5. Gleichungen lösen
-            </button>
         </nav>
 
         <section class="card">
@@ -987,36 +984,7 @@
                     </div>
                 </details>
 
-                <button class="understand-btn" onclick="nextStep(4)">Abschnitt verstanden &rarr;</button>
-            </div>
-
-            <div id="step-5" class="step-content">
-                <div class="sinnstiftung-box">
-                    <div class="sinnstiftung-title">Mathematische Bedeutung &amp; Anwendungskriterien</div>
-                    Schritt-für-Schritt-Verfahren zur exakten Bestimmung von unbekannten Exponenten in praxisnahen Gleichungen.
-                </div>
-
-                <h3>Dynamisches Lösungsbeispiel mit deinem Streckungsfaktor <span class="param-a">a</span>:</h3>
-                <p>Löse die Exponentialgleichung basierend auf deinen aktuellen Schiebereglern:</p>
-
-                <div class="live-formula-display" id="live-calc-display-5">
-                    </div>
-
-                <details class="tips">
-                    <summary>💡 Tipps &amp; Strukturhilfen</summary>
-                    <div class="details-body">
-                        Isoliere vor dem Anwenden des Logarithmus stets die Potenz vollständig auf einer Seite der Gleichung!
-                    </div>
-                </details>
-
-                <details class="warning">
-                    <summary>⚠️ Stolperfallen &amp; Schülerfehler</summary>
-                    <div class="details-body">
-                        Vergiss nicht, am Ende das Ergebnis in die Ursprungsgleichung einzusetzen (Probe) und zu prüfen, ob alle Argumente im definierten Bereich liegen.
-                    </div>
-                </details>
-
-                <button class="understand-btn" onclick="nextStep(5)">Modul erfolgreich abgeschlossen! ✓</button>
+                <button class="understand-btn" onclick="nextStep(4)">Modul erfolgreich abgeschlossen! ✓</button>
             </div>
         </section>
     </main>
@@ -1144,7 +1112,7 @@
         const currentBtn = document.querySelector(`.pill-btn[data-step="${currentStep}"]`);
         if (currentBtn) currentBtn.classList.add('completed');
 
-        if (currentStep < 5) {
+        if (currentStep < 4) {
             setStep(currentStep + 1);
         } else {
             triggerCelebration();
@@ -1159,7 +1127,6 @@
         updateStep2Text();
         updateStep3Text();
         updateStep4Text();
-        updateStep5Text();
     }
 
     // Live display of full equations in Card 2 (Sidebar)
@@ -1227,38 +1194,6 @@
                 <li><strong>Gespiegelter Hauptpunkt:</strong> <span class="result-purple">(${(paramD + 1).toFixed(1)} | ${paramY0.toFixed(1)})</span> spiegelt sich zu <span class="result-purple">(${paramY0.toFixed(1)} | ${(paramD + 1).toFixed(1)})</span></li>
                 <li><strong>Berechnete Nullstelle f(x):</strong> x &approx; <span class="result-purple">${zeroX > paramD ? zeroX.toFixed(2) : 'Nicht definiert'}</span></li>
             </ul>
-        `;
-    }
-
-    function updateStep5Text() {
-        const display = document.getElementById('live-calc-display-5');
-        if (!display) return;
-        const absA = Math.abs(paramA) || 1.0;
-        const targetVal = (absA * 8).toFixed(1);
-        const isoVal = (targetVal / absA).toFixed(1);
-        const xSol = (Math.log(isoVal) / Math.log(paramB)).toFixed(2);
-
-        display.innerHTML = `
-            <div class="math-equation">
-                <span class="param-a">${absA.toFixed(1)}</span> &middot; <span class="param-b">${paramB.toFixed(1)}</span><sup>x</sup> = ${targetVal}
-            </div>
-            <div style="text-align: left; margin-top: 10px; line-height: 1.8;">
-                <p><strong>1. Potenz isolieren:</strong> Beide Seiten durch deinen Streckungsfaktor <span class="param-a">a = ${absA.toFixed(1)}</span> teilen:</p>
-                <div class="math-equation"><span class="param-b">${paramB.toFixed(1)}</span><sup>x</sup> = ${isoVal}</div>
-                
-                <p><strong>2. Logarithmieren:</strong> Natürlichen Logarithmus anwenden &amp; Potenzregel nutzen:</p>
-                <div class="math-equation">x &middot; ln(<span class="param-b">${paramB.toFixed(1)}</span>) = ln(${isoVal})</div>
-
-                <p><strong>3. Exakt berechnen:</strong> Durch ln(<span class="param-b">${paramB.toFixed(1)}</span>) teilen:</p>
-                <div class="math-equation">
-                    x = 
-                    <div class="math-fraction">
-                        <div class="math-numerator">ln(${isoVal})</div>
-                        <div class="math-denominator">ln(<span class="param-b">${paramB.toFixed(1)}</span>)</div>
-                    </div>
-                    &approx; <span class="result-purple">${xSol}</span>
-                </div>
-            </div>
         `;
     }
 
