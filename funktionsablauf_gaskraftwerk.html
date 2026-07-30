@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuD-Kraftwerk: Interaktives thermodynamisches Fließschema</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        /* Strömungsanimation für die Rohrleitungen */
+        @keyframes flow-active {
+            to { stroke-dashoffset: -20; }
+        }
+        .flow-path {
+            stroke-dasharray: 8, 12;
+            animation: flow-active 1.2s linear infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(79, 70, 229, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(79, 70, 229, 0.6); }
+        }
+        .pulse-select { animation: pulse-glow 1.5s infinite; }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+
+    <header class="bg-white border-b border-slate-200 py-4 px-6 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-tr from-amber-500 to-red-600 p-2.5 rounded-lg shadow-md">
+                    <i class="fa-solid fa-gears text-xl text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-slate-900">
+                        GuD-Prozess-Simulator
+                    </h1>
+                    <p class="text-xs text-slate-500">Exklusive Temperaturpfade & Transformatoren-Einspeisung</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-6 bg-slate-100 px-4 py-2 rounded-lg border border-slate-200">
+                <div class="text-xs sm:text-sm">
+                    <span class="text-slate-500">Zugeordnet:</span>
+                    <span id="progress-text" class="font-bold text-indigo-600">0 / 9</span>
+                </div>
+                <div class="w-24 sm:w-32 bg-slate-200 rounded-full h-2.5 overflow-hidden">
+                    <div id="progress-bar" class="bg-gradient-to-r from-indigo-500 to-emerald-500 h-full w-0 transition-all duration-300"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-[1400px] mx-auto w-full p-4 lg:p-6 grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+        
+        <div class="xl:col-span-12 bg-white border border-slate-200 p-4 rounded-xl flex flex-col md:flex-row gap-4 items-center justify-between shadow-sm">
+            <div class="space-y-1 text-center md:text-left">
+                <h2 class="text-sm font-semibold text-slate-800">Thermodynamische Rekonstruktion</h2>
+                <p class="text-xs text-slate-600 max-w-4xl">
+                    Ordne alle Bauteile den Positionen zu. Tippe auf bereits platzierte Baugruppen, um ihre Funktionsbeschreibung zu lesen. Sobald alle Bauteile platziert sind, kannst du deine Zuordnung überprüfen lassen.
+                </p>
+            </div>
+            <button id="btn-reset" class="bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 border border-slate-300 transition-all shadow-sm">
+                <i class="fa-solid fa-arrow-rotate-left"></i> Zurücksetzen
+            </button>
+        </div>
+
+        <div class="xl:col-span-9 bg-white border border-slate-200 rounded-2xl p-4 shadow-sm overflow-x-auto">
+            <div class="relative w-[1024px] h-[720px] mx-auto select-none bg-slate-100/70 rounded-xl border border-slate-200 overflow-hidden">
+                
+                <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 1024 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrow-yellow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 1 L 10 5 L 0 9 z" fill="#d97706" />
+                        </marker>
+                        <marker id="arrow-orange" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 1 L 10 5 L 0 9 z" fill="#ea580c" />
+                        </marker>
+                        <marker id="arrow-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 1 L 10 5 L 0 9 z" fill="#dc2626" />
+                        </marker>
+                        <marker id="arrow-skyblue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 1 L 10 5 L 0 9 z" fill="#0284c7" />
+                        </marker>
+                        <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 1 L 10 5 L 0 9 z" fill="#2563eb" />
+                        </marker>
+                    </defs>
+
+                    <path d="M 328 637 L 328 487" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round"/>
+                    <path d="M 328 487 L 108 487" stroke="#94a3b8" stroke-width="6" stroke-dasharray="6,4"/>
+                    <path d="M 328 487 L 598 487" stroke="#cbd5e1" stroke-width="12" stroke-linecap="round"/>
+                    <path d="M 598 487 L 935 487 L 935 217" stroke="#cbd5e1" stroke-width="10" stroke-linecap="round"/>
+                    <path d="M 598 487 L 440 487 L 440 230 L 328 230 L 328 137" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round"/>
+                    <path d="M 328 137 L 108 137" stroke="#94a3b8" stroke-width="6" stroke-dasharray="6,4"/>
+                    <path d="M 328 137 L 598 137" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round"/>
+                    <path d="M 598 137 L 818 137 L 818 307" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+                    <path d="M 818 307 L 818 520 L 598 520 L 598 487" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/>
+
+                    <path d="M 328 637 L 328 505" stroke="#d97706" stroke-width="3" class="flow-path" marker-end="url(#arrow-yellow)" />
+                    <path d="M 240 487 L 115 487" stroke="#64748b" stroke-width="2" stroke-dasharray="4,4" />
+                    <path d="M 328 487 L 515 487" stroke="#ea580c" stroke-width="5" class="flow-path" marker-end="url(#arrow-orange)" />
+                    <path d="M 598 487 L 440 487 L 440 230 L 328 230 L 328 155" stroke="#dc2626" stroke-width="3" class="flow-path" marker-end="url(#arrow-red)" />
+                    <path d="M 240 137 L 115 137" stroke="#64748b" stroke-width="2" stroke-dasharray="4,4" />
+                    <path d="M 328 137 L 510 137" stroke="#0284c7" stroke-width="3" class="flow-path" marker-end="url(#arrow-skyblue)" />
+                    <path d="M 598 137 L 818 137 L 818 265" stroke="#2563eb" stroke-width="3" class="flow-path" marker-end="url(#arrow-blue)" />
+                    <path d="M 818 307 L 818 520 L 598 520 L 598 495" stroke="#1d4ed8" stroke-width="3" class="flow-path" marker-end="url(#arrow-blue)" />
+                    <path d="M 598 487 L 935 487 L 935 175" stroke="#64748b" stroke-width="4" class="flow-path" />
+                </svg>
+
+                <div class="absolute top-[550px] left-[345px] text-4xs font-semibold bg-white border border-amber-300 px-2 py-1 rounded shadow-sm flex items-center gap-1.5 z-20">
+                    <span class="text-amber-700">15 °C → 350 °C</span>
+                    <i class="fa-solid fa-arrow-up text-amber-600 animate-pulse text-[8px]"></i>
+                </div>
+                <div class="absolute top-[400px] left-[425px] text-4xs font-semibold bg-white border border-orange-300 px-2 py-1 rounded shadow-sm flex flex-col items-center gap-0.5 z-20 w-[110px]">
+                    <span class="text-orange-700">550 °C → 600 °C</span>
+                    <i class="fa-solid fa-arrow-right text-orange-600 animate-pulse text-[8px] mt-0.5"></i>
+                </div>
+                <div class="absolute top-[290px] left-[448px] text-4xs font-semibold bg-white border border-red-300 px-2 py-1 rounded shadow-sm flex items-center gap-1.5 z-20">
+                    <i class="fa-solid fa-arrow-up text-red-600 animate-pulse text-[8px]"></i>
+                    <span class="text-red-700">150 °C → 540 °C</span>
+                </div>
+                <div class="absolute top-[50px] left-[425px] text-4xs font-semibold bg-white border border-sky-300 px-2 py-1 rounded shadow-sm flex flex-col items-center gap-0.5 z-20">
+                    <span class="text-sky-700">540 °C → 30 °C</span>
+                    <i class="fa-solid fa-arrow-right text-sky-600 animate-pulse text-[8px] mt-0.5"></i>
+                </div>
+                <div class="absolute top-[110px] left-[700px] text-4xs font-semibold bg-white border border-blue-300 px-2 py-1 rounded shadow-sm flex flex-col items-center gap-0.5 z-20">
+                    <span class="text-blue-700">30 °C</span>
+                    <i class="fa-solid fa-arrow-right text-blue-600 animate-pulse text-[8px] mt-0.5"></i>
+                </div>
+                <div class="absolute top-[555px] left-[680px] text-4xs font-semibold bg-white border border-blue-300 px-2 py-1 rounded shadow-sm flex items-center gap-1.5 z-20">
+                    <i class="fa-solid fa-arrow-left text-blue-600 animate-pulse text-[8px]"></i>
+                    <span class="text-blue-700">30 °C → 150 °C</span>
+                </div>
+                <div class="absolute top-[480px] left-[700px] text-4xs font-semibold bg-white border border-slate-300 px-2 py-1 rounded shadow-sm flex items-center gap-1.5 z-20">
+                    <span class="text-slate-600">100 °C → 80 °C</span>
+                    <i class="fa-solid fa-arrow-right text-slate-500 animate-pulse text-[8px]"></i>
+                </div>
+                <div class="absolute top-[205px] left-[15px] text-4xs font-semibold bg-emerald-50 border border-emerald-300 px-2.5 py-1 rounded-full flex items-center gap-1.5 z-20 shadow-sm">
+                    <i class="fa-solid fa-bolt text-emerald-600 animate-pulse"></i>
+                    <span class="text-emerald-800">Transformator ➔ Stromnetz</span>
+                </div>
+                <div class="absolute top-[555px] left-[15px] text-4xs font-semibold bg-emerald-50 border border-emerald-300 px-2.5 py-1 rounded-full flex items-center gap-1.5 z-20 shadow-sm">
+                    <i class="fa-solid fa-bolt text-emerald-600 animate-pulse"></i>
+                    <span class="text-emerald-800">Transformator ➔ Stromnetz</span>
+                </div>
+
+                <div class="target-zone absolute w-[176px] h-[115px] rounded-xl border-2 border-dashed border-slate-300 bg-white/90 p-1 transition-all duration-200" style="left: 20px; top: 80px;" data-step="6"></div>
+                <div class="target-zone absolute w-[176px] h-[115px] rounded-xl border-2 border-dashed border-slate-300 bg-white/90 p-1 transition-all duration-200" style="left: 240px; top: 80px;" data-step="5"></div>
+                <div class="target-zone absolute w-[176px] h-[115px] rounded-xl border-2 border-dashed border-slate-300 bg-white/90 p-1 transition-all duration-200" style="left: 510px; top: 80px;" data-step="7"></div>
+                <div class="target-zone absolute w-[176px] h-[115px] rounded-xl border-2 border-dashed border-slate-300 bg-white/90 p-1 transition-all duration-200" style="left: 730px; top: 250px;" data-step="8"></div>
+                <div class="target-zone absolute w-[176px] h-[115px] rounded-xl border-2 border-dashed border-slate-300 bg-white/90 p-1 transition-all duration-200" style="left: 510px; top: 430px;" data-step="4"></div>
+                <div class="target-zone absolute w-[160px] h-[115px] rounded-xl border-2 border-dashed border-slate-300 bg-white/90 p-1 transition-all duration-200" style="left: 850px; top: 60px;" data-step="9"></div>
+                <div class="target-zone absolute w-[176px] h-[115px] rounded-xl border-2 border-dashed border-slate-300 bg-white/90 p-1 transition-all duration-200" style="left: 20px; top: 430px;" data-step="3"></div>
+                <div class="target-zone absolute w-[176px] h-[115px] rounded-xl border-2 border-dashed border-slate-300 bg-white/90 p-1 transition-all duration-200" style="left: 240px; top: 430px;" data-step="2"></div>
+                <div class="target-zone absolute w-[176px] h-[115px] rounded-xl border-2 border-dashed border-slate-300 bg-white/90 p-1 transition-all duration-200" style="left: 240px; top: 580px;" data-step="1"></div>
+
+            </div>
+        </div>
+
+        <div class="xl:col-span-3 space-y-4">
+            <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                <h3 class="text-sm font-bold tracking-wider uppercase text-slate-700 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-cubes text-indigo-600"></i> Komponenten-Pool
+                </h3>
+                <p class="text-2xs text-slate-500 mb-4">
+                    Ziehe die Bauteile auf die Zielfelder. Du kannst sie jederzeit wieder umplatzieren.
+                </p>
+
+                <div id="cards-pool" class="space-y-2.5 max-h-[640px] min-h-[150px] overflow-y-auto pr-1 custom-scrollbar">
+                    </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="detail-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-white border border-slate-200 max-w-md w-full rounded-2xl p-6 shadow-2xl relative transform scale-95 transition-all duration-300 space-y-4">
+            <button id="btn-close-detail" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="flex items-center gap-4">
+                <div id="detail-icon-container" class="w-12 h-12 rounded-xl flex items-center justify-center text-xl">
+                    </div>
+                <div>
+                    <span id="detail-step" class="text-4xs font-bold uppercase tracking-widest text-indigo-600">Baugruppe</span>
+                    <h3 id="detail-title" class="text-lg font-bold text-slate-800 mt-0.5">Komponenten-Name</h3>
+                </div>
+            </div>
+            <hr class="border-slate-100">
+            <p id="detail-desc" class="text-xs text-slate-600 leading-relaxed">
+                Beschreibung der physikalischen Funktion...
+            </p>
+            <button id="btn-close-detail-ok" class="w-full bg-slate-100 hover:bg-slate-200 active:scale-98 text-slate-700 py-2.5 rounded-xl text-xs font-semibold border border-slate-300 transition-all shadow-sm">
+                Schließen
+            </button>
+        </div>
+    </div>
+
+    <div id="eval-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-white border border-slate-200 max-w-md w-full rounded-2xl p-6 shadow-2xl text-center space-y-5">
+            <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto text-2xl">
+                <i class="fa-solid fa-clipboard-check"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold text-slate-900">Alle Bauteile platziert!</h3>
+                <p class="text-xs text-slate-600 mt-1">Möchtest du deine Zuordnung jetzt überprüfen lassen oder noch etwas anpassen?</p>
+            </div>
+            <div class="flex flex-col gap-2.5">
+                <button id="btn-check-now" class="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-98 text-white font-bold py-3 rounded-xl transition-all shadow-md text-xs">
+                    Meine Zuordnung überprüfen
+                </button>
+                <button id="btn-edit-more" class="w-full bg-slate-100 hover:bg-slate-200 active:scale-98 text-slate-700 font-semibold py-2.5 rounded-xl transition-all text-xs border border-slate-300">
+                    Nochmals Änderungen vornehmen
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="wrong-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-white border border-slate-200 max-w-md w-full rounded-2xl p-6 shadow-2xl text-center space-y-5">
+            <div class="w-16 h-16 bg-rose-100 border-2 border-rose-500 text-rose-600 rounded-full flex items-center justify-center mx-auto text-2xl animate-bounce">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold text-slate-900">Die Zuordnung ist falsch.</h3>
+                <p class="text-xs text-slate-600 mt-1">Bitte optimieren. Einige Komponenten befinden sich noch nicht an der richtigen Position im Kreisprozess.</p>
+            </div>
+            <button id="btn-fix-assignment" class="w-full bg-slate-800 hover:bg-slate-900 active:scale-98 text-white font-bold py-3 rounded-xl transition-all shadow-md text-xs">
+                Zuordnung korrigieren
+            </button>
+        </div>
+    </div>
+
+    <div id="success-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-500">
+        <div class="bg-white border border-slate-200 max-w-2xl w-full rounded-2xl p-6 md:p-8 shadow-2xl relative transform scale-95 transition-all duration-500 text-center space-y-6">
+            
+            <div class="w-20 h-20 bg-emerald-100 border-2 border-emerald-500 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl animate-bounce">
+                <i class="fa-solid fa-award"></i>
+            </div>
+
+            <div class="space-y-2">
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Alles richtig!</h2>
+                <p class="text-emerald-600 text-sm font-semibold tracking-wider uppercase">Optimaler Systemwirkungsgrad erreicht</p>
+            </div>
+
+            <div class="text-sm text-slate-600 space-y-4 leading-relaxed text-left bg-slate-50 p-5 rounded-xl border border-slate-200">
+                <p class="font-bold text-center text-slate-800">
+                    💡 Der thermodynamische Nutzeffekt:
+                </p>
+                <p>
+                    Ein einfaches Gasturbinenkraftwerk entlässt seine heißen Abgase meist ungenutzt in die Umwelt [Zahoransky, 2019]. 
+                    Durch das gekoppelte System strömen diese Abgase direkt in den <strong>Abhitzekessel</strong> [Strauß, 2016].
+                </p>
+                <p>
+                    Der dort erzeugte Wasserdampf treibt eine nachgeschaltete Dampfturbine an [Strauß, 2016]. 
+                    Diese Integration verbindet den <strong>Joule-Prozess</strong> (Gasturbine) optimal mit dem <strong>Clausius-Rankine-Prozess</strong> (Dampfturbine) [Zahoransky, 2019]. 
+                    Der elektrische Gesamtwirkungsgrad des gekoppelten Systems klettert dadurch von ca. <strong>40%</strong> auf <strong>über 60%</strong>! [Zahoransky, 2019]
+                </p>
+            </div>
+
+            <button id="btn-back" class="w-full bg-slate-800 hover:bg-slate-900 active:scale-98 text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-md">
+                Zurückkehren
+            </button>
+        </div>
+    </div>
+
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-2xs text-slate-500 mt-auto">
+        <p>&copy; 2026 EdTech-Simulator: Gekoppelte Energiesysteme. Wissenschaftlich fundiert nach [Zahoransky, 2019] & [Strauß, 2016].</p>
+    </footer>
+
+    <script>
+        const components = [
+            {
+                id: 1,
+                name: "Gas- & Luftzufuhr",
+                icon: "fa-wind",
+                colorClass: "border-amber-500 text-amber-700 bg-amber-50",
+                desc: "Führt der Brennkammer verdichtete Umgebungsluft und gasförmigen Brennstoff zu. Das Gemisch erwärmt sich rein mechanisch durch die einsetzende Kompression."
+            },
+            {
+                id: 2,
+                name: "Brennkessel ➔ Gasturbine",
+                icon: "fa-fire-flame-simple",
+                colorClass: "border-orange-500 text-orange-700 bg-orange-50",
+                desc: "Führt in der Brennkammer die Verbrennung des Brennstoff-Luft-Gemisches unter hohem Druck durch. Das entstehende heiße Arbeitsgas dehnt sich aus und treibt die Gasturbine an, die thermische Strömungsenergie in mechanische Rotationsleistung umwandelt."
+            },
+            {
+                id: 3,
+                name: "Generator 1",
+                icon: "fa-bolt-lightning",
+                colorClass: "border-emerald-500 text-emerald-700 bg-emerald-50",
+                desc: "Wandelt die mechanische Kraft der rotierenden Gasturbinenwelle über ein magnetisches Drehfeld direkt in elektrischen Wechselstrom um."
+            },
+            {
+                id: 4,
+                name: "Abhitzekessel",
+                icon: "fa-temperature-high",
+                colorClass: "border-red-500 text-red-700 bg-red-50",
+                desc: "Arbeitet als massiver Gegenstrom-Wärmetauscher. Er entzieht den Abgasen der Gasturbine ihre thermische Energie, um das Speisewasser des Sekundärkreislaufs vollständig zu verdampfen."
+            },
+            {
+                id: 5,
+                name: "Dampfturbine",
+                icon: "fa-dharmachakra",
+                colorClass: "border-orange-500 text-orange-700 bg-orange-50",
+                desc: "Nutzt die gezielte thermodynamische Expansion des überhitzten Wasserdampfes aus dem Kesselkreislauf, um eine zweite mechanische Welle anzutreiben."
+            },
+            {
+                id: 6,
+                name: "Generator 2",
+                icon: "fa-bolt-lightning",
+                colorClass: "border-emerald-500 text-emerald-700 bg-emerald-50",
+                desc: "Erzeugt aus der Rotationsleistung der mechanisch angekoppelten Dampfturbine zusätzlichen elektrischen Strom ohne den Einsatz weiteren Brennstoffs."
+            },
+            {
+                id: 7,
+                name: "Kondensator",
+                icon: "fa-snowflake",
+                colorClass: "border-blue-500 text-blue-700 bg-blue-50",
+                desc: "Kühlt den warmen Abdampf mithilfe eines Kühlwasserkreislaufs ab, wodurch dieser wieder zu flüssigem Wasser kondensiert."
+            },
+            {
+                id: 8,
+                name: "Speisewasserpumpe",
+                icon: "fa-circle-nodes",
+                colorClass: "border-indigo-500 text-indigo-700 bg-indigo-50",
+                desc: "Pumpt das flüssige Kondensat aus dem Kondensator unter hohem Systemdruck und einer Vorwärmung zurück in das Rohrsystem des Abhitzekessels, um den Kreislauf zu schließen."
+            },
+            {
+                id: 9,
+                name: "Abgaskamin",
+                icon: "fa-smog",
+                colorClass: "border-slate-500 text-slate-700 bg-slate-100",
+                desc: "Leitet das weitgehend abgekühlte, im Abhitzekessel energetisch genutzte und gefilterte Rauchgas sicher aus dem Kraftwerksprozess in die Atmosphäre ab."
+            }
+        ];
+
+        let slotAssignments = {}; 
+        let selectedElementId = null;
+
+        const poolContainer = document.getElementById("cards-pool");
+        const targetZones = document.querySelectorAll(".target-zone");
+        const progressText = document.getElementById("progress-text");
+        const progressBar = document.getElementById("progress-bar");
+        
+        // Modals
+        const detailModal = document.getElementById("detail-modal");
+        const detailStep = document.getElementById("detail-step");
+        const detailTitle = document.getElementById("detail-title");
+        const detailDesc = document.getElementById("detail-desc");
+        const detailIconContainer = document.getElementById("detail-icon-container");
+        const btnCloseDetail = document.getElementById("btn-close-detail");
+        const btnCloseDetailOk = document.getElementById("btn-close-detail-ok");
+
+        const evalModal = document.getElementById("eval-modal");
+        const wrongModal = document.getElementById("wrong-modal");
+        const successModal = document.getElementById("success-modal");
+
+        const btnReset = document.getElementById("btn-reset");
+        const btnCheckNow = document.getElementById("btn-check-now");
+        const btnEditMore = document.getElementById("btn-edit-more");
+        const btnFixAssignment = document.getElementById("btn-fix-assignment");
+        const btnBack = document.getElementById("btn-back");
+
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function initPool() {
+            poolContainer.innerHTML = "";
+            const shuffled = shuffle([...components]);
+            shuffled.forEach(comp => {
+                renderPoolCard(comp);
+            });
+        }
+
+        function renderPoolCard(comp) {
+            const card = document.createElement("div");
+            card.id = `card-${comp.id}`;
+            card.className = "bg-white border border-slate-200 hover:border-indigo-500 p-3 rounded-xl cursor-grab active:cursor-grabbing transition-all duration-200 select-none shadow-sm hover:shadow-md flex items-start gap-3";
+            card.setAttribute("draggable", "true");
+            card.setAttribute("data-id", comp.id);
+            
+            card.innerHTML = `
+                <div class="p-2 rounded-lg ${comp.colorClass} flex-shrink-0">
+                    <i class="fa-solid ${comp.icon}"></i>
+                </div>
+                <div class="min-w-0">
+                    <h4 class="text-xs font-bold text-slate-800 truncate">${comp.name}</h4>
+                    <p class="text-4xs text-slate-500 mt-0.5 leading-snug">${comp.desc}</p>
+                </div>
+            `;
+
+            card.addEventListener("dragstart", handleDragStart);
+            card.addEventListener("dragend", handleDragEnd);
+            card.addEventListener("click", () => handleCardSelect(card, comp.id));
+
+            poolContainer.appendChild(card);
+        }
+
+        function handleDragStart(e) {
+            e.dataTransfer.setData("text/plain", JSON.stringify({
+                compId: parseInt(this.getAttribute("data-id")),
+                fromSlot: this.getAttribute("data-from-slot") ? parseInt(this.getAttribute("data-from-slot")) : null
+            }));
+            this.classList.add("opacity-40", "scale-95");
+            clearActiveSelection();
+        }
+
+        function handleDragEnd() {
+            this.classList.remove("opacity-40", "scale-95");
+        }
+
+        function handleCardSelect(cardElement, cardId) {
+            clearActiveSelection();
+            selectedElementId = cardId;
+            cardElement.classList.add("ring-4", "ring-indigo-500", "pulse-select");
+        }
+
+        function clearActiveSelection() {
+            selectedElementId = null;
+            document.querySelectorAll("#cards-pool > div").forEach(card => {
+                card.classList.remove("ring-4", "ring-indigo-500", "pulse-select");
+            });
+        }
+
+        // Setup drop zones
+        targetZones.forEach(zone => {
+            const stepId = parseInt(zone.getAttribute("data-step"));
+            renderEmptySlot(zone, stepId);
+
+            zone.addEventListener("dragover", (e) => {
+                e.preventDefault();
+                zone.classList.add("border-indigo-500", "bg-indigo-50/50");
+            });
+
+            zone.addEventListener("dragleave", () => {
+                zone.classList.remove("border-indigo-500", "bg-indigo-50/50");
+            });
+
+            zone.addEventListener("drop", (e) => {
+                e.preventDefault();
+                zone.classList.remove("border-indigo-500", "bg-indigo-50/50");
+                
+                try {
+                    const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+                    placeComponentInSlot(data.compId, stepId, data.fromSlot);
+                } catch(err){}
+            });
+
+            zone.addEventListener("click", (e) => {
+                if (slotAssignments[stepId] && selectedElementId === null) {
+                    showComponentDetail(slotAssignments[stepId]);
+                } else if (selectedElementId !== null) {
+                    placeComponentInSlot(selectedElementId, stepId, null);
+                    clearActiveSelection();
+                }
+            });
+        });
+
+        // Drop handling for returning cards to pool
+        poolContainer.addEventListener("dragover", (e) => e.preventDefault());
+        poolContainer.addEventListener("drop", (e) => {
+            e.preventDefault();
+            try {
+                const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+                if (data.fromSlot) {
+                    removeComponentFromSlot(data.fromSlot);
+                }
+            } catch(err){}
+        });
+
+        function renderEmptySlot(zone, stepId) {
+            const isKamin = stepId === 9;
+            zone.className = `target-zone absolute ${isKamin ? 'w-[160px]' : 'w-[176px]'} h-[115px] rounded-xl border-2 border-dashed border-slate-300 bg-white/90 p-1 transition-all duration-200`;
+            zone.innerHTML = `
+                <div class="text-xs text-indigo-600 uppercase tracking-widest p-1 font-semibold text-center mt-2">Schritt ${stepId}</div>
+                <div class="zone-placeholder flex-grow flex flex-col items-center justify-center text-center p-1 text-slate-400 h-[55px]">
+                    <i class="fa-solid fa-circle-question text-xl text-slate-300"></i>
+                </div>
+            `;
+        }
+
+        function placeComponentInSlot(compId, toStepId, fromStepId) {
+            if (fromStepId) {
+                delete slotAssignments[fromStepId];
+                const fromZone = document.querySelector(`.target-zone[data-step="${fromStepId}"]`);
+                if (fromZone) renderEmptySlot(fromZone, fromStepId);
+            }
+
+            if (slotAssignments[toStepId]) {
+                const existingCompId = slotAssignments[toStepId];
+                const existingComp = components.find(c => c.id === existingCompId);
+                if (existingComp) renderPoolCard(existingComp);
+            }
+
+            const cardInPool = document.getElementById(`card-${compId}`);
+            if (cardInPool) cardInPool.remove();
+
+            slotAssignments[toStepId] = compId;
+            const comp = components.find(c => c.id === compId);
+            const targetZone = document.querySelector(`.target-zone[data-step="${toStepId}"]`);
+
+            targetZone.className = "target-zone absolute w-[176px] h-[115px] rounded-xl border border-slate-200 bg-white p-1 transition-all duration-200 shadow-sm cursor-pointer hover:border-indigo-400";
+            targetZone.innerHTML = `
+                <div class="text-4xs text-indigo-600 font-bold uppercase tracking-widest p-0.5 text-center flex items-center justify-center gap-1">
+                    <span>Schritt ${toStepId}</span>
+                    <i class="fa-solid fa-circle-info text-indigo-400 text-[9px]"></i>
+                </div>
+                <div draggable="true" data-id="${comp.id}" data-from-slot="${toStepId}" class="placed-card flex-grow flex flex-col items-center justify-center text-center p-2 rounded-lg ${comp.colorClass} border border-dashed transition-all duration-200 cursor-grab active:cursor-grabbing h-[75px]">
+                    <i class="fa-solid ${comp.icon} text-lg mb-0.5"></i>
+                    <span class="text-3xs font-extrabold uppercase tracking-wider line-clamp-1">${comp.name}</span>
+                </div>
+            `;
+
+            const placedCardElem = targetZone.querySelector(".placed-card");
+            placedCardElem.addEventListener("dragstart", handleDragStart);
+            placedCardElem.addEventListener("dragend", handleDragEnd);
+
+            updateProgress();
+            checkFullPlacement();
+        }
+
+        function removeComponentFromSlot(stepId) {
+            const compId = slotAssignments[stepId];
+            if (!compId) return;
+
+            delete slotAssignments[stepId];
+            const zone = document.querySelector(`.target-zone[data-step="${stepId}"]`);
+            if (zone) renderEmptySlot(zone, stepId);
+
+            const comp = components.find(c => c.id === compId);
+            if (comp) renderPoolCard(comp);
+
+            updateProgress();
+        }
+
+        function showComponentDetail(compId) {
+            const comp = components.find(c => c.id === compId);
+            if (!comp) return;
+
+            detailStep.textContent = `Baugruppe: ${comp.name}`;
+            detailTitle.textContent = comp.name;
+            detailDesc.textContent = comp.desc;
+
+            detailIconContainer.className = `w-12 h-12 rounded-xl flex items-center justify-center text-xl ${comp.colorClass}`;
+            detailIconContainer.innerHTML = `<i class="fa-solid ${comp.icon}"></i>`;
+
+            openModal(detailModal);
+        }
+
+        btnCloseDetail.addEventListener("click", () => closeModal(detailModal));
+        btnCloseDetailOk.addEventListener("click", () => closeModal(detailModal));
+
+        function updateProgress() {
+            const count = Object.keys(slotAssignments).length;
+            progressText.textContent = `${count} / 9`;
+            const percentage = (count / 9) * 100;
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        function checkFullPlacement() {
+            if (Object.keys(slotAssignments).length === 9) {
+                setTimeout(() => {
+                    openModal(evalModal);
+                }, 400);
+            }
+        }
+
+        function openModal(modal) {
+            modal.classList.remove("opacity-0", "pointer-events-none");
+            const content = modal.querySelector("div");
+            if(content) {
+                content.classList.remove("scale-95");
+                content.classList.add("scale-100");
+            }
+        }
+
+        function closeModal(modal) {
+            modal.classList.add("opacity-0", "pointer-events-none");
+            const content = modal.querySelector("div");
+            if(content) {
+                content.classList.remove("scale-100");
+                content.classList.add("scale-95");
+            }
+        }
+
+        btnCheckNow.addEventListener("click", () => {
+            closeModal(evalModal);
+            
+            let isCorrect = true;
+            for (let step = 1; step <= 9; step++) {
+                if (slotAssignments[step] !== step) {
+                    isCorrect = false;
+                    break;
+                }
+            }
+
+            setTimeout(() => {
+                if (isCorrect) {
+                    openModal(successModal);
+                    triggerConfetti();
+                } else {
+                    openModal(wrongModal);
+                }
+            }, 300);
+        });
+
+        btnEditMore.addEventListener("click", () => closeModal(evalModal));
+        btnFixAssignment.addEventListener("click", () => closeModal(wrongModal));
+        btnBack.addEventListener("click", () => closeModal(successModal));
+
+        function triggerConfetti() {
+            const duration = 4 * 1000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 4,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#f59e0b', '#ef4444', '#10b981', '#3b82f6']
+                });
+                confetti({
+                    particleCount: 4,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#f59e0b', '#ef4444', '#10b981', '#3b82f6']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        function resetGame() {
+            slotAssignments = {};
+            targetZones.forEach(zone => {
+                const stepId = parseInt(zone.getAttribute("data-step"));
+                renderEmptySlot(zone, stepId);
+            });
+            updateProgress();
+            closeModal(evalModal);
+            closeModal(wrongModal);
+            closeModal(successModal);
+            closeModal(detailModal);
+            initPool();
+        }
+
+        btnReset.addEventListener("click", resetGame);
+
+        window.onload = initPool;
+    </script>
+</body>
+</html>
