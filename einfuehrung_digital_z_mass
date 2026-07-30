@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lern-App: z-Maß & Zuschnittslänge</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --accent: #e0e7ff;
+            --danger: #ef4444;
+            --success: #22c55e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        /* Navigation / Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 15px;
+            background-color: var(--card-bg);
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            min-width: 140px;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Tabellen Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: var(--accent);
+            color: var(--primary);
+        }
+
+        /* Formel Box */
+        .formula-box {
+            background-color: var(--accent);
+            padding: 15px;
+            border-left: 5px solid var(--primary);
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 20px 0;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .error-card {
+            background-color: #fef2f2;
+            border: 1px solid #fca5a5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .error-title {
+            color: var(--danger);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background-color: #dcfce7;
+            color: #15803d;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            display: block;
+        }
+
+        input[type="number"] {
+            padding: 8px;
+            width: 120px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .task-card {
+            background-color: var(--bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🛠️ Rohrmontage: <i>z</i>-Maß Berechnen</h1>
+        <p>Interaktive Lern-App für die Zuschnittslängenberechnung</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('tab1', event)">1. Grundlagen</button>
+        <button class="tab-btn" onclick="showTab('tab2', event)">2. Rechenstruktur</button>
+        <button class="tab-btn" onclick="showTab('tab3', event)">3. Fehlerfallen</button>
+        <button class="tab-btn" onclick="showTab('tab4', event)">4. Übungen</button>
+    </div>
+
+    <div id="tab1" class="content-section active">
+        <h2>Modul 1: Grundlagen des <i>z</i>-Maßes</h2>
+        <p>Auf der Baustelle messen wir oft das <strong>Mittenmaß (<i>M</i>)</strong> – also von Mitte Fitting bis Mitte Fitting. Das eigentliche Rohr ist jedoch kürzer, da die Fittinge Platz einnehmen.</p>
+        
+        <div class="formula-box">
+            Rohrlänge <i>l</i> = <i>M</i> – (<i>z</i><sub>1</sub> + <i>z</i><sub>2</sub>)
+        </div>
+
+        <p><strong>Was bedeuten die Begriffe?</strong></p>
+        <ul>
+            <li><strong>Mittenmaß (<i>M</i>):</strong> Gesamtabstand von Mitte zu Mitte der Fittinge.</li>
+            <li><strong><i>z</i>-Maß (<i>z</i>):</strong> Das Maß, um das das Rohr durch das Fitting verkürzt werden muss.</li>
+            <li><strong>Zuschnittslänge (<i>l</i>):</strong> Die tatsächliche Länge, auf die das Rohr zugeschnitten werden muss.</li>
+        </ul>
+
+        <h3>Gesamttabelle: Fittinge & <i>z</i>-Maße</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Fitting</th>
+                    <th colspan="3">Bogen</th>
+                    <th colspan="3">Kugelhahn</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Größe (<i>d</i>)</strong></td>
+                    <td>d 32</td>
+                    <td>d 40</td>
+                    <td>d 50</td>
+                    <td>d 32</td>
+                    <td>d 40</td>
+                    <td>d 50</td>
+                </tr>
+                <tr>
+                    <td><strong><i>z</i>-Maß (mm)</strong></td>
+                    <td>64</td>
+                    <td>80</td>
+                    <td>100</td>
+                    <td>79</td>
+                    <td>94</td>
+                    <td>95</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="tab2" class="content-section">
+        <h2>Modul 2: Saubere Rechenstruktur</h2>
+        <p>Um Fehler bei Prüfungen zu vermeiden, verwende immer das Schema <strong>Gegeben, Gesucht, Lösung, Antwort</strong>.</p>
+        
+        <h3>Beispielaufgabe:</h3>
+        <p>Ein Rohr der Größe <strong>d 40</strong> verbindet einen <strong>Bogen</strong> und einen <strong>Kugelhahn</strong>. Das Mittenmaß beträgt <i>M</i> = 1200 mm. Berechne die Zuschnittslänge <i>l</i>.</p>
+
+        <h3>Fitting-Tabelle zur Aufgabe (Auszug d 40):</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Fitting-Typ</th>
+                    <th>Größe (<i>d</i>)</th>
+                    <th><i>z</i>-Maß</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Bogen</td>
+                    <td>d 40</td>
+                    <td>80 mm</td>
+                </tr>
+                <tr>
+                    <td>Kugelhahn</td>
+                    <td>d 40</td>
+                    <td>94 mm</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;">
+
+        <p><strong>1. Gegeben:</strong></p>
+        <ul>
+            <li>Mittenmaß <i>M</i> = 1200 mm</li>
+            <li>Bogen d 40 &rarr; <i>z</i><sub>1</sub> = 80 mm</li>
+            <li>Kugelhahn d 40 &rarr; <i>z</i><sub>2</sub> = 94 mm</li>
+        </ul>
+
+        <p><strong>2. Gesucht:</strong></p>
+        <ul>
+            <li>Zuschnittslänge <i>l</i> in mm</li>
+        </ul>
+
+        <p><strong>3. Lösungsweg:</strong></p>
+        <p>Formel: <i>l</i> = <i>M</i> – (<i>z</i><sub>1</sub> + <i>z</i><sub>2</sub>)</p>
+        <p>Einsetzen: <i>l</i> = 1200 mm – (80 mm + 94 mm)</p>
+        <p>Rechnung: <i>l</i> = 1200 mm – 174 mm = <strong>1026 mm</strong></p>
+
+        <p><strong>4. Antwortsatz:</strong></p>
+        <p>Die Zuschnittslänge des Rohres beträgt genau 1026 mm.</p>
+    </div>
+
+    <div id="tab3" class="content-section">
+        <h2>Modul 3: Typische Rechen- und Logikfehler</h2>
+        <p>Lerne aus den häufigsten Fehlern, die in Prüfungen gemacht werden:</p>
+
+        <div class="error-card">
+            <div class="error-title">❌ Fehler 1: Das <i>z</i>-Maß wird addiert statt subtrahiert</div>
+            <p><strong>Falsch:</strong> <i>l</i> = 1200 mm + 80 mm + 94 mm = 1374 mm</p>
+            <p><strong>Erklärung:</strong> Wenn du das <i>z</i>-Maß dazurechnest, wird das Rohr zu lang! Die Fittinge nehmen Platz weg, also muss das Rohr <em>kürzer</em> als das Mittenmaß sein.</p>
+        </div>
+
+        <div class="error-card">
+            <div class="error-title">❌ Fehler 2: <i>z</i>-Maß aus der falschen Spalte abgelesen</div>
+            <p><strong>Falsch:</strong> Wert von d 50 ablesen, obwohl d 40 verbaut ist.</p>
+            <p><strong>Erklärung:</strong> Kontrolliere immer zweimal die Nennweite (<i>d</i>) in der Kopfzeile der Tabelle!</p>
+        </div>
+
+        <div class="error-card">
+            <div class="error-title">❌ Fehler 3: Ein <i>z</i>-Maß vergessen</div>
+            <p><strong>Falsch:</strong> <i>l</i> = <i>M</i> – <i>z</i><sub>1</sub> (nur ein Fitting abgezogen)</p>
+            <p><strong>Erklärung:</strong> Ein Rohr hat zwei Enden! Du musst die <i>z</i>-Maße von <em>beiden</em> Seiten abziehen.</p>
+        </div>
+    </div>
+
+    <div id="tab4" class="content-section">
+        <h2>Modul 4: Interaktive Übungsaufgaben</h2>
+
+        <div class="task-card">
+            <h3>Aufgabe 1:</h3>
+            <p>Berechne die Rohrlänge <i>l</i> für eine Rohrverbindung der Größe <strong>d 50</strong> mit einem <strong>Bogen</strong> und einem <strong>Kugelhahn</strong> bei einem Mittenmaß von <i>M</i> = <strong>1500 mm</strong>.</p>
+            
+            <h4>Zugehörige Fitting-Tabelle (Größe d 50):</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fitting-Typ</th>
+                        <th>Größe (<i>d</i>)</th>
+                        <th><i>z</i>-Maß</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bogen</td>
+                        <td>d 50</td>
+                        <td>100 mm</td>
+                    </tr>
+                    <tr>
+                        <td>Kugelhahn</td>
+                        <td>d 50</td>
+                        <td>95 mm</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="margin-top: 15px;">
+                <label><strong>Ergebnis für <i>l</i> (in mm):</strong> </label>
+                <input type="number" id="ex1-input" placeholder="z. B. 1000">
+                <button class="btn" onclick="checkEx1()">Überprüfen</button>
+            </div>
+            <div id="ex1-feedback" class="feedback"></div>
+        </div>
+
+        <div class="task-card">
+            <h3>Aufgabe 2:</h3>
+            <p>Berechne die Rohrlänge <i>l</i> für eine Rohrverbindung der Größe <strong>d 32</strong> mit zwei <strong>Bögen</strong> (beidseitig) bei einem Mittenmaß von <i>M</i> = <strong>850 mm</strong>.</p>
+            
+            <h4>Zugehörige Fitting-Tabelle (Größe d 32):</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fitting-Typ</th>
+                        <th>Größe (<i>d</i>)</th>
+                        <th><i>z</i>-Maß</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bogen</td>
+                        <td>d 32</td>
+                        <td>64 mm</td>
+                    </tr>
+                    <tr>
+                        <td>Kugelhahn</td>
+                        <td>d 32</td>
+                        <td>79 mm</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="margin-top: 15px;">
+                <label><strong>Ergebnis für <i>l</i> (in mm):</strong> </label>
+                <input type="number" id="ex2-input" placeholder="z. B. 700">
+                <button class="btn" onclick="checkEx2()">Überprüfen</button>
+            </div>
+            <div id="ex2-feedback" class="feedback"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Funktion zum Umschalten der Tabs
+    function showTab(tabId, event) {
+        const sections = document.querySelectorAll('.content-section');
+        const buttons = document.querySelectorAll('.tab-btn');
+
+        sections.forEach(sec => sec.classList.remove('active'));
+        buttons.forEach(btn => btn.classList.remove('active'));
+
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    // Auswertung Aufgabe 1
+    function checkEx1() {
+        const val = parseInt(document.getElementById('ex1-input').value);
+        const feedback = document.getElementById('ex1-feedback');
+        // 1500 - (100 + 95) = 1305
+        if (val === 1305) {
+            feedback.className = "feedback correct";
+            feedback.innerHTML = "Richtig! Super gemacht 🎉<br><i>l</i> = 1500 mm – (100 mm + 95 mm) = 1305 mm";
+        } else {
+            feedback.className = "feedback incorrect";
+            feedback.innerHTML = "Leider falsch!<br>Tipp: Ziehe beide <i>z</i>-Maße (100 mm + 95 mm = 195 mm) vom Mittenmaß (1500 mm) ab.";
+        }
+    }
+
+    // Auswertung Aufgabe 2
+    function checkEx2() {
+        const val = parseInt(document.getElementById('ex2-input').value);
+        const feedback = document.getElementById('ex2-feedback');
+        // 850 - (64 + 64) = 722
+        if (val === 722) {
+            feedback.className = "feedback correct";
+            feedback.innerHTML = "Richtig! Hervorragend 🎉<br><i>l</i> = 850 mm – (64 mm + 64 mm) = 722 mm";
+        } else {
+            feedback.className = "feedback incorrect";
+            feedback.innerHTML = "Leider falsch!<br>Tipp: Vergiss nicht, zwei Bögen mit jeweils <i>z</i> = 64 mm abzuziehen (64 mm + 64 mm = 128 mm).";
+        }
+    }
+</script>
+
+</body>
+</html>
