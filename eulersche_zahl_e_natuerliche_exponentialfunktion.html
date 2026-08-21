@@ -1,0 +1,2064 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interaktive Mathe-App: Exponentialfunktion f(x) = a · e^(c(x-d)) + y₀</title>
+  <style>
+    /* ==========================================================================
+       1. GLOBAL RESET & FARB-SYSTEM
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-main: #F8FAFC;
+      --surface: #FFFFFF;
+      --text-main: #0F172A;
+      --text-muted: #475569;
+      --primary-blue: #1565C0;
+      --primary-blue-hover: #0D47A1;
+      --accent-blue: #1A73E8;
+      --select-blue: #3B82F6;
+      --success-green: #2E7D32;
+      --success-bg: #E6F4EA;
+      --success-text: #1E8E3E;
+      --warn-yellow-bg: #FEF9E7;
+      --warn-yellow-border: #FDE68A;
+      --danger-red-bg: #FDE8E8;
+      --danger-red-text: #7F1D1D;
+      --border-light: #E2E8F0;
+      --card-bg-light: #F1F5F9;
+      --font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.12);
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 12px 60px;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1100px;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-light);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ==========================================================================
+       2. HEADER & STEPPER NAVIGATION
+       ========================================================================== */
+    .app-header {
+      padding: 20px 24px 16px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .header-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .badge-bs {
+      background: #E0F2FE;
+      color: #0369A1;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Stepper Pills */
+    .stepper-nav {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .step-pill {
+      flex: 1;
+      min-width: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 30px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+      user-select: none;
+      background: #E2E8F0;
+      color: #475569;
+    }
+
+    .step-pill.active {
+      background: var(--primary-blue);
+      color: #FFFFFF;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(21, 101, 192, 0.3);
+    }
+
+    .step-pill.completed {
+      background: var(--success-green);
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .step-pill:hover:not(.active):not(.completed) {
+      background: #CBD5E1;
+    }
+
+    /* ==========================================================================
+       3. TYPOGRAFIE & MATHEMATISCHE FORMEL-DARSTELLUNG
+       ========================================================================== */
+    .math-term-clickable {
+      color: var(--accent-blue);
+      font-weight: 600;
+      text-decoration: underline dotted 1.5px var(--accent-blue);
+      cursor: pointer;
+      display: inline-block;
+      transition: color 0.15s ease;
+    }
+
+    .math-term-clickable:hover {
+      color: var(--primary-blue-hover);
+    }
+
+    /* Mathematische Farbbrücke */
+    .param-a { color: #1A73E8; font-weight: bold; }
+    .param-c { color: #E65100; font-weight: bold; }
+    .param-d { color: #1E8E3E; font-weight: bold; }
+    .param-y0 { color: #8E24AA; font-weight: bold; }
+    .param-res { color: #2E7D32; font-weight: bold; }
+
+    .formula-display-large {
+      font-family: "Cambria Math", "Times New Roman", serif;
+      font-size: 1.9rem;
+      text-align: center;
+      padding: 24px;
+      background: #FFFFFF;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-light);
+      margin: 16px 0;
+      letter-spacing: 0.5px;
+    }
+
+    .math-fraction {
+      display: inline-flex;
+      flex-direction: column;
+      vertical-align: middle;
+      text-align: center;
+      padding: 0 4px;
+      font-size: 0.95em;
+    }
+
+    .math-numerator {
+      padding-bottom: 2px;
+    }
+
+    .math-denominator {
+      border-top: 1.5px solid currentColor;
+      padding-top: 2px;
+    }
+
+    /* ==========================================================================
+       4. SCREEN CONTAINER & NAVIGATION BUTTONS
+       ========================================================================== */
+    .screen-content {
+      padding: 24px;
+      flex: 1;
+      display: none;
+    }
+
+    .screen-content.active-screen {
+      display: block;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .footer-nav {
+      padding: 16px 24px;
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--primary-blue);
+      color: #FFFFFF;
+      box-shadow: 0 2px 6px rgba(21, 101, 192, 0.25);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary-blue-hover);
+      box-shadow: 0 4px 10px rgba(21, 101, 192, 0.35);
+    }
+
+    .btn-secondary {
+      background: #E2E8F0;
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: #CBD5E1;
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /* ==========================================================================
+       5. OBERFLÄCHE 1: EINSTIEG
+       ========================================================================== */
+    .intro-card {
+      background: var(--warn-yellow-bg);
+      color: #000000;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      border: 1px solid var(--warn-yellow-border);
+      margin-bottom: 20px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .intro-bulb {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .intro-text h3 {
+      font-size: 1.15rem;
+      margin-bottom: 6px;
+      color: #000000;
+    }
+
+    .intro-text p {
+      font-size: 0.98rem;
+      color: #1E293B;
+      line-height: 1.6;
+    }
+
+    .param-legend-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .param-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .param-card-header {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .param-card-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       6. OBERFLÄCHE 2: THEMENAUSWAHL (6 Kacheln)
+       ========================================================================== */
+    .context-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .context-card {
+      background: var(--card-bg-light);
+      color: var(--text-main);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .context-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+      border-color: #CBD5E1;
+    }
+
+    .context-card.selected {
+      background: var(--select-blue);
+      color: #FFFFFF;
+      border-color: #2563EB;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .context-card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .context-card-sub {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .context-card-axes {
+      margin-top: 6px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(0,0,0,0.1);
+      font-size: 0.82rem;
+      opacity: 0.95;
+    }
+
+    .context-card.selected .context-card-axes {
+      border-top-color: rgba(255,255,255,0.3);
+    }
+
+    /* ==========================================================================
+       7. OBERFLÄCHE 3: ERKUNDUNGSLABOR (Zwei Spalten)
+       ========================================================================== */
+    .context-anchor-banner {
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      color: #1E3A8A;
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .lab-layout {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 22px;
+    }
+
+    @media (max-width: 950px) {
+      .lab-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Linke Spalte (Workbench) */
+    .workbench-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .live-formula-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      text-align: center;
+      font-family: "Cambria Math", "Times New Roman", serif;
+      font-size: 1.25rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .canvas-container {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 8px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #functionCanvas {
+      width: 100%;
+      height: 280px;
+      background: #FFFFFF;
+      border-radius: var(--radius-sm);
+      display: block;
+    }
+
+    .slider-panel {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .slider-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .slider-input {
+      width: 100%;
+      accent-color: var(--primary-blue);
+      cursor: pointer;
+    }
+
+    .reset-btn-wrap {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 4px;
+    }
+
+    .btn-reset {
+      background: #F1F5F9;
+      color: var(--text-muted);
+      border: 1px solid var(--border-light);
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .btn-reset:hover {
+      background: #E2E8F0;
+      color: var(--text-main);
+    }
+
+    .alert-banner {
+      background: var(--danger-red-bg);
+      color: var(--danger-red-text);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      display: none;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      border: 1px solid #FCA5A5;
+    }
+
+    .alert-banner.visible {
+      display: flex;
+    }
+
+    .alert-close {
+      cursor: pointer;
+      font-weight: bold;
+      opacity: 0.7;
+    }
+
+    .alert-close:hover {
+      opacity: 1;
+    }
+
+    /* Rechte Spalte (4 Merkmalskarten) */
+    .analysis-col {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .feature-card {
+      background: var(--warn-yellow-bg);
+      color: #000000;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      border: 1px solid var(--warn-yellow-border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .feature-card-header {
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+    }
+
+    .feature-math-value {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #000000;
+      font-family: "Cambria Math", "Times New Roman", serif;
+      padding: 4px 8px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    .feature-context-wrap {
+      margin-top: 6px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .feature-context-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #713F12;
+      margin-bottom: 4px;
+    }
+
+    .feature-context-text {
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: #1F2937;
+    }
+
+    /* ==========================================================================
+       8. OBERFLÄCHE 4: SCHRITT-FÜR-SCHRITT-RECHNUNG
+       ========================================================================== */
+    .calc-section {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .calc-section-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary-blue);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #E2E8F0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .calc-step-card {
+      background: #F8FAFC;
+      border-left: 4px solid var(--primary-blue);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 12px 16px;
+      margin-bottom: 14px;
+    }
+
+    .calc-step-explain {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .calc-step-math-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: "Cambria Math", "Times New Roman", serif;
+      font-size: 1.1rem;
+      padding: 6px 12px;
+      background: #FFFFFF;
+      border-radius: 6px;
+      border: 1px solid #E2E8F0;
+    }
+
+    .calc-step-equation {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .calc-step-opbar {
+      font-family: monospace;
+      font-weight: 700;
+      color: #475569;
+      background: #F1F5F9;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+
+    .calc-result-badge {
+      background: var(--success-bg);
+      color: var(--success-text);
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-top: 6px;
+      font-family: "Cambria Math", "Times New Roman", serif;
+      font-size: 1.05rem;
+    }
+
+    .scaffolding-box {
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      margin-top: 16px;
+      font-size: 0.92rem;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .tip-box {
+      background: var(--warn-yellow-bg);
+      color: #000000;
+      border: 1px solid var(--warn-yellow-border);
+    }
+
+    .pitfall-box {
+      background: var(--danger-red-bg);
+      color: var(--danger-red-text);
+      border: 1px solid #FCA5A5;
+    }
+
+    /* ==========================================================================
+       9. OBERFLÄCHE 5: REFLEXION & VERSTÄNDNIS-CHECK
+       ========================================================================== */
+    .quiz-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .quiz-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .quiz-header {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-main);
+      display: flex;
+      gap: 8px;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .quiz-opt-btn {
+      text-align: left;
+      background: #F8FAFC;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 0.93rem;
+      font-family: inherit;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .quiz-opt-btn:hover:not(:disabled) {
+      background: #F1F5F9;
+      border-color: #CBD5E1;
+    }
+
+    .quiz-opt-btn.selected-correct {
+      background: var(--success-bg) !important;
+      border-color: #86EFAC !important;
+      color: var(--success-text) !important;
+      font-weight: 600;
+    }
+
+    .quiz-opt-btn.selected-wrong {
+      background: var(--danger-red-bg) !important;
+      border-color: #FCA5A5 !important;
+      color: var(--danger-red-text) !important;
+      font-weight: 600;
+    }
+
+    .quiz-feedback {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .quiz-feedback.visible-success {
+      display: block;
+      background: var(--success-bg);
+      color: var(--success-text);
+      border: 1px solid #86EFAC;
+    }
+
+    .quiz-feedback.visible-error {
+      display: block;
+      background: var(--danger-red-bg);
+      color: var(--danger-red-text);
+      border: 1px solid #FCA5A5;
+    }
+
+    .score-banner {
+      background: #F0FDF4;
+      border: 2px solid #86EFAC;
+      border-radius: var(--radius-md);
+      padding: 24px;
+      text-align: center;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .score-banner.visible {
+      display: block;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .score-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #166534;
+      margin-bottom: 6px;
+    }
+
+    /* ==========================================================================
+       10. MODAL-GLOSSAR POPUP
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: 14px;
+      padding: 24px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      transform: translateY(10px);
+      transition: transform 0.2s ease;
+    }
+
+    .modal-backdrop.active .modal-card {
+      transform: translateY(0);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      cursor: pointer;
+      color: #64748B;
+      font-size: 1.3rem;
+      line-height: 1;
+      padding: 4px;
+    }
+
+    .modal-close:hover {
+      color: #0F172A;
+    }
+
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 12px;
+      padding-right: 28px;
+    }
+
+    .modal-body {
+      color: #334155;
+      font-size: 0.96rem;
+      line-height: 1.55;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- HEADER & STEPPER -->
+  <header class="app-header">
+    <div class="header-top">
+      <div class="header-title-wrap">
+        <h1 class="header-title">Exponentialfunktion &amp; e-Basis</h1>
+        <span class="badge-bs">[BS+1]</span>
+      </div>
+      <div style="font-size:0.85rem; color:var(--text-muted);">Berufliche Oberstufe</div>
+    </div>
+
+    <!-- 5 Stepper Pills -->
+    <nav class="stepper-nav" aria-label="Lernschritte">
+      <button class="step-pill active" data-step="1">1. Einstieg</button>
+      <button class="step-pill" data-step="2">2. Themenwahl</button>
+      <button class="step-pill" data-step="3">3. Labor</button>
+      <button class="step-pill" data-step="4">4. Rechnung</button>
+      <button class="step-pill" data-step="5">5. Check</button>
+    </nav>
+  </header>
+
+  <!-- =========================================================================
+       OBERFLÄCHE 1: EINSTIEG & MATHEMATISCHE GLEICHUNG
+       ========================================================================= -->
+  <main id="screen1" class="screen-content active-screen">
+    <div class="intro-card">
+      <div class="intro-bulb">💡</div>
+      <div class="intro-text">
+        <h3>Grundlagen der natürlichen Exponentialfunktion</h3>
+        <p>
+          Die <span class="math-term-clickable" data-glossary="exp_funktion">Exponentialfunktion</span> zur Basis der <span class="math-term-clickable" data-glossary="eulersche_zahl">Eulerschen Zahl e</span> beschreibt reale Prozesse, bei denen die momentane Änderungsrate direkt proportional zum aktuellen Bestand ist. Ob Abkühlung, Zinseszins oder Wellenausbreitung: Die Zahl <span class="math-term-clickable" data-glossary="eulersche_zahl">e &approx; 2,71828</span> ist das fundamentale Fundament kontinuierlicher Wachstums- und Zerfallsvorgänge.
+        </p>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 10px;">
+      <h2 style="font-size: 1.1rem; color: var(--text-muted); font-weight: 600;">Allgemeine Funktionsgleichung mit Parametern</h2>
+      <div class="formula-display-large">
+        f(x) = <span class="param-a">a</span> &middot; e<sup><span class="param-c">c</span> &middot; (x &minus; <span class="param-d">d</span>)</sup> + <span class="param-y0">y<sub>0</sub></span>
+      </div>
+    </div>
+
+    <div class="param-legend-grid">
+      <div class="param-card">
+        <div class="param-card-header param-a">Parameter a (Streckfaktor)</div>
+        <div class="param-card-desc">Streckt oder staucht den Graphen vertikal. Ein negatives Vorzeichen spiegelt die Kurve an der horizontalen Asymptote.</div>
+      </div>
+      <div class="param-card">
+        <div class="param-card-header param-c">Parameter c (Wachstumsrate)</div>
+        <div class="param-card-desc">Bestimmt das Tempo: <span style="font-weight:600;">c &gt; 0</span> bewirkt exponentielles Wachstum, <span style="font-weight:600;">c &lt; 0</span> exponentiellen Zerfall.</div>
+      </div>
+      <div class="param-card">
+        <div class="param-card-header param-d">Parameter d (Phasenverschiebung)</div>
+        <div class="param-card-desc">Verschiebt den Graphen horizontal entlang der x-Achse (nach rechts bei <span style="font-weight:600;">d &gt; 0</span>, nach links bei <span style="font-weight:600;">d &lt; 0</span>).</div>
+      </div>
+      <div class="param-card">
+        <div class="param-card-header param-y0">Parameter y₀ (Horizontale Asymptote)</div>
+        <div class="param-card-desc">Verschiebt den gesamten Graphen vertikal und legt die unüberwindbare Grenzlinie fest (<span class="math-term-clickable" data-glossary="asymptote">Asymptote</span> y = y<sub>0</sub>).</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- =========================================================================
+       OBERFLÄCHE 2: THEMENAUSWAHL (6 Kacheln)
+       ========================================================================= -->
+  <section id="screen2" class="screen-content">
+    <div style="margin-bottom: 16px;">
+      <h2 style="font-size: 1.25rem; font-weight: 700;">Wähle deinen realen Anwendungsfall</h2>
+      <p style="font-size: 0.92rem; color: var(--text-muted);">
+        Wähle ein Thema aus, um die Parameterbedeutungen, die Achsenskalierung und die physikalischen Einheiten im Labor anzupassen.
+      </p>
+    </div>
+
+    <div class="context-grid">
+      <!-- 1. Technik -->
+      <div class="context-card" data-context="technik">
+        <div class="context-card-title"><span>🌉</span> Technik &amp; Alltag</div>
+        <div class="context-card-sub">Temperaturspannung in Brückenträgern bei Hitzeeinwirkung.</div>
+        <div class="context-card-axes">
+          <strong>x-Achse:</strong> Trägerlänge x in m &nbsp;|&nbsp; <strong>y-Achse:</strong> Spannung σ(x) in N/mm²
+        </div>
+      </div>
+
+      <!-- 2. Wirtschaft -->
+      <div class="context-card" data-context="wirtschaft">
+        <div class="context-card-title"><span>🎫</span> Wirtschaft &amp; Finanzen</div>
+        <div class="context-card-sub">Preiskalkulation &amp; Marktsättigung beim Festival-Vorverkauf.</div>
+        <div class="context-card-axes">
+          <strong>x-Achse:</strong> Ticketpreis x in € &nbsp;|&nbsp; <strong>y-Achse:</strong> Erlös E(x) in Tsd. €
+        </div>
+      </div>
+
+      <!-- 3. Natur (Default) -->
+      <div class="context-card selected" data-context="natur">
+        <div class="context-card-title"><span>☕</span> Natur &amp; Umwelt</div>
+        <div class="context-card-sub">Abkühlung einer Tasse Kaffee nach dem Newtonschen Abkühlungsgesetz.</div>
+        <div class="context-card-axes">
+          <strong>x-Achse:</strong> Zeit t in min &nbsp;|&nbsp; <strong>y-Achse:</strong> Temperatur T(t) in °C
+        </div>
+      </div>
+
+      <!-- 4. Social Media -->
+      <div class="context-card" data-context="social">
+        <div class="context-card-title"><span>📱</span> Social Media &amp; Trends</div>
+        <div class="context-card-sub">Tägliche Aufrufzahlen eines viral gehenden Kurzclips im Netz.</div>
+        <div class="context-card-axes">
+          <strong>x-Achse:</strong> Zeit t in Tagen &nbsp;|&nbsp; <strong>y-Achse:</strong> Aufrufe N(t) in Tsd.
+        </div>
+      </div>
+
+      <!-- 5. Gaming -->
+      <div class="context-card" data-context="gaming">
+        <div class="context-card-title"><span>🎮</span> Gaming &amp; Animation</div>
+        <div class="context-card-sub">Lade- und Entladekurve des Schutzschilds einer Spielfigur.</div>
+        <div class="context-card-axes">
+          <strong>x-Achse:</strong> Zeit t in s &nbsp;|&nbsp; <strong>y-Achse:</strong> Schildenergie S(t) in %
+        </div>
+      </div>
+
+      <!-- 6. Formale Mathe -->
+      <div class="context-card" data-context="formal">
+        <div class="context-card-title"><span>📐</span> Reines Rechnen</div>
+        <div class="context-card-sub">Abstrakte mathematische Kurvendiskussion im 2D-Koordinatensystem.</div>
+        <div class="context-card-axes">
+          <strong>x-Achse:</strong> Reelle Variable x &nbsp;|&nbsp; <strong>y-Achse:</strong> Funktionswert f(x)
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       OBERFLÄCHE 3: INTERAKTIVES ERKUNDUNGSLABOR
+       ========================================================================= -->
+  <section id="screen3" class="screen-content">
+    <!-- Kontext-Anker Banner -->
+    <div id="contextAnchorBanner" class="context-anchor-banner">
+      <span id="anchorIcon">☕</span>
+      <span id="anchorText">Gewählter Kontext: Natur &amp; Umwelt (Kaffeeabkühlung)</span>
+    </div>
+
+    <div class="lab-layout">
+      <!-- LINKE SPALTE: Statische Werkbank -->
+      <div class="workbench-col">
+        <!-- Live Funktionsgleichung -->
+        <div class="live-formula-box" id="liveFormulaBox">
+          f(x) = 65 &middot; e<sup>&minus;0.05 &middot; x</sup> + 20
+        </div>
+
+        <!-- Canvas Graph -->
+        <div class="canvas-container">
+          <canvas id="functionCanvas"></canvas>
+        </div>
+
+        <!-- Fehlermeldung / Hinweis -->
+        <div id="alertBanner" class="alert-banner">
+          <span id="alertMsg">Hinweis: Parameter prüfen!</span>
+          <span class="alert-close" id="alertCloseBtn">[✕]</span>
+        </div>
+
+        <!-- Schieberegler -->
+        <div class="slider-panel">
+          <div class="slider-row">
+            <div class="slider-header">
+              <span>Streckfaktor <strong class="param-a">a</strong>:</span>
+              <span id="val_a">65.0</span>
+            </div>
+            <input type="range" class="slider-input" id="slider_a" min="-100" max="100" step="1" value="65">
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span>Wachstumsrate <strong class="param-c">c</strong>:</span>
+              <span id="val_c">-0.05</span>
+            </div>
+            <input type="range" class="slider-input" id="slider_c" min="-1.0" max="1.0" step="0.01" value="-0.05">
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span>Verschiebung x <strong class="param-d">d</strong>:</span>
+              <span id="val_d">0.0</span>
+            </div>
+            <input type="range" class="slider-input" id="slider_d" min="-20" max="20" step="0.5" value="0">
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-header">
+              <span>Asymptote <strong class="param-y0">y₀</strong>:</span>
+              <span id="val_y0">20.0</span>
+            </div>
+            <input type="range" class="slider-input" id="slider_y0" min="-50" max="80" step="1" value="20">
+          </div>
+
+          <div class="reset-btn-wrap">
+            <button class="btn-reset" id="resetParamsBtn">↺ Standardwerte</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECHTE SPALTE: 4 Hellgelbe Merkmalskarten -->
+      <div class="analysis-col">
+        <!-- 1. Definitions- und Wertemenge -->
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <span class="math-term-clickable" data-glossary="def_wertemenge">1. Definitions- und Wertemenge</span>
+          </div>
+          <div class="feature-math-value" id="card_dw_math">
+            D = ℝ; &nbsp; W = ]20; +∞[
+          </div>
+          <div class="feature-context-wrap">
+            <div class="feature-context-label">Im Kontext des Anwendungsfalls</div>
+            <div class="feature-context-text" id="card_dw_context">
+              Der Kaffee startet heiß bei 85 °C und kühlt schrittweise ab. Die Temperatur kann niemals unter die 20 °C warme Zimmerluft sinken. Die Zeit läuft ab dem Einschenken bei t = 0 min.
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Grenzverhalten & Asymptote -->
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <span class="math-term-clickable" data-glossary="grenzverhalten">2. Grenzverhalten &amp; Asymptote</span>
+          </div>
+          <div class="feature-math-value" id="card_lim_math">
+            lim<sub>x → +∞</sub> f(x) = 20 &nbsp;(Asymptote y = 20)
+          </div>
+          <div class="feature-context-wrap">
+            <div class="feature-context-label">Im Kontext des Anwendungsfalls</div>
+            <div class="feature-context-text" id="card_lim_context">
+              Selbst nach Stunden gleicht sich die Flüssigkeitstemperatur exakt der Raumtemperatur von 20 °C an. Die Raumluft bildet eine unüberwindbare physikalische Temperaturgrenze.
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Achsenschnittpunkte -->
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <span class="math-term-clickable" data-glossary="achsenschnittpunkte">3. Achsenschnittpunkte</span>
+          </div>
+          <div class="feature-math-value param-res" id="card_points_math">
+            S<sub>y</sub>(0 | 85); &nbsp; Keine reelle Nullstelle
+          </div>
+          <div class="feature-context-wrap">
+            <div class="feature-context-label">Im Kontext des Anwendungsfalls</div>
+            <div class="feature-context-text" id="card_points_context">
+              Der Schnittpunkt mit der Hochachse zeigt die Anfangstemperatur von 85 °C beim Brühvorgang. Da der Kaffee im Zimmer niemals auf 0 °C gefriert, gibt es keinen Nulldurchgang.
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Monotonie & Wachstumscharakter -->
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <span class="math-term-clickable" data-glossary="monotonie">4. Monotonie &amp; Wachstumscharakter</span>
+          </div>
+          <div class="feature-math-value" id="card_mono_math">
+            Streng monoton fallend &amp; linksgekrümmt
+          </div>
+          <div class="feature-context-wrap">
+            <div class="feature-context-label">Im Kontext des Anwendungsfalls</div>
+            <div class="feature-context-text" id="card_mono_context">
+              In den ersten Minuten fällt die Temperatur rasant ab. Je geringer der Temperaturunterschied zur Raumluft wird, desto langsamer vollzieht sich der weitere Wärmeverlust.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       OBERFLÄCHE 4: SCHRITT-FÜR-SCHRITT-RECHNUNG
+       ========================================================================= -->
+  <section id="screen4" class="screen-content">
+    <div style="margin-bottom: 18px;">
+      <h2 style="font-size: 1.25rem; font-weight: 700;">Exakte algebraische Berechnung</h2>
+      <p style="font-size: 0.92rem; color: var(--text-muted);">
+        Aufschlüsselung der Schnittpunkte anhand deiner aktuellen Parametereinstellung:
+      </p>
+    </div>
+
+    <!-- TEIL A: Schnittpunkt mit der y-Achse -->
+    <div class="calc-section">
+      <div class="calc-section-title">
+        <span>Teil A: Schnittpunkt mit der y-Achse (Ordinate, x = 0)</span>
+      </div>
+
+      <div class="calc-step-card">
+        <div class="calc-step-explain">1. Setze den Wert x = 0 direkt in den Funktionsterm ein:</div>
+        <div class="calc-step-math-row">
+          <div class="calc-step-equation" id="calc_sy_step1">
+            f(0) = a &middot; e<sup>c &middot; (0 &minus; d)</sup> + y<sub>0</sub>
+          </div>
+          <div class="calc-step-opbar">Ansatz x = 0</div>
+        </div>
+      </div>
+
+      <div class="calc-step-card">
+        <div class="calc-step-explain">2. Berechne den Exponenten und werte den e-Term aus:</div>
+        <div class="calc-step-math-row">
+          <div class="calc-step-equation" id="calc_sy_step2">
+            f(0) = a &middot; e<sup>...</sup> + y<sub>0</sub>
+          </div>
+          <div class="calc-step-opbar">Term vereinfachen</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 10px;">
+        <div class="calc-result-badge" id="calc_sy_result">
+          S<sub>y</sub>(0 | 85)
+        </div>
+      </div>
+    </div>
+
+    <!-- TEIL B: Schnittpunkt mit der x-Achse (Nullstelle) -->
+    <div class="calc-section">
+      <div class="calc-section-title">
+        <span>Teil B: Schnittpunkt mit der x-Achse / Nullstellen (Abszisse, f(x) = 0)</span>
+      </div>
+
+      <div class="calc-step-card">
+        <div class="calc-step-explain">1. Setze die gesamte Funktionsgleichung gleich null:</div>
+        <div class="calc-step-math-row">
+          <div class="calc-step-equation" id="calc_root_step1">
+            a &middot; e<sup>c(x &minus; d)</sup> + y<sub>0</sub> = 0
+          </div>
+          <div class="calc-step-opbar">Ansatz f(x) = 0</div>
+        </div>
+      </div>
+
+      <div class="calc-step-card">
+        <div class="calc-step-explain">2. Subtrahiere die Konstante y₀ auf beiden Seiten:</div>
+        <div class="calc-step-math-row">
+          <div class="calc-step-equation" id="calc_root_step2">
+            &hArr; a &middot; e<sup>c(x &minus; d)</sup> = &minus;y<sub>0</sub>
+          </div>
+          <div class="calc-step-opbar" id="calc_root_op2">| &minus; y₀</div>
+        </div>
+      </div>
+
+      <div class="calc-step-card">
+        <div class="calc-step-explain">3. Isoliere die e-Basis durch Division durch den Streckfaktor a:</div>
+        <div class="calc-step-math-row">
+          <div class="calc-step-equation" id="calc_root_step3">
+            &hArr; e<sup>c(x &minus; d)</sup> =
+            <div class="math-fraction">
+              <span class="math-numerator">&minus;y<sub>0</sub></span>
+              <span class="math-denominator">a</span>
+            </div>
+          </div>
+          <div class="calc-step-opbar" id="calc_root_op3">| : a</div>
+        </div>
+      </div>
+
+      <div class="calc-step-card" id="calc_root_step4_card">
+        <div class="calc-step-explain" id="calc_root_step4_explain">4. Wende den natürlichen Logarithmus (ln) an und löse nach x auf:</div>
+        <div class="calc-step-math-row">
+          <div class="calc-step-equation" id="calc_root_step4">
+            &hArr; c &middot; (x &minus; d) = ln(...)
+          </div>
+          <div class="calc-step-opbar" id="calc_root_op4">| ln(...)</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 10px;">
+        <div class="calc-result-badge" id="calc_root_result">
+          L = { ... }
+        </div>
+      </div>
+    </div>
+
+    <!-- Scaffolding Boxen -->
+    <div class="scaffolding-box tip-box">
+      <div style="font-size:1.3rem;">💡</div>
+      <div>
+        <strong>Didaktischer Rechentipp:</strong> Die e-Funktion e<sup>u</sup> ist für alle reellen Exponenten stets strikt positiv (e<sup>u</sup> &gt; 0). Eine Division durch die e-Basis ist niemals null.
+      </div>
+    </div>
+
+    <div class="scaffolding-box pitfall-box">
+      <div style="font-size:1.3rem;">⚠️</div>
+      <div>
+        <strong>Häufige Stolperfalle:</strong> Der natürliche Logarithmus ln(z) ist nur für echt positive Argumente (z &gt; 0) im reellen Zahlenbereich definiert. Ist der Bruch &minus;y₀ / a negativ oder null, existiert keine reelle Nullstelle!
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       OBERFLÄCHE 5: REFLEXION & VERSTÄNDNIS-CHECK
+       ========================================================================= -->
+  <section id="screen5" class="screen-content">
+    <div style="margin-bottom: 18px;">
+      <h2 style="font-size: 1.25rem; font-weight: 700;">Verständnis-Check &amp; Reflexion</h2>
+      <p style="font-size: 0.92rem; color: var(--text-muted);">
+        Überprüfe dein Wissen zu Parametern, Umformungen und Realkontexten:
+      </p>
+    </div>
+
+    <div class="quiz-container">
+      <!-- Frage 1 -->
+      <div class="quiz-card" id="quizCard1">
+        <div class="quiz-header">
+          <span>1.</span>
+          <span>Welche geometrische Auswirkung hat ein negatives Vorzeichen beim Wachstumsfaktor c (c &lt; 0)?</span>
+        </div>
+        <div class="quiz-options">
+          <button class="quiz-opt-btn" data-q="1" data-correct="false">Der Graph wird an der x-Achse nach unten gespiegelt.</button>
+          <button class="quiz-opt-btn" data-q="1" data-correct="true">Aus einem exponentiellen Anstieg wird ein exponentieller Zerfall (Spiegelung an der y-Achse).</button>
+          <button class="quiz-opt-btn" data-q="1" data-correct="false">Die horizontale Asymptote verschiebt sich in den negativen Bereich.</button>
+        </div>
+        <div class="quiz-feedback" id="fb1"></div>
+      </div>
+
+      <!-- Frage 2 -->
+      <div class="quiz-card" id="quizCard2">
+        <div class="quiz-header">
+          <span>2.</span>
+          <span>Unter welcher Bedingung besitzt die Funktion f(x) = a &middot; e<sup>c(x-d)</sup> + y₀ KEINE reelle Nullstelle?</span>
+        </div>
+        <div class="quiz-options">
+          <button class="quiz-opt-btn" data-q="2" data-correct="true">Wenn der Quotient &minus;y₀ / a kleiner oder gleich 0 ist (da der ln nur für positive Werte existiert).</button>
+          <button class="quiz-opt-btn" data-q="2" data-correct="false">Wenn der Parameter d gleich 0 gesetzt wird.</button>
+          <button class="quiz-opt-btn" data-q="2" data-correct="false">Wenn der Wachstumsfaktor c positiv ist.</button>
+        </div>
+        <div class="quiz-feedback" id="fb2"></div>
+      </div>
+
+      <!-- Frage 3 -->
+      <div class="quiz-card" id="quizCard3">
+        <div class="quiz-header">
+          <span>3.</span>
+          <span>Was repräsentiert die Asymptote y₀ im physikalischen Kontext des Newtonschen Abkühlungsgesetzes?</span>
+        </div>
+        <div class="quiz-options">
+          <button class="quiz-opt-btn" data-q="3" data-correct="false">Die maximale Siedetemperatur des Heißgetränks.</button>
+          <button class="quiz-opt-btn" data-q="3" data-correct="true">Die konstante Umgebungstemperatur (Zimmertemperatur), der sich das Getränk langfristig annähert.</button>
+          <button class="quiz-opt-btn" data-q="3" data-correct="false">Die exakte Dauer bis zum Erkalten in Minuten.</button>
+        </div>
+        <div class="quiz-feedback" id="fb3"></div>
+      </div>
+
+      <!-- Abschluss-Score Banner -->
+      <div class="score-banner" id="scoreBanner">
+        <div class="score-title">🎉 Ausgezeichnete Leistung!</div>
+        <p id="scoreText" style="color: #15803D; font-size: 1rem;">Du hast alle 3 Verständnisfragen erfolgreich gelöst.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GLOBAL FOOTER NAVIGATION -->
+  <footer class="footer-nav">
+    <button class="btn btn-secondary" id="btnBack" disabled>&larr; Zurück</button>
+    <button class="btn btn-primary" id="btnNext">Weiter zur Themenwahl &rarr;</button>
+  </footer>
+</div>
+
+<!-- =========================================================================
+     MODAL-GLOSSAR POPUP (Backdrop Blur & Reines HTML)
+     ========================================================================= -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal-card">
+    <span class="modal-close" id="modalCloseBtn">[✕]</span>
+    <div class="modal-title" id="modalTitle">Fachbegriff</div>
+    <div class="modal-body" id="modalBody">Erklärungstext...</div>
+  </div>
+</div>
+
+<!-- =========================================================================
+     JAVASCRIPT LOGIK & BERECHNUNGS-ENGINE
+     ========================================================================= -->
+<script>
+  // --- 1. DATEN-STRUKTUREN & KONFIGURATIONEN ---
+  const GLOSSARY = {
+    exp_funktion: {
+      title: "Exponentialfunktion",
+      text: "Eine mathematische Funktion, bei der die unabhängige Variable x im Exponenten steht. Sie beschreibt Prozesse mit prozentual gleichmäßigem Zu- oder Abnehmen."
+    },
+    eulersche_zahl: {
+      title: "Eulersche Zahl e (≈ 2,71828)",
+      text: "Eine fundamentale mathematische Konstante. Sie ist die einzige Basis, bei der die Steigung des Funktionsgraphen an jeder Stelle exakt mit dem eigenen Funktionswert übereinstimmt."
+    },
+    asymptote: {
+      title: "Horizontale Asymptote (y = y₀)",
+      text: "Eine waagrechte Grenzgerade, an die sich der Funktionsgraph für sehr große positive oder negative x-Werte beliebig dicht anschmiegt, ohne sie zwingend zu schneiden."
+    },
+    def_wertemenge: {
+      title: "Definitions- & Wertemenge",
+      text: "Die Definitionsmenge D umfasst alle zulässigen x-Werte (für e-Funktionen stets ℝ). Die Wertemenge W gibt alle tatsächlich angenommenen y-Werte an, begrenzt durch die Asymptote y₀."
+    },
+    grenzverhalten: {
+      title: "Grenzverhalten (Limes)",
+      text: "Untersucht den Verlauf der Funktionswerte, wenn x gegen unendlich (+∞) oder minus unendlich (−∞) strebt. Zeigt das langfristige Endverhalten eines realen Systems."
+    },
+    achsenschnittpunkte: {
+      title: "Achsenschnittpunkte",
+      text: "Der Schnittpunkt Sy(0|y₀) markiert den Zustand bei x = 0 (Startwert). Die Nullstellen N(x|0) zeigen Stellen, an denen der Funktionswert die Nulllinie durchbricht."
+    },
+    monotonie: {
+      title: "Monotonie & Krümmung",
+      text: "Gibt an, ob die Werte durchgehend steigen oder fallen. Das Krümmungsverhalten beschreibt, ob die Änderungsgeschwindigkeit zu- oder abnimmt."
+    }
+  };
+
+  const CONTEXTS = {
+    natur: {
+      title: "Natur & Umwelt (Kaffeeabkühlung)",
+      icon: "☕",
+      xName: "Zeit t",
+      xUnit: "min",
+      yName: "Temperatur T(t)",
+      yUnit: "°C",
+      defaults: { a: 65, c: -0.05, d: 0, y0: 20 },
+      xRange: [0, 80],
+      yRange: [0, 100],
+      dwContext: "Der Kaffee startet heiß bei {startTemp} °C und kühlt schrittweise ab. Die Temperatur kann niemals unter die {y0} °C warme Zimmerluft sinken. Die Beobachtung startet bei t = 0 min.",
+      limContext: "Für t → +∞ gleicht sich die Flüssigkeitstemperatur exakt der Raumtemperatur von {y0} °C an. Die Raumluft bildet eine unüberwindbare physikalische Barriere.",
+      pointsContext: "Bei t = 0 min beträgt die Anfangstemperatur exakt {yStart} °C. {zeroNote}",
+      monoContext: "In den ersten Minuten fällt die Hitze rasant ab. Je näher das Getränk der Raumtemperatur ({y0} °C) kommt, desto langsamer wird der Wärmeverlust."
+    },
+    technik: {
+      title: "Technik & Alltag (Brückenträger)",
+      icon: "🌉",
+      xName: "Trägerlänge x",
+      xUnit: "m",
+      yName: "Spannung σ(x)",
+      yUnit: "N/mm²",
+      defaults: { a: 50, c: -0.1, d: 0, y0: 10 },
+      xRange: [0, 50],
+      yRange: [0, 80],
+      dwContext: "Die mechanische Spannung verläuft über die Brückenkonstruktion von x = 0 m bis zum Pfeilerende. Die Grundlast beträgt minimal {y0} N/mm².",
+      limContext: "Über lange Trägerstrecken pendelt sich die Bauteilspannung auf das Grundniveau von {y0} N/mm² ein.",
+      pointsContext: "Am Trägeranfang (x = 0 m) liegt die Startspannung bei {yStart} N/mm². {zeroNote}",
+      monoContext: "Die Spannungskurve fällt kontinuierlich ab, wodurch Entlastungszonen im Material sichtbar werden."
+    },
+    wirtschaft: {
+      title: "Wirtschaft & Finanzen (Festival-Tickets)",
+      icon: "🎫",
+      xName: "Ticketpreis x",
+      xUnit: "€",
+      yName: "Erlös E(x)",
+      yUnit: "Tsd. €",
+      defaults: { a: -80, c: -0.03, d: 0, y0: 90 },
+      xRange: [0, 120],
+      yRange: [0, 100],
+      dwContext: "Der Ticketpreis bewegt sich im realistischen Rahmen ab 0 €. Der maximal erzielbare Grenzerlös ist durch die Marktkapazität bei {y0} Tsd. € gedeckelt.",
+      limContext: "Mit steigendem Ticketpreis nähert sich der Umsatzeffekt dem Sättigungswert von {y0} Tsd. € an.",
+      pointsContext: "Bei einem Preis von 0 € beträgt der Erlös {yStart} Tsd. €. {zeroNote}",
+      monoContext: "Die Einnahmen steigen zunächst steil an und flachen mit zunehmendem Preisniveau merklich ab."
+    },
+    social: {
+      title: "Social Media & Trends (Viraler Clip)",
+      icon: "📱",
+      xName: "Zeit t",
+      xUnit: "Tagen",
+      yName: "Aufrufe N(t)",
+      yUnit: "Tsd.",
+      defaults: { a: 5, c: 0.25, d: 0, y0: 2 },
+      xRange: [0, 20],
+      yRange: [0, 150],
+      dwContext: "Die Zählung beginnt an Tag 0 nach Veröffentlichung des Clips und erfasst die Reichweitenentwicklung.",
+      limContext: "Bei anhaltendem Hype wachsen die täglichen Klickzahlen exponentiell über alle Grenzen.",
+      pointsContext: "Am Veröffentlichungstag (t = 0) startet das Video bereits mit {yStart} Tsd. Abrufen. {zeroNote}",
+      monoContext: "Das Video gewinnt von Tag zu Tag schneller an Reichweite; das Klickwachstum beschleunigt sich stetig."
+    },
+    gaming: {
+      title: "Gaming & Animation (Schild-Aufladung)",
+      icon: "🎮",
+      xName: "Zeit t",
+      xUnit: "s",
+      yName: "Schildenergie S(t)",
+      yUnit: "%",
+      defaults: { a: -100, c: -0.5, d: 0, y0: 100 },
+      xRange: [0, 12],
+      yRange: [0, 110],
+      dwContext: "Die Ladephase des Energieschilds startet im Moment des Aktivierens bei t = 0 s bis zur vollen Kapazität von {y0} %.",
+      limContext: "Der Schutzschild kann technisch niemals mehr als die maximale Obergrenze von {y0} % speichern.",
+      pointsContext: "Zu Beginn (t = 0 s) liegt die Schildenergie bei {yStart} %. {zeroNote}",
+      monoContext: "Der Schild lädt sich anfangs extrem schnell auf und benötigt für die letzten Prozentpunkte etwas länger."
+    },
+    formal: {
+      title: "Reines Rechnen (Formale Mathematik)",
+      icon: "📐",
+      xName: "Variable x",
+      xUnit: "",
+      yName: "Funktionswert f(x)",
+      yUnit: "",
+      defaults: { a: 2, c: 0.5, d: 0, y0: -1 },
+      xRange: [-5, 5],
+      yRange: [-5, 10],
+      dwContext: "Reeller Definitionsbereich D = ℝ. Die Wertemenge W wird durch die horizontale Asymptote bei y₀ = {y0} begrenzt.",
+      limContext: "Grenzverhalten: Für x → {limDir} nähert sich f(x) der Asymptote y = {y0}.",
+      pointsContext: "Ordinatenschnittpunkt Sy(0 | {yStart}). {zeroNote}",
+      monoContext: "Monotonieverhalten und Krümmung ergeben sich rein aus den Vorzeichen der Parameter a und c."
+    }
+  };
+
+  // --- 2. ZUSTAND DER ANWENDUNG ---
+  let state = {
+    currentStep: 1,
+    visitedSteps: new Set([1]),
+    currentContextKey: 'natur',
+    params: { a: 65, c: -0.05, d: 0, y0: 20 },
+    quizAnswers: { 1: null, 2: null, 3: null }
+  };
+
+  // --- 3. DOM ELEMENTE ---
+  const stepPills = document.querySelectorAll('.step-pill');
+  const screens = document.querySelectorAll('.screen-content');
+  const btnBack = document.getElementById('btnBack');
+  const btnNext = document.getElementById('btnNext');
+  const contextCards = document.querySelectorAll('.context-card');
+
+  // Slider & Live Display
+  const sliderA = document.getElementById('slider_a');
+  const sliderC = document.getElementById('slider_c');
+  const sliderD = document.getElementById('slider_d');
+  const sliderY0 = document.getElementById('slider_y0');
+  const valA = document.getElementById('val_a');
+  const valC = document.getElementById('val_c');
+  const valD = document.getElementById('val_d');
+  const valY0 = document.getElementById('val_y0');
+  const liveFormulaBox = document.getElementById('liveFormulaBox');
+  const alertBanner = document.getElementById('alertBanner');
+  const alertMsg = document.getElementById('alertMsg');
+  const alertCloseBtn = document.getElementById('alertCloseBtn');
+  const resetParamsBtn = document.getElementById('resetParamsBtn');
+
+  // Canvas
+  const canvas = document.getElementById('functionCanvas');
+  const ctx = canvas.getContext('2d');
+
+  // Merkmalskarten
+  const cardDwMath = document.getElementById('card_dw_math');
+  const cardDwContext = document.getElementById('card_dw_context');
+  const cardLimMath = document.getElementById('card_lim_math');
+  const cardLimContext = document.getElementById('card_lim_context');
+  const cardPointsMath = document.getElementById('card_points_math');
+  const cardPointsContext = document.getElementById('card_points_context');
+  const cardMonoMath = document.getElementById('card_mono_math');
+  const cardMonoContext = document.getElementById('card_mono_context');
+
+  // Banner
+  const anchorIcon = document.getElementById('anchorIcon');
+  const anchorText = document.getElementById('anchorText');
+
+  // Rechnungs-Elemente
+  const calcSyStep1 = document.getElementById('calc_sy_step1');
+  const calcSyStep2 = document.getElementById('calc_sy_step2');
+  const calcSyResult = document.getElementById('calc_sy_result');
+  const calcRootStep1 = document.getElementById('calc_root_step1');
+  const calcRootStep2 = document.getElementById('calc_root_step2');
+  const calcRootOp2 = document.getElementById('calc_root_op2');
+  const calcRootStep3 = document.getElementById('calc_root_step3');
+  const calcRootOp3 = document.getElementById('calc_root_op3');
+  const calcRootStep4Card = document.getElementById('calc_root_step4_card');
+  const calcRootStep4Explain = document.getElementById('calc_root_step4_explain');
+  const calcRootStep4 = document.getElementById('calc_root_step4');
+  const calcRootOp4 = document.getElementById('calc_root_op4');
+  const calcRootResult = document.getElementById('calc_root_result');
+
+  // Modal Elemente
+  const modalBackdrop = document.getElementById('modalBackdrop');
+  const modalCloseBtn = document.getElementById('modalCloseBtn');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalBody = document.getElementById('modalBody');
+
+  // --- 4. HILFSFUNKTIONEN ---
+  function formatNum(val, decimals = 2) {
+    const rounded = Number(Math.round(val + 'e' + decimals) + 'e-' + decimals);
+    return rounded.toString().replace('.', ',');
+  }
+
+  function getFunctionVal(x, a, c, d, y0) {
+    return a * Math.exp(c * (x - d)) + y0;
+  }
+
+  // --- 5. NAVIGATION (STEPPER & PILLS) ---
+  function goToStep(stepNum) {
+    if (stepNum < 1 || stepNum > 5) return;
+    
+    state.currentStep = stepNum;
+    state.visitedSteps.add(stepNum);
+
+    // Update Pills
+    stepPills.forEach(pill => {
+      const pStep = parseInt(pill.dataset.step, 10);
+      pill.classList.remove('active', 'completed');
+      
+      if (pStep === state.currentStep) {
+        pill.classList.add('active');
+        pill.textContent = `${pStep}. ${getStepName(pStep)}`;
+      } else if (state.visitedSteps.has(pStep)) {
+        pill.classList.add('completed');
+        pill.textContent = `✓ ${pStep}. ${getStepName(pStep)}`;
+      } else {
+        pill.textContent = `${pStep}. ${getStepName(pStep)}`;
+      }
+    });
+
+    // Update Screen Visibility
+    screens.forEach((screen, idx) => {
+      if (idx + 1 === stepNum) {
+        screen.classList.add('active-screen');
+      } else {
+        screen.classList.remove('active-screen');
+      }
+    });
+
+    // Update Buttons
+    btnBack.disabled = (stepNum === 1);
+    
+    const nextLabels = [
+      "Weiter zur Themenwahl →",
+      "Weiter zum Labor →",
+      "Weiter zur Schritt-für-Schritt-Rechnung →",
+      "Weiter zum Verständnis-Check →",
+      "Zurück zum Start ↺"
+    ];
+    btnNext.textContent = nextLabels[stepNum - 1];
+
+    // Trigger Screen Specific Renders
+    if (stepNum === 3) {
+      updateLabView();
+    } else if (stepNum === 4) {
+      updateCalculationsView();
+    }
+  }
+
+  function getStepName(step) {
+    const names = ["Einstieg", "Themenwahl", "Labor", "Rechnung", "Check"];
+    return names[step - 1];
+  }
+
+  stepPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      const targetStep = parseInt(pill.dataset.step, 10);
+      if (state.visitedSteps.has(targetStep) || targetStep <= Math.max(...state.visitedSteps) + 1) {
+        goToStep(targetStep);
+      }
+    });
+  });
+
+  btnBack.addEventListener('click', () => {
+    if (state.currentStep > 1) goToStep(state.currentStep - 1);
+  });
+
+  btnNext.addEventListener('click', () => {
+    if (state.currentStep < 5) {
+      goToStep(state.currentStep + 1);
+    } else {
+      goToStep(1);
+    }
+  });
+
+  // --- 6. THEMENAUSWAHL LOGIK ---
+  contextCards.forEach(card => {
+    card.addEventListener('click', () => {
+      contextCards.forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      const ctxKey = card.dataset.context;
+      state.currentContextKey = ctxKey;
+      
+      // Load context defaults into parameters
+      const ctxData = CONTEXTS[ctxKey];
+      state.params = { ...ctxData.defaults };
+
+      // Update Sliders to match
+      sliderA.value = state.params.a;
+      sliderC.value = state.params.c;
+      sliderD.value = state.params.d;
+      sliderY0.value = state.params.y0;
+
+      updateLabView();
+    });
+  });
+
+  // --- 7. ERKUNDUNGSLABOR & CANVAS PLOTTER ---
+  function setupCanvasHDPI() {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = 280 * dpr;
+    ctx.resetTransform();
+    ctx.scale(dpr, dpr);
+  }
+
+  function drawGraph() {
+    setupCanvasHDPI();
+    const width = canvas.getBoundingClientRect().width;
+    const height = 280;
+    ctx.clearRect(0, 0, width, height);
+
+    const { a, c, d, y0 } = state.params;
+    const curContext = CONTEXTS[state.currentContextKey];
+
+    // Plotting Area Ranges
+    let xMin = curContext.xRange[0];
+    let xMax = curContext.xRange[1];
+    let yMin = curContext.yRange[0];
+    let yMax = curContext.yRange[1];
+
+    // Padding in Pixels
+    const padL = 50;
+    const padR = 25;
+    const padT = 25;
+    const padB = 40;
+
+    const plotW = width - padL - padR;
+    const plotH = height - padT - padB;
+
+    function toScreenX(x) {
+      return padL + ((x - xMin) / (xMax - xMin)) * plotW;
+    }
+    function toScreenY(y) {
+      return height - padB - ((y - yMin) / (yMax - yMin)) * plotH;
+    }
+
+    // 1. Grid & Axes
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "#E2E8F0";
+    ctx.fillStyle = "#64748B";
+    ctx.font = "11px system-ui";
+
+    // X Ticks
+    const xStep = (xMax - xMin) / 5;
+    for (let i = 0; i <= 5; i++) {
+      const xVal = xMin + i * xStep;
+      const sx = toScreenX(xVal);
+      ctx.beginPath();
+      ctx.moveTo(sx, padT);
+      ctx.lineTo(sx, height - padB);
+      ctx.stroke();
+      ctx.fillText(formatNum(xVal, 0), sx - 8, height - padB + 16);
+    }
+
+    // Y Ticks
+    const yStep = (yMax - yMin) / 4;
+    for (let i = 0; i <= 4; i++) {
+      const yVal = yMin + i * yStep;
+      const sy = toScreenY(yVal);
+      ctx.beginPath();
+      ctx.moveTo(padL, sy);
+      ctx.lineTo(width - padR, sy);
+      ctx.stroke();
+      ctx.fillText(formatNum(yVal, 0), 12, sy + 4);
+    }
+
+    // Axis Lines
+    ctx.strokeStyle = "#94A3B8";
+    ctx.lineWidth = 1.5;
+    // Y-Axis line
+    ctx.beginPath();
+    ctx.moveTo(toScreenX(xMin), padT);
+    ctx.lineTo(toScreenX(xMin), height - padB);
+    ctx.stroke();
+
+    // X-Axis line (at y=0 if in range, else bottom)
+    const yZeroPos = (yMin <= 0 && yMax >= 0) ? toScreenY(0) : toScreenY(yMin);
+    ctx.beginPath();
+    ctx.moveTo(padL, yZeroPos);
+    ctx.lineTo(width - padR, yZeroPos);
+    ctx.stroke();
+
+    // Axis Labels with Units
+    ctx.fillStyle = "#0F172A";
+    ctx.font = "bold 11px system-ui";
+    ctx.fillText(`${curContext.xName} [${curContext.xUnit}]`, width - padR - 80, height - padB + 32);
+    ctx.save();
+    ctx.translate(14, padT + 40);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText(`${curContext.yName} [${curContext.yUnit}]`, 0, 0);
+    ctx.restore();
+
+    // 2. Horizontale Asymptote (y = y0)
+    if (y0 >= yMin && y0 <= yMax) {
+      const sy0 = toScreenY(y0);
+      ctx.save();
+      ctx.setLineDash([5, 5]);
+      ctx.strokeStyle = "#8E24AA";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(padL, sy0);
+      ctx.lineTo(width - padR, sy0);
+      ctx.stroke();
+      ctx.fillStyle = "#8E24AA";
+      ctx.fillText(`Asymptote y = ${formatNum(y0, 1)}`, width - padR - 110, sy0 - 6);
+      ctx.restore();
+    }
+
+    // 3. Funktionsgraph plotten
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(padL, padT, plotW, plotH);
+    ctx.clip(); // Clip to inner chart
+
+    ctx.beginPath();
+    ctx.strokeStyle = "#1565C0";
+    ctx.lineWidth = 2.5;
+
+    let isFirst = true;
+    const numPoints = 150;
+    for (let i = 0; i <= numPoints; i++) {
+      const xVal = xMin + (i / numPoints) * (xMax - xMin);
+      const yVal = getFunctionVal(xVal, a, c, d, y0);
+      const sx = toScreenX(xVal);
+      const sy = toScreenY(yVal);
+
+      if (isFirst) {
+        ctx.moveTo(sx, sy);
+        isFirst = false;
+      } else {
+        ctx.lineTo(sx, sy);
+      }
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    // 4. Markante Punkte zeichnen
+    // A) Schnittpunkt mit y-Achse Sy(0 | f(0))
+    if (0 >= xMin && 0 <= xMax) {
+      const syVal = getFunctionVal(0, a, c, d, y0);
+      if (syVal >= yMin && syVal <= yMax) {
+        const sx = toScreenX(0);
+        const sy = toScreenY(syVal);
+        ctx.fillStyle = "#2E7D32";
+        ctx.beginPath();
+        ctx.arc(sx, sy, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#2E7D32";
+        ctx.font = "bold 11px system-ui";
+        ctx.fillText(`Sy(0|${formatNum(syVal, 1)})`, sx + 8, sy - 6);
+      }
+    }
+
+    // B) Nullstelle N(x_N | 0)
+    const ratio = -y0 / a;
+    if (ratio > 0 && a !== 0 && c !== 0) {
+      const xRoot = d + (1 / c) * Math.log(ratio);
+      if (xRoot >= xMin && xRoot <= xMax && 0 >= yMin && 0 <= yMax) {
+        const sx = toScreenX(xRoot);
+        const sy = toScreenY(0);
+        ctx.fillStyle = "#2E7D32";
+        ctx.beginPath();
+        ctx.arc(sx, sy, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#2E7D32";
+        ctx.font = "bold 11px system-ui";
+        ctx.fillText(`N(${formatNum(xRoot, 1)}|0)`, sx - 15, sy - 8);
+      }
+    }
+  }
+
+  function updateLabView() {
+    const { a, c, d, y0 } = state.params;
+    const curCtx = CONTEXTS[state.currentContextKey];
+
+    // Slider Texts
+    valA.textContent = formatNum(a, 1);
+    valC.textContent = formatNum(c, 2);
+    valD.textContent = formatNum(d, 1);
+    valY0.textContent = formatNum(y0, 1);
+
+    // Banner
+    anchorIcon.textContent = curCtx.icon;
+    anchorText.textContent = `Gewählter Kontext: ${curCtx.title}`;
+
+    // Live Formula
+    const aStr = a < 0 ? `&minus;${formatNum(Math.abs(a), 1)}` : `${formatNum(a, 1)}`;
+    const cStr = c < 0 ? `&minus;${formatNum(Math.abs(c), 2)}` : `${formatNum(c, 2)}`;
+    const dStr = d === 0 ? `x` : (d > 0 ? `(x &minus; ${formatNum(d, 1)})` : `(x + ${formatNum(Math.abs(d), 1)})`);
+    const y0Str = y0 < 0 ? `&minus; ${formatNum(Math.abs(y0), 1)}` : `+ ${formatNum(y0, 1)}`;
+    
+    liveFormulaBox.innerHTML = `f(x) = <span class="param-a">${aStr}</span> &middot; e<sup><span class="param-c">${cStr}</span> &middot; <span class="param-d">${dStr}</span></sup> <span class="param-y0">${y0Str}</span>`;
+
+    // Checks / Warnings
+    if (a === 0) {
+      alertBanner.classList.add('visible');
+      alertMsg.textContent = "Achtung: Für a = 0 entfällt die Exponentialfunktion; es bleibt die konstante Funktion f(x) = y₀.";
+    } else if (c === 0) {
+      alertBanner.classList.add('visible');
+      alertMsg.textContent = "Achtung: Für c = 0 ist e⁰ = 1; es resultiert die konstante Funktion f(x) = a + y₀.";
+    } else {
+      alertBanner.classList.remove('visible');
+    }
+
+    // 4 Merkmalskarten updaten
+    const f0 = getFunctionVal(0, a, c, d, y0);
+    const startTemp = formatNum(f0, 1);
+    const y0Formatted = formatNum(y0, 1);
+
+    // 1. D & W
+    const wBound = a > 0 ? `]${y0Formatted}; +&infin;[` : `]&minus;&infin;; ${y0Formatted}[`;
+    cardDwMath.innerHTML = `D = &reals;; &nbsp; W = ${wBound}`;
+    cardDwContext.innerHTML = curCtx.dwContext
+      .replace('{startTemp}', startTemp)
+      .replace('{y0}', y0Formatted);
+
+    // 2. Limes & Asymptote
+    const limDirection = c < 0 ? '+&infin;' : '&minus;&infin;';
+    cardLimMath.innerHTML = `lim<sub>x &rarr; ${limDirection}</sub> f(x) = ${y0Formatted} &nbsp;(Asymptote y = ${y0Formatted})`;
+    cardLimContext.innerHTML = curCtx.limContext
+      .replace('{y0}', y0Formatted)
+      .replace('{limDir}', limDirection);
+
+    // 3. Schnittpunkte
+    const ratio = -y0 / a;
+    let zeroText = "";
+    let zeroNote = "";
+
+    if (ratio > 0 && a !== 0 && c !== 0) {
+      const xRoot = d + (1 / c) * Math.log(ratio);
+      zeroText = `N(${formatNum(xRoot, 2)} | 0)`;
+      zeroNote = `Die Nullstelle bei ${formatNum(xRoot, 1)} ${curCtx.xUnit} markiert das Erreichen des Nullpunkts.`;
+    } else {
+      zeroText = "Keine reelle Nullstelle";
+      zeroNote = `Da der Funktionswert niemals 0 erreicht, existiert in der Praxis kein Nulldurchgang.`;
+    }
+
+    cardPointsMath.innerHTML = `S<sub>y</sub>(0 | ${startTemp}); &nbsp; ${zeroText}`;
+    cardPointsContext.innerHTML = curCtx.pointsContext
+      .replace('{yStart}', startTemp)
+      .replace('{zeroNote}', zeroNote);
+
+    // 4. Monotonie
+    let monoStr = "";
+    if (a * c > 0) {
+      monoStr = "Streng monoton steigend";
+    } else if (a * c < 0) {
+      monoStr = "Streng monoton fallend";
+    } else {
+      monoStr = "Konstant";
+    }
+    const curveStr = a > 0 ? "linksgekrümmt (konvex)" : "rechtsgekrümmt (konkav)";
+    cardMonoMath.innerHTML = `${monoStr} &amp; ${curveStr}`;
+    cardMonoContext.innerHTML = curCtx.monoContext.replace('{y0}', y0Formatted);
+
+    // Draw Canvas
+    drawGraph();
+  }
+
+  // Slider Event Listeners
+  [sliderA, sliderC, sliderD, sliderY0].forEach(sl => {
+    sl.addEventListener('input', () => {
+      state.params.a = parseFloat(sliderA.value);
+      state.params.c = parseFloat(sliderC.value);
+      state.params.d = parseFloat(sliderD.value);
+      state.params.y0 = parseFloat(sliderY0.value);
+      updateLabView();
+    });
+  });
+
+  alertCloseBtn.addEventListener('click', () => {
+    alertBanner.classList.remove('visible');
+  });
+
+  resetParamsBtn.addEventListener('click', () => {
+    const curDef = CONTEXTS[state.currentContextKey].defaults;
+    state.params = { ...curDef };
+    sliderA.value = curDef.a;
+    sliderC.value = curDef.c;
+    sliderD.value = curDef.d;
+    sliderY0.value = curDef.y0;
+    updateLabView();
+  });
+
+  // --- 8. RECHNUNGS-ENGINE (OBERFLÄCHE 4) ---
+  function updateCalculationsView() {
+    const { a, c, d, y0 } = state.params;
+
+    // TEIL A: Schnittpunkt mit y-Achse
+    const expTerm = -c * d;
+    const expVal = Math.exp(expTerm);
+    const f0 = a * expVal + y0;
+
+    calcSyStep1.innerHTML = `f(0) = ${formatNum(a, 1)} &middot; e<sup>${formatNum(c, 2)} &middot; (0 &minus; (${formatNum(d, 1)}))</sup> + (${formatNum(y0, 1)})`;
+    calcSyStep2.innerHTML = `f(0) = ${formatNum(a, 1)} &middot; e<sup>${formatNum(expTerm, 3)}</sup> + (${formatNum(y0, 1)}) = ${formatNum(a * expVal, 2)} + (${formatNum(y0, 1)})`;
+    calcSyResult.innerHTML = `Ergebnis: S<sub>y</sub>(0 | ${formatNum(f0, 2)})`;
+
+    // TEIL B: Nullstellen-Berechnung
+    const aStr = formatNum(a, 1);
+    const cStr = formatNum(c, 2);
+    const dStr = formatNum(d, 1);
+    const y0Str = formatNum(y0, 1);
+    const minusY0 = -y0;
+
+    calcRootStep1.innerHTML = `${aStr} &middot; e<sup>${cStr}(x &minus; ${dStr})</sup> + (${y0Str}) = 0`;
+    calcRootStep2.innerHTML = `&hArr; ${aStr} &middot; e<sup>${cStr}(x &minus; ${dStr})</sup> = ${formatNum(minusY0, 1)}`;
+    calcRootOp2.innerHTML = `| &minus; (${y0Str})`;
+
+    const ratio = minusY0 / a;
+    calcRootStep3.innerHTML = `&hArr; e<sup>${cStr}(x &minus; ${dStr})</sup> = <div class="math-fraction"><span class="math-numerator">${formatNum(minusY0, 1)}</span><span class="math-denominator">${aStr}</span></div> = ${formatNum(ratio, 3)}`;
+    calcRootOp3.innerHTML = `| : (${aStr})`;
+
+    if (ratio <= 0 || isNaN(ratio) || a === 0 || c === 0) {
+      // Keine Nullstelle
+      calcRootStep4Card.style.display = 'block';
+      calcRootStep4Explain.innerHTML = `4. Prüfung der Lösbarkeit im reellen Zahlenbereich:`;
+      calcRootStep4.innerHTML = `Da ${formatNum(ratio, 3)} &le; 0 ist, ist ln(${formatNum(ratio, 3)}) im Bereich der reellen Zahlen &reals; nicht definiert (e<sup>u</sup> &gt; 0 für alle u).`;
+      calcRootOp4.innerHTML = `Nicht lösbar in ℝ`;
+      calcRootResult.innerHTML = `Ergebnis: Lösungsmenge L = &empty; &nbsp;(Keine reellen Nullstellen)`;
+    } else {
+      // Exakte Lösung
+      calcRootStep4Card.style.display = 'block';
+      const lnVal = Math.log(ratio);
+      const xRoot = d + (1 / c) * lnVal;
+
+      calcRootStep4Explain.innerHTML = `4. Wende den natürlichen Logarithmus (ln) an und dividiere durch c = ${cStr}:`;
+      calcRootStep4.innerHTML = `&hArr; ${cStr} &middot; (x &minus; ${dStr}) = ln(${formatNum(ratio, 3)}) &approx; ${formatNum(lnVal, 3)} &nbsp;&hArr;&nbsp; x = ${dStr} + <div class="math-fraction"><span class="math-numerator">${formatNum(lnVal, 3)}</span><span class="math-denominator">${cStr}</span></div>`;
+      calcRootOp4.innerHTML = `| ln &nbsp;dann&nbsp; : ${cStr} &nbsp;|&nbsp; + ${dStr}`;
+      calcRootResult.innerHTML = `Ergebnis: L = { ${formatNum(xRoot, 2)} } &rArr; Nullstelle N(${formatNum(xRoot, 2)} | 0)`;
+    }
+  }
+
+  // --- 9. VERSTÄNDNIS-CHECK (OBERFLÄCHE 5) ---
+  const quizButtons = document.querySelectorAll('.quiz-opt-btn');
+  const scoreBanner = document.getElementById('scoreBanner');
+
+  quizButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const qNum = btn.dataset.q;
+      const isCorrect = btn.dataset.correct === 'true';
+      const fb = document.getElementById(`fb${qNum}`);
+      const parentCard = btn.closest('.quiz-card');
+      const siblings = parentCard.querySelectorAll('.quiz-opt-btn');
+
+      // Reset card buttons
+      siblings.forEach(s => {
+        s.classList.remove('selected-correct', 'selected-wrong');
+      });
+
+      if (isCorrect) {
+        btn.classList.add('selected-correct');
+        fb.className = 'quiz-feedback visible-success';
+        fb.innerHTML = '<strong>Richtig!</strong> Hervorragend hergeleitet.';
+        state.quizAnswers[qNum] = true;
+      } else {
+        btn.classList.add('selected-wrong');
+        fb.className = 'quiz-feedback visible-error';
+        fb.innerHTML = '<strong>Leider nicht ganz.</strong> Überprüfe die mathematische Definition noch einmal.';
+        state.quizAnswers[qNum] = false;
+      }
+
+      // Check if all correct
+      if (state.quizAnswers[1] && state.quizAnswers[2] && state.quizAnswers[3]) {
+        scoreBanner.classList.add('visible');
+      }
+    });
+  });
+
+  // --- 10. MODAL-GLOSSAR STEUERUNG ---
+  function openGlossaryModal(key) {
+    const item = GLOSSARY[key];
+    if (!item) return;
+    modalTitle.textContent = item.title;
+    modalBody.textContent = item.text;
+    modalBackdrop.classList.add('active');
+  }
+
+  function closeGlossaryModal() {
+    modalBackdrop.classList.remove('active');
+  }
+
+  document.addEventListener('click', (e) => {
+    const target = e.target.closest('.math-term-clickable');
+    if (target && target.dataset.glossary) {
+      openGlossaryModal(target.dataset.glossary);
+    }
+  });
+
+  modalCloseBtn.addEventListener('click', closeGlossaryModal);
+  modalBackdrop.addEventListener('click', (e) => {
+    if (e.target === modalBackdrop) closeGlossaryModal();
+  });
+
+  // --- INITIALISIERUNG BEIM START ---
+  window.addEventListener('resize', () => {
+    if (state.currentStep === 3) drawGraph();
+  });
+
+  // Init
+  updateLabView();
+</script>
+</body>
+</html>
