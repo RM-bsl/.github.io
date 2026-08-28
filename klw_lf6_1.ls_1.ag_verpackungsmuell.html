@@ -89,6 +89,15 @@
       padding: 0 8px;
     }
 
+/* Automatische Anpassung ohne Nutzerabfrage */
+window.addEventListener("resize", () => {
+      const canvas = document.getElementById('confettiCanvas');
+      if (canvas) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+    });
+    
     /* Post-It Zentrierkarte */
     .central-node-wrapper {
       display: flex;
@@ -1025,15 +1034,6 @@
       }
       render();
     }
-
-    window.addEventListener("resize", () => {
-      const canvas = document.getElementById('confettiCanvas');
-      if (canvas) {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
-    });
-
     document.addEventListener("DOMContentLoaded", populateDropdowns);
   </script>
 </body>
