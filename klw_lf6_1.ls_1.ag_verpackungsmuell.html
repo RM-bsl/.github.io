@@ -19,6 +19,13 @@
       --radius-lg: 16px;
       --radius-md: 12px;
       --radius-sm: 8px;
+
+      /* Windows 11 Acrylic Material */
+      --acrylic-bg: rgba(255, 255, 255, 0.82);
+      --acrylic-blur: blur(28px) saturate(190%);
+      --acrylic-border: 1px solid rgba(255, 255, 255, 0.75);
+      --acrylic-shadow: 0 18px 40px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.06);
+      --divider-color: rgba(0, 0, 0, 0.07);
     }
 
     * {
@@ -29,7 +36,7 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-primary);
       color: var(--text-main);
       line-height: 1.45;
@@ -48,7 +55,7 @@
       gap: clamp(16px, 2.5vw, 28px);
     }
 
-    /* iOS Header */
+    /* App Header */
     header {
       text-align: center;
       padding: 4px 0;
@@ -57,12 +64,11 @@
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
       background: rgba(0, 122, 255, 0.1);
       color: var(--accent-blue);
       font-size: clamp(11px, 2vw, 13px);
       font-weight: 600;
-      padding: 4px 12px;
+      padding: 4px 14px;
       border-radius: 20px;
       margin-bottom: 8px;
     }
@@ -83,7 +89,7 @@
       padding: 0 8px;
     }
 
-    /* Post-It Zentralkarte */
+    /* Post-It Zentrierkarte */
     .central-node-wrapper {
       display: flex;
       justify-content: center;
@@ -98,12 +104,11 @@
       padding: clamp(16px, 2.5vw, 22px) clamp(18px, 3vw, 28px);
       text-align: center;
       position: relative;
-      max-width: min(340px, 90vw);
+      max-width: min(380px, 92vw);
       width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
     }
 
     .tape {
@@ -120,7 +125,7 @@
     }
 
     .central-postit h2 {
-      font-size: clamp(13px, 2vw, 15px);
+      font-size: clamp(14px, 2.2vw, 16px);
       font-weight: 800;
       letter-spacing: 0.6px;
       color: #3C3830;
@@ -128,17 +133,7 @@
       line-height: 1.35;
     }
 
-    .postit-icon {
-      width: clamp(36px, 6vw, 44px);
-      height: clamp(36px, 6vw, 44px);
-    }
-
-    .postit-icon svg {
-      width: 100%;
-      height: 100%;
-    }
-
-    /* Spielfeld Spalten & Responsive Breakpoints */
+    /* Spalten */
     .branches-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -152,30 +147,24 @@
     }
 
     .column-header {
-      background: #6E9B89;
+      background: linear-gradient(135deg, #5C8C7A 0%, #467362 100%);
       color: #FFFFFF;
-      padding: clamp(10px, 2vw, 14px) clamp(14px, 2vw, 18px);
+      padding: clamp(12px, 2vw, 15px) clamp(14px, 2vw, 18px);
       border-radius: var(--radius-md);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      font-size: clamp(13px, 2vw, 15px);
+      font-size: clamp(14px, 2vw, 16px);
       font-weight: 700;
       letter-spacing: 0.5px;
       text-transform: uppercase;
       box-shadow: var(--card-shadow);
       text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .column-header.menschen {
-      background: #6A8EAE;
-    }
-
-    .column-header svg {
-      width: clamp(18px, 3vw, 24px);
-      height: clamp(18px, 3vw, 24px);
-      flex-shrink: 0;
+      background: linear-gradient(135deg, #577D9E 0%, #3D6485 100%);
     }
 
     /* Zuordnungskarten */
@@ -188,7 +177,12 @@
       display: flex;
       flex-direction: column;
       gap: clamp(10px, 1.5vw, 14px);
+      position: relative;
       transition: all 0.25s ease;
+    }
+
+    .assignment-card.active-dropdown {
+      z-index: 50;
     }
 
     .assignment-card.solved {
@@ -202,39 +196,12 @@
       justify-content: space-between;
     }
 
-    .card-tag-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
     .card-tag {
       font-size: clamp(11px, 1.8vw, 12px);
       font-weight: 600;
       color: var(--text-secondary);
       text-transform: uppercase;
       letter-spacing: 0.4px;
-    }
-
-    .card-preview-icon {
-      width: 28px;
-      height: 28px;
-      display: none;
-    }
-
-    .card-preview-icon svg {
-      width: 100%;
-      height: 100%;
-    }
-
-    .card-preview-icon.visible {
-      display: block;
-      animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    @keyframes popIn {
-      from { transform: scale(0.6); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
     }
 
     .card-status-dot {
@@ -253,11 +220,17 @@
       background: var(--accent-green);
     }
 
-    /* Dropdowns */
+    .interactive-inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
     .field-group {
       display: flex;
       flex-direction: column;
       gap: 4px;
+      position: relative;
     }
 
     .field-label {
@@ -267,33 +240,48 @@
       margin-left: 2px;
     }
 
-    .select-wrapper {
+    /* Dropdowns mit Windows 11 Acrylic Material */
+    .custom-select {
       position: relative;
       width: 100%;
     }
 
-    select {
+    .select-trigger {
       width: 100%;
-      min-height: 44px; /* Touch-Target iOS Standard */
-      appearance: none;
-      -webkit-appearance: none;
+      min-height: 48px;
       background-color: #F8F8FA;
       border: 1.5px solid rgba(0, 0, 0, 0.08);
       border-radius: var(--radius-md);
-      padding: 10px 36px 10px 12px;
+      padding: 10px 38px 10px 14px;
       font-family: inherit;
-      font-size: 14px; /* Mind. 16px auf Mobile verhindert Auto-Zoom in iOS */
+      font-size: clamp(13px, 1.8vw, 14px);
       color: var(--text-main);
+      text-align: left;
       cursor: pointer;
       outline: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-      line-height: 1.35;
+      user-select: none;
     }
 
-    select:focus {
+    .select-trigger:focus,
+    .custom-select.open .select-trigger {
       border-color: var(--accent-blue);
       background-color: #FFFFFF;
       box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+    }
+
+    .select-trigger-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-right: 8px;
+    }
+
+    .select-trigger-text.placeholder {
+      color: var(--text-secondary);
     }
 
     .select-arrow {
@@ -305,6 +293,67 @@
       color: var(--text-secondary);
       width: 16px;
       height: 16px;
+      transition: transform 0.2s ease;
+    }
+
+    .custom-select.open .select-arrow {
+      transform: translateY(-50%) rotate(180deg);
+      color: var(--accent-blue);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: var(--acrylic-bg);
+      backdrop-filter: var(--acrylic-blur);
+      -webkit-backdrop-filter: var(--acrylic-blur);
+      border: var(--acrylic-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--acrylic-shadow);
+      z-index: 100;
+      overflow: hidden;
+      display: none;
+      max-height: 290px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+      animation: flyoutIn 0.18s cubic-bezier(0.1, 0.9, 0.2, 1);
+    }
+
+    .custom-select.open .dropdown-menu {
+      display: block;
+    }
+
+    @keyframes flyoutIn {
+      from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .custom-option {
+      padding: 12px 14px;
+      font-size: clamp(12.5px, 1.8vw, 13.5px);
+      color: var(--text-main);
+      cursor: pointer;
+      border-bottom: 1px solid var(--divider-color);
+      transition: background-color 0.15s ease, color 0.15s ease;
+      line-height: 1.35;
+    }
+
+    .custom-option:last-child {
+      border-bottom: none;
+    }
+
+    .custom-option:hover {
+      background-color: rgba(0, 122, 255, 0.08);
+      color: var(--accent-blue);
+    }
+
+    .custom-option.selected {
+      background-color: rgba(0, 122, 255, 0.12);
+      color: var(--accent-blue);
+      font-weight: 600;
     }
 
     /* Fixierte Lösungsansicht */
@@ -322,30 +371,13 @@
       display: none;
     }
 
-    .solved-header-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: #EAF4EE;
-      padding: 10px 12px;
-      border-radius: var(--radius-md);
-    }
-
-    .solved-icon-container {
-      width: clamp(34px, 5vw, 44px);
-      height: clamp(34px, 5vw, 44px);
-      flex-shrink: 0;
-    }
-
-    .solved-icon-container svg {
-      width: 100%;
-      height: 100%;
-    }
-
     .solved-heading {
       font-size: clamp(14px, 2vw, 16px);
       font-weight: 700;
       color: #1E543F;
+      background: #EAF4EE;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
     }
 
     .solved-body {
@@ -354,7 +386,7 @@
       line-height: 1.5;
       background: #F4F7F5;
       padding: clamp(10px, 2vw, 14px);
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-sm);
       white-space: pre-line;
       border-left: 3px solid #6E9B89;
     }
@@ -485,32 +517,12 @@
       z-index: 999;
     }
 
-    /* SMARTPHONE / KLEINE BILDSCHIRME (< 768px) */
     @media (max-width: 767px) {
       .branches-grid {
         grid-template-columns: 1fr;
       }
-
-      select {
-        font-size: 16px; /* Verhindert automatisches Hineinzoomen auf iPhones */
-      }
-
       .primary-btn {
         max-width: 100%;
-      }
-    }
-
-    /* TABLET (768px - 1024px) */
-    @media (min-width: 768px) and (max-width: 1024px) {
-      .container {
-        padding: 0 12px;
-      }
-    }
-
-    /* DESKTOP / GROSSE BILDSCHIRME (> 1024px) */
-    @media (min-width: 1025px) {
-      .container {
-        gap: 32px;
       }
     }
   </style>
@@ -522,79 +534,60 @@
   <div class="container" id="appContainer">
     
     <header>
-      <div class="badge">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        Lernfeld Umwelttechnik
-      </div>
+      <div class="badge">Lernfeld Umwelttechnik</div>
       <h1>Gefahren von Verpackungsmüll</h1>
-      <p class="subtitle">Wähle für jeden Bereich die passenden Überschriften und Schadwirkungen aus den Dropdown-Menüs aus.</p>
+      <p class="subtitle">Ordne den Wirkungsbereichen Umwelt und Mensch die passenden Mechanismen und Schadwirkungen zu.</p>
     </header>
 
-    <!-- Post-It Zentrum -->
+    <!-- Post-It Zentrum mit modernem Emoji -->
     <div class="central-node-wrapper">
       <div class="central-postit">
         <div class="tape"></div>
-        <div class="postit-icon">
-          <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="44" height="44" rx="10" fill="#EAE2CE"/>
-            <path d="M14 17L16 33C16.2 34.2 17.2 35 18.5 35H25.5C26.8 35 27.8 34.2 28 33L30 17" stroke="#4A453A" stroke-width="2" stroke-linecap="round"/>
-            <path d="M11 17H33M18 17V13C18 11.9 18.9 11 20 11H24C25.1 11 26 11.9 26 13V17" stroke="#4A453A" stroke-width="2" stroke-linecap="round"/>
-            <line x1="19" y1="22" x2="20" y2="30" stroke="#E67E22" stroke-width="2" stroke-linecap="round"/>
-            <line x1="25" y1="22" x2="24" y2="30" stroke="#E67E22" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <h2>EINE WELT VOLLER VERPACKUNGSMÜLL</h2>
+        <h2>🌍 EINE WELT VOLLER VERPACKUNGSMÜLL</h2>
       </div>
     </div>
 
     <div class="branches-grid">
       
-      <!-- Bereich Umwelt -->
+      <!-- Bereich Umwelt mit modernem Emoji -->
       <div class="branch-column">
         <div class="column-header">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M11 20A7 7 0 0 1 4 13a7 7 0 0 1 12.3-4.5M11 20v-7M20 4c-5.5 0-9 3.5-9 9 3.5 0 9-3.5 9-9z"/>
-          </svg>
-          Gefahren für die Umwelt
+          🌿 Gefahren für die Umwelt
         </div>
 
         <!-- Karte Umwelt 1 -->
         <div class="assignment-card" id="card_u1" data-slot="u1">
           <div class="card-meta">
-            <div class="card-tag-wrapper">
-              <span class="card-tag">Umweltbereich A</span>
-              <div class="card-preview-icon" id="preview_u1"></div>
-            </div>
+            <span class="card-tag">Umweltbereich A</span>
             <div class="card-status-dot"></div>
           </div>
           
           <div class="interactive-inputs">
             <div class="field-group">
               <label class="field-label">Überschrift</label>
-              <div class="select-wrapper">
-                <select class="heading-select" onchange="handleInputChange('u1')">
-                  <option value="">— Überschrift auswählen —</option>
-                </select>
-                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              <div class="custom-select heading-select" data-slot="u1" data-type="heading" data-value="">
+                <button type="button" class="select-trigger">
+                  <span class="select-trigger-text placeholder">— Überschrift auswählen —</span>
+                  <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="dropdown-menu"></div>
               </div>
             </div>
 
             <div class="field-group">
               <label class="field-label">Erklärung & Auswirkung</label>
-              <div class="select-wrapper">
-                <select class="desc-select" onchange="handleInputChange('u1')">
-                  <option value="">— Erklärung auswählen —</option>
-                </select>
-                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              <div class="custom-select desc-select" data-slot="u1" data-type="desc" data-value="">
+                <button type="button" class="select-trigger">
+                  <span class="select-trigger-text placeholder">— Erklärung auswählen —</span>
+                  <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="dropdown-menu"></div>
               </div>
             </div>
           </div>
 
           <div class="solved-view">
-            <div class="solved-header-row">
-              <div class="solved-icon-container" id="solved_icon_u1"></div>
-              <div class="solved-heading" id="view_u1_title"></div>
-            </div>
+            <div class="solved-heading" id="view_u1_title"></div>
             <div class="solved-body" id="view_u1_desc"></div>
           </div>
         </div>
@@ -602,93 +595,80 @@
         <!-- Karte Umwelt 2 -->
         <div class="assignment-card" id="card_u2" data-slot="u2">
           <div class="card-meta">
-            <div class="card-tag-wrapper">
-              <span class="card-tag">Umweltbereich B</span>
-              <div class="card-preview-icon" id="preview_u2"></div>
-            </div>
+            <span class="card-tag">Umweltbereich B</span>
             <div class="card-status-dot"></div>
           </div>
 
           <div class="interactive-inputs">
             <div class="field-group">
               <label class="field-label">Überschrift</label>
-              <div class="select-wrapper">
-                <select class="heading-select" onchange="handleInputChange('u2')">
-                  <option value="">— Überschrift auswählen —</option>
-                </select>
-                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              <div class="custom-select heading-select" data-slot="u2" data-type="heading" data-value="">
+                <button type="button" class="select-trigger">
+                  <span class="select-trigger-text placeholder">— Überschrift auswählen —</span>
+                  <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="dropdown-menu"></div>
               </div>
             </div>
 
             <div class="field-group">
               <label class="field-label">Erklärung & Auswirkung</label>
-              <div class="select-wrapper">
-                <select class="desc-select" onchange="handleInputChange('u2')">
-                  <option value="">— Erklärung auswählen —</option>
-                </select>
-                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              <div class="custom-select desc-select" data-slot="u2" data-type="desc" data-value="">
+                <button type="button" class="select-trigger">
+                  <span class="select-trigger-text placeholder">— Erklärung auswählen —</span>
+                  <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="dropdown-menu"></div>
               </div>
             </div>
           </div>
 
           <div class="solved-view">
-            <div class="solved-header-row">
-              <div class="solved-icon-container" id="solved_icon_u2"></div>
-              <div class="solved-heading" id="view_u2_title"></div>
-            </div>
+            <div class="solved-heading" id="view_u2_title"></div>
             <div class="solved-body" id="view_u2_desc"></div>
           </div>
         </div>
       </div>
 
-      <!-- Bereich Menschen -->
+      <!-- Bereich Menschen mit modernem Emoji -->
       <div class="branch-column">
         <div class="column-header menschen">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="7" r="4"/>
-            <path d="M5.5 21v-2a6.5 6.5 0 0 1 13 0v2"/>
-            <path d="M19 11l2 2 3-3"/>
-          </svg>
-          Gefahren für die Menschen
+          👥 Gefahren für die Menschen
         </div>
 
         <!-- Karte Mensch 1 -->
         <div class="assignment-card" id="card_m1" data-slot="m1">
           <div class="card-meta">
-            <div class="card-tag-wrapper">
-              <span class="card-tag">Gefährdung A</span>
-              <div class="card-preview-icon" id="preview_m1"></div>
-            </div>
+            <span class="card-tag">Gefährdung A</span>
             <div class="card-status-dot"></div>
           </div>
 
           <div class="interactive-inputs">
             <div class="field-group">
               <label class="field-label">Überschrift</label>
-              <div class="select-wrapper">
-                <select class="heading-select" onchange="handleInputChange('m1')">
-                  <option value="">— Überschrift auswählen —</option>
-                </select>
-                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              <div class="custom-select heading-select" data-slot="m1" data-type="heading" data-value="">
+                <button type="button" class="select-trigger">
+                  <span class="select-trigger-text placeholder">— Überschrift auswählen —</span>
+                  <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="dropdown-menu"></div>
               </div>
             </div>
 
             <div class="field-group">
               <label class="field-label">Erklärung & Auswirkung</label>
-              <div class="select-wrapper">
-                <select class="desc-select" onchange="handleInputChange('m1')">
-                  <option value="">— Erklärung auswählen —</option>
-                </select>
-                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              <div class="custom-select desc-select" data-slot="m1" data-type="desc" data-value="">
+                <button type="button" class="select-trigger">
+                  <span class="select-trigger-text placeholder">— Erklärung auswählen —</span>
+                  <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="dropdown-menu"></div>
               </div>
             </div>
           </div>
 
           <div class="solved-view">
-            <div class="solved-header-row">
-              <div class="solved-icon-container" id="solved_icon_m1"></div>
-              <div class="solved-heading" id="view_m1_title"></div>
-            </div>
+            <div class="solved-heading" id="view_m1_title"></div>
             <div class="solved-body" id="view_m1_desc"></div>
           </div>
         </div>
@@ -696,40 +676,36 @@
         <!-- Karte Mensch 2 -->
         <div class="assignment-card" id="card_m2" data-slot="m2">
           <div class="card-meta">
-            <div class="card-tag-wrapper">
-              <span class="card-tag">Gefährdung B</span>
-              <div class="card-preview-icon" id="preview_m2"></div>
-            </div>
+            <span class="card-tag">Gefährdung B</span>
             <div class="card-status-dot"></div>
           </div>
 
           <div class="interactive-inputs">
             <div class="field-group">
               <label class="field-label">Überschrift</label>
-              <div class="select-wrapper">
-                <select class="heading-select" onchange="handleInputChange('m2')">
-                  <option value="">— Überschrift auswählen —</option>
-                </select>
-                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              <div class="custom-select heading-select" data-slot="m2" data-type="heading" data-value="">
+                <button type="button" class="select-trigger">
+                  <span class="select-trigger-text placeholder">— Überschrift auswählen —</span>
+                  <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="dropdown-menu"></div>
               </div>
             </div>
 
             <div class="field-group">
               <label class="field-label">Erklärung & Auswirkung</label>
-              <div class="select-wrapper">
-                <select class="desc-select" onchange="handleInputChange('m2')">
-                  <option value="">— Erklärung auswählen —</option>
-                </select>
-                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              <div class="custom-select desc-select" data-slot="m2" data-type="desc" data-value="">
+                <button type="button" class="select-trigger">
+                  <span class="select-trigger-text placeholder">— Erklärung auswählen —</span>
+                  <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="dropdown-menu"></div>
               </div>
             </div>
           </div>
 
           <div class="solved-view">
-            <div class="solved-header-row">
-              <div class="solved-icon-container" id="solved_icon_m2"></div>
-              <div class="solved-heading" id="view_m2_title"></div>
-            </div>
+            <div class="solved-heading" id="view_m2_title"></div>
             <div class="solved-body" id="view_m2_desc"></div>
           </div>
         </div>
@@ -741,7 +717,6 @@
     <div class="actions-bar">
       <div id="feedbackBanner" class="feedback-banner"></div>
       <button id="checkButton" class="primary-btn disabled" onclick="validateSolution()" disabled>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
         Ergebnis prüfen
       </button>
       <button id="resetButton" class="reset-btn" onclick="resetGame()">Neu starten</button>
@@ -749,47 +724,6 @@
   </div>
 
   <script>
-    const ICONS = {
-      globale_verteilung: `
-        <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="44" height="44" rx="10" fill="#E8F3FF"/>
-          <circle cx="22" cy="22" r="13" stroke="#007AFF" stroke-width="2" fill="#FFFFFF"/>
-          <ellipse cx="22" cy="22" rx="6" ry="13" stroke="#007AFF" stroke-width="1.4" stroke-dasharray="2 2"/>
-          <line x1="9" y1="22" x2="35" y2="22" stroke="#007AFF" stroke-width="1.4"/>
-          <path d="M6 15C11 10 19 10 23 12M29 14C34 16 38 21 37 27" stroke="#34C759" stroke-width="2.2" stroke-linecap="round"/>
-          <path d="M21 10L24 12L22 15" fill="none" stroke="#34C759" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M35 25L37 28L40 26" fill="none" stroke="#34C759" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>`,
-      tierwelt: `
-        <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="44" height="44" rx="10" fill="#E8F8F2"/>
-          <path d="M34 22C28 15 17 16 11 22C17 28 28 29 34 22Z" fill="#FFFFFF" stroke="#1D9A6C" stroke-width="2" stroke-linejoin="round"/>
-          <path d="M11 22L5 16V28L11 22Z" fill="#1D9A6C" stroke="#1D9A6C" stroke-width="2" stroke-linejoin="round"/>
-          <circle cx="28" cy="20" r="1.5" fill="#1D9A6C"/>
-          <path d="M22 22C19 22 18 24 19 26" stroke="#1D9A6C" stroke-width="1.8" stroke-linecap="round"/>
-          <circle cx="21" cy="21" r="1.5" fill="#FF3B30"/>
-          <rect x="23.5" y="22" width="2.5" height="2.5" rx="0.5" fill="#FF9500"/>
-        </svg>`,
-      nahrungskette: `
-        <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="44" height="44" rx="10" fill="#FFF4E5"/>
-          <circle cx="22" cy="22" r="14" stroke="#FF9500" stroke-width="2" fill="#FFFFFF"/>
-          <circle cx="22" cy="22" r="9" stroke="#FFE0B2" stroke-width="1.4"/>
-          <path d="M16 14V30M16 18C16 20 19 20 19 18V14" stroke="#D35400" stroke-width="1.8" stroke-linecap="round"/>
-          <path d="M27 14C27 18 29 20 29 30" stroke="#D35400" stroke-width="1.8" stroke-linecap="round"/>
-          <polygon points="22,18 25,22 21,24 19,20" fill="#FF3B30"/>
-        </svg>`,
-      eindringen_zellen: `
-        <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="44" height="44" rx="10" fill="#FEEAEA"/>
-          <circle cx="23" cy="23" r="13" fill="#FFFFFF" stroke="#FF3B30" stroke-width="2" stroke-dasharray="3 2"/>
-          <circle cx="25" cy="24" r="5.5" fill="#FFDADA" stroke="#FF3B30" stroke-width="1.4"/>
-          <path d="M8 11L14 16L10 19Z" fill="#9C27B0" stroke="#7B1FA2" stroke-width="1"/>
-          <path d="M12 15L19 20" stroke="#FF3B30" stroke-width="2" stroke-linecap="round"/>
-          <polygon points="19,17 22,22 17,21" fill="#FF3B30"/>
-        </svg>`
-    };
-
     const HEADINGS = [
       { id: "globale_verteilung", text: "globale Verteilung" },
       { id: "tierwelt", text: "Tierwelt" },
@@ -800,7 +734,7 @@
     const DESCRIPTIONS = [
       {
         id: "desc_globale_verteilung",
-        text: "Kunststoffverpackungen zerfallen durch z.B. UV-Strahlung oder Winde zu Mikroplastik und verbreitet sich durch z.B. Luftströme unkontrolliert aus"
+        text: "Kunststoffverpackungen zerfallen durch z.B. UV-Strahlung oder Winde zu Mikroplastik und verbreitet sich durch Luftströme oder Meeresströmen unkontrolliert aus."
       },
       {
         id: "desc_tierwelt",
@@ -808,11 +742,11 @@
       },
       {
         id: "desc_nahrungskette",
-        text: "Permanente Schadstoffaufnahme durch Mikroplastik aus der Umwelt wie Wasser trinken oder Fisch essen"
+        text: "Permanente Schadstoffaufnahme durch Mikroplastik aus der Umwelt wie Wasser oder Fisch"
       },
       {
         id: "desc_eindringen_zellen",
-        text: "Weichmacher wirken neurotoxisch (schädigt Nervensystem) und führen zu Zellstress. Dadurch können Tumore begünstigt werden"
+        text: "Weichmacher wirken neurotoxisch und führen zu Zellstress. Dadurch können Tumore begünstigt werden"
       }
     ];
 
@@ -824,43 +758,88 @@
     };
 
     function populateDropdowns() {
-      const headingSelects = document.querySelectorAll(".heading-select");
-      const descSelects = document.querySelectorAll(".desc-select");
-
-      headingSelects.forEach(sel => {
-        sel.innerHTML = '<option value="">— Überschrift auswählen —</option>';
+      // Heading Dropdowns initialisieren
+      document.querySelectorAll(".custom-select[data-type='heading']").forEach(selectEl => {
+        const menu = selectEl.querySelector(".dropdown-menu");
+        menu.innerHTML = "";
         HEADINGS.forEach(item => {
-          const opt = document.createElement("option");
-          opt.value = item.id;
+          const opt = document.createElement("div");
+          opt.className = "custom-option";
+          opt.dataset.value = item.id;
           opt.textContent = item.text;
-          sel.appendChild(opt);
+          opt.addEventListener("click", (e) => {
+            e.stopPropagation();
+            selectOption(selectEl, item.id, item.text);
+          });
+          menu.appendChild(opt);
         });
       });
 
-      descSelects.forEach(sel => {
-        sel.innerHTML = '<option value="">— Erklärung auswählen —</option>';
+      // Description Dropdowns initialisieren
+      document.querySelectorAll(".custom-select[data-type='desc']").forEach(selectEl => {
+        const menu = selectEl.querySelector(".dropdown-menu");
+        menu.innerHTML = "";
         DESCRIPTIONS.forEach(item => {
-          const opt = document.createElement("option");
-          opt.value = item.id;
-          opt.textContent = item.text.replace(/\\\\n/g, " — ");
-          sel.appendChild(opt);
+          const opt = document.createElement("div");
+          opt.className = "custom-option";
+          opt.dataset.value = item.id;
+          const cleanText = item.text.replace(/\\\\n/g, " — ");
+          opt.textContent = cleanText;
+          opt.addEventListener("click", (e) => {
+            e.stopPropagation();
+            selectOption(selectEl, item.id, cleanText);
+          });
+          menu.appendChild(opt);
+        });
+      });
+
+      // Dropdown Öffnen / Schließen Event
+      document.querySelectorAll(".select-trigger").forEach(trigger => {
+        trigger.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const parentSelect = trigger.closest(".custom-select");
+          const card = trigger.closest(".assignment-card");
+          const wasOpen = parentSelect.classList.contains("open");
+
+          closeAllDropdowns();
+
+          if (!wasOpen) {
+            parentSelect.classList.add("open");
+            card.classList.add("active-dropdown");
+          }
         });
       });
     }
 
+    function selectOption(selectEl, value, label) {
+      selectEl.dataset.value = value;
+      const textEl = selectEl.querySelector(".select-trigger-text");
+      textEl.textContent = label;
+      textEl.classList.remove("placeholder");
+
+      selectEl.querySelectorAll(".custom-option").forEach(opt => {
+        opt.classList.toggle("selected", opt.dataset.value === value);
+      });
+
+      closeAllDropdowns();
+      handleInputChange(selectEl.dataset.slot);
+    }
+
+    function closeAllDropdowns() {
+      document.querySelectorAll(".custom-select").forEach(s => s.classList.remove("open"));
+      document.querySelectorAll(".assignment-card").forEach(c => c.classList.remove("active-dropdown"));
+    }
+
+    document.addEventListener("click", () => {
+      closeAllDropdowns();
+    });
+
     function handleInputChange(slotId) {
       const card = document.getElementById(`card_${slotId}`);
-      const hVal = card.querySelector(".heading-select").value;
-      const dVal = card.querySelector(".desc-select").value;
-      const previewIcon = document.getElementById(`preview_${slotId}`);
-
-      if (hVal && ICONS[hVal]) {
-        previewIcon.innerHTML = ICONS[hVal];
-        previewIcon.classList.add("visible");
-      } else {
-        previewIcon.innerHTML = "";
-        previewIcon.classList.remove("visible");
-      }
+      const hSelect = card.querySelector(".custom-select[data-type='heading']");
+      const dSelect = card.querySelector(".custom-select[data-type='desc']");
+      const hVal = hSelect.dataset.value;
+      const dVal = dSelect.dataset.value;
 
       if (hVal && dVal) {
         card.classList.add("filled");
@@ -871,8 +850,8 @@
       const allCards = document.querySelectorAll(".assignment-card");
       let allFilled = true;
       allCards.forEach(c => {
-        const h = c.querySelector(".heading-select").value;
-        const d = c.querySelector(".desc-select").value;
+        const h = c.querySelector(".custom-select[data-type='heading']").dataset.value;
+        const d = c.querySelector(".custom-select[data-type='desc']").dataset.value;
         if (!h || !d) allFilled = false;
       });
 
@@ -889,15 +868,17 @@
     }
 
     function validateSolution() {
-      const u1_h = document.querySelector("#card_u1 .heading-select").value;
-      const u1_d = document.querySelector("#card_u1 .desc-select").value;
-      const u2_h = document.querySelector("#card_u2 .heading-select").value;
-      const u2_d = document.querySelector("#card_u2 .desc-select").value;
+      closeAllDropdowns();
 
-      const m1_h = document.querySelector("#card_m1 .heading-select").value;
-      const m1_d = document.querySelector("#card_m1 .desc-select").value;
-      const m2_h = document.querySelector("#card_m2 .heading-select").value;
-      const m2_d = document.querySelector("#card_m2 .desc-select").value;
+      const u1_h = document.querySelector("#card_u1 .custom-select[data-type='heading']").dataset.value;
+      const u1_d = document.querySelector("#card_u1 .custom-select[data-type='desc']").dataset.value;
+      const u2_h = document.querySelector("#card_u2 .custom-select[data-type='heading']").dataset.value;
+      const u2_d = document.querySelector("#card_u2 .custom-select[data-type='desc']").dataset.value;
+
+      const m1_h = document.querySelector("#card_m1 .custom-select[data-type='heading']").dataset.value;
+      const m1_d = document.querySelector("#card_m1 .custom-select[data-type='desc']").dataset.value;
+      const m2_h = document.querySelector("#card_m2 .custom-select[data-type='heading']").dataset.value;
+      const m2_d = document.querySelector("#card_m2 .custom-select[data-type='desc']").dataset.value;
 
       const umweltPairs = [ {h: u1_h, d: u1_d}, {h: u2_h, d: u2_d} ];
       const umweltHeadings = [u1_h, u2_h];
@@ -919,20 +900,18 @@
       if (umweltValid && menschenValid) {
         feedback.className = "feedback-banner success";
         feedback.innerHTML = `
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          Hervorragend! Das Schema ist nun fixiert und bereit für dein Arbeitsblatt.
+          Hervorragend gelöst! Das Schema ist nun fixiert und bereit für dein Arbeitsblatt.
         `;
 
         document.querySelectorAll(".assignment-card").forEach(card => {
           card.classList.add("solved");
           const slot = card.dataset.slot;
-          const hVal = card.querySelector(".heading-select").value;
-          const dVal = card.querySelector(".desc-select").value;
+          const hVal = card.querySelector(".custom-select[data-type='heading']").dataset.value;
+          const dVal = card.querySelector(".custom-select[data-type='desc']").dataset.value;
 
           const hObj = HEADINGS.find(x => x.id === hVal);
           const dObj = DESCRIPTIONS.find(x => x.id === dVal);
 
-          document.getElementById(`solved_icon_${slot}`).innerHTML = ICONS[hVal];
           document.getElementById(`view_${slot}_title`).textContent = hObj.text;
           document.getElementById(`view_${slot}_desc`).textContent = dObj.text.replace(/\\\\n/g, "\\n");
         });
@@ -944,8 +923,7 @@
       } else {
         feedback.className = "feedback-banner error";
         feedback.innerHTML = `
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-          Mindestens eine Zuordnung ist fehlerhaft. Die Auswahl wird zurückgesetzt...
+          Mindestens eine Zuordnung ist fehlerhaft. Die Felder werden zurückgesetzt...
         `;
 
         appContainer.classList.add("shake");
@@ -960,15 +938,18 @@
     }
 
     function resetInputsOnly() {
-      document.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
+      document.querySelectorAll(".custom-select").forEach(sel => {
+        sel.dataset.value = "";
+        const textEl = sel.querySelector(".select-trigger-text");
+        textEl.textContent = sel.dataset.type === "heading" ? "— Überschrift auswählen —" : "— Erklärung auswählen —";
+        textEl.classList.add("placeholder");
+        sel.querySelectorAll(".custom-option").forEach(opt => opt.classList.remove("selected"));
+      });
+
       document.querySelectorAll(".assignment-card").forEach(card => {
         card.classList.remove("filled");
-        const preview = card.querySelector(".card-preview-icon");
-        if (preview) {
-          preview.innerHTML = "";
-          preview.classList.remove("visible");
-        }
       });
+
       const checkBtn = document.getElementById("checkButton");
       checkBtn.classList.add("disabled");
       checkBtn.classList.remove("active");
@@ -981,9 +962,6 @@
     function resetGame() {
       document.querySelectorAll(".assignment-card").forEach(card => {
         card.classList.remove("solved", "filled");
-      });
-      document.querySelectorAll("select").forEach(sel => {
-        sel.selectedIndex = 0;
       });
       document.getElementById("checkButton").style.display = "inline-flex";
       document.getElementById("resetButton").style.display = "none";
