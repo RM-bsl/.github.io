@@ -2057,6 +2057,22 @@
     if (state.currentStep === 3) drawGraph();
   });
 
+/* Automatische Anpassung ohne Nutzerabfrage */
+@media (max-width: 992px) {
+  .app-container {
+    grid-template-columns: 1fr !important; /* Stapelt Spalten vertikal */
+    padding: 12px;
+  }
+  .sticky-sidebar {
+    position: static !important;
+    width: 100% !important;
+  }
+  canvas {
+    max-width: 100%;
+    height: auto;
+  }
+}
+  
   // Init
   updateLabView();
 </script>
