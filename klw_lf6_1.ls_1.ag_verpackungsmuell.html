@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Lernspiel: Gefahren von Verpackungsmüll</title>
+  <style>
+    :root {
+      --bg-primary: #F2F2F7;
+      --card-bg: #FFFFFF;
+      --accent-blue: #007AFF;
+      --accent-blue-hover: #0062CC;
+      --accent-green: #34C759;
+      --accent-red: #FF3B30;
+      --text-main: #1C1C1E;
+      --text-secondary: #8E8E93;
+      --border-subtle: rgba(0, 0, 0, 0.08);
+      --card-shadow: 0 4px 18px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.45;
+      padding: clamp(12px, 3vw, 32px) clamp(12px, 3vw, 24px) clamp(24px, 5vw, 48px);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1060px;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(16px, 2.5vw, 28px);
+    }
+
+    /* iOS Header */
+    header {
+      text-align: center;
+      padding: 4px 0;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 122, 255, 0.1);
+      color: var(--accent-blue);
+      font-size: clamp(11px, 2vw, 13px);
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: clamp(20px, 4vw, 28px);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: clamp(13px, 2vw, 15px);
+      color: var(--text-secondary);
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 8px;
+    }
+
+    /* Post-It Zentralkarte */
+    .central-node-wrapper {
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
+
+    .central-postit {
+      background: #FFFDF0;
+      border: 1px solid #E6DEC5;
+      border-radius: var(--radius-md);
+      box-shadow: 0 6px 20px rgba(60, 50, 30, 0.08);
+      padding: clamp(16px, 2.5vw, 22px) clamp(18px, 3vw, 28px);
+      text-align: center;
+      position: relative;
+      max-width: min(340px, 90vw);
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tape {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: clamp(70px, 15vw, 90px);
+      height: 20px;
+      background: #76A99A;
+      border-radius: 3px;
+      opacity: 0.92;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+
+    .central-postit h2 {
+      font-size: clamp(13px, 2vw, 15px);
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      color: #3C3830;
+      text-transform: uppercase;
+      line-height: 1.35;
+    }
+
+    .postit-icon {
+      width: clamp(36px, 6vw, 44px);
+      height: clamp(36px, 6vw, 44px);
+    }
+
+    .postit-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Spielfeld Spalten & Responsive Breakpoints */
+    .branches-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(16px, 2vw, 24px);
+    }
+
+    .branch-column {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(12px, 1.5vw, 16px);
+    }
+
+    .column-header {
+      background: #6E9B89;
+      color: #FFFFFF;
+      padding: clamp(10px, 2vw, 14px) clamp(14px, 2vw, 18px);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: clamp(13px, 2vw, 15px);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      box-shadow: var(--card-shadow);
+      text-align: center;
+    }
+
+    .column-header.menschen {
+      background: #6A8EAE;
+    }
+
+    .column-header svg {
+      width: clamp(18px, 3vw, 24px);
+      height: clamp(18px, 3vw, 24px);
+      flex-shrink: 0;
+    }
+
+    /* Zuordnungskarten */
+    .assignment-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--card-shadow);
+      padding: clamp(14px, 2vw, 18px);
+      display: flex;
+      flex-direction: column;
+      gap: clamp(10px, 1.5vw, 14px);
+      transition: all 0.25s ease;
+    }
+
+    .assignment-card.solved {
+      border-color: var(--accent-green);
+      background: #F8FCF9;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-tag-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-tag {
+      font-size: clamp(11px, 1.8vw, 12px);
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .card-preview-icon {
+      width: 28px;
+      height: 28px;
+      display: none;
+    }
+
+    .card-preview-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .card-preview-icon.visible {
+      display: block;
+      animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.6); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .card-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #D1D1D6;
+      transition: background 0.2s ease;
+    }
+
+    .assignment-card.filled .card-status-dot {
+      background: var(--accent-blue);
+    }
+
+    .assignment-card.solved .card-status-dot {
+      background: var(--accent-green);
+    }
+
+    /* Dropdowns */
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-left: 2px;
+    }
+
+    .select-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    select {
+      width: 100%;
+      min-height: 44px; /* Touch-Target iOS Standard */
+      appearance: none;
+      -webkit-appearance: none;
+      background-color: #F8F8FA;
+      border: 1.5px solid rgba(0, 0, 0, 0.08);
+      border-radius: var(--radius-md);
+      padding: 10px 36px 10px 12px;
+      font-family: inherit;
+      font-size: 14px; /* Mind. 16px auf Mobile verhindert Auto-Zoom in iOS */
+      color: var(--text-main);
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+      line-height: 1.35;
+    }
+
+    select:focus {
+      border-color: var(--accent-blue);
+      background-color: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+    }
+
+    .select-arrow {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--text-secondary);
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Fixierte Lösungsansicht */
+    .solved-view {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .assignment-card.solved .solved-view {
+      display: flex;
+    }
+
+    .assignment-card.solved .interactive-inputs {
+      display: none;
+    }
+
+    .solved-header-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #EAF4EE;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+    }
+
+    .solved-icon-container {
+      width: clamp(34px, 5vw, 44px);
+      height: clamp(34px, 5vw, 44px);
+      flex-shrink: 0;
+    }
+
+    .solved-icon-container svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .solved-heading {
+      font-size: clamp(14px, 2vw, 16px);
+      font-weight: 700;
+      color: #1E543F;
+    }
+
+    .solved-body {
+      font-size: clamp(12.5px, 1.8vw, 14px);
+      color: var(--text-main);
+      line-height: 1.5;
+      background: #F4F7F5;
+      padding: clamp(10px, 2vw, 14px);
+      border-radius: var(--radius-md);
+      white-space: pre-line;
+      border-left: 3px solid #6E9B89;
+    }
+
+    /* Buttons & Feedback */
+    .actions-bar {
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .primary-btn {
+      appearance: none;
+      border: none;
+      outline: none;
+      width: 100%;
+      max-width: 380px;
+      min-height: 48px;
+      height: clamp(48px, 6vw, 54px);
+      border-radius: 14px;
+      font-family: inherit;
+      font-size: clamp(15px, 2vw, 16px);
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+
+    .primary-btn.disabled {
+      background-color: #E5E5EA;
+      color: var(--text-secondary);
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .primary-btn.active {
+      background-color: var(--accent-blue);
+      color: #FFFFFF;
+      box-shadow: 0 4px 14px rgba(0, 122, 255, 0.28);
+    }
+
+    .primary-btn.active:hover {
+      background-color: var(--accent-blue-hover);
+      box-shadow: 0 6px 18px rgba(0, 122, 255, 0.35);
+    }
+
+    .primary-btn.active:active {
+      transform: scale(0.98);
+    }
+
+    .reset-btn {
+      background: transparent;
+      border: none;
+      color: var(--accent-blue);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 8px;
+      display: none;
+      min-height: 44px;
+    }
+
+    .reset-btn:hover {
+      text-decoration: underline;
+    }
+
+    .feedback-banner {
+      width: 100%;
+      max-width: 580px;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      font-size: clamp(12.5px, 2vw, 14px);
+      font-weight: 600;
+      text-align: center;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .feedback-banner.error {
+      display: flex;
+      background: #FFEBEA;
+      color: var(--accent-red);
+      border: 1px solid rgba(255, 59, 48, 0.2);
+    }
+
+    .feedback-banner.success {
+      display: flex;
+      background: #E8F8EE;
+      color: #248A3D;
+      border: 1px solid rgba(52, 199, 89, 0.3);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .shake {
+      animation: iosShake 0.45s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    @keyframes iosShake {
+      10%, 90% { transform: translate3d(-2px, 0, 0); }
+      20%, 80% { transform: translate3d(4px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+      40%, 60% { transform: translate3d(6px, 0, 0); }
+    }
+
+    #confettiCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* SMARTPHONE / KLEINE BILDSCHIRME (< 768px) */
+    @media (max-width: 767px) {
+      .branches-grid {
+        grid-template-columns: 1fr;
+      }
+
+      select {
+        font-size: 16px; /* Verhindert automatisches Hineinzoomen auf iPhones */
+      }
+
+      .primary-btn {
+        max-width: 100%;
+      }
+    }
+
+    /* TABLET (768px - 1024px) */
+    @media (min-width: 768px) and (max-width: 1024px) {
+      .container {
+        padding: 0 12px;
+      }
+    }
+
+    /* DESKTOP / GROSSE BILDSCHIRME (> 1024px) */
+    @media (min-width: 1025px) {
+      .container {
+        gap: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confettiCanvas"></canvas>
+
+  <div class="container" id="appContainer">
+    
+    <header>
+      <div class="badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Lernfeld Umwelttechnik
+      </div>
+      <h1>Gefahren von Verpackungsmüll</h1>
+      <p class="subtitle">Wähle für jeden Bereich die passenden Überschriften und Schadwirkungen aus den Dropdown-Menüs aus.</p>
+    </header>
+
+    <!-- Post-It Zentrum -->
+    <div class="central-node-wrapper">
+      <div class="central-postit">
+        <div class="tape"></div>
+        <div class="postit-icon">
+          <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="44" height="44" rx="10" fill="#EAE2CE"/>
+            <path d="M14 17L16 33C16.2 34.2 17.2 35 18.5 35H25.5C26.8 35 27.8 34.2 28 33L30 17" stroke="#4A453A" stroke-width="2" stroke-linecap="round"/>
+            <path d="M11 17H33M18 17V13C18 11.9 18.9 11 20 11H24C25.1 11 26 11.9 26 13V17" stroke="#4A453A" stroke-width="2" stroke-linecap="round"/>
+            <line x1="19" y1="22" x2="20" y2="30" stroke="#E67E22" stroke-width="2" stroke-linecap="round"/>
+            <line x1="25" y1="22" x2="24" y2="30" stroke="#E67E22" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h2>EINE WELT VOLLER VERPACKUNGSMÜLL</h2>
+      </div>
+    </div>
+
+    <div class="branches-grid">
+      
+      <!-- Bereich Umwelt -->
+      <div class="branch-column">
+        <div class="column-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 20A7 7 0 0 1 4 13a7 7 0 0 1 12.3-4.5M11 20v-7M20 4c-5.5 0-9 3.5-9 9 3.5 0 9-3.5 9-9z"/>
+          </svg>
+          Gefahren für die Umwelt
+        </div>
+
+        <!-- Karte Umwelt 1 -->
+        <div class="assignment-card" id="card_u1" data-slot="u1">
+          <div class="card-meta">
+            <div class="card-tag-wrapper">
+              <span class="card-tag">Umweltbereich A</span>
+              <div class="card-preview-icon" id="preview_u1"></div>
+            </div>
+            <div class="card-status-dot"></div>
+          </div>
+          
+          <div class="interactive-inputs">
+            <div class="field-group">
+              <label class="field-label">Überschrift</label>
+              <div class="select-wrapper">
+                <select class="heading-select" onchange="handleInputChange('u1')">
+                  <option value="">— Überschrift auswählen —</option>
+                </select>
+                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">Erklärung & Auswirkung</label>
+              <div class="select-wrapper">
+                <select class="desc-select" onchange="handleInputChange('u1')">
+                  <option value="">— Erklärung auswählen —</option>
+                </select>
+                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="solved-view">
+            <div class="solved-header-row">
+              <div class="solved-icon-container" id="solved_icon_u1"></div>
+              <div class="solved-heading" id="view_u1_title"></div>
+            </div>
+            <div class="solved-body" id="view_u1_desc"></div>
+          </div>
+        </div>
+
+        <!-- Karte Umwelt 2 -->
+        <div class="assignment-card" id="card_u2" data-slot="u2">
+          <div class="card-meta">
+            <div class="card-tag-wrapper">
+              <span class="card-tag">Umweltbereich B</span>
+              <div class="card-preview-icon" id="preview_u2"></div>
+            </div>
+            <div class="card-status-dot"></div>
+          </div>
+
+          <div class="interactive-inputs">
+            <div class="field-group">
+              <label class="field-label">Überschrift</label>
+              <div class="select-wrapper">
+                <select class="heading-select" onchange="handleInputChange('u2')">
+                  <option value="">— Überschrift auswählen —</option>
+                </select>
+                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">Erklärung & Auswirkung</label>
+              <div class="select-wrapper">
+                <select class="desc-select" onchange="handleInputChange('u2')">
+                  <option value="">— Erklärung auswählen —</option>
+                </select>
+                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="solved-view">
+            <div class="solved-header-row">
+              <div class="solved-icon-container" id="solved_icon_u2"></div>
+              <div class="solved-heading" id="view_u2_title"></div>
+            </div>
+            <div class="solved-body" id="view_u2_desc"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bereich Menschen -->
+      <div class="branch-column">
+        <div class="column-header menschen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="7" r="4"/>
+            <path d="M5.5 21v-2a6.5 6.5 0 0 1 13 0v2"/>
+            <path d="M19 11l2 2 3-3"/>
+          </svg>
+          Gefahren für die Menschen
+        </div>
+
+        <!-- Karte Mensch 1 -->
+        <div class="assignment-card" id="card_m1" data-slot="m1">
+          <div class="card-meta">
+            <div class="card-tag-wrapper">
+              <span class="card-tag">Gefährdung A</span>
+              <div class="card-preview-icon" id="preview_m1"></div>
+            </div>
+            <div class="card-status-dot"></div>
+          </div>
+
+          <div class="interactive-inputs">
+            <div class="field-group">
+              <label class="field-label">Überschrift</label>
+              <div class="select-wrapper">
+                <select class="heading-select" onchange="handleInputChange('m1')">
+                  <option value="">— Überschrift auswählen —</option>
+                </select>
+                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">Erklärung & Auswirkung</label>
+              <div class="select-wrapper">
+                <select class="desc-select" onchange="handleInputChange('m1')">
+                  <option value="">— Erklärung auswählen —</option>
+                </select>
+                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="solved-view">
+            <div class="solved-header-row">
+              <div class="solved-icon-container" id="solved_icon_m1"></div>
+              <div class="solved-heading" id="view_m1_title"></div>
+            </div>
+            <div class="solved-body" id="view_m1_desc"></div>
+          </div>
+        </div>
+
+        <!-- Karte Mensch 2 -->
+        <div class="assignment-card" id="card_m2" data-slot="m2">
+          <div class="card-meta">
+            <div class="card-tag-wrapper">
+              <span class="card-tag">Gefährdung B</span>
+              <div class="card-preview-icon" id="preview_m2"></div>
+            </div>
+            <div class="card-status-dot"></div>
+          </div>
+
+          <div class="interactive-inputs">
+            <div class="field-group">
+              <label class="field-label">Überschrift</label>
+              <div class="select-wrapper">
+                <select class="heading-select" onchange="handleInputChange('m2')">
+                  <option value="">— Überschrift auswählen —</option>
+                </select>
+                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">Erklärung & Auswirkung</label>
+              <div class="select-wrapper">
+                <select class="desc-select" onchange="handleInputChange('m2')">
+                  <option value="">— Erklärung auswählen —</option>
+                </select>
+                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="solved-view">
+            <div class="solved-header-row">
+              <div class="solved-icon-container" id="solved_icon_m2"></div>
+              <div class="solved-heading" id="view_m2_title"></div>
+            </div>
+            <div class="solved-body" id="view_m2_desc"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Aktionsleiste -->
+    <div class="actions-bar">
+      <div id="feedbackBanner" class="feedback-banner"></div>
+      <button id="checkButton" class="primary-btn disabled" onclick="validateSolution()" disabled>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Ergebnis prüfen
+      </button>
+      <button id="resetButton" class="reset-btn" onclick="resetGame()">Neu starten</button>
+    </div>
+  </div>
+
+  <script>
+    const ICONS = {
+      globale_verteilung: `
+        <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="44" height="44" rx="10" fill="#E8F3FF"/>
+          <circle cx="22" cy="22" r="13" stroke="#007AFF" stroke-width="2" fill="#FFFFFF"/>
+          <ellipse cx="22" cy="22" rx="6" ry="13" stroke="#007AFF" stroke-width="1.4" stroke-dasharray="2 2"/>
+          <line x1="9" y1="22" x2="35" y2="22" stroke="#007AFF" stroke-width="1.4"/>
+          <path d="M6 15C11 10 19 10 23 12M29 14C34 16 38 21 37 27" stroke="#34C759" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M21 10L24 12L22 15" fill="none" stroke="#34C759" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M35 25L37 28L40 26" fill="none" stroke="#34C759" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`,
+      tierwelt: `
+        <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="44" height="44" rx="10" fill="#E8F8F2"/>
+          <path d="M34 22C28 15 17 16 11 22C17 28 28 29 34 22Z" fill="#FFFFFF" stroke="#1D9A6C" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M11 22L5 16V28L11 22Z" fill="#1D9A6C" stroke="#1D9A6C" stroke-width="2" stroke-linejoin="round"/>
+          <circle cx="28" cy="20" r="1.5" fill="#1D9A6C"/>
+          <path d="M22 22C19 22 18 24 19 26" stroke="#1D9A6C" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="21" cy="21" r="1.5" fill="#FF3B30"/>
+          <rect x="23.5" y="22" width="2.5" height="2.5" rx="0.5" fill="#FF9500"/>
+        </svg>`,
+      nahrungskette: `
+        <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="44" height="44" rx="10" fill="#FFF4E5"/>
+          <circle cx="22" cy="22" r="14" stroke="#FF9500" stroke-width="2" fill="#FFFFFF"/>
+          <circle cx="22" cy="22" r="9" stroke="#FFE0B2" stroke-width="1.4"/>
+          <path d="M16 14V30M16 18C16 20 19 20 19 18V14" stroke="#D35400" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M27 14C27 18 29 20 29 30" stroke="#D35400" stroke-width="1.8" stroke-linecap="round"/>
+          <polygon points="22,18 25,22 21,24 19,20" fill="#FF3B30"/>
+        </svg>`,
+      eindringen_zellen: `
+        <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="44" height="44" rx="10" fill="#FEEAEA"/>
+          <circle cx="23" cy="23" r="13" fill="#FFFFFF" stroke="#FF3B30" stroke-width="2" stroke-dasharray="3 2"/>
+          <circle cx="25" cy="24" r="5.5" fill="#FFDADA" stroke="#FF3B30" stroke-width="1.4"/>
+          <path d="M8 11L14 16L10 19Z" fill="#9C27B0" stroke="#7B1FA2" stroke-width="1"/>
+          <path d="M12 15L19 20" stroke="#FF3B30" stroke-width="2" stroke-linecap="round"/>
+          <polygon points="19,17 22,22 17,21" fill="#FF3B30"/>
+        </svg>`
+    };
+
+    const HEADINGS = [
+      { id: "globale_verteilung", text: "globale Verteilung" },
+      { id: "tierwelt", text: "Tierwelt" },
+      { id: "nahrungskette", text: "Nahrungskette" },
+      { id: "eindringen_zellen", text: "Eindringen in die Zellen" }
+    ];
+
+    const DESCRIPTIONS = [
+      {
+        id: "desc_globale_verteilung",
+        text: "Kunststoffverpackungen zerfallen durch z.B. UV-Strahlung oder Winde zu Mikroplastik und verbreitet sich durch Luftströme oder Meeresströmen unkontrolliert aus."
+      },
+      {
+        id: "desc_tierwelt",
+        text: "• Aufnahme von Makroplastik führt zu Sättigungsgefühl ohne Nährwert\\n• Aufnahme von Mikroplastik und deren Schadstoffe (wie Weichmacher) führen zu Vergiftungen"
+      },
+      {
+        id: "desc_nahrungskette",
+        text: "Permanente Schadstoffaufnahme durch Mikroplastik aus der Umwelt wie Wasser oder Fisch"
+      },
+      {
+        id: "desc_eindringen_zellen",
+        text: "Weichmacher wirken neurotoxisch und führen zu Zellstress. Dadurch können Tumore begünstigt werden"
+      }
+    ];
+
+    const VALID_PAIRS = {
+      "globale_verteilung": "desc_globale_verteilung",
+      "tierwelt": "desc_tierwelt",
+      "nahrungskette": "desc_nahrungskette",
+      "eindringen_zellen": "desc_eindringen_zellen"
+    };
+
+    function populateDropdowns() {
+      const headingSelects = document.querySelectorAll(".heading-select");
+      const descSelects = document.querySelectorAll(".desc-select");
+
+      headingSelects.forEach(sel => {
+        sel.innerHTML = '<option value="">— Überschrift auswählen —</option>';
+        HEADINGS.forEach(item => {
+          const opt = document.createElement("option");
+          opt.value = item.id;
+          opt.textContent = item.text;
+          sel.appendChild(opt);
+        });
+      });
+
+      descSelects.forEach(sel => {
+        sel.innerHTML = '<option value="">— Erklärung auswählen —</option>';
+        DESCRIPTIONS.forEach(item => {
+          const opt = document.createElement("option");
+          opt.value = item.id;
+          opt.textContent = item.text.replace(/\\\\n/g, " — ");
+          sel.appendChild(opt);
+        });
+      });
+    }
+
+    function handleInputChange(slotId) {
+      const card = document.getElementById(`card_${slotId}`);
+      const hVal = card.querySelector(".heading-select").value;
+      const dVal = card.querySelector(".desc-select").value;
+      const previewIcon = document.getElementById(`preview_${slotId}`);
+
+      if (hVal && ICONS[hVal]) {
+        previewIcon.innerHTML = ICONS[hVal];
+        previewIcon.classList.add("visible");
+      } else {
+        previewIcon.innerHTML = "";
+        previewIcon.classList.remove("visible");
+      }
+
+      if (hVal && dVal) {
+        card.classList.add("filled");
+      } else {
+        card.classList.remove("filled");
+      }
+
+      const allCards = document.querySelectorAll(".assignment-card");
+      let allFilled = true;
+      allCards.forEach(c => {
+        const h = c.querySelector(".heading-select").value;
+        const d = c.querySelector(".desc-select").value;
+        if (!h || !d) allFilled = false;
+      });
+
+      const checkBtn = document.getElementById("checkButton");
+      if (allFilled) {
+        checkBtn.classList.remove("disabled");
+        checkBtn.classList.add("active");
+        checkBtn.removeAttribute("disabled");
+      } else {
+        checkBtn.classList.add("disabled");
+        checkBtn.classList.remove("active");
+        checkBtn.setAttribute("disabled", "true");
+      }
+    }
+
+    function validateSolution() {
+      const u1_h = document.querySelector("#card_u1 .heading-select").value;
+      const u1_d = document.querySelector("#card_u1 .desc-select").value;
+      const u2_h = document.querySelector("#card_u2 .heading-select").value;
+      const u2_d = document.querySelector("#card_u2 .desc-select").value;
+
+      const m1_h = document.querySelector("#card_m1 .heading-select").value;
+      const m1_d = document.querySelector("#card_m1 .desc-select").value;
+      const m2_h = document.querySelector("#card_m2 .heading-select").value;
+      const m2_d = document.querySelector("#card_m2 .desc-select").value;
+
+      const umweltPairs = [ {h: u1_h, d: u1_d}, {h: u2_h, d: u2_d} ];
+      const umweltHeadings = [u1_h, u2_h];
+      const umweltValid = 
+        umweltHeadings.includes("globale_verteilung") &&
+        umweltHeadings.includes("tierwelt") &&
+        umweltPairs.every(p => VALID_PAIRS[p.h] === p.d);
+
+      const menschenPairs = [ {h: m1_h, d: m1_d}, {h: m2_h, d: m2_d} ];
+      const menschenHeadings = [m1_h, m2_h];
+      const menschenValid = 
+        menschenHeadings.includes("nahrungskette") &&
+        menschenHeadings.includes("eindringen_zellen") &&
+        menschenPairs.every(p => VALID_PAIRS[p.h] === p.d);
+
+      const feedback = document.getElementById("feedbackBanner");
+      const appContainer = document.getElementById("appContainer");
+
+      if (umweltValid && menschenValid) {
+        feedback.className = "feedback-banner success";
+        feedback.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          Hervorragend! Das Schema ist nun fixiert und bereit für dein Arbeitsblatt.
+        `;
+
+        document.querySelectorAll(".assignment-card").forEach(card => {
+          card.classList.add("solved");
+          const slot = card.dataset.slot;
+          const hVal = card.querySelector(".heading-select").value;
+          const dVal = card.querySelector(".desc-select").value;
+
+          const hObj = HEADINGS.find(x => x.id === hVal);
+          const dObj = DESCRIPTIONS.find(x => x.id === dVal);
+
+          document.getElementById(`solved_icon_${slot}`).innerHTML = ICONS[hVal];
+          document.getElementById(`view_${slot}_title`).textContent = hObj.text;
+          document.getElementById(`view_${slot}_desc`).textContent = dObj.text.replace(/\\\\n/g, "\\n");
+        });
+
+        document.getElementById("checkButton").style.display = "none";
+        document.getElementById("resetButton").style.display = "inline-block";
+
+        triggerConfetti();
+      } else {
+        feedback.className = "feedback-banner error";
+        feedback.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+          Mindestens eine Zuordnung ist fehlerhaft. Die Auswahl wird zurückgesetzt...
+        `;
+
+        appContainer.classList.add("shake");
+        setTimeout(() => {
+          appContainer.classList.remove("shake");
+        }, 500);
+
+        setTimeout(() => {
+          resetInputsOnly();
+        }, 1300);
+      }
+    }
+
+    function resetInputsOnly() {
+      document.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
+      document.querySelectorAll(".assignment-card").forEach(card => {
+        card.classList.remove("filled");
+        const preview = card.querySelector(".card-preview-icon");
+        if (preview) {
+          preview.innerHTML = "";
+          preview.classList.remove("visible");
+        }
+      });
+      const checkBtn = document.getElementById("checkButton");
+      checkBtn.classList.add("disabled");
+      checkBtn.classList.remove("active");
+      checkBtn.setAttribute("disabled", "true");
+      const feedback = document.getElementById("feedbackBanner");
+      feedback.style.display = "none";
+      feedback.className = "feedback-banner";
+    }
+
+    function resetGame() {
+      document.querySelectorAll(".assignment-card").forEach(card => {
+        card.classList.remove("solved", "filled");
+      });
+      document.querySelectorAll("select").forEach(sel => {
+        sel.selectedIndex = 0;
+      });
+      document.getElementById("checkButton").style.display = "inline-flex";
+      document.getElementById("resetButton").style.display = "none";
+      resetInputsOnly();
+    }
+
+    function triggerConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#007AFF', '#34C759', '#FF9500', '#AF52DE', '#FF2D55', '#5856D6', '#FFCC00'];
+
+      for (let i = 0; i < 85; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          w: Math.random() * 8 + 6,
+          h: Math.random() * 6 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 16,
+          vy: (Math.random() - 0.7) * 16,
+          rot: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 8,
+          alpha: 1
+        });
+      }
+
+      let animationFrame;
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = false;
+
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.35;
+          p.rot += p.rotSpeed;
+          p.alpha -= 0.009;
+
+          if (p.alpha > 0) {
+            active = true;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rot * Math.PI) / 180);
+            ctx.globalAlpha = Math.max(0, p.alpha);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ctx.restore();
+          }
+        });
+
+        if (active) {
+          animationFrame = requestAnimationFrame(render);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          cancelAnimationFrame(animationFrame);
+        }
+      }
+      render();
+    }
+
+    window.addEventListener("resize", () => {
+      const canvas = document.getElementById('confettiCanvas');
+      if (canvas) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", populateDropdowns);
+  </script>
+</body>
+</html>
