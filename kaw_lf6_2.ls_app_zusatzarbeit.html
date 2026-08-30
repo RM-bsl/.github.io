@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Kreislauf-Millionär | Lernfeld 6</title>
+  <style>
+    /* ==========================================================================
+       APPLE VISION OS / GLASSMORPHISM DESIGN SYSTEM
+       ========================================================================== */
+    :root {
+      --bg-gradient: radial-gradient(circle at 50% 0%, #1c2438 0%, #0c0f17 100%);
+      --glass-bg: rgba(255, 255, 255, 0.06);
+      --glass-bg-hover: rgba(255, 255, 255, 0.12);
+      --glass-bg-active: rgba(255, 255, 255, 0.18);
+      --glass-border: rgba(255, 255, 255, 0.14);
+      --glass-border-bright: rgba(255, 255, 255, 0.3);
+      --glass-card-bg: rgba(18, 24, 38, 0.72);
+      --text-primary: #FFFFFF;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-tertiary: rgba(255, 255, 255, 0.45);
+      
+      --apple-blue: #0A84FF;
+      --apple-blue-glow: rgba(10, 132, 255, 0.35);
+      --apple-green: #30D158;
+      --apple-green-glow: rgba(48, 209, 88, 0.4);
+      --apple-red: #FF453A;
+      --apple-red-glow: rgba(255, 69, 58, 0.4);
+      --apple-gold: #FFD60A;
+      --apple-gold-glow: rgba(255, 214, 10, 0.4);
+      --apple-purple: #BF5AF2;
+
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+      
+      --shadow-ambient: 0 30px 60px rgba(0, 0, 0, 0.5);
+      --transition-smooth: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+      --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      padding: 20px;
+      position: relative;
+    }
+
+    /* Ambient Background Glow Orbs */
+    .ambient-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(100px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.45;
+      animation: floatOrb 18s ease-in-out infinite alternate;
+    }
+    .orb-1 {
+      width: 420px;
+      height: 420px;
+      background: var(--apple-blue);
+      top: -80px;
+      left: -80px;
+    }
+    .orb-2 {
+      width: 360px;
+      height: 360px;
+      background: var(--apple-purple);
+      bottom: -60px;
+      right: -60px;
+      animation-delay: -7s;
+    }
+    .orb-3 {
+      width: 280px;
+      height: 280px;
+      background: var(--apple-gold);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.15;
+    }
+
+    @keyframes floatOrb {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(50px) scale(1.12); }
+    }
+
+    /* Main Container */
+    .app-window {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1100px;
+      background: var(--glass-card-bg);
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-ambient);
+      display: grid;
+      grid-template-columns: 1fr 310px;
+      overflow: hidden;
+      min-height: 680px;
+    }
+
+    /* Left Quiz Stage */
+    .quiz-stage {
+      padding: 36px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid var(--glass-border);
+    }
+
+    /* Header Bar */
+    .stage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .app-badge {
+      font-size: 26px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--glass-border);
+    }
+
+    .brand-title {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* Joker Control Panel */
+    .joker-panel {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 6px 10px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--glass-border);
+    }
+
+    .joker-btn {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-primary);
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition-smooth);
+      backdrop-filter: blur(10px);
+    }
+
+    .joker-btn:hover:not(:disabled) {
+      background: var(--glass-bg-hover);
+      border-color: var(--apple-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--apple-blue-glow);
+    }
+
+    .joker-btn:active:not(:disabled) {
+      transform: scale(0.96);
+    }
+
+    .joker-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      border-color: transparent;
+      text-decoration: line-through;
+    }
+
+    /* Active Question Card */
+    .question-wrapper {
+      margin: auto 0;
+      padding: 20px 0;
+    }
+
+    .level-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .level-pill {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: var(--apple-blue-glow);
+      color: var(--apple-blue);
+      border: 1px solid rgba(10, 132, 255, 0.4);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    .topic-indicator {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .question-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--glass-border-bright);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      font-size: 20px;
+      line-height: 1.45;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      color: var(--text-primary);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Answer Option Buttons */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .option-btn {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      color: var(--text-primary);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.35;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: var(--transition-smooth);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .option-letter {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--apple-gold);
+      transition: var(--transition-smooth);
+    }
+
+    .option-btn:hover:not(.locked):not(.eliminated) {
+      background: var(--glass-bg-hover);
+      border-color: rgba(255, 255, 255, 0.35);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .option-btn:hover:not(.locked):not(.eliminated) .option-letter {
+      background: var(--apple-blue);
+      color: #FFF;
+      border-color: transparent;
+    }
+
+    .option-btn:active:not(.locked):not(.eliminated) {
+      transform: scale(0.98);
+    }
+
+    /* Option States */
+    .option-btn.selected {
+      background: var(--apple-blue-glow);
+      border-color: var(--apple-blue);
+      box-shadow: 0 0 25px var(--apple-blue-glow);
+      transform: scale(1.01);
+    }
+    .option-btn.selected .option-letter {
+      background: var(--apple-blue);
+      color: #FFF;
+    }
+
+    .option-btn.correct {
+      background: var(--apple-green-glow) !important;
+      border-color: var(--apple-green) !important;
+      box-shadow: 0 0 30px var(--apple-green-glow) !important;
+      animation: correctPulse 0.6s ease-in-out;
+    }
+    .option-btn.correct .option-letter {
+      background: var(--apple-green) !important;
+      color: #000 !important;
+    }
+
+    .option-btn.wrong {
+      background: var(--apple-red-glow) !important;
+      border-color: var(--apple-red) !important;
+      box-shadow: 0 0 30px var(--apple-red-glow) !important;
+      animation: shakeWrong 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+    .option-btn.wrong .option-letter {
+      background: var(--apple-red) !important;
+      color: #FFF !important;
+    }
+
+    .option-btn.eliminated {
+      opacity: 0.18;
+      filter: grayscale(1);
+      cursor: not-allowed;
+      transform: scale(0.96);
+      pointer-events: none;
+      border-color: transparent;
+    }
+
+    @keyframes correctPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+
+    @keyframes shakeWrong {
+      10%, 90% { transform: translateX(-4px); }
+      20%, 80% { transform: translateX(6px); }
+      30%, 50%, 70% { transform: translateX(-6px); }
+      40%, 60% { transform: translateX(6px); }
+    }
+
+    /* Right Ladder Sidebar */
+    .ladder-stage {
+      background: rgba(12, 16, 26, 0.55);
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .ladder-header {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mode-badge {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: rgba(255, 214, 10, 0.15);
+      color: var(--apple-gold);
+      border: 1px solid rgba(255, 214, 10, 0.3);
+      font-weight: 700;
+    }
+
+    .ladder-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 6px;
+    }
+
+    .ladder-step {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid transparent;
+      transition: var(--transition-smooth);
+    }
+
+    .ladder-step.milestone {
+      color: var(--apple-gold);
+      font-weight: 700;
+    }
+
+    .ladder-step.completed {
+      background: rgba(48, 209, 88, 0.1);
+      border-color: rgba(48, 209, 88, 0.25);
+      color: var(--apple-green);
+    }
+
+    .ladder-step.active {
+      background: var(--apple-blue-glow);
+      border-color: var(--apple-blue);
+      color: #FFF;
+      box-shadow: 0 4px 16px var(--apple-blue-glow);
+      transform: scale(1.03);
+    }
+
+    /* Overlays / Modals */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .modal-backdrop.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: rgba(26, 32, 48, 0.9);
+      border: 1px solid var(--glass-border-bright);
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      max-width: 540px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+      transform: scale(0.92);
+      transition: var(--transition-spring);
+    }
+
+    .modal-backdrop.show .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-icon {
+      font-size: 54px;
+      margin-bottom: 16px;
+      display: inline-block;
+    }
+
+    .modal-title {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .modal-desc {
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .modal-stat {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 28px;
+      font-size: 14px;
+      color: var(--apple-gold);
+      font-weight: 600;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn-primary {
+      background: var(--apple-blue);
+      color: #FFF;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 16px 24px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition-smooth);
+      box-shadow: 0 8px 24px var(--apple-blue-glow);
+    }
+
+    .btn-primary:hover {
+      background: #0071e3;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px var(--apple-blue-glow);
+    }
+
+    .btn-secondary {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-primary);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-secondary:hover {
+      background: var(--glass-bg-hover);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Confetti Canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    /* Responsive Adaptation */
+    @media (max-width: 900px) {
+      .app-window {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+      .quiz-stage {
+        padding: 24px;
+        border-right: none;
+        border-bottom: 1px solid var(--glass-border);
+      }
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+      .ladder-stage {
+        padding: 20px;
+      }
+      .ladder-list {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+      }
+      .ladder-step {
+        padding: 6px 8px;
+        font-size: 11px;
+        justify-content: center;
+      }
+      .ladder-step span:first-child {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-orb orb-1"></div>
+  <div class="ambient-orb orb-2"></div>
+  <div class="ambient-orb orb-3"></div>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <main class="app-window">
+    
+    <section class="quiz-stage">
+      
+      <header class="stage-header">
+        <div class="brand-group">
+          <div class="app-badge">♻️</div>
+          <div>
+            <h1 class="brand-title">Kreislauf-Millionär</h1>
+            <p class="brand-subtitle">Lernfeld 6 • CPB & Aufbereitung</p>
+          </div>
+        </div>
+
+        <div class="joker-panel">
+          <button id="joker-btn-1" class="joker-btn" onclick="useJoker(1)" title="Zwei falsche Optionen eliminieren">
+            <span>🃏</span> 50:50
+          </button>
+          <button id="joker-btn-2" class="joker-btn" onclick="useJoker(2)" title="Zwei falsche Optionen eliminieren">
+            <span>🃏</span> 50:50
+          </button>
+        </div>
+      </header>
+
+      <div class="question-wrapper">
+        <div class="level-meta">
+          <span id="level-badge" class="level-pill">Stufe 1</span>
+          <span id="prize-badge" class="topic-indicator">Gewinnstufe: 50 €</span>
+        </div>
+
+        <div id="question-text" class="question-card">
+          Lade Frage...
+        </div>
+
+        <div class="options-grid" id="options-container">
+          </div>
+      </div>
+
+    </section>
+
+    <aside class="ladder-stage">
+      <div>
+        <div class="ladder-header">
+          <span>Gewinnstufen</span>
+          <span id="mode-tag" class="mode-badge">Pfad A</span>
+        </div>
+        <ul class="ladder-list" id="ladder-list">
+          </ul>
+      </div>
+    </aside>
+
+  </main>
+
+  <div id="gameover-modal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-icon">💥</div>
+      <h2 class="modal-title">Falsche Antwort!</h2>
+      <p class="modal-desc" id="gameover-reason">Leider war diese Option nicht korrekt. Nach dem Permadeath-Prinzip wird der Durchlauf auf Stufe 1 zurückgesetzt.</p>
+      <div class="modal-stat" id="gameover-stat">Erreichte Stufe: 1 (0 €)</div>
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="restartGame()">
+          <span>🔄</span> Auf Stufe 1 neu starten
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="victory-modal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-icon">🏆</div>
+      <h2 class="modal-title">Herzlichen Glückwunsch!</h2>
+      <p class="modal-desc">Du hast alle 10 Stufen meisterhaft absolviert und das Expertenwissen der Kreislaufwirtschaft und des Lernfelds 6 vollständig unter Beweis gestellt!</p>
+      <div class="modal-stat">Hauptgewinn: 1.000.000 Punkte & Fachurkunde</div>
+      <div class="modal-actions">
+        <button class="btn-primary" id="alt-path-btn" onclick="startAlternativePath()">
+          <span>⚡</span> Alternativ-Pfad spielen (10 ungenutzte Fragen)
+        </button>
+        <button class="btn-secondary" onclick="restartGame()">
+          <span>🔁</span> Normaler Neustart (Zufallspfad)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* --------------------------------------------------------------------------
+       1. QUESTION DATABASE (20 Questions: 10 Levels x 2 Pool Items)
+       Strikt fundiert auf PPWR, VerpackDG, LVP-Sortierung, CPB, PS/PP & Gasifizierung
+       -------------------------------------------------------------------------- */
+    const STAGE_VALUES = [
+      "50 €", "100 €", "250 €", "500 €", "1.000 €",
+      "4.000 €", "16.000 €", "64.000 €", "250.000 €", "1.000.000 €"
+    ];
+
+    const QUESTION_POOL = [
+      // STUFE 1: Grundlagen der Verpackungskategorien
+      [
+        {
+          question: "Welche Verpackungsart umschließt nach PPWR (Art. 3 Abs. 1 Nr. 5) die Ware direkt und bildet am Point of Sale die kleinste Verkaufseinheit für den Endkunden?",
+          options: [
+            "Verkaufsverpackung (Erst- / Primärverpackung)",
+            "Umverpackung (Zweitverpackung)",
+            "Transportverpackung (Tertiärverpackung)",
+            "Lager- und Großcontainer"
+          ],
+          correct: 0,
+          explanation: "Die Verkaufsverpackung umschließt die Ware unmittelbar und bildet am Verkaufsort die Basiseinheit für den Verbraucher."
+        },
+        {
+          question: "Wie wird eine Verpackung definiert, die mehrere Verkaufseinheiten im Regal zusammenfasst und entfernt werden kann, ohne das Produkt zu beschädigen?",
+          options: [
+            "Transport- und Frachtbehälter",
+            "Umverpackung (Sekundärverpackung)",
+            "Schadstoff-Sammelgebinde",
+            "Direkte Primärverpackung"
+          ],
+          correct: 1,
+          explanation: "Umverpackungen (Art. 3 Abs. 1 Nr. 6 PPWR) bündeln Verkaufseinheiten und können ohne Beeinträchtigung der Ware abgetrennt werden."
+        }
+      ],
+
+      // STUFE 2: Spezifische Pflichten & Ausnahmen (PPWR / VerpackDG)
+      [
+        {
+          question: "Was gilt gemäß den gesetzlichen Bestimmungen der PPWR und des VerpackDG explizit NICHT als Transportverpackung?",
+          options: [
+            "Wellpappkartons für den B2B (Business-to-Business)-Warenverkehr",
+            "Schrumpf- und Wickelfolien auf Europaletten",
+            "Großcontainer für den Transport auf Lkw, Bahn und Schiff",
+            "Umreifungsbänder aus Kunststoff"
+          ],
+          correct: 2,
+          explanation: "Großcontainer für den Gütertransport (Lkw, Bahn, Schiff) sind gesetzlich ausdrücklich von der Definition der Transportverpackung ausgenommen."
+        },
+        {
+          question: "Wen trifft bei Serviceverpackungen ursprünglich die gesetzliche Pflicht zur Systembeteiligung (Lizenzierung)?",
+          options: [
+            "Ausschließlich den privaten Endverbraucher",
+            "Den Letztvertreiber, der die Serviceverpackung mit Ware befüllt",
+            "Den kommunalen öffentlich-rechtlichen Entsorgungsträger",
+            "Den Hersteller der Rohkunststoff-Granulate"
+          ],
+          correct: 1,
+          explanation: "Die Systembeteiligungspflicht trifft bei Serviceverpackungen originär den Letztvertreiber, der sie am Verkaufsort befüllt."
+        }
+      ],
+
+      // STUFE 3: Wertstofffraktionen & Anwendungen im Dualen System
+      [
+        {
+          question: "Für welche Produkte wird Polyethylenterephthalat (PET) im Dualen System primär eingesetzt?",
+          options: [
+            "Nicht pfandpflichtige Getränkeflaschen, Menüschalen & transparente Obstboxen",
+            "Schwer entflammbare Bauprofile und Kabelummantelungen",
+            "Extrudierte Dämmstoffplatten für Kelleraußenwände",
+            "Schmierstoffbehälter für Altöle und Säuren"
+          ],
+          correct: 0,
+          explanation: "PET bildet die Basis für transparente Obstschalen, Menüboxen und nicht bepfandete Flaschen."
+        },
+        {
+          question: "Welche Hauptfunktion erfüllt expandiertes Polystyrol (EPS / Styropor) im Verpackungsbereich?",
+          options: [
+            "Siegelschicht auf feuchtigkeitsbeständigen Tiefkühlfolien",
+            "Formteilschutz für stoßempfindliche Geräte und lose Verpackungschips",
+            "Barrierefolie zur Verhinderung von Sauerstoffdiffusion",
+            "Kompakter Reißverschluss für Standbodenbeutel"
+          ],
+          correct: 1,
+          explanation: "EPS dient vor allem als dämpfender Formteilschutz für empfindliche Geräte oder als Loose-fill-Material."
+        }
+      ],
+
+      // STUFE 4: Kunststoffphysik & Trennverhalten (PS vs. PP/PE)
+      [
+        {
+          question: "Warum bricht Polystyrol (PS) bei Belastung glatt durch (z. B. Sollbruchstelle bei Joghurt-Multipacks), während sich PP biegt?",
+          options: [
+            "PS besitzt große aromatische Ringe, die das amorphe Polymer starr und spröde machen",
+            "PS enthält Weichmacher, die bei Raumtemperatur kristallisieren",
+            "PS ist ein vernetztes Elastomer mit extrem hoher Reißdehnung",
+            "PP hat eine dreifach höhere Dichte als Polystyrol"
+          ],
+          correct: 0,
+          explanation: "Die raumgreifenden Phenylringe in der PS-Kette blockieren das Abgleiten der Ketten, was zu hoher Steifigkeit und Sprödbruch führt."
+        },
+        {
+          question: "Welche physikalische Eigenschaft ermöglicht die nassmechanische Schwimm-Sink-Trennung von Polystyrol (PS) und Polyolefin-Folien (PE/PP)?",
+          options: [
+            "PS hat eine Dichte > 1,0 g/cm³ und sinkt ab, während PE/PP im Wasser aufschwimmen",
+            "PS löst sich bei 20 °C vollständig im Wasser auf",
+            "PE/PP bildet im Wasser schwere Hydratkomplexe und sedimentiert",
+            "PS reagiert magnetisch auf ferritische Ionen im Waschwasser"
+          ],
+          correct: 0,
+          explanation: "PS besitzt eine Dichte von ca. 1,04–1,07 g/cm³ (Sinkfraktion), während PE und PP (< 0,95 g/cm³) auf Wasser schwimmen."
+        }
+      ],
+
+      // STUFE 5: Mechanische Aufbereitung & LVP-Vorbehandlung
+      [
+        {
+          question: "Welche verfahrenstechnische Grundoperation folgt im LVP-Sortierprozess unmittelbar auf den Gebindeaufschluss?",
+          options: [
+            "Thermische Pyrolyse im Drehrohrofen",
+            "Klassierung (Siebung nach Korngrößen wie <20 mm und >220 mm)",
+            "Elektrostatische Entstaubung",
+            "Flotation im sauren Milieu"
+          ],
+          correct: 1,
+          explanation: "Nach dem Aufreißen der Säcke erfolgt die Korngrößenklassierung (Trommelsiebe/Siebschnitte), um Stoffströme gezielt aufzuteilen."
+        },
+        {
+          question: "Mit welchem Aggregat werden Eisen- und Weißblechverpackungen (Fe) automatisiert aus dem Stoffstrom abgetrennt?",
+          options: [
+            "Windsichter (Zick-Zack-Sichter)",
+            "Überband-Magnetscheider",
+            "NIR-Spektrometer für Standardpolymere",
+            "Schwimm-Sink-Dichtetrenntank"
+          ],
+          correct: 1,
+          explanation: "Überbandmagnete oder Magnettrommeln ziehen ferromagnetische Metalle (Fe/Weißblech) zuverlässig nach oben heraus."
+        }
+      ],
+
+      // STUFE 6: NE-Abscheidung & Nahinfrarot-Sensorik (NIR)
+      [
+        {
+          question: "Mit welchem Aggregat werden Aluminiumdosen und NE-Metalle in einer LVP-Sortieranlage abgetrennt?",
+          options: [
+            "Wirbelstromscheider (Induktionsabscheider)",
+            "Permanentmagnet-Trommel",
+            "Schwerkraft-Windsichter",
+            "Röntgenfluoreszenz-Klassierer"
+          ],
+          correct: 0,
+          explanation: "Ein schnell rotierendes Magnetpolsystem induziert Wirbelströme in NE-Metallen, deren Magnetfeld sie über eine Trennscheide katapultiert."
+        },
+        {
+          question: "Welche Zielfraktion wird durch die Sortierstufe 'NIR-FKN' detektiert und mittels Druckluftdüsen ausgetragen?",
+          options: [
+            "Flüssigkeitskartons / Getränkeverbundkartons (FKN)",
+            "Flexible LDPE-Folien größer DIN A4",
+            "Schwarze Rußkunststoff-Stoßstangen",
+            "Expandierte EPS-Formkörper"
+          ],
+          correct: 0,
+          explanation: "NIR-FKN identifiziert die typische spektrale Signatur von Flüssigkeitskartons (Getränkekartons) für das separate Recycling."
+        }
+      ],
+
+      // STUFE 7: Schadstoffentfrachtung & CPB-Verfahren (LF6)
+      [
+        {
+          question: "Wie müssen Verpackungen schadstoffhaltiger Füllgüter im LVP-Anlagenbetrieb zwingend behandelt werden?",
+          options: [
+            "Vor einer Zerkleinerung ausschleusen und separat über Schadstoffsammlungen erfassen",
+            "Gemeinsam mit PE/PP-Fraktionen vermahlen und regranulieren",
+            "Im Windsichter als Schwergut der Ersatzbrennstoff-Linie beimengen",
+            "Mit heißer Natronlauge reinigen und der Biokompostierung zuführen"
+          ],
+          correct: 0,
+          explanation: "Schadstoffhaltige Gebinde müssen vor Zerkleinerungsaggregaten separiert werden, um Kontaminationen und Explosionsrisiken zu vermeiden."
+        },
+        {
+          question: "Welche Kernverfahren gehören nach Rahmenlehrplan Lernfeld 6 zur chemisch-physikalischen Abfallbehandlung (CPB)?",
+          options: [
+            "Trockensiebung, Schreddern und Windsichtung",
+            "Neutralisation, Oxidation/Reduktion und Fällungsreaktionen",
+            "Ballenpressung und manuelle Klaubung",
+            "Thermoplastisches Tiefziehen und Extrudieren"
+          ],
+          correct: 1,
+          explanation: "Chemisch-physikalische Behandlungsanlagen nutzen Neutralisation, Fällung, Flockung und Redoxreaktionen zur Schadstoffentfrachtung."
+        }
+      ],
+
+      // STUFE 8: Mischkunststoffe & Chemisches Recycling (Gasifizierung)
+      [
+        {
+          question: "Welchem Verwertungspfad werden heterogene Mischkunststoffe (MKS) überwiegend zugeführt, wenn mechanisches Recycling unrentabel ist?",
+          options: [
+            "Energetische Verwertung als hochwertiger Ersatzbrennstoff (EBS) oder Bauprofile",
+            "Nassfermentierung in anaeroben Biogasanlagen",
+            "Direkte Herstellung von transparenten Lebensmittelverpackungen",
+            "Untertage-Deponierung als Langzeit-Dichtschicht"
+          ],
+          correct: 0,
+          explanation: "Nicht sortenrein trennbare Mischkunststoffe (MKS) dienen primär als Ersatzbrennstoff (EBS) in Zementwerken oder für robuste Dickwand-Bauprofile."
+        },
+        {
+          question: "Welches Ziel verfolgt die Gasifizierung im Rahmen des rohstofflichen (chemischen) Recyclings?",
+          options: [
+            "Überführung heterogener Abfälle in elementare chemische Grundbausteine (Synthesegas)",
+            "Reine mechanische Faserverstärkung von Altkunststoffen",
+            "Auswaschen von Druckfarben mit oberflächenaktiven Tensiden",
+            "Biologischer Abbau durch thermophile Mikroorganismen"
+          ],
+          correct: 0,
+          explanation: "Die Gasifizierung bricht Polymerketten thermochemisch in Synthesegas (CO, H2) auf, um neue Primärchemikalien fossilfrei zu erzeugen."
+        }
+      ],
+
+      // STUFE 9: Verfahrensgrenzen & Multilayer-Sortierung
+      [
+        {
+          question: "Warum stoßen Standard-NIR-Detektoren bei tiefschwarzen Kunststoffverpackungen (z. B. Rußpigmentierung) an physikalische Grenzen?",
+          options: [
+            "Der Ruß absorbiert das Infrarotlicht fast vollständig, sodass kein reflektiertes Spektrum messbar ist",
+            "Schwarze Pigmente erhöhen die Dielektrizitätskonstante auf unendliche Werte",
+            "Rußmoleküle verändern die Dichte des Kunststoffs auf über 10 g/cm³",
+            "Das Polymer zersetzt sich bei Kontakt mit dem NIR-Messstrahl explosionsartig"
+          ],
+          correct: 0,
+          explanation: "Carbon Black (Ruß) absorbiert das Nahinfrarot-Lichtspektrum, wodurch das Sensorsystem kein remittiertes Signal zur Identifikation erhält."
+        },
+        {
+          question: "Welche Herausforderung stellen Multilayer-Verpackungen (Verbundfolien) für das werkstoffliche Recycling dar?",
+          options: [
+            "Sie bestehen aus untrennbaren Schichten unterschiedlicher Polymere, die mechanisch nicht sortenrein aufbereitet werden können",
+            "Sie sind grundsätzlich zu leicht für jeden industriellen Schredder",
+            "Ihre Schichten lösen sich bereits bei Kontakt mit Umgebungsluft vollständig auf",
+            "Sie besitzen ausnahmslos magnetische Eigenschaften, die Magnetscheider blockieren"
+          ],
+          correct: 0,
+          explanation: "Multilayer kombinieren z. B. PE, PA, EVOH oder PET; beim Umschmelzen führen inkompatible Polymere zu minderwertigen, spröden Gemischen."
+        }
+      ],
+
+      // STUFE 10: Systemische Verknüpfung & Rezyklatqualität
+      [
+        {
+          question: "Welche Parameter bestimmen nach dem Stand der Technik maßgeblich die werkstoffliche Recyclingfähigkeit eines Verpackungsartikels?",
+          options: [
+            "Polymerstruktur, Druckfarben, Pigmentierung, Barriereausführungen und Klebstoffsysteme",
+            "Ausschließlich die geometrische Wandstärke des Transportkartons",
+            "Die Dauer des Transports vom Letztvertreiber zum Endkunden",
+            "Die Postleitzahl der ausliefernden Filiale am Point of Sale"
+          ],
+          correct: 0,
+          explanation: "Design for Recycling erfordert die Abstimmung aller Komponenten (Monomaterial, ablösbare Kleber, NIR-detektierbare Druckfarben & Barriereschichten)."
+        },
+        {
+          question: "Welcher strategische Dreiklang wird durch die Kombination aus LVP-Sortierung und rohstofflicher Gasifizierung erreicht?",
+          options: [
+            "Einsparung fossiler Rohstoffe, Senkung von Importabhängigkeiten und Reduzierung des Kunststoffeintrags in die Umwelt",
+            "Abschaffung aller chemisch-physikalischen Behandlungsanlagen in der EU",
+            "Vollständige Umstellung der Abfallwirtschaft auf offene Mülldeponien",
+            "Verzicht auf die Getrenntsammlung bei privaten Endverbrauchern"
+          ],
+          correct: 0,
+          explanation: "Hochwertige Sortierung plus chemische Kreislaufführung schließen die Kohlenstoffkreisläufe, schonen Primärressourcen und schützen Ökosysteme."
+        }
+      ]
+    ];
+
+    /* --------------------------------------------------------------------------
+       2. SYNTHETIC AUDIO ENGINE (Web Audio API - No external files needed)
+       -------------------------------------------------------------------------- */
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playTone(freq, type = 'sine', duration = 0.15, gainVal = 0.1) {
+        if (!this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          
+          gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+          
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch(e) {}
+      }
+
+      select() {
+        this.init();
+        this.playTone(600, 'sine', 0.08, 0.08);
+      }
+
+      joker() {
+        this.init();
+        this.playTone(400, 'triangle', 0.12, 0.1);
+        setTimeout(() => this.playTone(800, 'sine', 0.2, 0.1), 80);
+      }
+
+      correct() {
+        this.init();
+        this.playTone(523.25, 'sine', 0.15, 0.15); // C5
+        setTimeout(() => this.playTone(659.25, 'sine', 0.18, 0.15), 100); // E5
+        setTimeout(() => this.playTone(783.99, 'sine', 0.35, 0.18), 200); // G5
+      }
+
+      wrong() {
+        this.init();
+        this.playTone(220, 'sawtooth', 0.3, 0.15);
+        setTimeout(() => this.playTone(164.81, 'sawtooth', 0.45, 0.18), 120);
+      }
+
+      victory() {
+        this.init();
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, i) => {
+          setTimeout(() => this.playTone(freq, 'triangle', 0.35, 0.2), i * 140);
+        });
+      }
+    }
+
+    const sound = new SoundEngine();
+
+    /* --------------------------------------------------------------------------
+       3. CONFETTI PARTICLE SYSTEM (Vanilla Canvas)
+       -------------------------------------------------------------------------- */
+    class ConfettiEffect {
+      constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        this.ctx = this.canvas.getContext('2d');
+        this.particles = [];
+        this.animId = null;
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+      }
+
+      resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+      }
+
+      fire() {
+        this.particles = [];
+        const colors = ['#0A84FF', '#30D158', '#FFD60A', '#BF5AF2', '#FF375F', '#FFFFFF'];
+        for (let i = 0; i < 160; i++) {
+          this.particles.push({
+            x: this.canvas.width / 2,
+            y: this.canvas.height / 2,
+            w: Math.random() * 10 + 6,
+            h: Math.random() * 6 + 4,
+            vx: (Math.random() - 0.5) * 26,
+            vy: (Math.random() - 0.7) * 24,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360,
+            vRot: (Math.random() - 0.5) * 12,
+            gravity: 0.4,
+            drag: 0.98,
+            opacity: 1
+          });
+        }
+        if (!this.animId) this.loop();
+      }
+
+      loop() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.particles.forEach((p) => {
+          p.vx *= p.drag;
+          p.vy *= p.drag;
+          p.vy += p.gravity;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rotation += p.vRot;
+          p.opacity -= 0.0035;
+
+          this.ctx.save();
+          this.ctx.translate(p.x, p.y);
+          this.ctx.rotate((p.rotation * Math.PI) / 180);
+          this.ctx.globalAlpha = Math.max(0, p.opacity);
+          this.ctx.fillStyle = p.color;
+          this.ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          this.ctx.restore();
+        });
+
+        this.particles = this.particles.filter(p => p.opacity > 0);
+        if (this.particles.length > 0) {
+          this.animId = requestAnimationFrame(() => this.loop());
+        } else {
+          this.animId = null;
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+      }
+    }
+
+    const confetti = new ConfettiEffect('confetti-canvas');
+
+    /* --------------------------------------------------------------------------
+       4. GAME STATE CONTROLLER
+       -------------------------------------------------------------------------- */
+    let currentLevel = 0;
+    let jokersUsed = [false, false];
+    let selectedIndices = []; // Maps level to question index 0 or 1
+    let isAlternativePath = false;
+    let isLocked = false;
+    let currentQuestionObj = null;
+
+    function initGameSession(altMode = false) {
+      isAlternativePath = altMode;
+      currentLevel = 0;
+      jokersUsed = [false, false];
+      isLocked = false;
+
+      // Select Question indices: if Alt mode, invert previous selections
+      if (isAlternativePath && selectedIndices.length === 10) {
+        selectedIndices = selectedIndices.map(idx => 1 - idx);
+      } else {
+        selectedIndices = [];
+        for (let i = 0; i < 10; i++) {
+          selectedIndices.push(Math.random() < 0.5 ? 0 : 1);
+        }
+      }
+
+      // Update UI elements
+      document.getElementById('mode-tag').textContent = isAlternativePath ? "⚡ Alternativ-Pfad" : "🎲 Standard-Pfad";
+      updateJokerUI();
+      renderLadder();
+      loadQuestion();
+    }
+
+    function renderLadder() {
+      const list = document.getElementById('ladder-list');
+      list.innerHTML = '';
+
+      for (let i = 0; i < 10; i++) {
+        const li = document.createElement('li');
+        li.className = `ladder-step ${i === 4 || i === 9 ? 'milestone' : ''}`;
+        if (i < currentLevel) li.classList.add('completed');
+        if (i === currentLevel) li.classList.add('active');
+
+        li.innerHTML = `
+          <span>Stufe ${i + 1}</span>
+          <span>${STAGE_VALUES[i]}</span>
+        `;
+        list.appendChild(li);
+      }
+    }
+
+    function updateJokerUI() {
+      const btn1 = document.getElementById('joker-btn-1');
+      const btn2 = document.getElementById('joker-btn-2');
+
+      btn1.disabled = jokersUsed[0];
+      btn2.disabled = jokersUsed[1];
+    }
+
+    function loadQuestion() {
+      isLocked = false;
+      const qIdx = selectedIndices[currentLevel];
+      currentQuestionObj = QUESTION_POOL[currentLevel][qIdx];
+
+      // Update Badges
+      document.getElementById('level-badge').textContent = `Stufe ${currentLevel + 1} / 10`;
+      document.getElementById('prize-badge').textContent = `Gewinnstufe: ${STAGE_VALUES[currentLevel]}`;
+      document.getElementById('question-text').textContent = currentQuestionObj.question;
+
+      // Options Grid
+      const container = document.getElementById('options-container');
+      container.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+
+      currentQuestionObj.options.forEach((optText, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.id = `opt-btn-${idx}`;
+        btn.onclick = () => selectAnswer(idx);
+
+        btn.innerHTML = `
+          <span class="option-letter">${letters[idx]}</span>
+          <span class="option-text">${optText}</span>
+        `;
+        container.appendChild(btn);
+      });
+
+      renderLadder();
+    }
+
+    function selectAnswer(chosenIdx) {
+      if (isLocked) return;
+      isLocked = true;
+      sound.select();
+
+      const chosenBtn = document.getElementById(`opt-btn-${chosenIdx}`);
+      chosenBtn.classList.add('selected');
+
+      // Apple Suspense Timing (~800ms)
+      setTimeout(() => {
+        const isCorrect = (chosenIdx === currentQuestionObj.correct);
+
+        if (isCorrect) {
+          chosenBtn.classList.remove('selected');
+          chosenBtn.classList.add('correct');
+          sound.correct();
+
+          setTimeout(() => {
+            if (currentLevel === 9) {
+              // Victory!
+              handleVictory();
+            } else {
+              currentLevel++;
+              loadQuestion();
+            }
+          }, 1100);
+
+        } else {
+          chosenBtn.classList.remove('selected');
+          chosenBtn.classList.add('wrong');
+          
+          // Show the correct answer
+          const correctBtn = document.getElementById(`opt-btn-${currentQuestionObj.correct}`);
+          if (correctBtn) correctBtn.classList.add('correct');
+          
+          sound.wrong();
+
+          setTimeout(() => {
+            handleGameOver(chosenIdx);
+          }, 1300);
+        }
+      }, 750);
+    }
+
+    function useJoker(jokerNumber) {
+      if (isLocked) return;
+      const index = jokerNumber - 1;
+      if (jokersUsed[index]) return;
+
+      jokersUsed[index] = true;
+      sound.joker();
+      updateJokerUI();
+
+      // Find 2 wrong options to eliminate
+      const correctIdx = currentQuestionObj.correct;
+      const wrongIndices = [0, 1, 2, 3].filter(i => i !== correctIdx);
+      
+      // Shuffle & pick 2
+      wrongIndices.sort(() => Math.random() - 0.5);
+      const toEliminate = wrongIndices.slice(0, 2);
+
+      toEliminate.forEach(idx => {
+        const btn = document.getElementById(`opt-btn-${idx}`);
+        if (btn) {
+          btn.classList.add('eliminated');
+        }
+      });
+    }
+
+    function handleGameOver(chosenIdx) {
+      const modal = document.getElementById('gameover-modal');
+      const reason = document.getElementById('gameover-reason');
+      const stat = document.getElementById('gameover-stat');
+
+      reason.innerHTML = `<strong>Richtig wäre gewesen:</strong> „${currentQuestionObj.options[currentQuestionObj.correct]}“<br><br>${currentQuestionObj.explanation}`;
+      stat.textContent = `Erreichte Stufe: ${currentLevel + 1} (${STAGE_VALUES[Math.max(0, currentLevel - 1)]})`;
+      
+      modal.classList.add('show');
+    }
+
+    function handleVictory() {
+      sound.victory();
+      confetti.fire();
+
+      const modal = document.getElementById('victory-modal');
+      modal.classList.add('show');
+    }
+
+    function restartGame() {
+      document.getElementById('gameover-modal').classList.remove('show');
+      document.getElementById('victory-modal').classList.remove('show');
+      initGameSession(false);
+    }
+
+    function startAlternativePath() {
+      document.getElementById('victory-modal').classList.remove('show');
+      initGameSession(true);
+    }
+
+    // Initialize Game on load
+    window.addEventListener('DOMContentLoaded', () => {
+      initGameSession(false);
+    });
+  </script>
+</body>
+</html>
