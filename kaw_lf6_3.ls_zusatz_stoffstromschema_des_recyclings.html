@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stoffstromschema des Recyclings – Lernfeld 6</title>
+  
+  <!-- KaTeX Standard-CDN für normgerechte Formeldarstellung -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+  <style>
+    :root {
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --bg-gradient: linear-gradient(135deg, #f0f4f9 0%, #e2eaf4 50%, #d8e2f0 100%);
+      --glass-bg: rgba(255, 255, 255, 0.76);
+      --glass-card: rgba(255, 255, 255, 0.88);
+      --glass-border: rgba(255, 255, 255, 0.9);
+      --glass-shadow: 0 18px 45px rgba(0, 24, 60, 0.07);
+      --text-main: #1d1d1f;
+      --text-secondary: #4b5563;
+      --text-muted: #86868b;
+      --primary: #0071e3;
+      --primary-hover: #0077ed;
+      --success: #34c759;
+      --success-bg: #e8f9ed;
+      --success-text: #15803d;
+      --error: #ff3b30;
+      --error-bg: #ffebeb;
+      --error-text: #b91c1c;
+      --joker-gold: #f59e0b;
+      --radius-sm: 12px;
+      --radius-md: 18px;
+      --radius-lg: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Dekorative Hintergrund-Orbs im Apple-Design */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(90px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.55;
+    }
+    .orb-1 { width: 420px; height: 420px; background: #c2dcff; top: -100px; left: -100px; }
+    .orb-2 { width: 360px; height: 360px; background: #c6f6d5; bottom: -80px; right: -80px; }
+    .orb-3 { width: 300px; height: 300px; background: #feebc8; bottom: 25%; left: 8%; }
+
+    /* Partikel-Canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* Fortschrittsbalken am oberen Bildschirmrand */
+    .progress-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--success));
+      transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Hauptcontainer */
+    .app-container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 860px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--glass-shadow);
+      padding: 36px 40px;
+      transition: all 0.35s ease;
+    }
+
+    /* Kopfzeile */
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .badge-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .badge-level {
+      background: rgba(0, 113, 227, 0.12);
+      color: var(--primary);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+    .badge-round {
+      background: rgba(52, 199, 89, 0.14);
+      color: #166534;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+    .btn-joker {
+      background: var(--glass-card);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #b45309;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.1);
+    }
+    .btn-joker:hover:not(:disabled) {
+      background: #fffbeb;
+      border-color: var(--joker-gold);
+      transform: translateY(-1px);
+    }
+    .btn-joker:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      border-color: rgba(0,0,0,0.1);
+      box-shadow: none;
+    }
+
+    /* Fragenkasten */
+    .question-box {
+      background: var(--glass-card);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.02);
+    }
+    .question-box h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--text-main);
+    }
+
+    /* Antwortgitter */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 650px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+      .app-container {
+        padding: 24px 20px;
+      }
+    }
+
+    .btn-option {
+      background: var(--glass-card);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      text-align: left;
+      font-size: 0.96rem;
+      color: var(--text-main);
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      line-height: 1.45;
+      transition: all 0.22s cubic-bezier(0.25, 1, 0.5, 1);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+    }
+    .btn-option:hover:not(:disabled) {
+      background: #ffffff;
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 113, 227, 0.12);
+    }
+    .btn-option:active:not(:disabled) {
+      transform: scale(0.99);
+    }
+    .btn-option .opt-label {
+      font-weight: 700;
+      color: var(--primary);
+      background: rgba(0, 113, 227, 0.08);
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+      font-size: 0.85rem;
+    }
+    .btn-option.correct {
+      background: var(--success-bg) !important;
+      border-color: var(--success) !important;
+      color: var(--success-text) !important;
+      box-shadow: 0 6px 18px rgba(52, 199, 89, 0.2) !important;
+    }
+    .btn-option.correct .opt-label {
+      background: var(--success);
+      color: white;
+    }
+    .btn-option.wrong {
+      background: var(--error-bg) !important;
+      border-color: var(--error) !important;
+      color: var(--error-text) !important;
+      animation: shake 0.4s ease-in-out;
+    }
+    .btn-option.hidden-joker {
+      opacity: 0.12;
+      pointer-events: none;
+      filter: grayscale(1);
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    /* Ausklapp-Feedback (Didaktische Erklärung) */
+    .info-card {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      background: #f0fdf4;
+      border: 1px solid rgba(52, 199, 89, 0.4);
+      border-radius: var(--radius-md);
+      transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease, padding 0.35s ease;
+      margin-bottom: 0;
+      padding: 0 24px;
+    }
+    .info-card.show {
+      max-height: 320px;
+      opacity: 1;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 6px 18px rgba(52, 199, 89, 0.08);
+    }
+    .info-title {
+      font-weight: 700;
+      color: #166534;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .info-text {
+      font-size: 0.95rem;
+      color: #1e3a24;
+      line-height: 1.5;
+    }
+    .info-source {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #15803d;
+      background: rgba(52, 199, 89, 0.15);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    /* Aktionszeile */
+    .action-row {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn-action {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 6px 18px rgba(0, 113, 227, 0.25);
+    }
+    .btn-action:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    /* Modale Fenster */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-card {
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+      transform: scale(0.95);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .modal-overlay.active .modal-card {
+      transform: scale(1);
+    }
+    .modal-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+    .modal-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+    .modal-desc {
+      font-size: 0.96rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+    .modal-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+    .btn-secondary {
+      background: #e2e8f0;
+      color: var(--text-main);
+      border: none;
+      padding: 12px 22px;
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-secondary:hover {
+      background: #cbd5e1;
+    }
+    .btn-danger {
+      background: var(--error);
+      color: white;
+      border: none;
+      padding: 12px 22px;
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(255, 59, 48, 0.25);
+    }
+
+    /* Post-Print-Banner */
+    .post-print-banner {
+      background: #f0f7ff;
+      border: 1px solid #bae6fd;
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 14px rgba(0, 113, 227, 0.08);
+      animation: fadeIn 0.3s ease;
+    }
+    .banner-text {
+      font-size: 0.94rem;
+      font-weight: 600;
+      color: #0369a1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .banner-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-banner-reset {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-close-banner {
+      background: transparent;
+      border: none;
+      font-size: 1.4rem;
+      color: #64748b;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 4px;
+    }
+
+    /* Floating Action Button */
+    .fab-reset {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--glass-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      color: var(--primary);
+      font-size: 1.5rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 400;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .fab-reset:hover {
+      transform: scale(1.1) rotate(45deg);
+      background: #ffffff;
+    }
+
+    /* Zertifikats-Layout */
+    .certificate-view {
+      display: none;
+    }
+    .cert-card {
+      background: #ffffff;
+      border: 3px double var(--primary);
+      border-radius: var(--radius-md);
+      padding: 44px 36px;
+      text-align: center;
+      position: relative;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    }
+    .cert-header {
+      font-size: 0.88rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .cert-title {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 20px;
+    }
+    .name-input-group {
+      margin: 20px auto 26px auto;
+      max-width: 420px;
+      text-align: left;
+    }
+    .name-input-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .name-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-sm);
+      font-size: 1.05rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .name-input:focus {
+      border-color: var(--primary);
+    }
+    .cert-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 24px 0;
+      padding: 18px;
+      background: #f8fafc;
+      border-radius: var(--radius-sm);
+      border: 1px solid #e2e8f0;
+    }
+    .stat-box .stat-val {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .stat-box .stat-lbl {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    .cert-seal {
+      margin: 20px auto 0 auto;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--success));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.8rem;
+      box-shadow: 0 8px 20px rgba(0, 113, 227, 0.25);
+    }
+    .cert-date {
+      margin-top: 14px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Print-Styling (Privacy by Design) */
+    @media print {
+      body {
+        background: #ffffff !important;
+        padding: 0 !important;
+        color: #000000 !important;
+      }
+      .orb, .progress-bar-container, .quiz-header, .question-box, .options-grid,
+      .info-card, .action-row, .modal-overlay, .post-print-banner, .fab-reset,
+      .cert-controls, .name-input-group, #confetti-canvas {
+        display: none !important;
+      }
+      .app-container {
+        border: none !important;
+        box-shadow: none !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        background: transparent !important;
+      }
+      .certificate-view {
+        display: block !important;
+      }
+      .cert-card {
+        border: 2px solid #000000 !important;
+        box-shadow: none !important;
+        padding: 40px 30px !important;
+      }
+      .cert-recipient-name-print {
+        display: block !important;
+        font-size: 1.8rem !important;
+        font-weight: 700 !important;
+        border-bottom: 1px solid #000 !important;
+        padding-bottom: 6px !important;
+        margin: 20px auto !important;
+        max-width: 450px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Fortschrittsbalken -->
+  <div class="progress-bar-container">
+    <div id="progress-bar" class="progress-bar"></div>
+  </div>
+
+  <div class="app-container">
+
+    <!-- Post-Print Banner -->
+    <div id="post-print-banner" class="post-print-banner">
+      <div class="banner-text">
+        <span>📄</span> Druckvorgang abgeschlossen!
+      </div>
+      <div class="banner-actions">
+        <button class="btn-banner-reset" onclick="promptResetGame()">Jetzt zurücksetzen</button>
+        <button class="btn-close-banner" onclick="dismissBanner()" title="Banner schließen">×</button>
+      </div>
+    </div>
+
+    <!-- Quiz-Ansicht -->
+    <div id="quiz-view">
+      <div class="quiz-header">
+        <div class="badge-group">
+          <span id="level-badge" class="badge-level">Stufe 1 / 10</span>
+          <span id="round-badge" class="badge-round">Durchlauf 1 (Hauptpfad)</span>
+        </div>
+        <div>
+          <button id="btn-joker-50" class="btn-joker" onclick="useJoker50()">
+            <span>✨</span> 50:50 Joker (<span id="joker-count">2</span>)
+          </button>
+        </div>
+      </div>
+
+      <div class="question-box">
+        <h2 id="question-text">Fragentext wird geladen...</h2>
+      </div>
+
+      <div class="options-grid" id="options-container">
+        <!-- Dynamische Antwortoptionen -->
+      </div>
+
+      <!-- Didaktische Ausklapp-Erklärung -->
+      <div id="info-card" class="info-card">
+        <div class="info-title">
+          <span>💡</span> Fachdidaktische Erläuterung
+        </div>
+        <div id="info-text" class="info-text"></div>
+        <div id="info-source" class="info-source"></div>
+      </div>
+
+      <div class="action-row" id="action-row" style="display:none;">
+        <button id="btn-next" class="btn-action" onclick="advanceStep()">
+          Nächste Stufe ➔
+        </button>
+      </div>
+    </div>
+
+    <!-- Zertifikatsansicht -->
+    <div id="certificate-view" class="certificate-view">
+      <div class="cert-card">
+        <div class="cert-header">Fachqualifikations-Zertifikat</div>
+        <h1 class="cert-title">Stoffstromschema des Recyclings</h1>
+        
+        <p style="color: var(--text-secondary); font-size: 0.98rem; line-height: 1.5;">
+          Die Schülerin / der Schüler hat die Fachqualifikation im <strong>Lernfeld 6 (Kreislauf- und Abfallwirtschaft)</strong> 
+          über zwei vollständige Durchläufe hinweg erfolgreich und fehlerfrei absolviert.
+        </p>
+
+        <div class="name-input-group">
+          <label for="student-name">Name der Schülerin / des Schülers:</label>
+          <input type="text" id="student-name" class="name-input" placeholder="Vor- und Nachname eingeben..." oninput="updateCertName(this.value)">
+        </div>
+
+        <div id="cert-print-name" class="cert-recipient-name-print" style="display:none;">[Name des Prüflings]</div>
+
+        <div class="cert-stats-grid">
+          <div class="stat-box">
+            <div class="stat-val" id="cert-stat-questions">20 / 20</div>
+            <div class="stat-lbl">Fragen gemeistert</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val" id="cert-stat-attempts">1</div>
+            <div class="stat-lbl">Gesamtversuche</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val" id="cert-stat-jokers">0</div>
+            <div class="stat-lbl">Joker verbraucht</div>
+          </div>
+        </div>
+
+        <div class="cert-seal">★</div>
+        <div class="cert-date" id="cert-date-field">Datum: --.--.----</div>
+      </div>
+
+      <div class="cert-controls action-row" style="justify-content:center; gap:14px;">
+        <button class="btn-action" onclick="window.print()">
+          🖨️ Zertifikat drucken / PDF speichern
+        </button>
+        <button class="btn-secondary" onclick="promptResetGame()">
+          🔄 Quiz vollständig zurücksetzen
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Rand-Fallback Button -->
+  <button id="fab-reset" class="fab-reset" onclick="promptResetGame()" title="Quiz zurücksetzen">
+    🔄
+  </button>
+
+  <!-- Modal: Permadeath -->
+  <div id="modal-gameover" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-icon">⚠️</div>
+      <h3 class="modal-title">Falsche Antwort!</h3>
+      <p class="modal-desc">
+        Im Stoffstromschema führen Sortier- oder Prozessfehler zum Abbruch des stofflichen Kreislaufs. Du musst die Stufe von vorne beginnen.
+      </p>
+      <div class="modal-btns">
+        <button class="btn-action" onclick="restartCurrentRun()">Neuer Versuch bei Stufe 1</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Durchlauf 1 gemeistert -->
+  <div id="modal-round1-win" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-icon">🏆</div>
+      <h3 class="modal-title">Stufe 10 gemeistert!</h3>
+      <p class="modal-desc">
+        Sehr gute Leistung! Du hast den 1. Durchlauf erfolgreich absolviert. Um das offizielle Fachzertifikat freizuschalten, musst du nun die 10 ungespielten Alternativfragen des Revanche-Pools meistern.
+      </p>
+      <div class="modal-btns">
+        <button class="btn-action" onclick="startRound2()">Ungespielte Alternativfragen spielen ➔</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Reset-Schutz -->
+  <div id="modal-confirm-reset" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-icon">❓</div>
+      <h3 class="modal-title">Quiz wirklich zurücksetzen?</h3>
+      <p class="modal-desc">
+        Möchtest du das Quiz wirklich komplett zurücksetzen? Sämtlicher Spielfortschritt und flüchtige Namenseingaben gehen unwiderruflich verloren.
+      </p>
+      <div class="modal-btns">
+        <button class="btn-secondary" onclick="closeConfirmModal()">Abbrechen</button>
+        <button class="btn-danger" onclick="executeFullReset()">Zurücksetzen</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================================
+       1. MODULARES FRAGEN-ARRAY (20 Fragen: 10 Stufen x 2 Varianten A & B)
+       Keine Maschinen-Eigennamen, keine Rechenaufgaben. Fokus auf das Schema,
+       Begriffe, einfache Alltagsbeispiele und Vor-/Nachteile.
+       ========================================================================= */
+    const quizDatabase = [
+      // STUFE 1: Grundbegriffe - Startpunkt & Fehlwürfe
+      {
+        level: 1,
+        variant: "A",
+        question: "Welche Station markiert im Stoffstromschema des Recyclings den Ausgangspunkt für den Lebensweg von Verpackungen wie Glasflaschen oder Blechdosen?",
+        options: [
+          "Industrielle Sortierung",
+          "Produkt / Ware",
+          "Sekundärrohstoffe",
+          "Thermische Verwertung"
+        ],
+        correct: 1,
+        explanation: "Am Anfang des Kreislaufs stehen Produkte und Waren. Nach dem Gebrauch durch den Verbraucher gelangen die restentleerten Verpackungen in die getrennten Sammelsysteme.",
+        source: "[ALBA, 2021; Conversio, 2017]"
+      },
+      {
+        level: 1,
+        variant: "B",
+        question: "Wie bezeichnet das Stoffstromschema Abfälle wie Restmüll oder Windeln, die fälschlicherweise in die Wertstoffsammlung gelangen?",
+        options: [
+          "Sortenreine Fraktion",
+          "Hochwertiges Rezyklat",
+          "Fehlwürfe",
+          "Closed-Loop-Material"
+        ],
+        correct: 2,
+        explanation: "Fehlwürfe belasten die Sortieranlagen, senken die Reinheit der Wertstoffe und müssen später aufwendig als Sortierreste abgetrennt werden.",
+        source: "[ALBA, 2021]"
+      },
+
+      // STUFE 2: Grundbegriffe - Industrielle Sortierung
+      {
+        level: 2,
+        variant: "A",
+        question: "Welches grundlegende Ziel verfolgt die Station 'Industrielle Sortierung' im Stoffstromschema?",
+        options: [
+          "Die sofortige Verbrennung aller angelieferten Abfälle",
+          "Die Trennung des gemischten Abfallstroms in recyclingfähige Fraktionen und nicht verwertbare Reste",
+          "Die direkte chemische Auflösung von Altglas",
+          "Die dauerhafte Einlagerung auf einer Deponie"
+        ],
+        correct: 1,
+        explanation: "Die industrielle Sortierung teilt das angelieferte Sammelgemisch in sortenreine Stoffströme, vermischte Anteile und nicht recyclingfähige Reste auf.",
+        source: "[Christiani und Beckamp, 2017]"
+      },
+      {
+        level: 2,
+        variant: "B",
+        question: "Warum bereiten Verbundverpackungen (z. B. Getränkekartons aus Pappe, Kunststoff und Aluminium) in der Sortierung und Verwertung besondere Probleme?",
+        options: [
+          "Weil sie aus mehreren fest miteinander verbundenen Materialschichten bestehen",
+          "Weil sie überhaupt nicht brennbar sind",
+          "Weil sie schwerer als reines Glas sind",
+          "Weil sie giftige Gase beim Transport abgeben"
+        ],
+        correct: 0,
+        explanation: "Verbundverpackungen bestehen aus unterschiedlichen, fest verklebten Werkstoffen, deren saubere Trennung einen sehr hohen Aufwand erfordert.",
+        source: "[Conversio, 2017; Christiani und Beckamp, 2017]"
+      },
+
+      // STUFE 3: Grundbegriffe - Fraktionsarten
+      {
+        level: 3,
+        variant: "A",
+        question: "Was versteht man im Stoffstromschema unter einer 'Sortenreinen Fraktion'?",
+        options: [
+          "Ein Gemisch aus vielen verschiedenen Kunststoffarten",
+          "Einen Materialstrom, der nur aus einer einzigen, sauberen Materialart besteht (z. B. nur PET-Flaschen)",
+          "Stark verschmutzte Restabfälle zur Verbrennung",
+          "Nassen Biomüll aus der Küche"
+        ],
+        correct: 1,
+        explanation: "Sortenreine Fraktionen besitzen eine sehr hohe Reinheit und sind die wichtigste Voraussetzung für ein hochwertiges werkstoffliches Recycling.",
+        source: "[Christiani und Beckamp, 2017]"
+      },
+      {
+        level: 3,
+        variant: "B",
+        question: "Was kennzeichnet eine 'Vermischte Fraktion' nach der Sortierung?",
+        options: [
+          "Sie besteht ausschließlich aus einfarbigen Glasscherben",
+          "Sie enthält verschiedene, nicht sauber getrennte Kunststoffe oder Materialverbunde",
+          "Sie ist sofort für den direkten Lebensmittelkontakt zugelassen",
+          "Sie besteht aus reinem Neumaterial"
+        ],
+        correct: 1,
+        explanation: "Vermischte Fraktionen (Mischkunststoffe) lassen sich mechanisch nicht vollständig trennen und können daher meist nicht zu hochwertiger Neuware werden.",
+        source: "[Christiani und Beckamp, 2017]"
+      },
+
+      // STUFE 4: Prozessverständnis - Stoffliches Recycling & Reinigung
+      {
+        level: 4,
+        variant: "A",
+        question: "Was bedeutet 'Stoffliches Recycling' im Stoffstromschema?",
+        options: [
+          "Die bloße Verbrennung zur Stromerzeugung",
+          "Die werkstoffliche Wiederaufbereitung von Abfällen zu neuen Rohstoffen unter Erhalt des Werkstoffs",
+          "Das dauerhafte Vergraben auf einer Deponie",
+          "Der einmalige Export von Müll ins Ausland"
+        ],
+        correct: 1,
+        explanation: "Beim stofflichen (werkstofflichen) Recycling bleibt die chemische Substanz des Materials erhalten, um daraus neue Produkte herzustellen.",
+        source: "[Conversio, 2017; KrWG, 2012]"
+      },
+      {
+        level: 4,
+        variant: "B",
+        question: "Warum müssen gebrauchte Verpackungen (wie Konservendosen oder Kunststoffbecher) im Recyclingprozess gründlich gereinigt werden?",
+        options: [
+          "Um das Material absichtlich aufzuweichen",
+          "Um Schmutz, Speisereste und Klebstoffe zu entfernen und saubere Sekundärrohstoffe zu gewinnen",
+          "Damit das Material im Wasserbad vollständig gelöst wird",
+          "Um den Heizwert für die Müllverbrennung zu steigern"
+        ],
+        correct: 1,
+        explanation: "Nur durch gründliches Waschen und Abtrennen von Fremdstoffen entstehen saubere Sekundärrohstoffe ohne störende Gerüche oder Verunreinigungen.",
+        source: "[Christiani und Beckamp, 2017]"
+      },
+
+      // STUFE 5: Prozessverständnis - Sekundärrohstoffe
+      {
+        level: 5,
+        variant: "A",
+        question: "Was stellt das aufbereitete Zwischenprodukt (z. B. saubere PET-Flocken oder recycelte Glasscherben) im Schema dar?",
+        options: [
+          "Einen fossilen Primärrohstoff",
+          "Einen Sekundärrohstoff",
+          "Einen nicht verwertbaren Sortierrest",
+          "Einen reinen Schadstoff"
+        ],
+        correct: 1,
+        explanation: "Sekundärrohstoffe sind Wertstoffe, die durch Recycling aus Abfällen zurückgewonnen wurden und primäre Rohstoffe ersetzen können.",
+        source: "[Christiani und Beckamp, 2017; KrWG, 2012]"
+      },
+      {
+        level: 5,
+        variant: "B",
+        question: "Worin liegt der grundlegende Unterschied zwischen einem Primärrohstoff und einem Sekundärrohstoff?",
+        options: [
+          "Sekundärrohstoffe stammen aus bereits genutzten Abfällen, Primärrohstoffe werden neu aus der Natur gewonnen",
+          "Primärrohstoffe sind immer Abfälle aus der Gelben Tonne",
+          "Sekundärrohstoffe können niemals wiederverwendet werden",
+          "Es gibt fachlich keinen Unterschied zwischen beiden Begriffen"
+        ],
+        correct: 0,
+        explanation: "Primärrohstoffe (z. B. Erdöl, Erze) werden der Natur entnommen; Sekundärrohstoffe stammen aus aufbereiteten Altprodukten.",
+        source: "[UBA, 2022; KrWG, 2012]"
+      },
+
+      // STUFE 6: Prozessverständnis - Rezyklatprüfung
+      {
+        level: 6,
+        variant: "A",
+        question: "Welche Funktion erfüllt die 'Rezyklatprüfung' im Stoffstromschema?",
+        options: [
+          "Sie ist die Endstation für alle Abfälle vor der Deponie",
+          "Sie entscheidet anhand von Reinheit und Qualität über den weiteren Verwertungsweg",
+          "Sie misst ausschließlich das Gesamtgewicht des Müllfahrzeugs",
+          "Sie verhindert jegliche Wiederverwertung von Kunststoffen"
+        ],
+        correct: 1,
+        explanation: "Die Rezyklatprüfung kontrolliert die Qualität des Mahlguts und lenkt das Material entweder in den hochwertigen Kreislauf oder in das Downcycling.",
+        source: "[Christiani und Beckamp, 2017; ZSVR, 2024]"
+      },
+      {
+        level: 6,
+        variant: "B",
+        question: "Welche Materialeigenschaft wird bei der Rezyklatprüfung maßgeblich kontrolliert?",
+        options: [
+          "Ausschließlich das Verkaufsdatum der ursprünglichen Ware",
+          "Die Sortenreinheit, Sauberkeit und eventuelle Materialschädigungen des Wertstoffs",
+          "Die Farbe des LKWs, der das Material transportiert hat",
+          "Der gesetzliche Mindestpreis des Produkts"
+        ],
+        correct: 1,
+        explanation: "Geprüft wird, ob das Rezyklat frei von Fremdstoffen und Verunreinigungen ist, um den passenden Weiterverarbeitungsweg zu bestimmen.",
+        source: "[Christiani und Beckamp, 2017]"
+      },
+
+      // STUFE 7: Prozessverständnis - Qualitätspfade
+      {
+        level: 7,
+        variant: "A",
+        question: "Welcher Pfad folgt im Stoffstromschema, wenn die Rezyklatprüfung eine hohe Reinheit und Qualität bestätigt?",
+        options: [
+          "Hochwertiges Rezyklat $\\rightarrow$ Neue hochwertige Produkte",
+          "Niederwertiges Rezyklat $\\rightarrow$ Downcycling",
+          "Direkte Verbrennung als Sortierrest",
+          "Ablagerung auf einer Bauschuttdeponie"
+        ],
+        correct: 0,
+        explanation: "Hohe Sortenreinheit und Qualität ermöglichen die Herstellung von hochwertigem Rezyklat für anspruchsvolle Neuprodukte.",
+        source: "[Christiani und Beckamp, 2017; ZSVR, 2024]"
+      },
+      {
+        level: 7,
+        variant: "B",
+        question: "Welcher Verwertungsweg wird gewählt, wenn das Rezyklat verschmutzt ist oder aus einer Mischung verschiedener Polymere besteht?",
+        options: [
+          "Closed-Loop-Recycling zur erneuten Lebensmittelverpackung",
+          "Niederwertiges Rezyklat $\\rightarrow$ Neue niederwertige Produkte (Downcycling)",
+          "Einsatz als hochreiner Primärrohstoff",
+          "Sofortige Einstufung als Neuglas"
+        ],
+        correct: 1,
+        explanation: "Verunreinigte oder vermischte Stoffe lassen sich meist nur zu niederwertigen Produkten mit geringeren Qualitätsanforderungen verarbeiten.",
+        source: "[Christiani und Beckamp, 2017]"
+      },
+
+      // STUFE 8: Rezyklatqualitäten - Closed Loop vs. Downcycling
+      {
+        level: 8,
+        variant: "A",
+        question: "Was kennzeichnet den geschlossenen Wertstoffkreislauf (Closed-Loop-Recycling, roter Pfeil im Schema)?",
+        options: [
+          "Das Material wird nach einer einzigen Nutzung verbrannt",
+          "Aus dem Rezyklat entsteht wieder ein gleichwertiges Neuprodukt (z. B. alte PET-Flasche zu neuer PET-Flasche)",
+          "Der Stoffstrom verlässt die Kreislaufwirtschaft für immer",
+          "Das Rezyklat wird ausschließlich im Straßenbau eingesetzt"
+        ],
+        correct: 1,
+        explanation: "Im echten Closed-Loop-Kreislauf ersetzt das Rezyklat Primärrohstoffe vollständig, um wieder dasselbe hochwertige Ausgangsprodukt herzustellen.",
+        source: "[ZSVR, 2024; Conversio, 2017]"
+      },
+      {
+        level: 8,
+        variant: "B",
+        question: "Was bedeutet 'Downcycling' im Stoffstromschema an einem typischen Alltagsbeispiel?",
+        options: [
+          "Aus einer gebrauchten Glasflasche entsteht wieder eine identische Glasflasche",
+          "Aus vermischten Kunststoffabfällen entstehen dickwandige, einfache Produkte wie Parkbänke oder Rasengittersteine",
+          "Ein Produkt wird ohne jede Veränderung direkt weiterverwendet",
+          "Das Material wird rückstandslos in Primäröl umgewandelt"
+        ],
+        correct: 1,
+        explanation: "Beim Downcycling sinkt das Qualitätsniveau des Materials, sodass daraus nur noch anspruchslosere Formteile gefertigt werden können.",
+        source: "[Conversio, 2017; Christiani und Beckamp, 2017]"
+      },
+
+      // STUFE 9: Rezyklatqualitäten - Thermische Verwertung
+      {
+        level: 9,
+        variant: "A",
+        question: "Warum ist die 'Thermische Verwertung' im Schema mit einem roten Kreuz ('kein Kreislauf') gekennzeichnet?",
+        options: [
+          "Weil bei der Verbrennung zwar Energie frei wird, das Material jedoch zerstört wird und für neue Produkte verloren ist",
+          "Weil Abfälle in Kraftwerken grundsätzlich nicht brennen",
+          "Weil Filteranlagen für Rauchgase gesetzlich verboten sind",
+          "Weil Metalle durch Feuer sofort verschwinden"
+        ],
+        correct: 0,
+        explanation: "Die Verbrennung nutzt den Heizwert energetisch, beendet aber den stofflichen Kreislauf unwiederbringlich.",
+        source: "[Conversio, 2017; Christiani und Beckamp, 2017]"
+      },
+      {
+        level: 9,
+        variant: "B",
+        question: "Welches Schicksal droht vielen Downcycling-Produkten am Ende ihrer Nutzungsphase?",
+        options: [
+          "Sie werden unendlich oft zu neuen Lebensmittelverpackungen recycelt",
+          "Sie lassen sich meist nicht erneut stofflich aufbereiten und enden in der thermischen Verwertung",
+          "Sie verwandeln sich von selbst wieder in Primärrohstoffe",
+          "Sie werden ausnahmslos im Gelben Sack neu lizenziert"
+        ],
+        correct: 1,
+        explanation: "Mischkunststoffprodukte aus dem Downcycling sind stofflich oft nicht weiter aufarbeitbar; ihr Lebensweg endet meist in der Müllverbrennung.",
+        source: "[Christiani und Beckamp, 2017]"
+      },
+
+      // STUFE 10: Vor- und Nachteile des Schemas
+      {
+        level: 10,
+        variant: "A",
+        question: "Welcher ökologische Hauptvorteil entsteht, wenn Wertstoffe wie Glas, Blech oder Kunststoffe im Kreislauf geführt werden?",
+        options: [
+          "Schonung knapper natürlicher Ressourcen und deutliche Einsparung von Energie und Treibhausgasen wie $\\text{CO}_2$",
+          "Vollständige Abschaffung aller industriellen Sortieranlagen",
+          "Steigerung der Restmüllmengen in den Kommunen",
+          "Verzicht auf jede Art von Abfalltrennung im Haushalt"
+        ],
+        correct: 0,
+        explanation: "Recycling schont Primärrohstoffe (z. B. Erdöl, Erze) und spart gegenüber der Neuproduktion erhebliche Mengen Energie und $\\text{CO}_2$ ein.",
+        source: "[UBA, 2022; ALBA, 2021]"
+      },
+      {
+        level: 10,
+        variant: "B",
+        question: "Welche physikalische und wirtschaftliche Grenze zeigt das Stoffstromschema des Recyclings auf?",
+        options: [
+          "Metalle wie Aluminium und Eisen können prinzipiell niemals eingeschmolzen werden",
+          "Durch Verschmutzungen, Mischkunststoffe und Materialalterung mindert sich die Qualität, sodass Sortierreste und Downcycling unvermeidbar bleiben",
+          "Glas verliert beim Aufschmelzen jede Festigkeit",
+          "Sortieranlagen können ausschließlich reines Papier verarbeiten"
+        ],
+        correct: 1,
+        explanation: "Aufgrund von Qualitätsminderung, Verbundstoffen und Störstoffen lässt sich in der Praxis kein 100 % verlustfreier Kreislauf für alle Produkte realisieren.",
+        source: "[Conversio, 2017; Christiani und Beckamp, 2017]"
+      }
+    ];
+
+    /* =========================================================================
+       2. GAME STATE MANAGEMENT
+       ========================================================================= */
+    let gameState = {
+      round: 1,
+      currentLevelIndex: 0,
+      jokersRemaining: 2,
+      jokersUsedTotal: 0,
+      totalAttempts: 1,
+      activePool: [],
+      unplayedPool: [],
+      currentQuestion: null,
+      isAnswered: false,
+      round1Completed: false,
+      round2Completed: false,
+      studentName: ""
+    };
+
+    function initializePools() {
+      gameState.activePool = [];
+      gameState.unplayedPool = [];
+
+      for (let lvl = 1; lvl <= 10; lvl++) {
+        const variants = quizDatabase.filter(q => q.level === lvl);
+        const pickA = Math.random() < 0.5;
+        const qRound1 = pickA ? variants[0] : variants[1];
+        const qRound2 = pickA ? variants[1] : variants[0];
+
+        gameState.activePool.push(qRound1);
+        gameState.unplayedPool.push(qRound2);
+      }
+    }
+
+    /* =========================================================================
+       3. UI RENDERING & GAMEPLAY
+       ========================================================================= */
+    function loadCurrentLevel() {
+      gameState.isAnswered = false;
+      const q = gameState.activePool[gameState.currentLevelIndex];
+      gameState.currentQuestion = q;
+
+      // Fortschrittsbalken
+      const progressPercent = (gameState.currentLevelIndex / 10) * 100;
+      document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+      // Badges
+      document.getElementById('level-badge').innerText = `Stufe ${q.level} / 10`;
+      document.getElementById('round-badge').innerText = gameState.round === 1 
+        ? `Durchlauf 1 (Hauptpfad)` 
+        : `Durchlauf 2 (Revanche-Pfad)`;
+
+      // Joker
+      document.getElementById('joker-count').innerText = gameState.jokersRemaining;
+      document.getElementById('btn-joker-50').disabled = (gameState.jokersRemaining <= 0);
+
+      // Fragetext
+      document.getElementById('question-text').innerHTML = q.question;
+
+      // Optionen
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+      const labels = ['A', 'B', 'C', 'D'];
+
+      q.options.forEach((optText, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-option';
+        btn.id = `opt-btn-${idx}`;
+        btn.onclick = () => handleAnswer(idx);
+        btn.innerHTML = `<span class="opt-label">${labels[idx]}</span><span>${optText}</span>`;
+        optionsContainer.appendChild(btn);
+      });
+
+      // Infokarte und Next-Button ausblenden
+      const infoCard = document.getElementById('info-card');
+      infoCard.classList.remove('show');
+      document.getElementById('action-row').style.display = 'none';
+
+      triggerKaTeX();
+    }
+
+    function triggerKaTeX() {
+      if (window.renderMathInElement) {
+        window.renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    /* 50:50 Joker */
+    function useJoker50() {
+      if (gameState.jokersRemaining <= 0 || gameState.isAnswered) return;
+
+      gameState.jokersRemaining--;
+      gameState.jokersUsedTotal++;
+      document.getElementById('joker-count').innerText = gameState.jokersRemaining;
+      if (gameState.jokersRemaining === 0) {
+        document.getElementById('btn-joker-50').disabled = true;
+      }
+
+      const correctIdx = gameState.currentQuestion.correct;
+      const wrongIndices = [0, 1, 2, 3].filter(i => i !== correctIdx);
+      const shuffledWrong = wrongIndices.sort(() => 0.5 - Math.random());
+      const toHide = shuffledWrong.slice(0, 2);
+
+      toHide.forEach(idx => {
+        const btn = document.getElementById(`opt-btn-${idx}`);
+        if (btn) btn.classList.add('hidden-joker');
+      });
+    }
+
+    /* Antwortauswertung */
+    function handleAnswer(selectedIndex) {
+      if (gameState.isAnswered) return;
+      gameState.isAnswered = true;
+
+      const q = gameState.currentQuestion;
+      const selectedBtn = document.getElementById(`opt-btn-${selectedIndex}`);
+
+      if (selectedIndex === q.correct) {
+        // Richtige Antwort -> Grün & Ausklapp-Feedback
+        selectedBtn.classList.add('correct');
+
+        const infoCard = document.getElementById('info-card');
+        document.getElementById('info-text').innerHTML = q.explanation;
+        document.getElementById('info-source').innerText = `Quelle: ${q.source}`;
+        infoCard.classList.add('show');
+
+        document.getElementById('action-row').style.display = 'flex';
+        triggerKaTeX();
+      } else {
+        // Falsche Antwort -> Shake, kein Feedback, Permadeath-Modal
+        selectedBtn.classList.add('wrong');
+        setTimeout(() => {
+          document.getElementById('modal-gameover').classList.add('active');
+        }, 450);
+      }
+    }
+
+    /* Stufe vorwärts */
+    function advanceStep() {
+      if (gameState.currentLevelIndex < 9) {
+        gameState.currentLevelIndex++;
+        loadCurrentLevel();
+      } else {
+        document.getElementById('progress-bar').style.width = `100%`;
+        launchConfetti();
+
+        if (gameState.round === 1) {
+          gameState.round1Completed = true;
+          document.getElementById('modal-round1-win').classList.add('active');
+        } else {
+          gameState.round2Completed = true;
+          setTimeout(() => {
+            showCertificateView();
+          }, 1000);
+        }
+      }
+    }
+
+    /* Permadeath-Neustart */
+    function restartCurrentRun() {
+      document.getElementById('modal-gameover').classList.remove('active');
+      gameState.totalAttempts++;
+      gameState.currentLevelIndex = 0;
+      gameState.jokersRemaining = 2;
+      loadCurrentLevel();
+    }
+
+    /* Durchlauf 2 mit ungespielten Fragen */
+    function startRound2() {
+      document.getElementById('modal-round1-win').classList.remove('active');
+      gameState.round = 2;
+      gameState.currentLevelIndex = 0;
+      gameState.jokersRemaining = 2;
+      gameState.activePool = [...gameState.unplayedPool];
+      loadCurrentLevel();
+    }
+
+    /* =========================================================================
+       4. CERTIFICATE & PRIVACY BY DESIGN
+       ========================================================================= */
+    function showCertificateView() {
+      document.getElementById('quiz-view').style.display = 'none';
+      const certView = document.getElementById('certificate-view');
+      certView.style.display = 'block';
+
+      document.getElementById('cert-stat-questions').innerText = '20 / 20';
+      document.getElementById('cert-stat-attempts').innerText = gameState.totalAttempts;
+      document.getElementById('cert-stat-jokers').innerText = gameState.jokersUsedTotal;
+
+      const todayFormatted = new Date().toLocaleDateString('de-DE', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+      document.getElementById('cert-date-field').innerText = `Ausstellungsdatum: ${todayFormatted}`;
+    }
+
+    function updateCertName(val) {
+      gameState.studentName = val;
+      const printTarget = document.getElementById('cert-print-name');
+      printTarget.innerText = val.trim() !== '' ? val.trim() : '[Name des Prüflings]';
+    }
+
+    /* =========================================================================
+       5. POST-PRINT & RESET FLOW
+       ========================================================================= */
+    window.addEventListener('afterprint', () => {
+      showPostPrintBanner();
+    });
+
+    function showPostPrintBanner() {
+      const banner = document.getElementById('post-print-banner');
+      banner.style.display = 'flex';
+    }
+
+    function dismissBanner() {
+      document.getElementById('post-print-banner').style.display = 'none';
+      document.getElementById('fab-reset').style.display = 'flex';
+    }
+
+    function promptResetGame() {
+      document.getElementById('modal-confirm-reset').classList.add('active');
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('modal-confirm-reset').classList.remove('active');
+    }
+
+    function executeFullReset() {
+      closeConfirmModal();
+      document.getElementById('post-print-banner').style.display = 'none';
+      document.getElementById('fab-reset').style.display = 'none';
+      document.getElementById('certificate-view').style.display = 'none';
+      document.getElementById('quiz-view').style.display = 'block';
+
+      gameState.round = 1;
+      gameState.currentLevelIndex = 0;
+      gameState.jokersRemaining = 2;
+      gameState.jokersUsedTotal = 0;
+      gameState.totalAttempts = 1;
+      gameState.round1Completed = false;
+      gameState.round2Completed = false;
+      gameState.studentName = "";
+
+      const nameInput = document.getElementById('student-name');
+      if (nameInput) nameInput.value = "";
+      document.getElementById('cert-print-name').innerText = "";
+
+      initializePools();
+      loadCurrentLevel();
+    }
+
+    /* =========================================================================
+       6. KONFETTI-ENGINE
+       ========================================================================= */
+    function launchConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#0071e3', '#34c759', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
+
+      for (let i = 0; i < 110; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          w: Math.random() * 10 + 6,
+          h: Math.random() * 6 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 16,
+          vy: (Math.random() - 0.7) * 16,
+          gravity: 0.26,
+          rotation: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 8,
+          opacity: 1
+        });
+      }
+
+      let animationFrame;
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = 0;
+
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.rotation += p.rotSpeed;
+          p.opacity -= 0.008;
+
+          if (p.opacity > 0) {
+            active++;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.globalAlpha = Math.max(p.opacity, 0);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ctx.restore();
+          }
+        });
+
+        if (active > 0) {
+          animationFrame = requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          cancelAnimationFrame(animationFrame);
+        }
+      }
+      animate();
+    }
+
+    /* Start */
+    window.addEventListener('DOMContentLoaded', () => {
+      initializePools();
+      loadCurrentLevel();
+    });
+  </script>
+</body>
+</html>
