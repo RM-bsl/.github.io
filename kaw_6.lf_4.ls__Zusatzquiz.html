@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAW LF6: Duales System & Mengenstromnachweis</title>
+  
+  <!-- KaTeX CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --bg-base: #f5f5f7;
+      --glass-bg: rgba(255, 255, 255, 0.72);
+      --glass-card: rgba(255, 255, 255, 0.82);
+      --glass-border: rgba(255, 255, 255, 0.85);
+      --glass-subtle-border: rgba(0, 0, 0, 0.08);
+      --glass-shadow: 0 12px 36px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
+      --text-main: #1d1d1f;
+      --text-muted: #86868b;
+      --accent-blue: #0071e3;
+      --accent-blue-hover: #0077ed;
+      --accent-green: #34c759;
+      --accent-red: #ff3b30;
+      --accent-amber: #ff9500;
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: var(--font-stack);
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow-x: hidden;
+      padding-bottom: 40px;
+    }
+
+    /* Ambient Background Orbs */
+    .bg-orbs {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.55;
+      animation: floatOrb 22s ease-in-out infinite alternate;
+    }
+    .orb-1 { width: 450px; height: 450px; background: #cce4ff; top: -100px; left: -100px; }
+    .orb-2 { width: 500px; height: 500px; background: #e8d5ff; bottom: -80px; right: -80px; animation-duration: 26s; }
+    .orb-3 { width: 380px; height: 380px; background: #d7f5df; top: 40%; left: 60%; animation-duration: 19s; }
+
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(40px, 60px) scale(1.08); }
+    }
+
+    /* App Container */
+    #app {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 900px;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Header Bar */
+    .header-bar {
+      background: var(--glass-bg);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--glass-shadow);
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .header-titles h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    .header-titles p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .header-stats {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .joker-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .joker-btn {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--glass-subtle-border);
+      color: var(--accent-blue);
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+    .joker-btn:hover:not(:disabled) {
+      background: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0, 113, 227, 0.15);
+    }
+    .joker-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      filter: grayscale(1);
+    }
+    .stat-badge {
+      background: rgba(0, 0, 0, 0.05);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* Progress Ladder Track */
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(0, 0, 0, 0.06);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 10%;
+      background: linear-gradient(90deg, var(--accent-blue), #5ac8fa);
+      transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Main Quiz Card */
+    .quiz-card {
+      background: var(--glass-card);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--glass-shadow);
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      min-height: 480px;
+      position: relative;
+    }
+    .stage-indicator {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-blue);
+      font-weight: 700;
+    }
+    .question-title {
+      font-size: 1.35rem;
+      font-weight: 600;
+      line-height: 1.4;
+      color: var(--text-main);
+      min-height: 60px;
+    }
+
+    /* Answer Grid */
+    .answers-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 640px) {
+      .answers-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .answer-btn {
+      background: rgba(255, 255, 255, 0.75);
+      border: 1.5px solid rgba(0, 0, 0, 0.08);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      text-align: left;
+      font-size: 0.98rem;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      line-height: 1.35;
+      transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+      position: relative;
+    }
+    .answer-btn:hover:not(:disabled) {
+      background: #ffffff;
+      border-color: rgba(0, 113, 227, 0.35);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+    }
+    .answer-key {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.05);
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .answer-btn.correct {
+      background: #e8f9ed !important;
+      border-color: var(--accent-green) !important;
+      color: #12632b !important;
+    }
+    .answer-btn.correct .answer-key {
+      background: var(--accent-green);
+      color: #fff;
+    }
+    .answer-btn.wrong {
+      background: #ffebe9 !important;
+      border-color: var(--accent-red) !important;
+      color: #a81c15 !important;
+      animation: shake 0.45s ease-in-out;
+    }
+    .answer-btn.wrong .answer-key {
+      background: var(--accent-red);
+      color: #fff;
+    }
+    .answer-btn.joker-hidden {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    /* Explanation Drawer */
+    .explanation-drawer {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      background: rgba(52, 199, 89, 0.08);
+      border: 1px solid rgba(52, 199, 89, 0.25);
+      border-radius: var(--radius-md);
+      padding: 0 20px;
+    }
+    .explanation-drawer.open {
+      max-height: 300px;
+      opacity: 1;
+      padding: 20px;
+      margin-top: 10px;
+    }
+    .explanation-header {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #187739;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .explanation-text {
+      font-size: 0.92rem;
+      color: #1a5e30;
+      line-height: 1.5;
+    }
+    .explanation-source {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #0b4920;
+    }
+
+    /* Action Footer */
+    .quiz-footer {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .primary-btn {
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      padding: 12px 28px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 30px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0, 113, 227, 0.25);
+      transition: all 0.2s ease;
+    }
+    .primary-btn:hover {
+      background: var(--accent-blue-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(0, 113, 227, 0.35);
+    }
+    .secondary-btn {
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--text-main);
+      border: none;
+      padding: 12px 24px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .secondary-btn:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Modals Overlay */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.active {
+      display: flex;
+    }
+    .modal-box {
+      background: var(--glass-card);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 480px;
+      padding: 32px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalPop {
+      0% { transform: scale(0.92); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .modal-icon {
+      font-size: 3rem;
+      margin-bottom: -6px;
+    }
+    .modal-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .modal-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      justify-content: center;
+      margin-top: 8px;
+    }
+
+    /* Dismissible Post-Print Banner */
+    .post-print-banner {
+      background: var(--glass-card);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1.5px solid var(--accent-blue);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: var(--glass-shadow);
+      animation: slideDown 0.35s ease;
+    }
+    @keyframes slideDown {
+      0% { transform: translateY(-20px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    .banner-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    .banner-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .banner-close-btn {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+      border-radius: 50%;
+    }
+    .banner-close-btn:hover {
+      color: var(--text-main);
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    /* Persistent Floating Action Element (Fallback Button) */
+    .floating-reset-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--glass-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 50px;
+      padding: 12px 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      color: var(--text-main);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 500;
+      transition: all 0.25s ease;
+    }
+    .floating-reset-btn:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Certificate Section */
+    #certificate-view {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+    }
+    .certificate-container {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+      padding: 50px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .cert-frame {
+      border: 2px solid #e5e5ea;
+      padding: 40px;
+      border-radius: var(--radius-md);
+      position: relative;
+      background: linear-gradient(135deg, rgba(245,245,247,0.4) 0%, rgba(255,255,255,1) 100%);
+    }
+    .cert-header {
+      text-align: center;
+      border-bottom: 2px solid var(--text-main);
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+    }
+    .cert-header h2 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .cert-header p {
+      font-size: 1rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .cert-body {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .cert-body .cert-recipient-label {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .cert-name-field {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent-blue);
+      border-bottom: 2px dashed rgba(0, 113, 227, 0.4);
+      padding: 4px 12px;
+      display: inline-block;
+      min-width: 280px;
+      outline: none;
+    }
+    .cert-name-input-dom {
+      border: 1.5px solid var(--accent-blue);
+      background: rgba(0, 113, 227, 0.04);
+      font-size: 1.2rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      text-align: center;
+      width: 320px;
+      margin: 0 auto;
+    }
+    .cert-statement {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      max-width: 650px;
+      margin: 12px auto;
+      color: #3a3a3c;
+    }
+    .cert-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 600px;
+      margin: 10px auto;
+      width: 100%;
+    }
+    .cert-stat-card {
+      background: #fbfbfd;
+      border: 1px solid #ebebeb;
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      text-align: center;
+    }
+    .cert-stat-val {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .cert-stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+    .cert-footer-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #e5e5ea;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Print Stylesheet (Clean DIN-A4 Certificate) */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 15mm;
+      }
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+      }
+      .bg-orbs,
+      .header-bar,
+      .quiz-card,
+      .modal-backdrop,
+      .post-print-banner,
+      .floating-reset-btn,
+      .no-print,
+      .cert-name-input-dom {
+        display: none !important;
+      }
+      #certificate-view {
+        display: block !important;
+      }
+      .certificate-container {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+      .cert-frame {
+        border: 2px solid #000000 !important;
+        background: none !important;
+        padding: 30px !important;
+      }
+      .cert-name-field {
+        border-bottom: 2px solid #000000 !important;
+        color: #000000 !important;
+        display: inline-block !important;
+      }
+      .cert-header h2 {
+        color: #000000 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Light Orbs -->
+  <div class="bg-orbs no-print">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Persistent Floating Fallback Reset Button -->
+  <button id="floating-reset-btn" class="floating-reset-btn no-print" style="display: none;" title="Quiz zurücksetzen">
+    <span>🔄</span>
+    <span>Quiz zurücksetzen</span>
+  </button>
+
+  <div id="app">
+
+    <!-- Post-Print Banner (Dismissible) -->
+    <div id="post-print-banner" class="post-print-banner no-print" style="display: none;">
+      <div class="banner-info">
+        <span style="font-size: 1.4rem;">📄</span>
+        <span><strong>Druckvorgang registriert!</strong> Möchtest du die Quiz-Anwendung für einen neuen Durchlauf zurücksetzen?</span>
+      </div>
+      <div class="banner-actions">
+        <button id="banner-reset-btn" class="primary-btn" style="padding: 8px 18px; font-size: 0.85rem;">Jetzt zurücksetzen</button>
+        <button id="banner-close-btn" class="banner-close-btn" title="Schließen">&times;</button>
+      </div>
+    </div>
+
+    <!-- Header Navigation Bar -->
+    <header class="header-bar no-print">
+      <div class="header-titles">
+        <h1>Umwelttechnologe KAW: Lernfeld 6</h1>
+        <p id="sub-header-title">Duales System & Mengenstromnachweis • Stufe 1 bis 10</p>
+      </div>
+      <div class="header-stats">
+        <div class="joker-container">
+          <button id="joker-btn" class="joker-btn" title="50:50 Joker einsetzen">
+            <span>⚖️</span>
+            <span>50:50 (<span id="joker-count">2</span>)</span>
+          </button>
+        </div>
+        <div class="stat-badge">
+          Versuch: <span id="attempt-count">1</span>
+        </div>
+        <div class="stat-badge" id="run-badge">
+          Durchlauf 1/2
+        </div>
+      </div>
+      <div class="progress-track">
+        <div id="progress-bar" class="progress-fill"></div>
+      </div>
+    </header>
+
+    <!-- Interactive Quiz Card View -->
+    <main id="quiz-view">
+      <div class="quiz-card" id="quiz-card">
+        <div class="stage-indicator">
+          <span id="level-label">Stufe 1 von 10</span>
+          <span id="category-label">Grundbegriffe & Definitionen</span>
+        </div>
+
+        <div class="question-title" id="question-text">
+          Frage wird geladen...
+        </div>
+
+        <div class="answers-grid" id="answers-grid">
+          <!-- Answer buttons injected dynamically -->
+        </div>
+
+        <!-- Feedback Foldout Drawer -->
+        <div class="explanation-drawer" id="explanation-drawer">
+          <div class="explanation-header">
+            <span>✓</span> Didaktische Begründung
+          </div>
+          <div class="explanation-text" id="explanation-text"></div>
+          <div class="explanation-source" id="explanation-source"></div>
+        </div>
+
+        <div class="quiz-footer">
+          <button id="next-btn" class="primary-btn" style="display: none;">
+            <span>Nächste Frage</span>
+            <span>→</span>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Certificate Section View (Privacy by Design) -->
+    <section id="certificate-view">
+      <div class="certificate-container">
+        <div class="cert-frame">
+          <div class="cert-header">
+            <h2>Abschlusszertifikat</h2>
+            <p>Umwelttechnologe für Kreislauf- und Abfallwirtschaft • Lernfeld 6</p>
+          </div>
+
+          <div class="cert-body">
+            <div class="cert-recipient-label">Dieses Zertifikat bescheinigt die erfolgreiche Qualifikation von</div>
+            
+            <!-- Volatile DOM Name input & display (Privacy by Design: no storage) -->
+            <div class="no-print" style="margin: 10px 0;">
+              <input type="text" id="student-name-input" class="cert-name-input-dom" placeholder="Name des Prüflings eingeben" autocomplete="off" spellcheck="false">
+            </div>
+            <div>
+              <span id="cert-name-display" class="cert-name-field">Unbenannter Prüfling</span>
+            </div>
+
+            <p class="cert-statement">
+              hat die fundierte Expertenprüfung zum <strong>Dualen System, Verpackungsgesetz (VerpackG) und den ZSVR-Prüfleitlinien zum Mengenstromnachweis</strong> in beiden vollständigen Durchläufen (Haupt- und Alternativfragen, 20/20 Fragen) mit herausragendem Erfolg absolviert.
+            </p>
+
+            <div class="cert-stats-grid">
+              <div class="cert-stat-card">
+                <div class="cert-stat-val" id="cert-questions-stat">20 / 20</div>
+                <div class="cert-stat-label">Gemeisterte Fachfragen</div>
+              </div>
+              <div class="cert-stat-card">
+                <div class="cert-stat-val" id="cert-attempts-stat">1</div>
+                <div class="cert-stat-label">Gesamtversuche</div>
+              </div>
+              <div class="cert-stat-card">
+                <div class="cert-stat-val" id="cert-jokers-stat">0</div>
+                <div class="cert-stat-label">Joker verbraucht</div>
+              </div>
+            </div>
+
+            <div class="cert-footer-meta">
+              <span>Ausstellungsdatum: <strong id="cert-date-display"></strong></span>
+              <span>Gültig gemäß VerpackG & ZSVR-Prüfleitlinien</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="no-print" style="display: flex; justify-content: center; gap: 16px; margin-top: 10px;">
+          <button id="print-cert-btn" class="primary-btn" style="background: var(--text-main);">
+            <span>🖨️ Zertifikat drucken / PDF</span>
+          </button>
+          <button id="cert-reset-btn" class="secondary-btn">
+            <span>🔄 Neue Spielrunde starten</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Reusable Modals Overlay -->
+  <div id="modal-backdrop" class="modal-backdrop no-print">
+    <div class="modal-box">
+      <div id="modal-icon" class="modal-icon">⚠️</div>
+      <h3 id="modal-title" class="modal-title">Meldung</h3>
+      <p id="modal-desc" class="modal-desc">Beschreibungstext</p>
+      <div id="modal-actions" class="modal-actions">
+        <!-- Buttons injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       1. MODULAR QUESTION POOL (20 Questions: 10 Levels x [Variant A, Variant B])
+       Fachgebiet: Duales System, VerpackG, Mengenstromnachweis, ZSVR
+       ========================================================================== */
+    const questionPool = [
+      // STUFE 1: Grundbegriffe & Definitionen
+      {
+        level: 1,
+        category: "Grundbegriffe & Definitionen",
+        A: {
+          q: "Wer trägt im Dualen System nach dem Verpackungsgesetz die primäre finanzielle Verantwortung für die Sammlung und das Recycling von Verkaufsverpackungen?",
+          options: [
+            "Der Erstinverkehrbringer (Hersteller bzw. Händler verpackter Ware)",
+            "Der öffentlich-rechtliche Entsorgungsträger (örE)",
+            "Der Letztempfänger der stofflichen Verwertung",
+            "Das Umweltbundesamt (UBA)"
+          ],
+          correct: 0,
+          explanation: "Der Erstinverkehrbringer bietet verpackte Waren gewerblich erstmals in Deutschland an und muss die spätere Entsorgung und Verwertung über Lizenzentgelte an ein duales System finanzieren.",
+          source: "[VerpackG, § 7; ZSVR, 2025]"
+        },
+        B: {
+          q: "Was versteht man unter dem Begriff „Monomaterial“ im Rahmen der recyclinggerechten Verpackungskonstruktion?",
+          options: [
+            "Verpackungen, die aus nur einer einzigen Kunststoff- bzw. Materialart gefertigt sind",
+            "Unlösbare Verbundstoffe aus Aluminium und Polyethylenfolie",
+            "Ausschließlich biologisch abbaubare Stärke-Verpackungen",
+            "Mehrwegbehälter aus gehärtetem Mischsilikatglas"
+          ],
+          correct: 0,
+          explanation: "Monomaterialien (z. B. reines PE oder reines PP) verhindern Fehlwürfe bei der optischen Erkennung und ermöglichen Sortieranlagen das saubere Ausschleusen hochreiner Fraktionen.",
+          source: "[Duales System / ZSVR, 2024]"
+        }
+      },
+
+      // STUFE 2: Akteure & Institutionen
+      {
+        level: 2,
+        category: "Grundbegriffe & Institutionen",
+        A: {
+          q: "Welche zentrale Rechtsfunktion nimmt die Stiftung Zentrale Stelle Verpackungsregister (ZSVR) wahr?",
+          options: [
+            "Sie ist eine staatlich beliehene Stiftung und fungiert als oberste Marktaufsicht",
+            "Sie betreibt die kommunalen Wertstoffhöfe und Müllfahrzeuge",
+            "Sie zieht Müllgebühren direkt von den privaten Haushalten ein",
+            "Sie ist ein privater Entsorgungsfachbetrieb für thermische Verwertung"
+          ],
+          correct: 0,
+          explanation: "Die ZSVR ist eine beliehene Behörde, führt das Herstellerregister LUCID, gleicht Mengenmeldungen ab und überwacht den fairen Wettbewerb der dualen Systeme.",
+          source: "[VerpackG, § 26; ZSVR, 2025]"
+        },
+        B: {
+          q: "Welche Funktion erfüllt die gesetzliche „Abstimmungsvereinbarung“ nach § 22 VerpackG?",
+          options: [
+            "Sie regelt verbindlich die haushaltsnahe Sammlung zwischen dualen Systemen und der Kommune",
+            "Sie legt die Verwertungspreise für Rezyklate an der Rohstoffbörse fest",
+            "Sie bestimmt die Verbrennungstemperatur von Ersatzbrennstoffen (EBS)",
+            "Sie ermittelt quartalsweise die Marktanteile der Hersteller im LUCID-Register"
+          ],
+          correct: 0,
+          explanation: "Die Abstimmungsvereinbarung wird zwischen den dualen Systemen und dem öffentlich-rechtlichen Entsorgungsträger (örE) geschlossen und regelt Sammelbehälter, Abholrhythmen und Standorte vor Ort.",
+          source: "[VerpackG, § 22; DWA, 2023]"
+        }
+      },
+
+      // STUFE 3: Trennprozesse & Störstoffe
+      {
+        level: 3,
+        category: "Definitionen & Trennlogik",
+        A: {
+          q: "Wie werden falsch eingeworfene Abfälle (z. B. Essensreste, Windeln oder Bauschutt) im Recyclingsystem fachlich bezeichnet?",
+          options: [
+            "Störstoffe",
+            "Rezyklate",
+            "Monofraktionen",
+            "Regenerate"
+          ],
+          correct: 0,
+          explanation: "Störstoffe behindern die mechanische und sensorgestützte Sortierung, verunreinigen Wertstoffströme und können Verarbeitungsaggregate gravierend beschädigen.",
+          source: "[Duales System / ZSVR, 2024]"
+        },
+        B: {
+          q: "An welchem Punkt der Wertschöpfungskette gilt Verpackungsmaterial vor dem Gesetz als „erfolgreich recycelt“?",
+          options: [
+            "Erst wenn das Material die Eingangsstufe der Anlage des Letztempfängers durchläuft",
+            "Sobald der Bürger die Verpackung restentleert in die Gelbe Tonne einwirft",
+            "Mit der Ankunft des Sammelfahrzeugs an der ersten Umladestation",
+            "Direkt nach Zahlung der Lizenzentgelte an das duale System"
+          ],
+          correct: 0,
+          explanation: "Rechtlich gilt Verpackungsabfall erst an der Quotenschnittstelle als recycelt – also beim physischen Eingang in die Anlage des Letztempfängers zur stofflichen Verwertung.",
+          source: "[ZSVR Prüfleitlinien, 2025; VerpackG, § 16]"
+        }
+      },
+
+      // STUFE 4: Quoten & Gesetzesvorgaben bis 2027
+      {
+        level: 4,
+        category: "Berechnungen & Prozessverständnis",
+        A: {
+          q: "Welche gesetzliche Mindestquote für die rein werkstoffliche Verwertung von Kunststoffen gilt nach VerpackG bis Ende 2027?",
+          options: [
+            "$63\\,\\%$ (rein werkstofflich)",
+            "$90\\,\\%$ (rein werkstofflich)",
+            "$50\\,\\%$ (rein werkstofflich)",
+            "$75\\,\\%$ (rein werkstofflich)"
+          ],
+          correct: 0,
+          explanation: "Das Verpackungsgesetz schreibt für Kunststoffe bis Ende 2027 eine werkstoffliche Mindestverwertungsquote von $63\\,\\%$ vor.",
+          source: "[VerpackG, Anlage 3; ZSVR, 2025]"
+        },
+        B: {
+          q: "Welche Verwertungsquote verlangt das Verpackungsgesetz bis Ende 2027 für Eisenmetalle, Aluminium und Glas?",
+          options: [
+            "Jeweils mindestens $90\\,\\%$ stoffliche Verwertung",
+            "Jeweils mindestens $63\\,\\%$ mechanische Verwertung",
+            "Jeweils mindestens $80\\,\\%$ rohstoffliche Verwertung",
+            "Genau $70\\,\\%$ energetische Verwertung"
+          ],
+          correct: 0,
+          explanation: "Eisenmetalle, Aluminium sowie Glas müssen bis Ende 2027 zu mindestens $90\\,\\%$ einer Verwertung zugeführt werden.",
+          source: "[VerpackG, Anlage 3; UBA, 2023]"
+        }
+      },
+
+      // STUFE 5: Quotenentwicklung ab 2028
+      {
+        level: 5,
+        category: "Quoten & Prognosen ab 2028",
+        A: {
+          q: "Welche novellierte Verwertungsquote gilt laut VerpackG ab 2028 verbindlich für Kunststoffverpackungen?",
+          options: [
+            "$75\\,\\%$ Gesamt-Recyclingquote, davon mindestens $70\\,\\%$ mechanisch/werkstofflich",
+            "$63\\,\\%$ rein werkstofflich bei beliebiger Restverwertung",
+            "$90\\,\\%$ chemische Verwertung ohne mechanischen Mindestanteil",
+            "$100\\,\\%$ werkstoffliches Recycling aller in Verkehr gebrachten Polymere"
+          ],
+          correct: 0,
+          explanation: "Ab dem Bezugsjahr 2028 steigt die Gesamt-Recyclingquote für Kunststoffverpackungen auf $75\\,\\%$, wovon mindestens $70\\,\\%$ werkstofflich (mechanisch) verarbeitet werden müssen.",
+          source: "[VerpackG Novelle; ZSVR, 2025]"
+        },
+        B: {
+          q: "Auf welchen Prozentsatz steigt die gesetzliche Mindestquote für Eisenmetalle und Aluminium ab dem Jahr 2028?",
+          options: [
+            "$95\\,\\%$ Verwertungsquote",
+            "$90\\,\\%$ Verwertungsquote",
+            "$85\\,\\%$ Verwertungsquote",
+            "$75\\,\\%$ Verwertungsquote"
+          ],
+          correct: 0,
+          explanation: "Für die Fraktionen Eisenmetalle und Aluminium wird die gesetzliche Mindestquote ab 2028 von zuvor $90\\,\\%$ auf anspruchsvolle $95\\,\\%$ angehoben.",
+          source: "[VerpackG, Anlage 3; ZSVR, 2025]"
+        }
+      },
+
+      // STUFE 6: Massenbilanzen & Thermik
+      {
+        level: 6,
+        category: "Prozessparameter & Thermik",
+        A: {
+          q: "Welche feuerungstechnischen Mindestanforderungen müssen thermische Behandlungsanlagen für Rejekte und Sortierreste einhalten?",
+          options: [
+            "Mindesttemperatur von $850\\,^\\circ\\text{C}$ bei einer Verweilzeit von mindestens $2\\,\\text{s}$",
+            "Mindesttemperatur von $1200\\,^\\circ\\text{C}$ bei einer Verweilzeit von mindestens $10\\,\\text{s}$",
+            "Mindesttemperatur von $450\\,^\\circ\\text{C}$ bei einer Verweilzeit von $5\\,\\text{s}$",
+            "Mindesttemperatur von $650\\,^\\circ\\text{C}$ ohne definierte Mindestverweilzeit"
+          ],
+          correct: 0,
+          explanation: "Thermische Anlagen zur Verwertung von Abfällen müssen nach 17. BImSchV das Verbrennungsgas für mindestens $2\\,\\text{s}$ auf mindestens $850\\,^\\circ\\text{C}$ halten, um Schadstoffe sicher zu zerstören.",
+          source: "[17. BImSchV; ZSVR, 2025]"
+        },
+        B: {
+          q: "Eine Sortieranlage verarbeitet $m_{\\text{Input}} = 200\\,\\text{t}$ LVP. Es werden $m_{\\text{Mono}} = 140\\,\\text{t}$ Wertstoffballen erzeugt. Wie groß ist die Masse der Sortierreste $m_{\\text{Rest}}$ gemäß Massenbilanz?",
+          options: [
+            "$m_{\\text{Rest}} = m_{\\text{Input}} - m_{\\text{Mono}} = 60\\,\\text{t}$",
+            "$m_{\\text{Rest}} = m_{\\text{Input}} + m_{\\text{Mono}} = 340\\,\\text{t}$",
+            "$m_{\\text{Rest}} = 200\\,\\text{t} \\cdot 0{,}14 = 28\\,\\text{t}$",
+            "$m_{\\text{Rest}} = 200\\,\\text{t} / 140\\,\\text{t} = 1{,}43\\,\\text{t}$"
+          ],
+          correct: 0,
+          explanation: "In einer geschlossenen Massenbilanz gilt: $\\sum m_{\\text{Input}} = \\sum m_{\\text{Output}}$. Daher berechnet sich der Sortierrest zu $200\\,\\text{t} - 140\\,\\text{t} = 60\\,\\text{t}$.",
+          source: "[ZSVR Prüfleitlinien B.4, 2025]"
+        }
+      },
+
+      // STUFE 7: Metrologie & Belegprüfung
+      {
+        level: 7,
+        category: "Metrologie & Nachweisführung",
+        A: {
+          q: "Welche messtechnische Vorgabe schreibt das Eichrecht (MessEG / MessEV) für Wiegungen an Sortieranlagen vor?",
+          options: [
+            "Jede Verwiegung muss auf einer geeichten Straßenfahrzeugwaage mit Brutto-, Tara- und Nettogewicht erfolgen",
+            "Das Gewicht darf optisch anhand des Ladevolumens des LKWs geschätzt werden",
+            "Nur Ausgangsfraktionen müssen verwogen werden, Inputmengen sind frei kalkulierbar",
+            "Eichzertifikate sind nur bei grenzüberschreitenden Abfalltransporten erforderlich"
+          ],
+          correct: 0,
+          explanation: "Nach MessEG und MessEV müssen alle Materialbewegungen über geeichte Waagen erfasst werden; Wiegescheine verlangen lückenlose Angaben von Brutto, Tara, Netto und Handeingabekennungen.",
+          source: "[MessEG; MessEV; ZSVR Prüfleitlinien B.8, 2025]"
+        },
+        B: {
+          q: "Wie ist die „Massenbilanz“ einer Sortieranlage im Sinne der ZSVR-Prüfleitlinien aufgebaut?",
+          options: [
+            "Gesamtmasse Input muss exakt der Summe aller Sortierprodukte, Sortierreste und Lagerbestandsdifferenzen entsprechen",
+            "Der Gesamterlös aller verkauften Rezyklate muss die Entsorgungskosten um mindestens $10\\,\\%$ übersteigen",
+            "Der Energieverbrauch der Sortieranlage muss ins Verhältnis zur CO2-Einsparung gesetzt werden",
+            "Das Gesamtgewicht des Inputs muss dem Bruttogewicht der Sammelfahrzeuge entsprechen"
+          ],
+          correct: 0,
+          explanation: "Die Massenbilanz dokumentiert lückenlos: $\\text{Input} + \\text{Anfangsbestand} = \\text{Output} + \\text{Endbestand}$. Unstimmigkeiten weisen auf Fehlbuchungen oder Mengenmanipulationen hin.",
+          source: "[ZSVR Prüfleitlinien B.4, 2025]"
+        }
+      },
+
+      // STUFE 8: Sachverständigenwesen & ZSVR-Leitlinien
+      {
+        level: 8,
+        category: "Expertennormen & Berufsrecht",
+        A: {
+          q: "Dürfen registrierte Sachverständige nach den ZSVR-Prüfleitlinien Kernprüfungshandlungen an Subunternehmer delegieren?",
+          options: [
+            "Nein, die Durchführung von Prüfungshandlungen durch Dritte/Subunternehmer ist unzulässig",
+            "Ja, bis zu $49\\,\\%$ der Prüfungsleistungen dürfen fremdvergeben werden",
+            "Ja, wenn der Subunternehmer ein nach ISO 9001 zertifizierter Betrieb ist",
+            "Ja, aber nur bei der Prüfung von Sortieranlagen im EU-Ausland"
+          ],
+          correct: 0,
+          explanation: "Gemäß Ziffer A 2.2 der ZSVR-Prüfleitlinien ist die Übertragung von Prüfungshandlungen an Subunternehmer aufgrund der persönlichen Verantwortung des Sachverständigen strikt unzulässig.",
+          source: "[ZSVR Prüfleitlinien A.2.2, 2025]"
+        },
+        B: {
+          q: "Welche rechtliche Konsequenz droht einem Sachverständigen bei wiederholten, grob pflichtwidrigen Verstößen gegen die Prüfleitlinien?",
+          options: [
+            "Die ZSVR kann den Sachverständigen für bis zu drei Jahre aus dem Register streichen",
+            "Eine Verwarnung mit einem festen Bußgeld von maximal $50\\,\\text{Euro}$",
+            "Ein zeitlich unbegrenztes Berufsverbot für sämtliche Ingenieurtätigkeiten",
+            "Die automatische Übernahme der Entsorgungskosten des betroffenen Systems"
+          ],
+          correct: 0,
+          explanation: "Nach § 26 Abs. 1 Nr. 27 i. V. m. § 27 Abs. 4 VerpackG kann die Zentrale Stelle Sachverständige bei groben Verstößen für bis zu 3 Jahre aus dem Register entfernen.",
+          source: "[VerpackG, § 27; ZSVR Prüfleitlinien A.3, 2025]"
+        }
+      },
+
+      // STUFE 9: Stichprobenumfänge bei Mengenstromprüfungen
+      {
+        level: 9,
+        category: "Auditierung & Stichprobenprüfung",
+        A: {
+          q: "Welcher Mindeststichprobenumfang gilt für Systeme mit $\\ge 10\\,\\%$ Marktanteil bei der Belegprüfung der Erfassungsgebiete?",
+          options: [
+            "Mindestens $5\\,\\%$ der Erfassungsgebiete je Materialgruppe mit je mindestens einer Monatsmenge",
+            "Genau 1 Erfassungsgebiet pro Bundesland mit einer Jahresmenge",
+            "$100\\,\\%$ Vollprüfung aller Wiegescheine sämtlicher deutscher Landkreise",
+            "Ausschließlich eine telefonische Stichprobe bei $2\\,\\%$ der beteiligten Kommunen"
+          ],
+          correct: 0,
+          explanation: "Systeme mit mindestens $10\\,\\%$ Marktanteil müssen in mindestens $5\\,\\%$ der Erfassungsgebiete je Materialgruppe (LVP, Glas, PPK) mit mindestens einer vollen Monatsmenge beleggeprüft werden.",
+          source: "[ZSVR Prüfleitlinien B.8.5, 2025]"
+        },
+        B: {
+          q: "Welcher Mindestprüfumfang ist für den Anlagen-Input an der Quotenschnittstelle von Letztempfängern je Artikel vorgeschrieben?",
+          options: [
+            "Mindestens drei (3) Monatsmengen je Artikel",
+            "Genau eine (1) Tageslieferung pro Halbjahr",
+            "Ausschließlich die Vorlage einer schriftlichen Selbsterklärung der Werksleitung",
+            "Mindestens sechs (6) Jahresbilanzen rückwirkend"
+          ],
+          correct: 0,
+          explanation: "Bei Letztempfängern, deren Input der Quotenschnittstelle entspricht, umfasst der Mindestprüfumfang der Belege drei Monatsmengen je Artikel.",
+          source: "[ZSVR Prüfleitlinien B.8.6, 2025]"
+        }
+      },
+
+      // STUFE 10: Expertenregeln & Zertifikatsrestriktionen
+      {
+        level: 10,
+        category: "Höchste Expertennormen",
+        A: {
+          q: "Wie bewerten die ZSVR-Prüfleitlinien sogenannte Händler- oder Linienzertifikate mit anonymisiertem Letztempfänger?",
+          options: [
+            "Sie dürfen im Rahmen des Mengenstromnachweises keinesfalls als Nachweis anerkannt werden",
+            "Sie werden anerkannt, sofern der Zwischenhändler eine Bankbürgschaft hinterlegt",
+            "Sie gelten als vollwertiger Nachweis, um Betriebsgeheimnisse im Außenhandel zu wahren",
+            "Sie sind nur für Kunststoffverbunde der Fraktion 550 zulässig"
+          ],
+          correct: 0,
+          explanation: "Gemäß Ziffer B 6.5.8 dürfen Händler- oder Linienzertifikate, in denen Name und Anschrift des realen Letztempfängers fehlen, im Mengenstromnachweis keinesfalls anerkannt werden.",
+          source: "[ZSVR Prüfleitlinien B.6.5.8, 2025]"
+        },
+        B: {
+          q: "Welche Voraussetzung muss erfüllt sein, damit Mengen für eine Materialfraktion anerkannt werden, für die eine Anlage nicht explizit zertifiziert ist?",
+          options: [
+            "Die konkrete Verwertungseignung muss aus Zertifikat und Prüfbericht detailliert auf Artikelebene hervorgehen",
+            "Die Bestätigung des dualen Systems über die reine Tonnage reicht vollständig aus",
+            "Die Menge muss automatisch als EBS-Brennstoff in einer MVA deklariert werden",
+            "Der Sachverständige muss die Menge pauschal um $50\\,\\%$ abwerten"
+          ],
+          correct: 0,
+          explanation: "Werden zertifizierungspflichtige Anlagen mit abweichenden Fraktionen beliefert, dürfen die Mengen laut Ziffer B 6.5.9 nur anerkannt werden, wenn das Zertifikat samt Prüfbericht die Eignung explizit auf Artikelebene nachweist.",
+          source: "[ZSVR Prüfleitlinien B.6.5.9, 2025]"
+        }
+      }
+    ];
+
+    /* ==========================================================================
+       2. APPLICATION STATE MANAGEMENT
+       ========================================================================== */
+    const state = {
+      run: 1,                    // 1 or 2
+      currentLevel: 1,           // 1 to 10
+      jokersRemaining: 2,        // 2x 50:50 jokers per run attempt
+      totalAttempts: 1,          // Total attempt counter
+      jokerUsedOnCurrentQ: false,
+      jokersSpentTotal: 0,
+      run1Variants: [],          // Stores 'A' or 'B' used in Run 1
+      activeQuestionData: null,
+      questionAnswered: false,
+      postPrintBannerDismissed: false
+    };
+
+    // DOM Elements
+    const elProgressBar = document.getElementById('progress-bar');
+    const elJokerBtn = document.getElementById('joker-btn');
+    const elJokerCount = document.getElementById('joker-count');
+    const elAttemptCount = document.getElementById('attempt-count');
+    const elRunBadge = document.getElementById('run-badge');
+    const elLevelLabel = document.getElementById('level-label');
+    const elCategoryLabel = document.getElementById('category-label');
+    const elQuestionText = document.getElementById('question-text');
+    const elAnswersGrid = document.getElementById('answers-grid');
+    const elExplanationDrawer = document.getElementById('explanation-drawer');
+    const elExplanationText = document.getElementById('explanation-text');
+    const elExplanationSource = document.getElementById('explanation-source');
+    const elNextBtn = document.getElementById('next-btn');
+    const elQuizView = document.getElementById('quiz-view');
+    const elCertificateView = document.getElementById('certificate-view');
+    const elPostPrintBanner = document.getElementById('post-print-banner');
+    const elFloatingResetBtn = document.getElementById('floating-reset-btn');
+    const elModalBackdrop = document.getElementById('modal-backdrop');
+    const elModalIcon = document.getElementById('modal-icon');
+    const elModalTitle = document.getElementById('modal-title');
+    const elModalDesc = document.getElementById('modal-desc');
+    const elModalActions = document.getElementById('modal-actions');
+    const elStudentNameInput = document.getElementById('student-name-input');
+    const elCertNameDisplay = document.getElementById('cert-name-display');
+    const elCertDateDisplay = document.getElementById('cert-date-display');
+    const elCertQuestionsStat = document.getElementById('cert-questions-stat');
+    const elCertAttemptsStat = document.getElementById('cert-attempts-stat');
+    const elCertJokersStat = document.getElementById('cert-jokers-stat');
+
+    /* ==========================================================================
+       3. INITIALIZATION & RUN INITIALIZER
+       ========================================================================== */
+    function initGame() {
+      // Pick random variants for Run 1 if not set
+      if (state.run1Variants.length === 0) {
+        state.run1Variants = questionPool.map(() => (Math.random() < 0.5 ? 'A' : 'B'));
+      }
+      loadQuestion();
+      updateUIStats();
+    }
+
+    function updateUIStats() {
+      elJokerCount.textContent = state.jokersRemaining;
+      elAttemptCount.textContent = state.totalAttempts;
+      elRunBadge.textContent = `Durchlauf ${state.run}/2`;
+      const progressPercent = (state.currentLevel / 10) * 100;
+      elProgressBar.style.width = `${progressPercent}%`;
+
+      if (state.jokersRemaining <= 0 || state.jokerUsedOnCurrentQ || state.questionAnswered) {
+        elJokerBtn.disabled = true;
+      } else {
+        elJokerBtn.disabled = false;
+      }
+    }
+
+    /* ==========================================================================
+       4. QUESTION LOADER & RENDERING
+       ========================================================================== */
+    function loadQuestion() {
+      state.questionAnswered = false;
+      state.jokerUsedOnCurrentQ = false;
+      
+      // Close drawer & hide next button
+      elExplanationDrawer.classList.remove('open');
+      elNextBtn.style.display = 'none';
+
+      const poolIndex = state.currentLevel - 1;
+      const levelConfig = questionPool[poolIndex];
+      const variant = state.run === 1 ? state.run1Variants[poolIndex] : (state.run1Variants[poolIndex] === 'A' ? 'B' : 'A');
+      const qData = levelConfig[variant];
+      state.activeQuestionData = qData;
+
+      // Update Labels
+      elLevelLabel.textContent = `Stufe ${state.currentLevel} von 10`;
+      elCategoryLabel.textContent = levelConfig.category;
+      elQuestionText.innerHTML = qData.q;
+
+      // Render Answers
+      elAnswersGrid.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+      qData.options.forEach((optText, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'answer-btn';
+        btn.setAttribute('data-index', index);
+        btn.innerHTML = `<span class="answer-key">${letters[index]}</span><span>${optText}</span>`;
+        btn.addEventListener('click', () => handleAnswer(index, btn));
+        elAnswersGrid.appendChild(btn);
+      });
+
+      updateUIStats();
+
+      // Render KaTeX math in question card
+      if (window.renderMathInElement) {
+        renderMathInElement(document.getElementById('quiz-card'), {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    /* ==========================================================================
+       5. ANSWER SELECTION & PERMADEATH LOGIC
+       ========================================================================== */
+    function handleAnswer(selectedIndex, clickedBtn) {
+      if (state.questionAnswered) return;
+      state.questionAnswered = true;
+      elJokerBtn.disabled = true;
+
+      const correctIndex = state.activeQuestionData.correct;
+      const allButtons = elAnswersGrid.querySelectorAll('.answer-btn');
+
+      if (selectedIndex === correctIndex) {
+        // Correct Answer Flow
+        clickedBtn.classList.add('correct');
+
+        // Reveal Didactic Feedback Drawer
+        elExplanationText.innerHTML = state.activeQuestionData.explanation;
+        elExplanationSource.innerHTML = `Nachweis: ${state.activeQuestionData.source}`;
+        elExplanationDrawer.classList.add('open');
+
+        if (window.renderMathInElement) {
+          renderMathInElement(elExplanationDrawer, {
+            delimiters: [
+              { left: "$$", right: "$$", display: true },
+              { left: "$", right: "$", display: false }
+            ],
+            throwOnError: false
+          });
+        }
+
+        // Show Next button
+        elNextBtn.style.display = 'inline-flex';
+      } else {
+        // Wrong Answer Flow (Permadeath)
+        clickedBtn.classList.add('wrong');
+        
+        // Lock all buttons without revealing the correct one
+        allButtons.forEach(b => b.disabled = true);
+
+        // Immediate game over modal after short shake
+        setTimeout(() => {
+          showModal({
+            icon: "❌",
+            title: "Prüfung nicht bestanden!",
+            desc: "Im behördlichen Mengenstromnachweis führen Meldefehler zur Versagung des Testats. Gemäß Prüfungsordnung musst du von Stufe 1 neu beginnen.",
+            actions: [
+              {
+                text: "Neustart bei Stufe 1",
+                primary: true,
+                onClick: () => {
+                  closeModal();
+                  restartRunPermadeath();
+                }
+              }
+            ]
+          });
+        }, 550);
+      }
+    }
+
+    function restartRunPermadeath() {
+      state.totalAttempts++;
+      state.currentLevel = 1;
+      state.jokersRemaining = 2; // Refresh jokers on restart
+      loadQuestion();
+    }
+
+    /* ==========================================================================
+       6. JOKER MECHANIC (2x 50:50)
+       ========================================================================== */
+    elJokerBtn.addEventListener('click', () => {
+      if (state.jokersRemaining <= 0 || state.jokerUsedOnCurrentQ || state.questionAnswered) return;
+
+      const correctIndex = state.activeQuestionData.correct;
+      const wrongIndices = [0, 1, 2, 3].filter(idx => idx !== correctIndex);
+      
+      // Pick 2 random wrong options to hide
+      wrongIndices.sort(() => Math.random() - 0.5);
+      const toHide = wrongIndices.slice(0, 2);
+
+      const buttons = elAnswersGrid.querySelectorAll('.answer-btn');
+      toHide.forEach(idx => {
+        buttons[idx].classList.add('joker-hidden');
+      });
+
+      state.jokersRemaining--;
+      state.jokersSpentTotal++;
+      state.jokerUsedOnCurrentQ = true;
+      updateUIStats();
+    });
+
+    /* ==========================================================================
+       7. STEP PROGRESSION & RUN TRANSITION
+       ========================================================================== */
+    elNextBtn.addEventListener('click', () => {
+      if (state.currentLevel < 10) {
+        state.currentLevel++;
+        loadQuestion();
+      } else {
+        // Completed Level 10 of current run!
+        triggerConfetti();
+
+        if (state.run === 1) {
+          // Run 1 Completed -> Prompt Run 2
+          showModal({
+            icon: "🏆",
+            title: "Durchlauf 1 fehlerfrei gemeistert!",
+            desc: "Hervorragende Leistung! 10 von 10 Stufen bestanden. Um das offizielle Fachzertifikat freizuschalten, musst du nun Durchlauf 2 mit den 10 ungespielten Alternativfragen fehlerfrei absolvieren.",
+            actions: [
+              {
+                text: "Ungespielte Alternativfragen spielen",
+                primary: true,
+                onClick: () => {
+                  closeModal();
+                  startRun2();
+                }
+              }
+            ]
+          });
+        } else {
+          // Run 2 Completed -> Mastered All 20 Questions
+          showModal({
+            icon: "🎖️",
+            title: "Volle Fachkompetenz bewiesen!",
+            desc: "Du hast alle 20 anspruchsvollen Fachfragen beider Durchläufe erfolgreich gelöst. Dein offizielles Abschlusszertifikat ist nun freigeschaltet.",
+            actions: [
+              {
+                text: "Abschlusszertifikat öffnen",
+                primary: true,
+                onClick: () => {
+                  closeModal();
+                  openCertificateView();
+                }
+              }
+            ]
+          });
+        }
+      }
+    });
+
+    function startRun2() {
+      state.run = 2;
+      state.currentLevel = 1;
+      state.jokersRemaining = 2; // Fresh jokers for run 2
+      loadQuestion();
+    }
+
+    /* ==========================================================================
+       8. CERTIFICATE & VOLATILE PRIVACY-BY-DESIGN PROTOCOL
+       ========================================================================== */
+    function openCertificateView() {
+      elQuizView.style.display = 'none';
+      elCertificateView.style.display = 'flex';
+      document.getElementById('sub-header-title').textContent = "Abschlusszertifikat • Offizieller Leistungsnachweis";
+
+      // Fill Stats
+      elCertQuestionsStat.textContent = "20 / 20";
+      elCertAttemptsStat.textContent = state.totalAttempts;
+      elCertJokersStat.textContent = state.jokersSpentTotal;
+      elCertDateDisplay.textContent = new Date().toLocaleDateString('de-DE', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      });
+
+      // Synchronize Name Input into DOM Display (strictly non-persistent)
+      elStudentNameInput.value = '';
+      elCertNameDisplay.textContent = "Vorname Nachname";
+      elStudentNameInput.addEventListener('input', (e) => {
+        elCertNameDisplay.textContent = e.target.value.trim() || "Unbenannter Prüfling";
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.getElementById('print-cert-btn').addEventListener('click', () => {
+      window.print();
+    });
+
+    /* ==========================================================================
+       9. POST-PRINT & DISMISSIBLE BANNER / FLOATING FALLBACK WORKFLOW
+       ========================================================================== */
+    window.addEventListener('afterprint', () => {
+      // Only trigger if in certificate view
+      if (elCertificateView.style.display === 'flex') {
+        elPostPrintBanner.style.display = 'flex';
+        state.postPrintBannerDismissed = false;
+        elFloatingResetBtn.style.display = 'none';
+      }
+    });
+
+    // Close Banner -> Switch to Floating Fallback Button
+    document.getElementById('banner-close-btn').addEventListener('click', () => {
+      elPostPrintBanner.style.display = 'none';
+      state.postPrintBannerDismissed = true;
+      elFloatingResetBtn.style.display = 'flex';
+    });
+
+    // Reset Trigger Buttons
+    document.getElementById('banner-reset-btn').addEventListener('click', promptResetProtection);
+    document.getElementById('floating-reset-btn').addEventListener('click', promptResetProtection);
+    document.getElementById('cert-reset-btn').addEventListener('click', promptResetProtection);
+
+    // Two-Step Reset Safety Modal
+    function promptResetProtection() {
+      showModal({
+        icon: "🔄",
+        title: "Quiz wirklich zurücksetzen?",
+        desc: "Möchtest du die gesamte Anwendung wirklich zurücksetzen? Sämtliche erreichten Stufen und ungedruckte Zertifikatsdaten gehen dabei unwiderruflich verloren.",
+        actions: [
+          {
+            text: "Abbrechen",
+            primary: false,
+            onClick: closeModal
+          },
+          {
+            text: "Zurücksetzen",
+            primary: true,
+            onClick: () => {
+              closeModal();
+              performFullReset();
+            }
+          }
+        ]
+      });
+    }
+
+    function performFullReset() {
+      // Complete state wipe (Privacy by Design: no storage used)
+      state.run = 1;
+      state.currentLevel = 1;
+      state.jokersRemaining = 2;
+      state.totalAttempts = 1;
+      state.jokersSpentTotal = 0;
+      state.run1Variants = [];
+      state.activeQuestionData = null;
+      state.questionAnswered = false;
+      state.postPrintBannerDismissed = false;
+
+      elStudentNameInput.value = '';
+      elCertNameDisplay.textContent = 'Unbenannter Prüfling';
+
+      elPostPrintBanner.style.display = 'none';
+      elFloatingResetBtn.style.display = 'none';
+      elCertificateView.style.display = 'none';
+      elQuizView.style.display = 'block';
+      document.getElementById('sub-header-title').textContent = "Duales System & Mengenstromnachweis • Stufe 1 bis 10";
+
+      initGame();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ==========================================================================
+       10. MODAL & CONFETTI UTILITIES
+       ========================================================================== */
+    function showModal({ icon, title, desc, actions }) {
+      elModalIcon.textContent = icon || "ℹ️";
+      elModalTitle.textContent = title;
+      elModalDesc.textContent = desc;
+
+      elModalActions.innerHTML = '';
+      actions.forEach(action => {
+        const btn = document.createElement('button');
+        btn.className = action.primary ? 'primary-btn' : 'secondary-btn';
+        btn.textContent = action.text;
+        btn.addEventListener('click', action.onClick);
+        elModalActions.appendChild(btn);
+      });
+
+      elModalBackdrop.classList.add('active');
+    }
+
+    function closeModal() {
+      elModalBackdrop.classList.remove('active');
+    }
+
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      }
+    }
+
+    // App Startup
+    window.addEventListener('DOMContentLoaded', () => {
+      initGame();
+    });
+  </script>
+</body>
+</html>
