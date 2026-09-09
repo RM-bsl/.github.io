@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -54,7 +53,7 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
     }
 
     h1 {
@@ -70,14 +69,50 @@
       margin-top: 2px;
     }
 
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
     .badge-lf6 {
       background: #e0e7ff;
       color: #3730a3;
-      padding: 5px 12px;
+      padding: 6px 12px;
       border-radius: 9999px;
       font-size: 0.78rem;
       font-weight: 700;
       border: 1px solid #c7d2fe;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .btn-wiki {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+      color: #1e293b;
+      border: 1px solid #cbd5e1;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    .btn-wiki:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+      color: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    .btn-wiki:active {
+      transform: translateY(0);
     }
 
     .control-panel {
@@ -176,6 +211,12 @@
     .node-card {
       cursor: pointer;
       transition: transform 0.15s ease, filter 0.15s ease;
+      outline: none;
+    }
+
+    .node-card:focus-visible rect:first-child {
+      stroke: #2563eb;
+      stroke-width: 3px;
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -355,6 +396,12 @@
       gap: 6px;
     }
 
+    .definition-entry + .definition-entry {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed #e2e8f0;
+    }
+
     .route-pill-container {
       display: flex;
       align-items: center;
@@ -445,9 +492,15 @@
     <div class="title-row">
       <div>
         <h1>B2C-Verpackungsrecycling &amp; Duales System</h1>
-        <p class="subtitle">Interaktives Strukturmodell für die Kreislaufwirtschaft im Fachunterricht[cite: 1]</p>
+        <p class="subtitle">Interaktives Strukturmodell für die Kreislaufwirtschaft im Fachunterricht</p>
       </div>
-      <span class="badge-lf6">Lernfeld 6: Aufbereitung &amp; Recycling</span>
+      <div class="header-actions">
+        <span class="badge-lf6">Lernfeld 6: Aufbereitung &amp; Recycling</span>
+        <a href="https://de.wikipedia.org/wiki/Duales_System_(Abfallwirtschaft)" target="_blank" rel="noopener noreferrer" class="btn-wiki" title="Duales System auf Wikipedia öffnen">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Wikipedia
+        </a>
+      </div>
     </div>
 
     <div class="control-panel">
@@ -506,11 +559,8 @@
         <text x="778" y="23" font-size="11" font-weight="600" fill="#1e293b">Datenstrom (ZSVR / Testate)</text>
       </g>
 
-      <!-- ============================================================= -->
-      <!-- 1. STOFFSTRÖME (BLAU / ROT)                                   -->
-      <!-- ============================================================= -->
+      <!-- 1. STOFFSTRÖME -->
       <g class="stream-group stream-stoff">
-        <!-- Hersteller -> Erstinverkehrbringer (120px Abstand, vollkommen frei) -->
         <path class="stream-hitbox" data-stream-key="stoff_hersteller_eiv" d="M 260 119 L 380 119"/>
         <path class="stream-path" data-stream-key="stoff_hersteller_eiv" d="M 260 119 L 380 119" fill="none" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrow-stoff)"/>
         <g class="stream-badge-group" data-stream-key="stoff_hersteller_eiv" transform="translate(320, 105)">
@@ -518,7 +568,6 @@
           <text class="stream-text" x="0" y="3.5" font-size="8.5" text-anchor="middle" fill="#1d4ed8" font-weight="bold">Leergut-Lieferung</text>
         </g>
 
-        <!-- Erstinverkehrbringer -> Verbraucher -->
         <path class="stream-hitbox" data-stream-key="stoff_eiv_verbraucher" d="M 470 163 L 470 188 L 250 188 L 250 215"/>
         <path class="stream-path" data-stream-key="stoff_eiv_verbraucher" d="M 470 163 L 470 188 L 250 188 L 250 215" fill="none" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrow-stoff)"/>
         <g class="stream-badge-group" data-stream-key="stoff_eiv_verbraucher" transform="translate(360, 188)">
@@ -526,7 +575,6 @@
           <text class="stream-text" x="0" y="3.5" font-size="8.5" text-anchor="middle" fill="#1d4ed8" font-weight="bold">Befüllte Ware</text>
         </g>
 
-        <!-- Verbraucher -> Sortierer -->
         <path class="stream-hitbox" data-stream-key="stoff_verbraucher_sortierer" d="M 205 303 L 205 360"/>
         <path class="stream-path" data-stream-key="stoff_verbraucher_sortierer" d="M 205 303 L 205 360" fill="none" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrow-stoff)"/>
         <g class="stream-badge-group" data-stream-key="stoff_verbraucher_sortierer" transform="translate(205, 331)">
@@ -534,7 +582,6 @@
           <text class="stream-text" x="0" y="3.5" font-size="8.5" text-anchor="middle" fill="#1d4ed8" font-weight="bold">LVP / Glas / PPK</text>
         </g>
 
-        <!-- Sortieranlage -> Letztempfänger stofflich -->
         <path class="stream-hitbox" data-stream-key="stoff_sortierer_monofraktion" d="M 150 450 L 150 640"/>
         <path class="stream-path" data-stream-key="stoff_sortierer_monofraktion" d="M 150 450 L 150 640" fill="none" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrow-stoff)"/>
         <g class="stream-badge-group" data-stream-key="stoff_sortierer_monofraktion" transform="translate(150, 545)">
@@ -542,7 +589,6 @@
           <text class="stream-text" x="0" y="3.5" font-size="8.5" text-anchor="middle" fill="#1d4ed8" font-weight="bold">Monofraktionen (Reinstoffe)</text>
         </g>
 
-        <!-- Closed-Loop Rezyklat -->
         <path class="stream-hitbox" data-stream-key="stoff_closed_loop" d="M 60 685 L 20 685 L 20 119 L 60 119"/>
         <path class="stream-path" data-stream-key="stoff_closed_loop" d="M 60 685 L 20 685 L 20 119 L 60 119" fill="none" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrow-stoff)"/>
         <g class="stream-badge-group" data-stream-key="stoff_closed_loop" transform="translate(80, 188)">
@@ -550,7 +596,6 @@
           <text class="stream-text" x="0" y="3.5" font-size="8" text-anchor="middle" fill="#1d4ed8" font-weight="bold">Closed-Loop Rezyklat</text>
         </g>
 
-        <!-- Sortierreste / EBS -->
         <path class="stream-hitbox" data-stream-key="reject_sortierreste" d="M 350 435 L 400 435 L 400 910 L 350 910"/>
         <path class="stream-path" data-stream-key="reject_sortierreste" d="M 350 435 L 400 435 L 400 910 L 350 910" fill="none" stroke="#dc2626" stroke-width="2.5" marker-end="url(#arrow-reject)"/>
         <g class="stream-badge-group" data-stream-key="reject_sortierreste" transform="translate(400, 545)">
@@ -558,7 +603,6 @@
           <text class="stream-text" x="0" y="3.5" font-size="8.5" text-anchor="middle" fill="#dc2626" font-weight="bold">Sortierreste / EBS</text>
         </g>
 
-        <!-- Verfahrens-Rejecte -->
         <path class="stream-hitbox" data-stream-key="reject_verfahren" d="M 205 730 L 205 880"/>
         <path class="stream-path" data-stream-key="reject_verfahren" d="M 205 730 L 205 880" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="4,4" marker-end="url(#arrow-reject)"/>
         <g class="stream-badge-group" data-stream-key="reject_verfahren" transform="translate(205, 805)">
@@ -567,11 +611,8 @@
         </g>
       </g>
 
-      <!-- ============================================================= -->
-      <!-- 2. FINANZSTRÖME (GRÜN)                                        -->
-      <!-- ============================================================= -->
+      <!-- 2. FINANZSTRÖME -->
       <g class="stream-group stream-finanz">
-        <!-- Lizenzentgelt -->
         <path class="stream-hitbox" data-stream-key="finanz_lizenz" d="M 610 119 L 655 119 L 655 245 L 700 245"/>
         <path class="stream-path" data-stream-key="finanz_lizenz" d="M 610 119 L 655 119 L 655 245 L 700 245" fill="none" stroke="#15803d" stroke-width="2.5" stroke-dasharray="4,4" marker-end="url(#arrow-finanz)"/>
         <g class="stream-badge-group" data-stream-key="finanz_lizenz" transform="translate(655, 175)">
@@ -579,7 +620,6 @@
           <text class="stream-text" x="0" y="3.5" font-size="8" text-anchor="middle" fill="#15803d" font-weight="bold">Lizenzentgelt</text>
         </g>
 
-        <!-- Vergütung Erfassung & Sortierung -->
         <path class="stream-hitbox" data-stream-key="finanz_verguetung" d="M 700 275 L 485 275 L 485 410 L 350 410"/>
         <path class="stream-path" data-stream-key="finanz_verguetung" d="M 700 275 L 485 275 L 485 410 L 350 410" fill="none" stroke="#15803d" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow-finanz)"/>
         <g class="stream-badge-group" data-stream-key="finanz_verguetung" transform="translate(560, 275)">
@@ -587,7 +627,6 @@
           <text class="stream-text" x="0" y="3.5" font-size="8" text-anchor="middle" fill="#15803d" font-weight="bold">Vergütung Leistung</text>
         </g>
 
-        <!-- Abstimmungsvereinbarung -->
         <path class="stream-hitbox" data-stream-key="finanz_abstimmung" d="M 820 215 L 820 163"/>
         <path class="stream-path" data-stream-key="finanz_abstimmung" d="M 820 215 L 820 163" fill="none" stroke="#15803d" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow-finanz)"/>
         <g class="stream-badge-group" data-stream-key="finanz_abstimmung" transform="translate(820, 189)">
@@ -597,11 +636,8 @@
         </g>
       </g>
 
-      <!-- ============================================================= -->
-      <!-- 3. DATENSTRÖME (LILA)                                         -->
-      <!-- ============================================================= -->
+      <!-- 3. DATENSTRÖME -->
       <g class="stream-group stream-daten">
-        <!-- LUCID Meldung -->
         <path class="stream-hitbox" data-stream-key="daten_lucid" d="M 495 75 L 495 55 L 970 55 L 970 660 L 940 660"/>
         <path class="stream-path" data-stream-key="daten_lucid" d="M 495 75 L 495 55 L 970 55 L 970 660 L 940 660" fill="none" stroke="#7e22ce" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow-daten)"/>
         <g class="stream-badge-group" data-stream-key="daten_lucid" transform="translate(630, 55)">
@@ -609,7 +645,6 @@
           <text class="stream-text" x="0" y="3.5" font-size="8" text-anchor="middle" fill="#7e22ce" font-weight="bold">LUCID-Meldepflicht</text>
         </g>
 
-        <!-- Wiegedaten Sortierer -->
         <path class="stream-hitbox" data-stream-key="daten_wiegeschein_sortierer" d="M 350 380 L 700 380"/>
         <path class="stream-path" data-stream-key="daten_wiegeschein_sortierer" d="M 350 380 L 700 380" fill="none" stroke="#7e22ce" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow-daten)"/>
         <g class="stream-badge-group" data-stream-key="daten_wiegeschein_sortierer" transform="translate(525, 380)">
@@ -617,7 +652,6 @@
           <text class="stream-text" x="0" y="3.5" font-size="8" text-anchor="middle" fill="#7e22ce" font-weight="bold">Wiegedaten &amp; Bilanzen</text>
         </g>
 
-        <!-- Wiegeschein stofflich -->
         <path class="stream-hitbox" data-stream-key="daten_wiegeschein_stofflich" d="M 350 685 L 535 685 L 535 415 L 700 415"/>
         <path class="stream-path" data-stream-key="daten_wiegeschein_stofflich" d="M 350 685 L 535 685 L 535 415 L 700 415" fill="none" stroke="#7e22ce" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow-daten)"/>
         <g class="stream-badge-group" data-stream-key="daten_wiegeschein_stofflich" transform="translate(535, 595)">
@@ -625,7 +659,6 @@
           <text class="stream-text" x="0" y="3.5" font-size="8" text-anchor="middle" fill="#7e22ce" font-weight="bold">Wiegescheine (stofflich)</text>
         </g>
 
-        <!-- Wiegeschein thermisch -->
         <path class="stream-hitbox" data-stream-key="daten_wiegeschein_thermisch" d="M 350 935 L 610 935 L 610 435 L 700 435"/>
         <path class="stream-path" data-stream-key="daten_wiegeschein_thermisch" d="M 350 935 L 610 935 L 610 435 L 700 435" fill="none" stroke="#7e22ce" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow-daten)"/>
         <g class="stream-badge-group" data-stream-key="daten_wiegeschein_thermisch" transform="translate(610, 800)">
@@ -633,7 +666,6 @@
           <text class="stream-text" x="0" y="3.5" font-size="8" text-anchor="middle" fill="#7e22ce" font-weight="bold">Wiegescheine (thermisch)</text>
         </g>
 
-        <!-- Testat Datenprüfer -->
         <path class="stream-hitbox" data-stream-key="daten_attest" d="M 770 360 L 770 303"/>
         <path class="stream-path" data-stream-key="daten_attest" d="M 770 360 L 770 303" fill="none" stroke="#7e22ce" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow-daten)"/>
         <g class="stream-badge-group" data-stream-key="daten_attest" transform="translate(770, 331)">
@@ -641,7 +673,6 @@
           <text class="stream-text" x="0" y="3.5" font-size="8" text-anchor="middle" fill="#7e22ce" font-weight="bold">Prüftestat</text>
         </g>
 
-        <!-- Mengenstromnachweis -->
         <path class="stream-hitbox" data-stream-key="daten_mengenstrom" d="M 940 260 L 960 260 L 960 645 L 940 645"/>
         <path class="stream-path" data-stream-key="daten_mengenstrom" d="M 940 260 L 960 260 L 960 645 L 940 645" fill="none" stroke="#7e22ce" stroke-width="2.2" stroke-dasharray="6,4" marker-end="url(#arrow-daten)"/>
         <g class="stream-badge-group" data-stream-key="daten_mengenstrom" transform="translate(960, 475)">
@@ -650,127 +681,114 @@
         </g>
       </g>
 
-      <!-- ============================================================= -->
-      <!-- KNOTEN / STATIONEN (KOMPAKTE PROPORTIONEN, GLÜHBIRNE 💡)       -->
-      <!-- ============================================================= -->
-
-      <!-- KNOTEN 1: HERSTELLER -->
+      <!-- KNOTEN / STATIONEN (OHNE INNENRAHMEN) -->
       <g class="node-card" data-node-key="hersteller" transform="translate(60, 75)" filter="url(#card-shadow)" role="button" tabindex="0">
         <rect width="200" height="88" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
         <path d="M 0 8 Q 0 0 8 0 L 192 0 Q 200 0 200 8 L 200 28 L 0 28 Z" fill="#9da8c3" stroke="#1e293b" stroke-width="1.8"/>
         <text x="100" y="19" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Hersteller der Verpackung</text>
-        <text x="12" y="58" font-size="18">💡</text>
-        <text x="36" y="50" font-size="9.5" fill="#1e293b" font-weight="600">
-          <tspan x="36" dy="0">Bestimmt die spätere</tspan>
-          <tspan x="36" dy="15">Recyclingfähigkeit</tspan>
+        <text x="15" y="62" font-size="16">💡</text>
+        <text x="39" y="52" font-size="11.5" fill="#0f172a" font-weight="600">
+          <tspan x="39" dy="0">Bestimmt die spätere</tspan>
+          <tspan x="39" dy="16">Recyclingfähigkeit</tspan>
         </text>
       </g>
 
-      <!-- KNOTEN 2: ERSTINVERKEHRBRINGER -->
       <g class="node-card" data-node-key="erstinverkehrbringer" transform="translate(380, 75)" filter="url(#card-shadow)" role="button" tabindex="0">
         <rect width="230" height="88" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
         <path d="M 0 8 Q 0 0 8 0 L 222 0 Q 230 0 230 8 L 230 28 L 0 28 Z" fill="#111827" stroke="#111827" stroke-width="1.8"/>
         <text x="115" y="19" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">Erstinverkehrbringer</text>
-        <text x="12" y="58" font-size="18">💡</text>
-        <text x="36" y="50" font-size="9.5" fill="#1e293b" font-weight="600">
-          <tspan x="36" dy="0">Trägt die Finanzierung für</tspan>
-          <tspan x="36" dy="15">den gesamten Kreislauf</tspan>
+        <text x="15" y="62" font-size="16">💡</text>
+        <text x="39" y="52" font-size="11.5" fill="#0f172a" font-weight="600">
+          <tspan x="39" dy="0">Trägt die Finanzierung für</tspan>
+          <tspan x="39" dy="16">den gesamten Kreislauf</tspan>
         </text>
       </g>
 
-      <!-- KNOTEN 3: LANDKREIS -->
       <g class="node-card" data-node-key="landkreis" transform="translate(710, 75)" filter="url(#card-shadow)" role="button" tabindex="0">
         <rect width="230" height="88" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
         <path d="M 0 8 Q 0 0 8 0 L 222 0 Q 230 0 230 8 L 230 28 L 0 28 Z" fill="#9da8c3" stroke="#1e293b" stroke-width="1.8"/>
         <text x="115" y="19" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Landkreis (örE)</text>
-        <text x="12" y="58" font-size="18">💡</text>
-        <text x="36" y="50" font-size="9.5" fill="#1e293b" font-weight="600">
-          <tspan x="36" dy="0">Verwaltet den Müll in</tspan>
-          <tspan x="36" dy="15">der gesamten Region</tspan>
+        <text x="15" y="62" font-size="16">💡</text>
+        <text x="39" y="52" font-size="11.5" fill="#0f172a" font-weight="600">
+          <tspan x="39" dy="0">Verwaltet den Müll in</tspan>
+          <tspan x="39" dy="16">der gesamten Region</tspan>
         </text>
       </g>
 
-      <!-- KNOTEN 4: VERBRAUCHER -->
       <g class="node-card" data-node-key="verbraucher" transform="translate(140, 215)" filter="url(#card-shadow)" role="button" tabindex="0">
         <rect width="220" height="88" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
         <path d="M 0 8 Q 0 0 8 0 L 212 0 Q 220 0 220 8 L 220 28 L 0 28 Z" fill="#9da8c3" stroke="#1e293b" stroke-width="1.8"/>
         <text x="110" y="19" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Verbraucher</text>
-        <text x="12" y="58" font-size="18">💡</text>
-        <text x="36" y="50" font-size="9.5" fill="#1e293b" font-weight="600">
-          <tspan x="36" dy="0">Verantwortlich für die</tspan>
-          <tspan x="36" dy="15">saubere Mülltrennung</tspan>
+        <text x="15" y="62" font-size="16">💡</text>
+        <text x="39" y="52" font-size="11.5" fill="#0f172a" font-weight="600">
+          <tspan x="39" dy="0">Verantwortlich für die</tspan>
+          <tspan x="39" dy="16">saubere Mülltrennung</tspan>
         </text>
       </g>
 
-      <!-- KNOTEN 5: DUALES SYSTEM -->
       <g class="node-card" data-node-key="dualessystem" transform="translate(700, 215)" filter="url(#card-shadow)" role="button" tabindex="0">
         <rect width="240" height="88" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
         <path d="M 0 8 Q 0 0 8 0 L 232 0 Q 240 0 240 8 L 240 28 L 0 28 Z" fill="#111827" stroke="#111827" stroke-width="1.8"/>
         <text x="120" y="19" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">Duales System</text>
-        <text x="12" y="58" font-size="18">💡</text>
-        <text x="36" y="50" font-size="9.5" fill="#1e293b" font-weight="600">
-          <tspan x="36" dy="0">Organisatorische und</tspan>
-          <tspan x="36" dy="15">kaufmännische Zentrale</tspan>
+        <text x="15" y="62" font-size="16">💡</text>
+        <text x="39" y="52" font-size="11.5" fill="#0f172a" font-weight="600">
+          <tspan x="39" dy="0">Organisatorische und</tspan>
+          <tspan x="39" dy="16">kaufmännische Zentrale</tspan>
         </text>
       </g>
 
-      <!-- KNOTEN 6: ENTSORGUNGSFACHBETRIEB (SORTIERER) -->
       <g class="node-card" data-node-key="sortierer" transform="translate(60, 360)" filter="url(#card-shadow)" role="button" tabindex="0">
         <rect width="290" height="90" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
         <path d="M 0 8 Q 0 0 8 0 L 282 0 Q 290 0 290 8 L 290 28 L 0 28 Z" fill="#9da8c3" stroke="#1e293b" stroke-width="1.8"/>
         <text x="145" y="19" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Entsorgungsfachbetrieb (Sortierer)</text>
-        <text x="12" y="59" font-size="18">💡</text>
-        <text x="36" y="51" font-size="9.5" fill="#1e293b" font-weight="600">
-          <tspan x="36" dy="0">Führt die mechanische Trennung</tspan>
-          <tspan x="36" dy="15">in Monofraktionen durch</tspan>
+        <text x="15" y="63" font-size="16">💡</text>
+        <text x="39" y="53" font-size="12" fill="#0f172a" font-weight="600">
+          <tspan x="39" dy="0">Führt die mechanische Trennung</tspan>
+          <tspan x="39" dy="16">in Monofraktionen durch</tspan>
         </text>
       </g>
 
-      <!-- KNOTEN 7: DATENPRÜFER -->
       <g class="node-card" data-node-key="datenpruefer" transform="translate(700, 360)" filter="url(#card-shadow)" role="button" tabindex="0">
         <rect width="240" height="90" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
         <path d="M 0 8 Q 0 0 8 0 L 232 0 Q 240 0 240 8 L 240 28 L 0 28 Z" fill="#9da8c3" stroke="#1e293b" stroke-width="1.8"/>
-        <text x="120" y="19" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Datenprüfer / Gutachter</text>
-        <text x="12" y="59" font-size="18">💡</text>
-        <text x="36" y="51" font-size="9.5" fill="#1e293b" font-weight="600">
-          <tspan x="36" dy="0">Kontrolliert neutral alle</tspan>
-          <tspan x="36" dy="15">Zahlen im System</tspan>
+        <text x="120" y="19" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Datenprüfer (Dienstleister / Garantiegeber)</text>
+        <text x="15" y="63" font-size="16">💡</text>
+        <text x="39" y="53" font-size="11.5" fill="#0f172a" font-weight="600">
+          <tspan x="39" dy="0">Kontrolliert neutral alle</tspan>
+          <tspan x="39" dy="16">Zahlen im System</tspan>
         </text>
       </g>
 
-      <!-- KNOTEN 8: LETZTEMP FÄNGER (STOFFLICHE VERWERTUNG) -->
       <g class="node-card" data-node-key="letztemfaenger" transform="translate(60, 640)" filter="url(#card-shadow)" role="button" tabindex="0">
         <rect width="290" height="90" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
         <path d="M 0 8 Q 0 0 8 0 L 282 0 Q 290 0 290 8 L 290 28 L 0 28 Z" fill="#9da8c3" stroke="#1e293b" stroke-width="1.8"/>
         <text x="145" y="19" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Letztempfänger (Stofflich)</text>
-        <text x="12" y="59" font-size="18">💡</text>
-        <text x="36" y="51" font-size="9.5" fill="#1e293b" font-weight="600">
-          <tspan x="36" dy="0">Erst nach Durchlauf gilt Material</tspan>
-          <tspan x="36" dy="15">gesetzlich als recycelt</tspan>
+        <text x="15" y="63" font-size="16">💡</text>
+        <text x="39" y="53" font-size="11.5" fill="#0f172a" font-weight="600">
+          <tspan x="39" dy="0">Erst nach Durchlauf gilt Material</tspan>
+          <tspan x="39" dy="16">gesetzlich als recycelt</tspan>
         </text>
       </g>
 
-      <!-- KNOTEN 9: LETZTEMP FÄNGER (THERMISCHE VERWERTUNG) -->
       <g class="node-card" data-node-key="sortierreste" transform="translate(60, 880)" filter="url(#card-shadow)" role="button" tabindex="0">
         <rect width="290" height="90" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
         <path d="M 0 8 Q 0 0 8 0 L 282 0 Q 290 0 290 8 L 290 28 L 0 28 Z" fill="#9da8c3" stroke="#1e293b" stroke-width="1.8"/>
         <text x="145" y="19" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Letztempfänger (Thermisch / MVA)</text>
-        <text x="12" y="59" font-size="18">💡</text>
-        <text x="36" y="51" font-size="9.5" fill="#1e293b" font-weight="600">
-          <tspan x="36" dy="0">Entsorgt nicht recyclingfähige</tspan>
-          <tspan x="36" dy="15">Reste energetisch</tspan>
+        <text x="15" y="63" font-size="16">💡</text>
+        <text x="39" y="53" font-size="11.5" fill="#0f172a" font-weight="600">
+          <tspan x="39" dy="0">Entsorgt nicht recyclingfähige</tspan>
+          <tspan x="39" dy="16">Reste energetisch</tspan>
         </text>
       </g>
 
-      <!-- KNOTEN 10: ZENTRALE STELLE VERPACKUNGSREGISTER (ZSVR) -->
       <g class="node-card" data-node-key="zsvr" transform="translate(700, 640)" filter="url(#card-shadow)" role="button" tabindex="0">
         <rect width="240" height="90" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
         <path d="M 0 8 Q 0 0 8 0 L 232 0 Q 240 0 240 8 L 240 28 L 0 28 Z" fill="#9da8c3" stroke="#1e293b" stroke-width="1.8"/>
         <text x="120" y="19" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Zentrale Stelle (ZSVR)</text>
-        <text x="12" y="59" font-size="18">💡</text>
-        <text x="36" y="51" font-size="9.5" fill="#1e293b" font-weight="600">
-          <tspan x="36" dy="0">Hoheitliche Marktaufsicht</tspan>
-          <tspan x="36" dy="15">und Registerbehörde</tspan>
+        <text x="15" y="63" font-size="16">💡</text>
+        <text x="39" y="53" font-size="11.5" fill="#0f172a" font-weight="600">
+          <tspan x="39" dy="0">Hoheitliche Marktaufsicht</tspan>
+          <tspan x="39" dy="16">und Registerbehörde</tspan>
         </text>
       </g>
     </svg>
@@ -868,9 +886,9 @@
         icon: "🔄",
         relevance: "Organisiert als privatwirtschaftlicher Träger die flächendeckende Sammlung und stoffliche Verwertung im Bundesgebiet.",
         definition: [
-"Mengenstromnachweis: Jährlich von Sachverständigen geprüfte Massenbilanz, die die Quotenerfüllung rechtssicher belegt."
-"Massenbilanz: Die Summe aller inputs (in Verkehr gebrachte und gesammelte Verpackungen) muss gleich der Summe aller Outputs (recycelte Rohstoffe, Sortierreste, energetisch verwertete Abfälle) plus der zeitlichen Bestandsänderung (Lagerung) sein."
-],
+          "Mengenstromnachweis: Jährlich von Sachverständigen geprüfte Massenbilanz, die die Quotenerfüllung rechtssicher belegt.",
+          "Massenbilanz: Die Summe aller Inputs (in Verkehr gebrachte und gesammelte Verpackungen) entspricht der Summe aller Outputs (recycelte Rohstoffe, Sortierreste, thermisch verwertete Anteile) zuzüglich der Lagerbestandsänderungen."
+        ],
         tasks: [
           "Nimmt Lizenzentgelte von den Erstinverkehrbringern ein.",
           "Schreibt Erfassungs- und Sortierleistungen diskriminierungsfrei im Wettbewerb aus.",
@@ -893,7 +911,7 @@
         tasks: [
           "Erfasst Verpackungsabfälle logistisch über Sammelfahrzeuge.",
           "Verwiegt Ein- und Ausgänge auf geeichten Waagen und dokumentiert Wiegescheine.",
-          "Trennt über verschiedene Verfahren das heterogene Sammelgemisch in normierte (einheitlich), recyclingfähige Monofraktionen."
+          "Trennt über verschiedene Verfahren das heterogene Sammelgemisch in normierte, recyclingfähige Monofraktionen."
         ],
         interactions: [
           "Verbraucher: Leert Tonnen und holt Säcke ab.",
@@ -907,16 +925,16 @@
         category: "Prüfinstanz",
         title: "Datenprüfer (Dienstleister / Garantiegeber)",
         icon: "⚖️",
-        relevance: "Der Datenprüfer stellt sicher, dass niemand betrügt. Er kontrolliert neutral alle Zahlen im digitalen System, damit kein System Scheinmengen          abrechnet.",
+        relevance: "Der Datenprüfer stellt sicher, dass niemand betrügt. Er kontrolliert neutral alle Zahlen im digitalen System, damit kein System Scheinmengen abrechnet.",
         definition: "Massenbilanz: Mathematischer Nachweis: Gelieferte Eingangsmasse = Sortierprodukte + Reststoffe + Feuchtigkeitsverlust.",
         tasks: [
           "Prüft Wiegescheine, Lieferpapiere und Buchungsdaten der Sortieranlagen.",
-          "Er verhindert, dass zwei Systeme dieselbe Tonne Abfall gleichzeitig für sich verbuchen.",
+          "Er verhindert, dass zwei Systeme dieselbe Tonne Abfall gleichzeitig für sich verbuchen."
         ],
         interactions: [
-          "Entsorgungsfachbetrieb: Kontrolliert geeichte (offiziell geprüftes Messgerät) Wägeprotokolle.",
+          "Entsorgungsfachbetrieb: Kontrolliert geeichte Wägeprotokolle.",
           "Letztempfänger: Überprüft Eingangsbücher und Verwertungsquoten.",
-          "Duales System: Stellt verbindliche Jahresbilanzen des B2C-Abfallströme aus."
+          "Duales System: Stellt verbindliche Jahresbilanzen der B2C-Abfallströme aus."
         ]
       },
       letztemfaenger: {
@@ -1141,6 +1159,10 @@
       modalCategory.textContent = data.category;
       modalTitle.textContent = data.title;
 
+      const formattedDefinition = Array.isArray(data.definition)
+        ? data.definition.map(d => `<div class="definition-entry">${d}</div>`).join('')
+        : `<div class="definition-entry">${data.definition}</div>`;
+
       modalBody.innerHTML = `
         <div class="info-card">
           <div class="info-card-label">💡 Relevanz im Wertstoffkreislauf</div>
@@ -1149,7 +1171,7 @@
 
         <div class="info-card">
           <div class="info-card-label">📖 Fachbegriff &amp; Definition</div>
-          <div>${data.definition}</div>
+          <div>${formattedDefinition}</div>
         </div>
 
         <div class="info-card">
