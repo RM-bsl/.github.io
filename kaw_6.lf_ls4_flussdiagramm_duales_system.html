@@ -896,7 +896,15 @@
         interactions: [
           "Duales System: Schließt Abstimmungsverträge ab und kontrolliert Sammelstandards.",
           "Verbraucher: Informiert über Abfallkalender, Gebühren und korrekte Mülltrennung."
-        ]
+        ],
+        systems: {
+          title: "Sammelstrukturen (Hol- und Bringsystem)",
+          intro: "Die entsorgungspflichtige Körperschaft legt vertraglich mit dem dualen System fest, in welcher Form die Erfassung der Verpackungsabfälle erfolgt:",
+          items: [
+            { type: "Holsystem", desc: "Erfassung direkt an den Haushalten (Gelber Sack, Gelbe Tonne, Papiertonne)." },
+            { type: "Bringsystem", desc: "Abgabe an zentralen Sammelstellen (Iglus/Depotcontainer für Glas und Metalle, Wertstoffhof)." }
+          ]
+        }
       },
       verbraucher: {
         category: "Station im Kreislauf • Ausgangspunkt",
@@ -1203,6 +1211,19 @@
         ? data.definition.map(d => `<div class="definition-entry">${d}</div>`).join('')
         : `<div class="definition-entry">${data.definition}</div>`;
 
+      let systemsCardHtml = '';
+      if (data.systems) {
+        systemsCardHtml = `
+          <div class="info-card">
+            <div class="info-card-label">🚛 ${data.systems.title}</div>
+            <div style="margin-bottom: 8px;">${data.systems.intro}</div>
+            <ul class="bullet-list">
+              ${data.systems.items.map(s => `<li><strong>${s.type}:</strong> ${s.desc}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      }
+
       let resourceCardHtml = '';
       if (data.resource) {
         resourceCardHtml = `
@@ -1238,6 +1259,8 @@
             ${data.tasks.map(t => `<li>${t}</li>`).join('')}
           </ul>
         </div>
+
+        ${systemsCardHtml}
 
         <div class="info-card">
           <div class="info-card-label">🔗 Vor- und nachgelagerte Schnittstellen</div>
