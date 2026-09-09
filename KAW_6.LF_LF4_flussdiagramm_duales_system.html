@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Duales System &amp; B2C-Verpackungsrecycling (Lernfeld 6)</title>
+  <style>
+    :root {
+      --bg-canvas: #f8fafc;
+      --card-border: #1e293b;
+      --header-lavender: #9da8c3;
+      --header-black: #111827;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --stoff-blue: #1d4ed8;
+      --finanz-green: #15803d;
+      --daten-purple: #7e22ce;
+      --reject-red: #dc2626;
+      --fluent-acrylic-bg: rgba(255, 255, 255, 0.94);
+      --fluent-acrylic-border: rgba(255, 255, 255, 0.7);
+      --fluent-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI Variable Text", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 15px 40px;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    header {
+      width: 100%;
+      max-width: 1020px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .badge-lf6 {
+      background: #e0e7ff;
+      color: #3730a3;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border: 1px solid #c7d2fe;
+    }
+
+    .control-panel {
+      display: flex;
+      align-items: center;
+      background: #ffffff;
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .filter-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #475569;
+      margin-right: 4px;
+    }
+
+    .btn-filter {
+      min-height: 36px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #f1f5f9;
+      color: #334155;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s cubic-bezier(0.1, 0.9, 0.2, 1);
+      user-select: none;
+    }
+
+    .btn-filter:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .btn-filter:active {
+      transform: scale(0.98);
+    }
+
+    .btn-filter.active {
+      background: #0f172a;
+      color: #ffffff;
+      border-color: #0f172a;
+    }
+
+    .btn-filter.active[data-stream="stoff"] {
+      background: var(--stoff-blue);
+      border-color: var(--stoff-blue);
+    }
+
+    .btn-filter.active[data-stream="finanz"] {
+      background: var(--finanz-green);
+      border-color: var(--finanz-green);
+    }
+
+    .btn-filter.active[data-stream="daten"] {
+      background: var(--daten-purple);
+      border-color: var(--daten-purple);
+    }
+
+    .graphic-container {
+      width: 100%;
+      max-width: 1020px;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1.5px solid #cbd5e1;
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .node-card {
+      cursor: pointer;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .node-card:hover {
+        filter: drop-shadow(0 8px 16px rgba(15, 23, 42, 0.16));
+      }
+      .node-card:hover rect:first-child {
+        stroke: #2563eb;
+      }
+      .stream-hitbox:hover + .stream-path,
+      .stream-path:hover {
+        stroke-width: 5px !important;
+        filter: drop-shadow(0 0 6px rgba(37, 99, 235, 0.5));
+      }
+    }
+
+    .stream-hitbox {
+      cursor: pointer;
+      pointer-events: stroke;
+      fill: none;
+      stroke: transparent;
+      stroke-width: 20px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .stream-path {
+      cursor: pointer;
+      transition: opacity 0.25s ease, stroke-width 0.2s ease, stroke 0.2s ease;
+      pointer-events: stroke;
+    }
+
+    .stream-badge-group {
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.2s ease, opacity 0.25s ease;
+    }
+
+    .stream-badge-bg {
+      transition: fill 0.2s ease, stroke 0.2s ease, stroke-width 0.2s ease;
+    }
+
+    .fluent-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      opacity: 0;
+      transition: opacity 0.2s cubic-bezier(0.1, 0.9, 0.2, 1);
+    }
+
+    .fluent-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .fluent-dialog {
+      background: var(--fluent-acrylic-bg);
+      backdrop-filter: blur(30px) saturate(160%);
+      -webkit-backdrop-filter: blur(30px) saturate(160%);
+      border: 1px solid var(--fluent-acrylic-border);
+      border-radius: 12px;
+      max-width: 640px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: var(--fluent-shadow);
+      display: flex;
+      flex-direction: column;
+      transform: translateY(12px) scale(0.98);
+      transition: transform 0.2s cubic-bezier(0.1, 0.9, 0.2, 1);
+    }
+
+    .fluent-overlay.active .fluent-dialog {
+      transform: translateY(0) scale(1);
+    }
+
+    .fluent-header {
+      padding: 16px 20px;
+      background: rgba(255, 255, 255, 0.85);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .fluent-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .fluent-icon-box {
+      font-size: 1.6rem;
+      line-height: 1;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f1f5f9;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .fluent-category {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #64748b;
+    }
+
+    .fluent-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.25;
+    }
+
+    .fluent-btn-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      background: transparent;
+      border: none;
+      font-size: 1.4rem;
+      color: #64748b;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .fluent-btn-close:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .fluent-body {
+      padding: 20px;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #334155;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .info-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .info-card-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .route-pill-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .station-pill {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #1e293b;
+    }
+
+    .station-pill.target {
+      background: #eff6ff;
+      border-color: #93c5fd;
+      color: #1d4ed8;
+    }
+
+    .route-arrow {
+      color: #94a3b8;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .bullet-list {
+      list-style-type: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .bullet-list li {
+      position: relative;
+      padding-left: 16px;
+    }
+
+    .bullet-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #2563eb;
+      font-weight: bold;
+    }
+
+    .instruction-hint {
+      margin-top: 14px;
+      font-size: 0.84rem;
+      color: #64748b;
+      text-align: center;
+    }
+
+    @media (max-width: 767px) {
+      body {
+        padding: 10px 8px 30px;
+      }
+      .btn-filter {
+        min-height: 44px;
+        padding: 8px 12px;
+        flex: 1 1 auto;
+        justify-content: center;
+      }
+      .fluent-overlay {
+        padding: 0;
+        align-items: flex-end;
+      }
+      .fluent-dialog {
+        max-width: 100%;
+        height: 90vh;
+        max-height: 90vh;
+        border-radius: 16px 16px 0 0;
+      }
+      .fluent-btn-close {
+        width: 44px;
+        height: 44px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-row">
+      <div>
+        <h1>B2C-Verpackungsrecycling &amp; Duales System</h1>
+        <p class="subtitle">Interaktives Strukturmodell für die Kreislaufwirtschaft im Fachunterricht[cite: 1]</p>
+      </div>
+      <span class="badge-lf6">Lernfeld 6: Aufbereitung &amp; Recycling</span>
+    </div>
+
+    <div class="control-panel">
+      <div class="filter-group">
+        <span class="filter-label">Ebenenfilter:</span>
+        <button class="btn-filter active" data-stream="all">Alle Ströme</button>
+        <button class="btn-filter" data-stream="stoff">
+          <span style="display:inline-block; width:10px; height:10px; background:var(--stoff-blue); border-radius:2px;"></span>
+          Stoffstrom (Material)
+        </button>
+        <button class="btn-filter" data-stream="finanz">
+          <span style="display:inline-block; width:10px; height:10px; background:var(--finanz-green); border-radius:2px;"></span>
+          Finanzstrom (Entgelte)
+        </button>
+        <button class="btn-filter" data-stream="daten">
+          <span style="display:inline-block; width:10px; height:10px; background:var(--daten-purple); border-radius:2px;"></span>
+          Datenstrom (LUCID / Testate)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="graphic-container" draggable="false" ondragstart="return false;">
+    <svg id="processSvg" viewBox="0 0 1020 1020" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow-stoff" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#1d4ed8"/>
+        </marker>
+        <marker id="arrow-finanz" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#15803d"/>
+        </marker>
+        <marker id="arrow-daten" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#7e22ce"/>
+        </marker>
+        <marker id="arrow-reject" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#dc2626"/>
+        </marker>
+
+        <filter id="card-shadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+          <feDropShadow dx="0" dy="2.5" stdDeviation="2.5" flood-opacity="0.10"/>
+        </filter>
+        <filter id="badge-shadow" x="-10%" y="-10%" width="120%" height="120%">
+          <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-opacity="0.15"/>
+        </filter>
+      </defs>
+
+      <!-- LEGENDE -->
+      <g transform="translate(30, 14)">
+        <rect width="960" height="38" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+        <text x="18" y="24" font-size="12" font-weight="bold" fill="#334155">Legende der Ströme:</text>
+        <line x1="165" y1="19" x2="210" y2="19" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrow-stoff)"/>
+        <text x="218" y="23" font-size="11" font-weight="600" fill="#1e293b">Physischer Stoffstrom</text>
+        <line x1="435" y1="19" x2="480" y2="19" stroke="#15803d" stroke-width="2.5" stroke-dasharray="4,4" marker-end="url(#arrow-finanz)"/>
+        <text x="488" y="23" font-size="11" font-weight="600" fill="#1e293b">Finanzstrom (Entgelte § 7/22)</text>
+        <line x1="725" y1="19" x2="770" y2="19" stroke="#7e22ce" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow-daten)"/>
+        <text x="778" y="23" font-size="11" font-weight="600" fill="#1e293b">Datenstrom (ZSVR / Testate)</text>
+      </g>
+
+      <!-- ============================================================= -->
+      <!-- 1. STOFFSTRÖME (BLAU / ROT)                                   -->
+      <!-- ============================================================= -->
+      <g class="stream-group stream-stoff">
+        <!-- Hersteller -> Erstinverkehrbringer (120px Abstand, vollkommen frei) -->
+        <path class="stream-hitbox" data-stream-key="stoff_hersteller_eiv" d="M 260 119 L 380 119"/>
+        <path class="stream-path" data-stream-key="stoff_hersteller_eiv" d="M 260 119 L 380 119" fill="none" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrow-stoff)"/>
+        <g class="stream-badge-group" data-stream-key="stoff_hersteller_eiv" transform="translate(320, 105)">
+          <rect class="stream-badge-bg" x="-52" y="-10" width="104" height="20" rx="5" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.8" filter="url(#badge-shadow)"/>
+          <text class="stream-text" x="0" y="3.5" font-size="8.5" text-anchor="middle" fill="#1d4ed8" font-weight="bold">Leergut-Lieferung</text>
+        </g>
+
+        <!-- Erstinverkehrbringer -> Verbraucher -->
+        <path class="stream-hitbox" data-stream-key="stoff_eiv_verbraucher" d="M 470 163 L 470 188 L 250 188 L 250 215"/>
+        <path class="stream-path" data-stream-key="stoff_eiv_verbraucher" d="M 470 163 L 470 188 L 250 188 L 250 215" fill="none" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrow-stoff)"/>
+        <g class="stream-badge-group" data-stream-key="stoff_eiv_verbraucher" transform="translate(360, 188)">
+          <rect class="stream-badge-bg" x="-42" y="-9" width="84" height="18" rx="5" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.8" filter="url(#badge-shadow)"/>
+          <text class="stream-text" x="0" y="3.5" font-size="8.5" text-anchor="middle" fill="#1d4ed8" font-weight="bold">Befüllte Ware</text>
+        </g>
+
+        <!-- Verbraucher -> Sortierer -->
+        <path class="stream-hitbox" data-stream-key="stoff_verbraucher_sortierer" d="M 205 303 L 205 360"/>
+        <path class="stream-path" data-stream-key="stoff_verbraucher_sortierer" d="M 205 303 L 205 360" fill="none" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrow-stoff)"/>
+        <g class="stream-badge-group" data-stream-key="stoff_verbraucher_sortierer" transform="translate(205, 331)">
+          <rect class="stream-badge-bg" x="-60" y="-9" width="120" height="18" rx="5" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.8" filter="url(#badge-shadow)"/>
+          <text class="stream-text" x="0" y="3.5" font-size="8.5" text-anchor="middle" fill="#1d4ed8" font-weight="bold">LVP / Glas / PPK</text>
+        </g>
+
+        <!-- Sortieranlage -> Letztempfänger stofflich -->
+        <path class="stream-hitbox" data-stream-key="stoff_sortierer_monofraktion" d="M 150 450 L 150 640"/>
+        <path class="stream-path" data-stream-key="stoff_sortierer_monofraktion" d="M 150 450 L 150 640" fill="none" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrow-stoff)"/>
+        <g class="stream-badge-group" data-stream-key="stoff_sortierer_monofraktion" transform="translate(150, 545)">
+          <rect class="stream-badge-bg" x="-74" y="-10" width="148" height="20" rx="5" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.8" filter="url(#badge-shadow)"/>
+          <text class="stream-text" x="0" y="3.5" font-size="8.5" text-anchor="middle" fill="#1d4ed8" font-weight="bold">Monofraktionen (Reinstoffe)</text>
+        </g>
+
+        <!-- Closed-Loop Rezyklat -->
+        <path class="stream-hitbox" data-stream-key="stoff_closed_loop" d="M 60 685 L 20 685 L 20 119 L 60 119"/>
+        <path class="stream-path" data-stream-key="stoff_closed_loop" d="M 60 685 L 20 685 L 20 119 L 60 119" fill="none" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrow-stoff)"/>
+        <g class="stream-badge-group" data-stream-key="stoff_closed_loop" transform="translate(80, 188)">
+          <rect class="stream-badge-bg" x="-54" y="-9" width="108" height="18" rx="5" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.8" filter="url(#badge-shadow)"/>
+          <text class="stream-text" x="0" y="3.5" font-size="8" text-anchor="middle" fill="#1d4ed8" font-weight="bold">Closed-Loop Rezyklat</text>
+        </g>
+
+        <!-- Sortierreste / EBS -->
+        <path class="stream-hitbox" data-stream-key="reject_sortierreste" d="M 350 435 L 400 435 L 400 910 L 350 910"/>
+        <path class="stream-path" data-stream-key="reject_sortierreste" d="M 350 435 L 400 435 L 400 910 L 350 910" fill="none" stroke="#dc2626" stroke-width="2.5" marker-end="url(#arrow-reject)"/>
+        <g class="stream-badge-group" data-stream-key="reject_sortierreste" transform="translate(400, 545)">
+          <rect class="stream-badge-bg" x="-50" y="-10" width="100" height="20" rx="5" fill="#ffffff" stroke="#dc2626" stroke-width="1.8" filter="url(#badge-shadow)"/>
+          <text class="stream-text" x="0" y="3.5" font-size="8.5" text-anchor="middle" fill="#dc2626" font-weight="bold">Sortierreste / EBS</text>
+        </g>
+
+        <!-- Verfahrens-Rejecte -->
+        <path class="stream-hitbox" data-stream-key="reject_verfahren" d="M 205 730 L 205 880"/>
+        <path class="stream-path" data-stream-key="reject_verfahren" d="M 205 730 L 205 880" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="4,4" marker-end="url(#arrow-reject)"/>
+        <g class="stream-badge-group" data-stream-key="reject_verfahren" transform="translate(205, 805)">
+          <rect class="stream-badge-bg" x="-52" y="-10" width="104" height="20" rx="5" fill="#ffffff" stroke="#dc2626" stroke-width="1.8" filter="url(#badge-shadow)"/>
+          <text class="stream-text" x="0" y="3.5" font-size="8.5" text-anchor="middle" fill="#dc2626" font-weight="bold">Verfahrens-Rejecte</text>
+        </g>
+      </g>
+
+      <!-- ============================================================= -->
+      <!-- 2. FINANZSTRÖME (GRÜN)                                        -->
+      <!-- ============================================================= -->
+      <g class="stream-group stream-finanz">
+        <!-- Lizenzentgelt -->
+        <path class="stream-hitbox" data-stream-key="finanz_lizenz" d="M 610 119 L 655 119 L 655 245 L 700 245"/>
+        <path class="stream-path" data-stream-key="finanz_lizenz" d="M 610 119 L 655 119 L 655 245 L 700 245" fill="none" stroke="#15803d" stroke-width="2.5" stroke-dasharray="4,4" marker-end="url(#arrow-finanz)"/>
+        <g class="stream-badge-group" data-stream-key="finanz_lizenz" transform="translate(655, 175)">
+          <rect class="stream-badge-bg" x="-44" y="-9" width="88" height="18" rx="5" fill="#ffffff" stroke="#15803d" stroke-width="1.8" filter="url(#badge-shadow)"/>
+          <text class="stream-text" x="0" y="3.5" font-size="8" text-anchor="middle" fill="#15803d" font-weight="bold">Lizenzentgelt</text>
+        </g>
+
+        <!-- Vergütung Erfassung & Sortierung -->
+        <path class="stream-hitbox" data-stream-key="finanz_verguetung" d="M 700 275 L 485 275 L 485 410 L 350 410"/>
+        <path class="stream-path" data-stream-key="finanz_verguetung" d="M 700 275 L 485 275 L 485 410 L 350 410" fill="none" stroke="#15803d" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow-finanz)"/>
+        <g class="stream-badge-group" data-stream-key="finanz_verguetung" transform="translate(560, 275)">
+          <rect class="stream-badge-bg" x="-50" y="-9" width="100" height="18" rx="5" fill="#ffffff" stroke="#15803d" stroke-width="1.8" filter="url(#badge-shadow)"/>
+          <text class="stream-text" x="0" y="3.5" font-size="8" text-anchor="middle" fill="#15803d" font-weight="bold">Vergütung Leistung</text>
+        </g>
+
+        <!-- Abstimmungsvereinbarung -->
+        <path class="stream-hitbox" data-stream-key="finanz_abstimmung" d="M 820 215 L 820 163"/>
+        <path class="stream-path" data-stream-key="finanz_abstimmung" d="M 820 215 L 820 163" fill="none" stroke="#15803d" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow-finanz)"/>
+        <g class="stream-badge-group" data-stream-key="finanz_abstimmung" transform="translate(820, 189)">
+          <rect class="stream-badge-bg" x="-68" y="-12" width="136" height="24" rx="5" fill="#ffffff" stroke="#15803d" stroke-width="1.8" filter="url(#badge-shadow)"/>
+          <text class="stream-text" x="0" y="-1" font-size="8" text-anchor="middle" fill="#15803d" font-weight="bold">Abstimmungsvertrag</text>
+          <text class="stream-text" x="0" y="9" font-size="7.5" text-anchor="middle" fill="#15803d">(kommunale Strukturen)</text>
+        </g>
+      </g>
+
+      <!-- ============================================================= -->
+      <!-- 3. DATENSTRÖME (LILA)                                         -->
+      <!-- ============================================================= -->
+      <g class="stream-group stream-daten">
+        <!-- LUCID Meldung -->
+        <path class="stream-hitbox" data-stream-key="daten_lucid" d="M 495 75 L 495 55 L 970 55 L 970 660 L 940 660"/>
+        <path class="stream-path" data-stream-key="daten_lucid" d="M 495 75 L 495 55 L 970 55 L 970 660 L 940 660" fill="none" stroke="#7e22ce" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow-daten)"/>
+        <g class="stream-badge-group" data-stream-key="daten_lucid" transform="translate(630, 55)">
+          <rect class="stream-badge-bg" x="-56" y="-9" width="112" height="18" rx="5" fill="#ffffff" stroke="#7e22ce" stroke-width="1.8" filter="url(#badge-shadow)"/>
+          <text class="stream-text" x="0" y="3.5" font-size="8" text-anchor="middle" fill="#7e22ce" font-weight="bold">LUCID-Meldepflicht</text>
+        </g>
+
+        <!-- Wiegedaten Sortierer -->
+        <path class="stream-hitbox" data-stream-key="daten_wiegeschein_sortierer" d="M 350 380 L 700 380"/>
+        <path class="stream-path" data-stream-key="daten_wiegeschein_sortierer" d="M 350 380 L 700 380" fill="none" stroke="#7e22ce" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow-daten)"/>
+        <g class="stream-badge-group" data-stream-key="daten_wiegeschein_sortierer" transform="translate(525, 380)">
+          <rect class="stream-badge-bg" x="-60" y="-9" width="120" height="18" rx="5" fill="#ffffff" stroke="#7e22ce" stroke-width="1.8" filter="url(#badge-shadow)"/>
+          <text class="stream-text" x="0" y="3.5" font-size="8" text-anchor="middle" fill="#7e22ce" font-weight="bold">Wiegedaten &amp; Bilanzen</text>
+        </g>
+
+        <!-- Wiegeschein stofflich -->
+        <path class="stream-hitbox" data-stream-key="daten_wiegeschein_stofflich" d="M 350 685 L 535 685 L 535 415 L 700 415"/>
+        <path class="stream-path" data-stream-key="daten_wiegeschein_stofflich" d="M 350 685 L 535 685 L 535 415 L 700 415" fill="none" stroke="#7e22ce" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow-daten)"/>
+        <g class="stream-badge-group" data-stream-key="daten_wiegeschein_stofflich" transform="translate(535, 595)">
+          <rect class="stream-badge-bg" x="-60" y="-9" width="120" height="18" rx="5" fill="#ffffff" stroke="#7e22ce" stroke-width="1.8" filter="url(#badge-shadow)"/>
+          <text class="stream-text" x="0" y="3.5" font-size="8" text-anchor="middle" fill="#7e22ce" font-weight="bold">Wiegescheine (stofflich)</text>
+        </g>
+
+        <!-- Wiegeschein thermisch -->
+        <path class="stream-hitbox" data-stream-key="daten_wiegeschein_thermisch" d="M 350 935 L 610 935 L 610 435 L 700 435"/>
+        <path class="stream-path" data-stream-key="daten_wiegeschein_thermisch" d="M 350 935 L 610 935 L 610 435 L 700 435" fill="none" stroke="#7e22ce" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow-daten)"/>
+        <g class="stream-badge-group" data-stream-key="daten_wiegeschein_thermisch" transform="translate(610, 800)">
+          <rect class="stream-badge-bg" x="-62" y="-9" width="124" height="18" rx="5" fill="#ffffff" stroke="#7e22ce" stroke-width="1.8" filter="url(#badge-shadow)"/>
+          <text class="stream-text" x="0" y="3.5" font-size="8" text-anchor="middle" fill="#7e22ce" font-weight="bold">Wiegescheine (thermisch)</text>
+        </g>
+
+        <!-- Testat Datenprüfer -->
+        <path class="stream-hitbox" data-stream-key="daten_attest" d="M 770 360 L 770 303"/>
+        <path class="stream-path" data-stream-key="daten_attest" d="M 770 360 L 770 303" fill="none" stroke="#7e22ce" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow-daten)"/>
+        <g class="stream-badge-group" data-stream-key="daten_attest" transform="translate(770, 331)">
+          <rect class="stream-badge-bg" x="-42" y="-9" width="84" height="18" rx="5" fill="#ffffff" stroke="#7e22ce" stroke-width="1.8" filter="url(#badge-shadow)"/>
+          <text class="stream-text" x="0" y="3.5" font-size="8" text-anchor="middle" fill="#7e22ce" font-weight="bold">Prüftestat</text>
+        </g>
+
+        <!-- Mengenstromnachweis -->
+        <path class="stream-hitbox" data-stream-key="daten_mengenstrom" d="M 940 260 L 960 260 L 960 645 L 940 645"/>
+        <path class="stream-path" data-stream-key="daten_mengenstrom" d="M 940 260 L 960 260 L 960 645 L 940 645" fill="none" stroke="#7e22ce" stroke-width="2.2" stroke-dasharray="6,4" marker-end="url(#arrow-daten)"/>
+        <g class="stream-badge-group" data-stream-key="daten_mengenstrom" transform="translate(960, 475)">
+          <rect class="stream-badge-bg" x="-60" y="-9" width="120" height="18" rx="5" fill="#ffffff" stroke="#7e22ce" stroke-width="1.8" filter="url(#badge-shadow)"/>
+          <text class="stream-text" x="0" y="3.5" font-size="8" text-anchor="middle" fill="#7e22ce" font-weight="bold">Mengenstromnachweis</text>
+        </g>
+      </g>
+
+      <!-- ============================================================= -->
+      <!-- KNOTEN / STATIONEN (KOMPAKTE PROPORTIONEN, GLÜHBIRNE 💡)       -->
+      <!-- ============================================================= -->
+
+      <!-- KNOTEN 1: HERSTELLER -->
+      <g class="node-card" data-node-key="hersteller" transform="translate(60, 75)" filter="url(#card-shadow)" role="button" tabindex="0">
+        <rect width="200" height="88" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
+        <path d="M 0 8 Q 0 0 8 0 L 192 0 Q 200 0 200 8 L 200 28 L 0 28 Z" fill="#9da8c3" stroke="#1e293b" stroke-width="1.8"/>
+        <text x="100" y="19" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Hersteller der Verpackung</text>
+        <text x="12" y="58" font-size="18">💡</text>
+        <text x="36" y="50" font-size="9.5" fill="#1e293b" font-weight="600">
+          <tspan x="36" dy="0">Bestimmt die spätere</tspan>
+          <tspan x="36" dy="15">Recyclingfähigkeit</tspan>
+        </text>
+      </g>
+
+      <!-- KNOTEN 2: ERSTINVERKEHRBRINGER -->
+      <g class="node-card" data-node-key="erstinverkehrbringer" transform="translate(380, 75)" filter="url(#card-shadow)" role="button" tabindex="0">
+        <rect width="230" height="88" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
+        <path d="M 0 8 Q 0 0 8 0 L 222 0 Q 230 0 230 8 L 230 28 L 0 28 Z" fill="#111827" stroke="#111827" stroke-width="1.8"/>
+        <text x="115" y="19" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">Erstinverkehrbringer</text>
+        <text x="12" y="58" font-size="18">💡</text>
+        <text x="36" y="50" font-size="9.5" fill="#1e293b" font-weight="600">
+          <tspan x="36" dy="0">Trägt die Finanzierung für</tspan>
+          <tspan x="36" dy="15">den gesamten Kreislauf</tspan>
+        </text>
+      </g>
+
+      <!-- KNOTEN 3: LANDKREIS -->
+      <g class="node-card" data-node-key="landkreis" transform="translate(710, 75)" filter="url(#card-shadow)" role="button" tabindex="0">
+        <rect width="230" height="88" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
+        <path d="M 0 8 Q 0 0 8 0 L 222 0 Q 230 0 230 8 L 230 28 L 0 28 Z" fill="#9da8c3" stroke="#1e293b" stroke-width="1.8"/>
+        <text x="115" y="19" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Landkreis (örE)</text>
+        <text x="12" y="58" font-size="18">💡</text>
+        <text x="36" y="50" font-size="9.5" fill="#1e293b" font-weight="600">
+          <tspan x="36" dy="0">Verwaltet den Müll in</tspan>
+          <tspan x="36" dy="15">der gesamten Region</tspan>
+        </text>
+      </g>
+
+      <!-- KNOTEN 4: VERBRAUCHER -->
+      <g class="node-card" data-node-key="verbraucher" transform="translate(140, 215)" filter="url(#card-shadow)" role="button" tabindex="0">
+        <rect width="220" height="88" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
+        <path d="M 0 8 Q 0 0 8 0 L 212 0 Q 220 0 220 8 L 220 28 L 0 28 Z" fill="#9da8c3" stroke="#1e293b" stroke-width="1.8"/>
+        <text x="110" y="19" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Verbraucher</text>
+        <text x="12" y="58" font-size="18">💡</text>
+        <text x="36" y="50" font-size="9.5" fill="#1e293b" font-weight="600">
+          <tspan x="36" dy="0">Verantwortlich für die</tspan>
+          <tspan x="36" dy="15">saubere Mülltrennung</tspan>
+        </text>
+      </g>
+
+      <!-- KNOTEN 5: DUALES SYSTEM -->
+      <g class="node-card" data-node-key="dualessystem" transform="translate(700, 215)" filter="url(#card-shadow)" role="button" tabindex="0">
+        <rect width="240" height="88" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
+        <path d="M 0 8 Q 0 0 8 0 L 232 0 Q 240 0 240 8 L 240 28 L 0 28 Z" fill="#111827" stroke="#111827" stroke-width="1.8"/>
+        <text x="120" y="19" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">Duales System</text>
+        <text x="12" y="58" font-size="18">💡</text>
+        <text x="36" y="50" font-size="9.5" fill="#1e293b" font-weight="600">
+          <tspan x="36" dy="0">Organisatorische und</tspan>
+          <tspan x="36" dy="15">kaufmännische Zentrale</tspan>
+        </text>
+      </g>
+
+      <!-- KNOTEN 6: ENTSORGUNGSFACHBETRIEB (SORTIERER) -->
+      <g class="node-card" data-node-key="sortierer" transform="translate(60, 360)" filter="url(#card-shadow)" role="button" tabindex="0">
+        <rect width="290" height="90" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
+        <path d="M 0 8 Q 0 0 8 0 L 282 0 Q 290 0 290 8 L 290 28 L 0 28 Z" fill="#9da8c3" stroke="#1e293b" stroke-width="1.8"/>
+        <text x="145" y="19" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Entsorgungsfachbetrieb (Sortierer)</text>
+        <text x="12" y="59" font-size="18">💡</text>
+        <text x="36" y="51" font-size="9.5" fill="#1e293b" font-weight="600">
+          <tspan x="36" dy="0">Führt die mechanische Trennung</tspan>
+          <tspan x="36" dy="15">in Monofraktionen durch</tspan>
+        </text>
+      </g>
+
+      <!-- KNOTEN 7: DATENPRÜFER -->
+      <g class="node-card" data-node-key="datenpruefer" transform="translate(700, 360)" filter="url(#card-shadow)" role="button" tabindex="0">
+        <rect width="240" height="90" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
+        <path d="M 0 8 Q 0 0 8 0 L 232 0 Q 240 0 240 8 L 240 28 L 0 28 Z" fill="#9da8c3" stroke="#1e293b" stroke-width="1.8"/>
+        <text x="120" y="19" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Datenprüfer / Gutachter</text>
+        <text x="12" y="59" font-size="18">💡</text>
+        <text x="36" y="51" font-size="9.5" fill="#1e293b" font-weight="600">
+          <tspan x="36" dy="0">Kontrolliert neutral alle</tspan>
+          <tspan x="36" dy="15">Zahlen im System</tspan>
+        </text>
+      </g>
+
+      <!-- KNOTEN 8: LETZTEMP FÄNGER (STOFFLICHE VERWERTUNG) -->
+      <g class="node-card" data-node-key="letztemfaenger" transform="translate(60, 640)" filter="url(#card-shadow)" role="button" tabindex="0">
+        <rect width="290" height="90" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
+        <path d="M 0 8 Q 0 0 8 0 L 282 0 Q 290 0 290 8 L 290 28 L 0 28 Z" fill="#9da8c3" stroke="#1e293b" stroke-width="1.8"/>
+        <text x="145" y="19" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Letztempfänger (Stofflich)</text>
+        <text x="12" y="59" font-size="18">💡</text>
+        <text x="36" y="51" font-size="9.5" fill="#1e293b" font-weight="600">
+          <tspan x="36" dy="0">Erst nach Durchlauf gilt Material</tspan>
+          <tspan x="36" dy="15">gesetzlich als recycelt</tspan>
+        </text>
+      </g>
+
+      <!-- KNOTEN 9: LETZTEMP FÄNGER (THERMISCHE VERWERTUNG) -->
+      <g class="node-card" data-node-key="sortierreste" transform="translate(60, 880)" filter="url(#card-shadow)" role="button" tabindex="0">
+        <rect width="290" height="90" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
+        <path d="M 0 8 Q 0 0 8 0 L 282 0 Q 290 0 290 8 L 290 28 L 0 28 Z" fill="#9da8c3" stroke="#1e293b" stroke-width="1.8"/>
+        <text x="145" y="19" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Letztempfänger (Thermisch / MVA)</text>
+        <text x="12" y="59" font-size="18">💡</text>
+        <text x="36" y="51" font-size="9.5" fill="#1e293b" font-weight="600">
+          <tspan x="36" dy="0">Entsorgt nicht recyclingfähige</tspan>
+          <tspan x="36" dy="15">Reste energetisch</tspan>
+        </text>
+      </g>
+
+      <!-- KNOTEN 10: ZENTRALE STELLE VERPACKUNGSREGISTER (ZSVR) -->
+      <g class="node-card" data-node-key="zsvr" transform="translate(700, 640)" filter="url(#card-shadow)" role="button" tabindex="0">
+        <rect width="240" height="90" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
+        <path d="M 0 8 Q 0 0 8 0 L 232 0 Q 240 0 240 8 L 240 28 L 0 28 Z" fill="#9da8c3" stroke="#1e293b" stroke-width="1.8"/>
+        <text x="120" y="19" font-size="10.5" font-weight="bold" fill="#0f172a" text-anchor="middle">Zentrale Stelle (ZSVR)</text>
+        <text x="12" y="59" font-size="18">💡</text>
+        <text x="36" y="51" font-size="9.5" fill="#1e293b" font-weight="600">
+          <tspan x="36" dy="0">Hoheitliche Marktaufsicht</tspan>
+          <tspan x="36" dy="15">und Registerbehörde</tspan>
+        </text>
+      </g>
+    </svg>
+  </div>
+
+  <p class="instruction-hint">💡 <strong>Tipp:</strong> Klicke auf eine Station oder eine Verbindungslinie, um Hintergrundinformationen im Dialogfenster anzuzeigen.</p>
+
+  <div class="fluent-overlay" id="detailModalOverlay" role="dialog" aria-modal="true">
+    <div class="fluent-dialog" id="detailModalCard">
+      <div class="fluent-header">
+        <div class="fluent-title-group">
+          <div class="fluent-icon-box" id="modalIcon">📦</div>
+          <div>
+            <div class="fluent-category" id="modalCategory">KATEGORIE</div>
+            <div class="fluent-title" id="modalTitle">Titel</div>
+          </div>
+        </div>
+        <button class="fluent-btn-close" id="modalBtnClose" title="Schließen (Esc)">&times;</button>
+      </div>
+      <div class="fluent-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    const stationData = {
+      hersteller: {
+        category: "Station im Kreislauf",
+        title: "Hersteller der Verpackung",
+        icon: "🏭",
+        relevance: "Entscheidet über die spätere Recyclingfähigkeit der Verpackung. Ungeeignete Materialkombinationen blockieren die Sortierbarkeit im Recyclingbetrieb[cite: 1].",
+        definition: "Recyclingfähigkeit: Technisch verwertbarer Massenanteil, den Sortier- und Aufbereitungsanlagen sortenrein zurückgewinnen können[cite: 1].",
+        tasks: [
+          "Produziert Primär- und Sekundärverpackungen (Flaschen, Becher, Schachteln)[cite: 1].",
+          "Setzt vorrangig Monomaterialien ein, um die sensorgestützte Nahinfrarot-Erkennung (NIR) zu erleichtern[cite: 1].",
+          "Vermeidet unlösbare Multilayer-Verbunde und bindet Rezyklate ein[cite: 1]."
+        ],
+        interactions: [
+          "Erstinverkehrbringer: Liefert leere Packmittel an den Abfüllbetrieb[cite: 1].",
+          "Letztempfänger (Stofflich): Bezieht aufbereitetes Regranulat für neue Gebinde (Closed Loop)[cite: 1]."
+        ]
+      },
+      erstinverkehrbringer: {
+        category: "Station im Kreislauf • Zentrale Pflicht",
+        title: "Erstinverkehrbringer (Hersteller & Handel)",
+        icon: "🏷️",
+        relevance: "Trägt die finanzielle Gesamtverantwortung für den Lebenszyklus der Verpackung nach dem Verursacherprinzip[cite: 1].",
+        definition: "Erstinverkehrbringer: Unternehmen, das verpackte Waren gewerblich erstmals in Deutschland an Endabnehmer abgibt (§ 3 Abs. 9 VerpackG)[cite: 1].",
+        tasks: [
+          "Registriert sich im amtlichen Register LUCID bei der ZSVR vor Verkaufsstart[cite: 1].",
+          "Beteiligt geplante Verpackungsmassen an einem oder mehreren dualen Systemen[cite: 1].",
+          "Entrichtet massebezogene Lizenzentgelte für Sammlung, Sortierung und Verwertung[cite: 1]."
+        ],
+        interactions: [
+          "Hersteller der Verpackung: Kauft leere Packmittel ein[cite: 1].",
+          "Verbraucher: Liefert befüllte Konsumgüter an den Handel bzw. Endkunden[cite: 1].",
+          "Duales System: Zahlt Systembeteiligungsentgelte (§ 7 VerpackG)[cite: 1].",
+          "ZSVR: Meldet Mengen synchron an LUCID zur Missbrauchsvermeidung (§ 10 VerpackG)[cite: 1]."
+        ]
+      },
+      landkreis: {
+        category: "Kommunale Gebietskörperschaft",
+        title: "Landkreis / örE",
+        icon: "🏛️",
+        relevance: "Vertritt die Interessen der Bürger und sichert die kommunale Entsorgungssicherheit sowie ein sauberes Ortsbild[cite: 1].",
+        definition: "Öffentlich-rechtlicher Entsorgungsträger (örE): Kommunale Gebietskörperschaft oder Zweckverband mit gesetzlichem Entsorgungsauftrag[cite: 1].",
+        tasks: [
+          "Verhandelt die Abstimmungsvereinbarung nach § 22 VerpackG mit den dualen Systemen[cite: 1].",
+          "Legt Rahmenbedingungen fest: Behältertyp (Gelbe Tonne vs. Gelber Sack) und Abfuhrrhythmen[cite: 1].",
+          "Koordiniert die Wertstoffhöfe als ergänzende Rückgabestellen[cite: 1]."
+        ],
+        interactions: [
+          "Duales System: Schließt Abstimmungsverträge ab und kontrolliert Sammelstandards[cite: 1].",
+          "Verbraucher: Informiert über Abfallkalender, Gebühren und korrekte Mülltrennung[cite: 1]."
+        ]
+      },
+      verbraucher: {
+        category: "Station im Kreislauf • Ausgangspunkt",
+        title: "Verbraucher (Privater Endverbraucher)",
+        icon: "🛒",
+        relevance: "Initiiert die Verwertungskette von Hand. Seine Trenndisziplin bestimmt den Reinheitsgrad des Sammelgemischs[cite: 1].",
+        definition: "Störstoffe: Fehlwürfe (z. B. Restmüll, Windeln, organische Reste), die Sortieranlagen verstopfen oder Wertstoffchargen unbrauchbar machen[cite: 1].",
+        tasks: [
+          "Trennt Verpackungen restentleert nach Fraktionen (Gelbe Tonne, Glascontainer, Altpapier)[cite: 1].",
+          "Hält Batterien und Akkumulatoren strikt fern [BattG, 2021: § 11 Rücknahmepflicht][cite: 1].",
+          "Vermeidet das Ineinanderstecken unterschiedlicher Werkstoffe[cite: 1]."
+        ],
+        interactions: [
+          "Erstinverkehrbringer: Kauft verpackte Waren im stationären Handel oder online[cite: 1].",
+          "Entsorgungsfachbetrieb: Übergibt die Abfälle über bereitgestellte Sammelbehälter[cite: 1]."
+        ]
+      },
+      dualessystem: {
+        category: "Koordinierende Schaltzentrale",
+        title: "Duales System (Systembetreiber)",
+        icon: "🔄",
+        relevance: "Organisiert als privatwirtschaftlicher Träger die flächendeckende Sammlung und stoffliche Verwertung im Bundesgebiet[cite: 1].",
+        definition: "Mengenstromnachweis: Jährlich von Sachverständigen geprüfte Massenbilanz, die die Quotenerfüllung (§ 16 VerpackG) rechtssicher belegt[cite: 1].",
+        tasks: [
+          "Nimmt Lizenzentgelte von den Erstinverkehrbringern ein[cite: 1].",
+          "Schreibt Erfassungs- und Sortierleistungen diskriminierungsfrei im Wettbewerb aus[cite: 1].",
+          "Steuert die Stoffströme zielgerichtet in zertifizierte Verwertungsanlagen[cite: 1]."
+        ],
+        interactions: [
+          "Erstinverkehrbringer: Schließt Lizenzverträge ab[cite: 1].",
+          "Landkreis: Stimmt Sammellogistik und Behältersysteme ab[cite: 1].",
+          "Entsorgungsfachbetrieb: Vergütet vertraglich fixierte Sortier- und Erfassungsleistungen[cite: 1].",
+          "Datenprüfer: Reicht Bilanzen zur Neutralitätsprüfung ein[cite: 1].",
+          "ZSVR: Hinterlegt den testierten Mengenstromnachweis[cite: 1]."
+        ]
+      },
+      sortierer: {
+        category: "Mechanische Verfahrensstufe",
+        title: "Entsorgungsfachbetrieb (Sortierer)",
+        icon: "⚙️",
+        relevance: "Führt die mechanische Trennung praktisch aus und wandelt gemischte Abfälle in normierte Monofraktionen um [Sweller, 2011; cite: 1].",
+        definition: "Monofraktion: Sortenreine Wertstoffballen (z. B. PET, PP, PE, Aluminium), die Verwerter direkt weiterverarbeiten können[cite: 1].",
+        tasks: [
+          "Erfasst Verpackungsabfälle logistisch über Sammelfahrzeuge[cite: 1].",
+          "Trennt Abfälle über Trommelsiebe, Magnete, Wirbelstromscheider und Nahinfrarot-Sensoren (NIR)[cite: 1].",
+          "Verwiegt Ein- und Ausgänge auf geeichten Waagen und dokumentiert Wiegescheine[cite: 1]."
+        ],
+        interactions: [
+          "Verbraucher: Leert Tonnen und holt Säcke ab[cite: 1].",
+          "Duales System: Liefert die vertragliche Sortierquote[cite: 1].",
+          "Letztempfänger (Stofflich): Liefert sortenreine Wertstoffe[cite: 1].",
+          "Letztempfänger (Thermisch): Übergibt nicht trennbare Reste als Ersatzbrennstoff (EBS)[cite: 1].",
+          "Datenprüfer: Öffnet Betriebstagebücher und Wägedaten für Audits[cite: 1]."
+        ]
+      },
+      datenpruefer: {
+        category: "Prüfinstanz & Gutachter",
+        title: "Datenprüfer / Sachverständige",
+        icon: "⚖️",
+        relevance: "Verhindert Scheinmengen und Doppelabrechnungen durch neutrale Massenstromaudits vor Ort[cite: 1].",
+        definition: "Massenbilanz: Mathematischer Nachweis: Gelieferte Eingangsmasse = Sortierprodukte + Reststoffe + Feuchtigkeitsverlust[cite: 1].",
+        tasks: [
+          "Prüft Wiegescheine, Lieferpapiere und Buchungsdaten der Sortieranlagen[cite: 1].",
+          "Auditiert die technischen Verarbeitungsfähigkeiten der Recyclingwerke[cite: 1].",
+          "Testiert die Richtigkeit der Systemmeldungen für die Behörden[cite: 1]."
+        ],
+        interactions: [
+          "Entsorgungsfachbetrieb: Kontrolliert geeichte Wägeprotokolle[cite: 1].",
+          "Letztempfänger: Überprüft Eingangsbücher und Verwertungsquoten[cite: 1].",
+          "Duales System: Stellt verbindliche Testate für die ZSVR aus[cite: 1]."
+        ]
+      },
+      letztemfaenger: {
+        category: "Verwertungsstufe • Stofflich",
+        title: "Letztempfänger (Stoffliche Verwertung)",
+        icon: "♻️",
+        relevance: "Vollzieht das werkstoffliche Recycling. Erst mit der Zufuhr in diesen Prozess gilt ein Stoff gesetzlich als recycelt[cite: 1].",
+        definition: "Werkstoffliches Recycling: Aufbereitung von Altkunststoffen zu Rezyklaten ohne Spaltung der Polymerketten[cite: 1].",
+        tasks: [
+          "Zerkleinert Monofraktionen, wäscht Schmutzreste aus und trennt Kunststoffe über Schwimm-Sink-Tanks[cite: 1].",
+          "Extrudiert und granuliert Kunststoffe zu sortenreinen Regranulaten[cite: 1].",
+          "Schleust verfahrensbedingte Rejekte (Schlämme, Restkleber) zur thermischen Verwertung aus[cite: 1]."
+        ],
+        interactions: [
+          "Entsorgungsfachbetrieb: Übernimmt Monofraktionen mit Wiegescheinen[cite: 1].",
+          "Hersteller der Verpackung: Liefert fertiges Kunststoffregranulat zurück[cite: 1].",
+          "Datenprüfer: Legt lückenlose Verwertungsnachweise vor[cite: 1]."
+        ]
+      },
+      sortierreste: {
+        category: "Verwertungsstufe • Energetisch",
+        title: "Letztempfänger (Thermische Verwertung)",
+        icon: "🔥",
+        relevance: "Zerstört Schadstoffe irreversibel und wandelt nicht trennbare Restfraktionen in nutzbare Energie um[cite: 1].",
+        definition: "Ersatzbrennstoff (EBS): Aufbereitete, hochkalorische Abfallfraktion für Industrie- und Zementwerke[cite: 1].",
+        tasks: [
+          "Verbrennt Restabfälle bei mindestens 850 °C gemäß BImSchV[cite: 1].",
+          "Koppelt Nutzwärme, Prozessdampf und Strom im Kraft-Wärme-Prozess aus[cite: 1].",
+          "Bereitet Schlacken für den Verkehrswegebau auf und filtert Abgase[cite: 1]."
+        ],
+        interactions: [
+          "Entsorgungsfachbetrieb: Übernimmt heizwertreiche Sortierreste[cite: 1].",
+          "Letztempfänger (Stofflich): Übernimmt Spül- und Sinkabfälle[cite: 1].",
+          "Datenprüfer: Bestätigt thermisch verwertete Mengen für die Endbilanz[cite: 1]."
+        ]
+      },
+      zsvr: {
+        category: "Behördliche Marktaufsicht",
+        title: "Zentrale Stelle Verpackungsregister (ZSVR)",
+        icon: "🛡️",
+        relevance: "Gewährleistet als hoheitlich beliehene Stiftung faire Marktbedingungen und vollständige Transparenz[cite: 1].",
+        definition: "Beliehene Stiftung: Privatrechtliche Stiftung des bürgerlichen Rechts mit hoheitlicher Kontroll- und Vollzugsbefugnis[cite: 1].",
+        tasks: [
+          "Führt das öffentlich einsehbare Herstellerregister LUCID[cite: 1].",
+          "Gleicht Meldungen der Erstinverkehrbringer mit den Mengenstromnachweisen ab[cite: 1].",
+          "Berechnet Marktanteile der Systeme und übermittelt Delikte an Landesbehörden[cite: 1]."
+        ],
+        interactions: [
+          "Erstinverkehrbringer: Überwacht Registrierungs- und Mengenmeldepflichten[cite: 1].",
+          "Duales System: Prüft Mengenstromnachweise und genehmigt Branchenstandards[cite: 1]."
+        ]
+      }
+    };
+
+    const streamInfoData = {
+      stoff_hersteller_eiv: {
+        type: "Physischer Stoffstrom",
+        title: "Leergut-Lieferung",
+        icon: "📦",
+        from: "Hersteller der Verpackung",
+        to: "Erstinverkehrbringer",
+        desc: "Der Packmittelhersteller fertigt unbefüllte Gebinde (Flaschen, Kanister, Dosen) und liefert sie an das Abfüllunternehmen[cite: 1]."
+      },
+      stoff_eiv_verbraucher: {
+        type: "Physischer Stoffstrom",
+        title: "Befüllte Ware",
+        icon: "🛒",
+        from: "Erstinverkehrbringer",
+        to: "Verbraucher / Haushalt",
+        desc: "Die befüllten Waren gelangen über Distributionsnetze und den Lebensmitteleinzelhandel direkt an den Endkunden[cite: 1]."
+      },
+      stoff_verbraucher_sortierer: {
+        type: "Physischer Stoffstrom",
+        title: "Getrennte Erfassung (LVP, Glas, PPK)",
+        icon: "🚛",
+        from: "Verbraucher / Haushalt",
+        to: "Entsorgungsfachbetrieb (Sortierer)",
+        desc: "Haushalte werfen restentleerte Verpackungen sortenrein in die Wertstofftonne. Logistikfahrzeuge transportieren das Gemisch zur Sortieranlage[cite: 1]."
+      },
+      stoff_sortierer_monofraktion: {
+        type: "Physischer Stoffstrom",
+        title: "Monofraktionen (Reinstoffe)",
+        icon: "✨",
+        from: "Entsorgungsfachbetrieb (Sortierer)",
+        to: "Letztempfänger stofflicher Verwerter",
+        desc: "Die Sortieranlage trennt das Sammelgemisch in ballenreine Werkstoffe (z. B. PET, PP, PE, Weißblech) für spezialisierte Recycler[cite: 1]."
+      },
+      stoff_closed_loop: {
+        type: "Physischer Stoffstrom",
+        title: "Closed-Loop Rezyklat",
+        icon: "🔄",
+        from: "Letztempfänger stofflicher Verwerter",
+        to: "Hersteller der Verpackung",
+        desc: "Gereinigte Kunststoff-Regranulate fließen unmittelbar in die Fertigung neuer Verpackungen ein und ersetzen Neugranulat aus Rohöl[cite: 1]."
+      },
+      reject_sortierreste: {
+        type: "Reststoffstrom (Nicht recyclingfähig)",
+        title: "Sortierreste / Ersatzbrennstoff (EBS)",
+        icon: "🔥",
+        from: "Entsorgungsfachbetrieb (Sortierer)",
+        to: "Letztempfänger (thermische Verwertung)",
+        desc: "Stark verschmutzte Restabfälle und nicht trennbare Verbundstoffe verlassen die Sortierlinie als heizwertreicher Brennstoff[cite: 1]."
+      },
+      reject_verfahren: {
+        type: "Reststoffstrom (Prozessabfall)",
+        title: "Verfahrens-Rejecte",
+        icon: "⚠️",
+        from: "Letztempfänger stofflicher Verwerter",
+        to: "Letztempfänger (thermische Verwertung)",
+        desc: "Beim Waschen und Dichtetrennen anfallende Sinkstoffe, Schlämme und Klebstoffreste werden thermisch verwertet[cite: 1]."
+      },
+      finanz_lizenz: {
+        type: "Finanzstrom",
+        title: "Beteiligungsentgelt (§ 7 VerpackG)",
+        icon: "💶",
+        from: "Erstinverkehrbringer",
+        to: "Duales System",
+        desc: "Hersteller zahlen Lizenzentgelte an das duale System, um die flächendeckende Sammlung und Sortierung ihrer Verpackungsmengen zu finanzieren[cite: 1]."
+      },
+      finanz_verguetung: {
+        type: "Finanzstrom",
+        title: "Vergütung Erfassung & Sortierung",
+        icon: "💰",
+        from: "Duales System",
+        to: "Entsorgungsfachbetrieb (Sortierer)",
+        desc: "Das duale System bezahlt den Entsorgungsbetrieb für die vertraglich vereinbarten Sammeltouren und den Betrieb der Sortiertechnik[cite: 1]."
+      },
+      finanz_abstimmung: {
+        type: "Finanz- & Kooperationsstrom",
+        title: "Abstimmungsvereinbarung (§ 22 VerpackG)",
+        icon: "🤝",
+        from: "Duales System",
+        to: "Landkreis / örE",
+        desc: "Duale Systeme und Kommunen stimmen Hol- und Bringsysteme sowie Standplätze ab und regeln finanzielle Kostenanteile[cite: 1]."
+      },
+      daten_lucid: {
+        type: "Datenstrom",
+        title: "Mengenmeldung LUCID (§ 10 VerpackG)",
+        icon: "📋",
+        from: "Erstinverkehrbringer",
+        to: "ZSVR (Register LUCID)",
+        desc: "Hersteller melden ihre in Umlauf gebrachten Verpackungsmassen synchron an das staatlich beliehene Register LUCID[cite: 1]."
+      },
+      daten_wiegeschein_sortierer: {
+        type: "Nachweisstrom",
+        title: "Sortier- & Wiegedaten",
+        icon: "⚖️",
+        from: "Entsorgungsfachbetrieb (Sortierer)",
+        to: "Datenprüfer / Sachverständige",
+        desc: "Die Sortieranlage übermittelt geeichte Wägedaten und Sortierbilanzen zur Plausibilitätsprüfung an den Sachverständigen[cite: 1]."
+      },
+      daten_wiegeschein_stofflich: {
+        type: "Nachweisstrom",
+        title: "Amtliche Wiegescheine (stofflich)",
+        icon: "📑",
+        from: "Letztempfänger stofflicher Verwerter",
+        to: "Datenprüfer / Sachverständige",
+        desc: "Der Verwerter belegt die angenommene Reinstoffmasse mit Wiegescheinen als Beleg für die gesetzliche Recyclingquote[cite: 1]."
+      },
+      daten_wiegeschein_thermisch: {
+        type: "Nachweisstrom",
+        title: "Amtliche Wiegescheine (thermisch)",
+        icon: "📄",
+        from: "Letztempfänger (thermische Verwertung)",
+        to: "Datenprüfer / Sachverständige",
+        desc: "Die Verbrennungsanlage bescheinigt die Menge energetisch verwerteter Reste für die Gesamtbilanz[cite: 1]."
+      },
+      daten_attest: {
+        type: "Nachweisstrom",
+        title: "Testiertes Mengenattest",
+        icon: "✅",
+        from: "Datenprüfer / Sachverständige",
+        to: "Duales System",
+        desc: "Der zugelassene Sachverständige prüft alle Wiegedaten vor Ort und stellt dem System das offizielle Prüftestat aus[cite: 1]."
+      },
+      daten_mengenstrom: {
+        type: "Datenstrom",
+        title: "Mengenstromnachweis (§ 17 VerpackG)",
+        icon: "📜",
+        from: "Duales System",
+        to: "ZSVR (Register LUCID)",
+        desc: "Das duale System legt der ZSVR die testierte Gesamtmassenbilanz zur Überprüfung der Recyclingquoten (§ 16) vor[cite: 1]."
+      }
+    };
+
+    const overlay = document.getElementById('detailModalOverlay');
+    const modalIcon = document.getElementById('modalIcon');
+    const modalCategory = document.getElementById('modalCategory');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const btnClose = document.getElementById('modalBtnClose');
+
+    let activeHighlightedPath = null;
+    let activeHighlightedBadge = null;
+
+    function openModal() {
+      overlay.classList.add('active');
+    }
+
+    function closeModal() {
+      overlay.classList.remove('active');
+      if (activeHighlightedPath) {
+        activeHighlightedPath.style.stroke = '';
+        activeHighlightedPath.style.strokeWidth = '';
+        activeHighlightedPath = null;
+      }
+      if (activeHighlightedBadge) {
+        const bg = activeHighlightedBadge.querySelector('.stream-badge-bg');
+        if (bg) {
+          bg.style.fill = '#ffffff';
+          bg.style.strokeWidth = '1.8';
+        }
+        activeHighlightedBadge = null;
+      }
+    }
+
+    function renderStationModal(key) {
+      const data = stationData[key];
+      if (!data) return;
+
+      modalIcon.textContent = data.icon;
+      modalCategory.textContent = data.category;
+      modalTitle.textContent = data.title;
+
+      modalBody.innerHTML = `
+        <div class="info-card">
+          <div class="info-card-label">💡 Relevanz im Wertstoffkreislauf</div>
+          <div>${data.relevance}</div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-label">📖 Fachbegriff &amp; Definition</div>
+          <div>${data.definition}</div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-label">⚙️ Gesetzliche &amp; technische Aufgaben</div>
+          <ul class="bullet-list">
+            ${data.tasks.map(t => `<li>${t}</li>`).join('')}
+          </ul>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-label">🔗 Vor- und nachgelagerte Schnittstellen</div>
+          <ul class="bullet-list">
+            ${data.interactions.map(i => `<li>${i}</li>`).join('')}
+          </ul>
+        </div>
+      `;
+
+      openModal();
+    }
+
+    function renderArrowModal(key) {
+      const data = streamInfoData[key];
+      if (!data) return;
+
+      if (activeHighlightedPath) {
+        activeHighlightedPath.style.stroke = '';
+        activeHighlightedPath.style.strokeWidth = '';
+      }
+      if (activeHighlightedBadge) {
+        const bg = activeHighlightedBadge.querySelector('.stream-badge-bg');
+        if (bg) {
+          bg.style.fill = '#ffffff';
+          bg.style.strokeWidth = '1.8';
+        }
+      }
+
+      const pathEl = document.querySelector(`.stream-path[data-stream-key="${key}"]`);
+      if (pathEl) {
+        activeHighlightedPath = pathEl;
+        pathEl.style.stroke = '#eab308';
+        pathEl.style.strokeWidth = '5px';
+      }
+
+      const badgeEl = document.querySelector(`.stream-badge-group[data-stream-key="${key}"]`);
+      if (badgeEl) {
+        activeHighlightedBadge = badgeEl;
+        const bg = badgeEl.querySelector('.stream-badge-bg');
+        if (bg) {
+          bg.style.fill = '#fef08a';
+          bg.style.stroke = '#ca8a04';
+          bg.style.strokeWidth = '2.5';
+        }
+      }
+
+      modalIcon.textContent = data.icon;
+      modalCategory.textContent = data.type;
+      modalTitle.textContent = data.title;
+
+      modalBody.innerHTML = `
+        <div class="info-card">
+          <div class="info-card-label">📍 Beteiligte Akteure &amp; Richtung</div>
+          <div class="route-pill-container">
+            <span class="station-pill">${data.from}</span>
+            <span class="route-arrow">➔</span>
+            <span class="station-pill target">${data.to}</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-label">🗺️ Funktion &amp; Bedeutung des Pfades</div>
+          <div>${data.desc}</div>
+        </div>
+      `;
+
+      openModal();
+    }
+
+    document.querySelectorAll('.node-card[data-node-key]').forEach(node => {
+      node.addEventListener('click', (e) => {
+        e.stopPropagation();
+        renderStationModal(node.getAttribute('data-node-key'));
+      });
+      node.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          renderStationModal(node.getAttribute('data-node-key'));
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-stream-key]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        renderArrowModal(el.getAttribute('data-stream-key'));
+      });
+    });
+
+    btnClose.addEventListener('click', closeModal);
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && overlay.classList.contains('active')) {
+        closeModal();
+      }
+    });
+
+    const filterButtons = document.querySelectorAll('.btn-filter[data-stream]');
+    const streamGroups = {
+      stoff: document.querySelectorAll('.stream-stoff'),
+      finanz: document.querySelectorAll('.stream-finanz'),
+      daten: document.querySelectorAll('.stream-daten')
+    };
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.getAttribute('data-stream');
+
+        if (filter === 'all') {
+          document.querySelectorAll('.stream-group').forEach(g => {
+            g.style.opacity = '1';
+            g.style.pointerEvents = 'auto';
+          });
+        } else {
+          document.querySelectorAll('.stream-group').forEach(g => {
+            g.style.opacity = '0.06';
+            g.style.pointerEvents = 'none';
+          });
+          if (streamGroups[filter]) {
+            streamGroups[filter].forEach(g => {
+              g.style.opacity = '1';
+              g.style.pointerEvents = 'auto';
+            });
+          }
+        }
+      });
+    });
+
+    window.addEventListener('dragstart', (e) => e.preventDefault());
+    const svgEl = document.getElementById('processSvg');
+    svgEl.addEventListener('contextmenu', (e) => {
+      if (window.matchMedia('(pointer: coarse)').matches) {
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>
