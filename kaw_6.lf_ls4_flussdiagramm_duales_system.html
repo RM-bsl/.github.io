@@ -396,6 +396,40 @@
       gap: 6px;
     }
 
+    .info-card-resource {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+    }
+
+    .info-card-resource .info-card-label {
+      color: #1d4ed8;
+    }
+
+    .btn-resource-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #2563eb;
+      color: #ffffff;
+      padding: 9px 16px;
+      border-radius: 6px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      text-decoration: none;
+      margin-top: 10px;
+      transition: background-color 0.15s ease, transform 0.1s ease;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-resource-action:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    .btn-resource-action:active {
+      transform: translateY(0);
+    }
+
     .definition-entry + .definition-entry {
       margin-top: 8px;
       padding-top: 8px;
@@ -681,7 +715,7 @@
         </g>
       </g>
 
-      <!-- KNOTEN / STATIONEN (OHNE INNENRAHMEN) -->
+      <!-- KNOTEN / STATIONEN -->
       <g class="node-card" data-node-key="hersteller" transform="translate(60, 75)" filter="url(#card-shadow)" role="button" tabindex="0">
         <rect width="200" height="88" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="1.8"/>
         <path d="M 0 8 Q 0 0 8 0 L 192 0 Q 200 0 200 8 L 200 28 L 0 28 Z" fill="#9da8c3" stroke="#1e293b" stroke-width="1.8"/>
@@ -900,7 +934,13 @@
           "Entsorgungsfachbetrieb: Vergütet vertraglich fixierte Sortier- und Erfassungsleistungen.",
           "Datenprüfer: Reicht Bilanzen zur Neutralitätsprüfung ein.",
           "ZSVR: Hinterlegt den testierten Mengenstromnachweis."
-        ]
+        ],
+        resource: {
+          title: "Interaktive Vertiefung & Übersicht",
+          intro: "Erkunde ergänzende Schaubilder und Hintergrunddetails zu den Aufgaben und Akteuren des dualen Systems direkt in der didaktischen Canva-Präsentation:",
+          btnText: "Canva-Grafik öffnen",
+          url: "https://canva.link/e9il0m75by4yzvu"
+        }
       },
       sortierer: {
         category: "Mechanische Verfahrensstufe",
@@ -1163,6 +1203,24 @@
         ? data.definition.map(d => `<div class="definition-entry">${d}</div>`).join('')
         : `<div class="definition-entry">${data.definition}</div>`;
 
+      let resourceCardHtml = '';
+      if (data.resource) {
+        resourceCardHtml = `
+          <div class="info-card info-card-resource">
+            <div class="info-card-label">📊 ${data.resource.title}</div>
+            <div>${data.resource.intro}</div>
+            <a href="${data.resource.url}" target="_blank" rel="noopener noreferrer" class="btn-resource-action">
+              <span>${data.resource.btnText}</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+        `;
+      }
+
       modalBody.innerHTML = `
         <div class="info-card">
           <div class="info-card-label">💡 Relevanz im Wertstoffkreislauf</div>
@@ -1187,6 +1245,8 @@
             ${data.interactions.map(i => `<li>${i}</li>`).join('')}
           </ul>
         </div>
+
+        ${resourceCardHtml}
       `;
 
       openModal();
