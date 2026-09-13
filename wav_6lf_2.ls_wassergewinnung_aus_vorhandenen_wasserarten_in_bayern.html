@@ -407,7 +407,6 @@
       border-radius: 0 8px 8px 0;
     }
 
-    /* Größenvergleich-Container im unteren Bereich */
     .comparison-lower-box {
       background: var(--fluent-comp-bg);
       border: 1px solid var(--fluent-comp-border);
@@ -659,12 +658,12 @@
     <div class="comp-controls-grid">
       <div class="control-row">
         <span class="label">Position:</span>
-        <input type="range" min="0" max="100" value="48" step="0.1" class="fluent-slider" id="compare-slider" />
+        <input type="range" min="0" max="100" value="50" step="0.1" class="fluent-slider" id="compare-slider" />
       </div>
       <div class="control-row">
         <span class="label">Zoom:</span>
         <span>🔍-</span>
-        <input type="range" min="14" max="55" value="34" step="0.5" class="fluent-slider" id="zoom-slider" />
+        <input type="range" min="14" max="65" value="40" step="0.5" class="fluent-slider" id="zoom-slider" />
         <span>🔍+</span>
       </div>
     </div>
@@ -722,9 +721,7 @@
     <!-- Dedizierter Aufgaben-Lösungsblock (Aufgabe a) -->
     <div class="didactic-block block-task" id="card-task-box" style="display: none;">
       <strong>📝 Lösungshilfe Aufgabe a (Salzgehalt & Entsalzung):</strong>
-      <ol id="card-task-list">
-        <!-- Dynamischer Inhalt -->
-      </ol>
+      <ol id="card-task-list"></ol>
     </div>
 
     <!-- Warum schwer / nicht nutzbar? -->
@@ -781,7 +778,7 @@
 
   <script>
     /* --- DATA & DIDACTIC RESERVOIR DEFINITIONS [USGS, 2019; BGR, 2021; DVGW, 2020] --- */
-    const V_EARTH = 1083210000000; // km³ (R_Erde = 6.371 km)
+    const V_EARTH = 1083210000000; // km³
     const EARTH_RADIUS = 5.0;
     const CENTER = new THREE.Vector3(0, 0, 0);
 
@@ -808,7 +805,7 @@
         relevance: 'Praxis der Wasserversorgung: Großentsalzungsanlagen sichern Trinkwasser in Küstenwüsten, belasten jedoch durch ihren extremen Stromverbrauch und das Rückleiten der heißen Sole die marinen Flachwasserökosysteme [BGR, 2021].',
         earthShareBadge: 'ca. 0,12 % Erdvolumen',
         scaleText: '3D-Größenvergleich: Kugelradius ca. 1 : 9,3 im Verhältnis zum Erdradius (Erde links, Meerwasser rechts)',
-        color: 0x2b88ff // Leuchtendes, kontrastreiches Ozeanblau für klare Sichtbarkeit im Mini-Canvas
+        color: 0x2b88ff
       },
       {
         id: 'glaciers',
@@ -876,6 +873,7 @@
     ];
 
     /* --- DIE 5 VERGLEICHSKÖRPER IM 3D-MENGENVERGLEICH [USGS, 2019] --- */
+    // Abstände entlang der X-Achse so gewählt, dass die Text-Karten (Breite ca. 5.2) sich niemals überlappen
     const R_BASE = 3.6;
     const V_TOTAL_WATER = 1386000000;
     function calcWaterRadius(vol) {
@@ -894,7 +892,7 @@
         ],
         radius: R_BASE,
         color: 0x0044cc,
-        posX: -15.0,
+        posX: -19.0, // Weit links für große Wasserkugel
         sliderPercent: 0
       },
       {
@@ -908,8 +906,8 @@
         ],
         radius: calcWaterRadius(1338000000),
         color: 0x0066ff,
-        posX: -6.5,
-        sliderPercent: 28
+        posX: -9.5, // Abstand zu 1: 9.5 Einheiten -> Lücke ca. 4.3
+        sliderPercent: 30
       },
       {
         id: 'glaciers',
@@ -922,7 +920,7 @@
         ],
         radius: calcWaterRadius(24064000),
         color: 0xa8e6ff,
-        posX: 0.5,
+        posX: -1.5, // Abstand zu 2: 8.0 Einheiten -> Lücke ca. 2.8
         sliderPercent: 55
       },
       {
@@ -936,7 +934,7 @@
         ],
         radius: calcWaterRadius(23400000),
         color: 0x00d4ff,
-        posX: 4.5,
+        posX: 6.0, // Abstand zu 3: 7.5 Einheiten -> Lücke ca. 2.3
         sliderPercent: 78
       },
       {
@@ -950,7 +948,7 @@
         ],
         radius: Math.max(0.22, calcWaterRadius(179000)),
         color: 0x66ffff,
-        posX: 8.0,
+        posX: 13.0, // Abstand zu 4: 7.0 Einheiten -> Lücke ca. 1.8
         sliderPercent: 100
       }
     ];
@@ -970,10 +968,10 @@
     let miniAnimId = null;
     let sharedEarthTexture = null;
 
-    let compTargetX = -3.5;
-    let compCurrentX = -3.5;
-    let compTargetZ = 34.0;
-    let compCurrentZ = 34.0;
+    let compTargetX = -3.0;
+    let compCurrentX = -3.0;
+    let compTargetZ = 40.0;
+    let compCurrentZ = 40.0;
 
     function getSafeDistance(radius = 5.6) {
       const aspect = camera.aspect;
@@ -1266,7 +1264,8 @@
       texture.minFilter = THREE.LinearFilter;
       const spriteMat = new THREE.SpriteMaterial({ map: texture, depthTest: false });
       const sprite = new THREE.Sprite(spriteMat);
-      sprite.scale.set(5.6, 2.8, 1.0);
+      // Kompakte Breite von 5.2 Einheiten verhindert jegliche Überlappung bei Abständen >= 7.0
+      sprite.scale.set(5.2, 2.6, 1.0);
       return sprite;
     }
 
@@ -1274,9 +1273,10 @@
       comparisonGroup.visible = false;
       scene.add(comparisonGroup);
 
+      // Erweiterte Führungsachse für den breiteren, überlappungsfreien Aufbau
       const lineGeo = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(-20, -4.2, 0),
-        new THREE.Vector3(14, -4.2, 0)
+        new THREE.Vector3(-25, -4.2, 0),
+        new THREE.Vector3(19, -4.2, 0)
       ]);
       const lineMat = new THREE.LineBasicMaterial({ color: 0x224466, transparent: true, opacity: 0.5 });
       comparisonGroup.add(new THREE.Line(lineGeo, lineMat));
@@ -1316,20 +1316,21 @@
     }
 
     function updateComparisonPan(percent) {
-      compTargetX = -15.0 + (percent / 100) * 23.0;
+      // Linearer Bereich: von X = -19.0 bis X = 13.0 (Span = 32.0 Einheiten)
+      compTargetX = -19.0 + (percent / 100) * 32.0;
     }
 
     function updateComparisonZoom(zDistance) {
-      compTargetZ = Math.max(14.0, Math.min(55.0, zDistance));
+      compTargetZ = Math.max(14.0, Math.min(65.0, zDistance));
     }
 
     function setOverviewMode() {
       const slider = document.getElementById('compare-slider');
       const zoomSlider = document.getElementById('zoom-slider');
-      slider.value = 48;
-      zoomSlider.value = 34;
-      compTargetX = -3.5;
-      compTargetZ = 34.0;
+      slider.value = 50;
+      zoomSlider.value = 40;
+      compTargetX = -3.0;
+      compTargetZ = 40.0;
     }
 
     function onWindowWheel(e) {
@@ -1337,7 +1338,7 @@
       e.preventDefault();
       const zoomSlider = document.getElementById('zoom-slider');
       let newZ = compTargetZ + (e.deltaY > 0 ? 2.5 : -2.5);
-      newZ = Math.max(14, Math.min(55, newZ));
+      newZ = Math.max(14, Math.min(65, newZ));
       zoomSlider.value = newZ;
       updateComparisonZoom(newZ);
     }
@@ -1377,7 +1378,7 @@
           initialDist = currentDist;
           const zoomSlider = document.getElementById('zoom-slider');
           let newZ = compTargetZ + diff * 0.08;
-          newZ = Math.max(14, Math.min(55, newZ));
+          newZ = Math.max(14, Math.min(65, newZ));
           zoomSlider.value = newZ;
           updateComparisonZoom(newZ);
         }
@@ -1475,7 +1476,6 @@
       const card = document.getElementById('info-card');
       document.getElementById('card-title').textContent = `${data.emoji} ${data.name}`;
       
-      // Spezifische Schüler-Aufgabenbox steuern
       const taskBox = document.getElementById('card-task-box');
       const taskList = document.getElementById('card-task-list');
       if (data.taskAnswers && data.taskAnswers.length > 0) {
@@ -1490,7 +1490,6 @@
       document.getElementById('card-term-text').textContent = data.termText;
 
       const radiusRatio = Math.cbrt(data.volumeKm3 / V_EARTH);
-      const radiusInverse = (1 / radiusRatio).toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
       document.getElementById('metric-vol').textContent = data.volumeStr;
       document.getElementById('metric-share').textContent = data.shareTotal;
@@ -1499,7 +1498,6 @@
       document.getElementById('metric-type').textContent = data.categoryType;
       document.getElementById('card-relevance').textContent = data.relevance;
       
-      // Größenvergleich-Elemente im unteren Bereich
       document.getElementById('card-comp-badge').textContent = data.earthShareBadge;
       document.getElementById('card-scale-label').textContent = data.scaleText;
 
@@ -1541,7 +1539,6 @@
       dl2.position.set(-4, -2, 2);
       miniScene.add(dl2);
 
-      // 1. Miniatur-Erde links
       const miniEarthGeo = new THREE.SphereGeometry(0.72, 32, 32);
       const miniEarthMat = new THREE.MeshPhongMaterial({
         map: sharedEarthTexture || createProceduralEarthTexture(),
@@ -1551,7 +1548,6 @@
       miniEarthMesh.position.set(-0.75, 0, 0);
       miniScene.add(miniEarthMesh);
 
-      // 2. Wasserkugel rechts
       const wGeo = new THREE.SphereGeometry(0.2, 32, 32);
       const wMat = new THREE.MeshPhysicalMaterial({
         color: 0x2b88ff,
@@ -1576,14 +1572,12 @@
       miniCamera.aspect = miniCanvas.clientWidth / miniCanvas.clientHeight;
       miniCamera.updateProjectionMatrix();
 
-      // Proportionaler Radius zur Miniatur-Erde (Radius = 0.72)
       const calculatedRadius = 0.72 * radiusRatio;
       const visualRadius = Math.max(0.045, calculatedRadius);
 
       miniWaterSphere.geometry.dispose();
       miniWaterSphere.geometry = new THREE.SphereGeometry(visualRadius, 32, 32);
       
-      // Für Meerwasser kräftigeres, deckenderes Blau mit sanftem Glanz für optimalen Kontrast
       miniWaterSphere.material.color.setHex(colorHex);
       miniWaterSphere.material.transmission = (id === 'oceans') ? 0.15 : 0.45;
       miniWaterSphere.material.roughness = 0.15;
