@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Globale Wasserverteilung | Umwelttechnik 3D</title>
+  
+  <!-- CDNs: Three.js r128, OrbitControls, TWEEN.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+
+  <style>
+    :root {
+      --fluent-bg: rgba(24, 28, 36, 0.94);
+      --fluent-border: rgba(255, 255, 255, 0.18);
+      --fluent-hover: rgba(255, 255, 255, 0.12);
+      --fluent-active: rgba(255, 255, 255, 0.08);
+      --fluent-accent: #0078d4;
+      --fluent-accent-hover: #1084d9;
+      --fluent-accent-glow: rgba(0, 120, 212, 0.65);
+      --fluent-text: #ffffff;
+      --fluent-text-sec: #d2d8e0;
+      --fluent-warning-bg: rgba(216, 59, 1, 0.15);
+      --fluent-warning-border: rgba(247, 99, 38, 0.4);
+      --fluent-term-bg: rgba(0, 120, 212, 0.15);
+      --fluent-term-border: rgba(112, 184, 255, 0.35);
+      --fluent-task-bg: rgba(16, 124, 65, 0.18);
+      --fluent-task-border: rgba(50, 180, 100, 0.45);
+      --fluent-comp-bg: rgba(0, 120, 212, 0.12);
+      --fluent-comp-border: rgba(112, 184, 255, 0.3);
+      --fluent-radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #020408;
+      font-family: 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: var(--fluent-text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #webgl-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      display: block;
+    }
+
+    /* Fluent Header */
+    .app-header {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .header-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: auto;
+    }
+
+    .acrylic-pill {
+      background: var(--fluent-bg);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid var(--fluent-border);
+      border-radius: 999px;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .badge-explored {
+      background: rgba(0, 120, 212, 0.25);
+      border: 1px solid rgba(0, 120, 212, 0.5);
+      color: #70b8ff;
+      border-radius: 999px;
+      padding: 3px 12px;
+      font-size: 13px;
+    }
+
+    /* Fluent Buttons */
+    .btn-fluent {
+      background: var(--fluent-bg);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid var(--fluent-border);
+      border-radius: var(--fluent-radius);
+      color: var(--fluent-text);
+      padding: 9px 15px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+      pointer-events: auto;
+    }
+
+    .btn-fluent:hover {
+      background: var(--fluent-hover);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-fluent:active {
+      background: var(--fluent-active);
+      transform: translateY(1px);
+    }
+
+    .btn-icon {
+      padding: 9px 13px;
+      border-radius: 50%;
+    }
+
+    .btn-primary {
+      background: var(--fluent-accent);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: var(--fluent-accent-hover);
+    }
+
+    #btn-compare {
+      opacity: 0.45;
+      pointer-events: none;
+      transition: all 0.35s ease;
+    }
+
+    #btn-compare.unlocked {
+      opacity: 1;
+      pointer-events: auto;
+      box-shadow: 0 0 16px var(--fluent-accent-glow), 0 4px 16px rgba(0, 0, 0, 0.4);
+      border-color: rgba(112, 184, 255, 0.8);
+      animation: pulse-glow 2.5s infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 14px rgba(0, 120, 212, 0.5); }
+      50% { box-shadow: 0 0 24px rgba(0, 120, 212, 0.9); }
+    }
+
+    /* Modal / Onboarding */
+    .fluent-modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+
+    .fluent-modal-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .fluent-modal {
+      width: 100%;
+      max-width: 600px;
+      background: var(--fluent-bg);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid var(--fluent-border);
+      border-radius: var(--fluent-radius);
+      padding: 28px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+      transform: scale(1);
+      transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+    }
+
+    .fluent-modal-overlay.hidden .fluent-modal {
+      transform: scale(0.94);
+    }
+
+    .fluent-modal h2 {
+      font-size: 23px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .fluent-modal p {
+      font-size: 15px;
+      color: var(--fluent-text-sec);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .modal-instruction-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 18px 0 24px;
+    }
+
+    .instruction-item {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .instruction-item span {
+      font-size: 22px;
+    }
+
+    /* Hotspot Info Card */
+    .info-card {
+      position: absolute;
+      right: 20px;
+      bottom: 20px;
+      width: 480px;
+      max-width: calc(100vw - 40px);
+      max-height: calc(100vh - 90px);
+      background: var(--fluent-bg);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid var(--fluent-border);
+      border-radius: var(--fluent-radius);
+      padding: 18px 20px;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.75);
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+      overflow-y: auto;
+    }
+
+    .info-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .info-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .info-title {
+      font-size: 21px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: 0.2px;
+    }
+
+    .btn-close {
+      background: transparent;
+      border: none;
+      color: var(--fluent-text-sec);
+      font-size: 22px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .btn-close:hover {
+      background: var(--fluent-hover);
+      color: #ffffff;
+    }
+
+    .didactic-block {
+      border-radius: 8px;
+      padding: 10px 13px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .didactic-block strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .block-task {
+      background: var(--fluent-task-bg);
+      border: 1px solid var(--fluent-task-border);
+      color: #eafff2;
+    }
+
+    .block-task strong {
+      color: #72f09d;
+    }
+
+    .block-task ol {
+      margin-left: 18px;
+      margin-top: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .block-task li {
+      font-size: 13.5px;
+      line-height: 1.4;
+    }
+
+    .block-warning {
+      background: var(--fluent-warning-bg);
+      border: 1px solid var(--fluent-warning-border);
+      color: #ffe6dc;
+    }
+
+    .block-warning strong {
+      color: #ff8c66;
+    }
+
+    .block-term {
+      background: var(--fluent-term-bg);
+      border: 1px solid var(--fluent-term-border);
+      color: #e5f2ff;
+    }
+
+    .block-term strong {
+      color: #8ac2ff;
+    }
+
+    .metrics-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 9px;
+      padding: 10px 12px;
+    }
+
+    .metric-cell .label {
+      font-size: 11.5px;
+      color: var(--fluent-text-sec);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    .metric-cell .val {
+      font-size: 16.5px;
+      font-weight: 700;
+      color: #70b8ff;
+      margin-top: 2px;
+    }
+
+    .relevance-text {
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: #eeeeee;
+      background: rgba(255, 255, 255, 0.04);
+      border-left: 4px solid var(--fluent-accent);
+      padding: 9px 12px;
+      border-radius: 0 8px 8px 0;
+    }
+
+    /* Größenvergleich-Container im unteren Bereich */
+    .comparison-lower-box {
+      background: var(--fluent-comp-bg);
+      border: 1px solid var(--fluent-comp-border);
+      border-radius: 9px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .comparison-lower-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #9cd5ff;
+    }
+
+    .comparison-badge {
+      background: rgba(0, 120, 212, 0.35);
+      border: 1px solid rgba(112, 184, 255, 0.6);
+      color: #ffffff;
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: 11.5px;
+      font-weight: 600;
+    }
+
+    .mini-preview-container {
+      width: 100%;
+      height: 145px;
+      background: rgba(6, 10, 18, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 7px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #mini-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .scale-label {
+      font-size: 13px;
+      color: #e2e8f0;
+      text-align: center;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    /* Comparison Dock */
+    .comparison-panel {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(40px);
+      width: min(880px, calc(100vw - 32px));
+      background: var(--fluent-bg);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid var(--fluent-border);
+      border-radius: var(--fluent-radius);
+      padding: 16px 20px;
+      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.75);
+      z-index: 25;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.35s cubic-bezier(0.1, 0.9, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .comparison-panel.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    .comp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .comp-title {
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #70b8ff;
+    }
+
+    .comp-controls-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--fluent-text-sec);
+    }
+
+    .control-row span.label {
+      min-width: 60px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .fluent-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.2);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .fluent-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: var(--fluent-accent);
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 10px rgba(0, 120, 212, 0.8);
+      cursor: pointer;
+      transition: transform 0.15s, background 0.15s;
+    }
+
+    .fluent-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.18);
+      background: var(--fluent-accent-hover);
+    }
+
+    .quick-snap-bar {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+    }
+
+    .btn-snap {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      color: var(--fluent-text);
+      font-size: 12px;
+      padding: 7px 4px;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .btn-snap:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-snap.highlight {
+      background: rgba(0, 120, 212, 0.35);
+      border-color: rgba(112, 184, 255, 0.6);
+      color: #9cd5ff;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .app-header {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .acrylic-pill span.title-text {
+        display: none;
+      }
+      .info-card {
+        right: 12px;
+        left: 12px;
+        bottom: 12px;
+        width: auto;
+        max-width: none;
+        max-height: 64vh;
+      }
+      .comp-controls-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .quick-snap-bar {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Main 3D Canvas -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- Top System Header Bar -->
+  <header class="app-header">
+    <div class="header-group">
+      <div class="acrylic-pill">
+        <span>🌍</span>
+        <span class="title-text">Umwelttechnik 3D | Globale Wasserverteilung</span>
+        <span class="badge-explored" id="badge-progress">Erkundet: 0/4</span>
+      </div>
+    </div>
+    <div class="header-group">
+      <button class="btn-fluent" id="btn-reset" title="Zurück zur vollen Erdübersicht">
+        <span>🔄</span>
+        <span>Globus-Übersicht</span>
+      </button>
+      <button class="btn-fluent" id="btn-compare" title="Erst nach 4/4 Erkundungen verfügbar">
+        <span id="compare-icon">🔒</span>
+        <span>3D-Mengenvergleich</span>
+      </button>
+      <button class="btn-fluent btn-icon" id="btn-help" title="Hilfe & Didaktik anzeigen">
+        <span>❔</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Fluent Comparison Controller Dock -->
+  <aside class="comparison-panel" id="comparison-dock">
+    <div class="comp-header">
+      <div class="comp-title">
+        <span>💧</span>
+        <span>3D-Mengenvergleich der 5 Wasserressourcen</span>
+      </div>
+      <button class="btn-close" id="btn-exit-comp" title="Vergleich beenden">✕</button>
+    </div>
+    
+    <div class="comp-controls-grid">
+      <div class="control-row">
+        <span class="label">Position:</span>
+        <input type="range" min="0" max="100" value="48" step="0.1" class="fluent-slider" id="compare-slider" />
+      </div>
+      <div class="control-row">
+        <span class="label">Zoom:</span>
+        <span>🔍-</span>
+        <input type="range" min="14" max="55" value="34" step="0.5" class="fluent-slider" id="zoom-slider" />
+        <span>🔍+</span>
+      </div>
+    </div>
+
+    <div class="quick-snap-bar">
+      <button class="btn-snap highlight" id="snap-all-view">👁️ Alle zeigen</button>
+      <button class="btn-snap" id="snap-0">1. Gesamtwasser</button>
+      <button class="btn-snap" id="snap-1">2. Meerwasser</button>
+      <button class="btn-snap" id="snap-2">3. Gletscher/Eis</button>
+      <button class="btn-snap" id="snap-3">4. Grundwasser</button>
+      <button class="btn-snap" id="snap-4">5. Oberflächenw.</button>
+    </div>
+  </aside>
+
+  <!-- Onboarding Modal -->
+  <div class="fluent-modal-overlay" id="help-modal">
+    <div class="fluent-modal">
+      <h2><span>💧</span> Globale Wasserverteilung</h2>
+      <p>
+        Willkommen im virtuellen Fachlabor für <strong>Umwelttechnologen für Wasserversorgung</strong>. 
+        Hier erforschen Sie, warum der blaue Planet zwar voller Wasser ist, Trinkwasser für Menschen 
+        und Industrie aber trotzdem eine extrem knappe Kostbarkeit bleibt [USGS, 2019].
+      </p>
+      <div class="modal-instruction-grid">
+        <div class="instruction-item">
+          <span>🔄</span>
+          <div><strong>Zentrierte Drehung</strong><br/>Erde dreht im Bildschirmmittelpunkt</div>
+        </div>
+        <div class="instruction-item">
+          <span>👁️</span>
+          <div><strong>Ganze Erdkugel</strong><br/>Planetenübersicht bleibt immer erhalten</div>
+        </div>
+        <div class="instruction-item">
+          <span>📝</span>
+          <div><strong>Lösung zu Aufgabe a</strong><br/>Präzise Fachantworten direkt im Infofeld</div>
+        </div>
+        <div class="instruction-item">
+          <span>💧</span>
+          <div><strong>Mengenvergleich</strong><br/>Schaltet nach 4/4 Erkundungen frei</div>
+        </div>
+      </div>
+      <button class="btn-fluent btn-primary" id="btn-start" style="width: 100%; justify-content: center; padding: 12px;">
+        Erkundung starten
+      </button>
+    </div>
+  </div>
+
+  <!-- Acrylic Info Card -->
+  <aside class="info-card" id="info-card">
+    <div class="info-card-header">
+      <div class="info-title" id="card-title">🌊 Weltmeere</div>
+      <button class="btn-close" id="btn-close-card" title="Schließen">✕</button>
+    </div>
+
+    <!-- Dedizierter Aufgaben-Lösungsblock (Aufgabe a) -->
+    <div class="didactic-block block-task" id="card-task-box" style="display: none;">
+      <strong>📝 Lösungshilfe Aufgabe a (Salzgehalt & Entsalzung):</strong>
+      <ol id="card-task-list">
+        <!-- Dynamischer Inhalt -->
+      </ol>
+    </div>
+
+    <!-- Warum schwer / nicht nutzbar? -->
+    <div class="didactic-block block-warning">
+      <strong>⚠️ Warum für uns kaum oder schwer nutzbar?</strong>
+      <span id="card-barrier">Barriere-Erklärung lädt...</span>
+    </div>
+
+    <!-- Fachbegriff kompakt -->
+    <div class="didactic-block block-term">
+      <strong id="card-term-title">💡 Fachbegriff: ...</strong>
+      <span id="card-term-text">Fachbegriff-Erklärung lädt...</span>
+    </div>
+
+    <!-- Kennzahlen -->
+    <div class="metrics-box">
+      <div class="metric-cell">
+        <div class="label">Volumen</div>
+        <div class="val" id="metric-vol">1.338.000.000 km³</div>
+      </div>
+      <div class="metric-cell">
+        <div class="label">Anteil am Gesamtwasser</div>
+        <div class="val" id="metric-share">96,54 %</div>
+      </div>
+      <div class="metric-cell">
+        <div class="label" id="metric-sub-label">Süßwasser-Anteil</div>
+        <div class="val" id="metric-fresh">-</div>
+      </div>
+      <div class="metric-cell">
+        <div class="label">Reservoir-Typ</div>
+        <div class="val" id="metric-type" style="font-size: 15px;">Salzwasser</div>
+      </div>
+    </div>
+
+    <!-- Versorgerrelevanz -->
+    <div class="relevance-text" id="card-relevance">
+      Versorger-Praxis lädt...
+    </div>
+
+    <!-- Größenvergleich im unteren Bereich -->
+    <div class="comparison-lower-box">
+      <div class="comparison-lower-header">
+        <span>🌐 3D-Größenvergleich zur Erde:</span>
+        <span class="comparison-badge" id="card-comp-badge">ca. 0,12 % Erdvolumen</span>
+      </div>
+      <div class="mini-preview-container">
+        <canvas id="mini-canvas"></canvas>
+      </div>
+      <div class="scale-label" id="card-scale-label">
+        3D-Größenvergleich: Kugelradius ca. 1 : 9,3 im Verhältnis zum Erdradius
+      </div>
+    </div>
+  </aside>
+
+  <script>
+    /* --- DATA & DIDACTIC RESERVOIR DEFINITIONS [USGS, 2019; BGR, 2021; DVGW, 2020] --- */
+    const V_EARTH = 1083210000000; // km³ (R_Erde = 6.371 km)
+    const EARTH_RADIUS = 5.0;
+    const CENTER = new THREE.Vector3(0, 0, 0);
+
+    const RESERVOIRS = [
+      {
+        id: 'oceans',
+        name: 'Weltmeere (Meerwasser)',
+        emoji: '🌊',
+        lat: 0.0,
+        lon: -155.0,
+        volumeKm3: 1338000000,
+        volumeStr: '1.338.000.000 km³',
+        shareTotal: '96,54 %',
+        shareFreshLabel: 'Vergleich Erdvolumen',
+        shareFresh: 'ca. 0,123 %',
+        categoryType: 'Salzwasser',
+        taskAnswers: [
+          '<strong>Warum 3,3–3,7 % Salzgehalt?</strong> Regen wäscht seit Jahrmilliarden Salzionen aus dem Festlandsgestein. Flüsse transportieren sie in die Meere. Da reines Wasser verdampft, reichert sich das Salz stetig auf rund 35 g/l an [USGS, 2019].',
+          '<strong>Warum riesiger technischer Aufwand?</strong> Salzwasser baut enormen osmotischen Druck auf. Um Trinkwasser zu gewinnen, müssen Pumpen das Meerwasser mit 60–80 bar durch extrem dichte Membranen pressen (Umkehrosmose). Das verbraucht gewaltige Strommengen (3–4 kWh/m³) und hinterlässt ätzend-konzentrierte Salzsole [DVGW, 2020].'
+        ],
+        barrierText: 'Der hohe Salzgehalt (rund 35 Gramm Salz pro Liter Wasser) entzieht menschlichen Körperzellen über Osmose lebenswichtiges Wasser. Auch Fabriken können Meerwasser nicht unaufbereitet nutzen, da das Salz Kühlsysteme und Kesselrohre in kürzester Zeit korrodiert [DVGW, 2020].',
+        termTitle: '💡 Fachbegriff: Osmotischer Druck & Membranfiltration',
+        termText: 'Wasser strömt von Natur aus immer dorthin, wo die Salzkonzentration höher ist (Osmose). Will man reines Wasser aus Meerwasser herauspressen, muss man diesen osmotischen Druck mit Hochdruckpumpen überwinden.',
+        relevance: 'Praxis der Wasserversorgung: Großentsalzungsanlagen sichern Trinkwasser in Küstenwüsten, belasten jedoch durch ihren extremen Stromverbrauch und das Rückleiten der heißen Sole die marinen Flachwasserökosysteme [BGR, 2021].',
+        earthShareBadge: 'ca. 0,12 % Erdvolumen',
+        scaleText: '3D-Größenvergleich: Kugelradius ca. 1 : 9,3 im Verhältnis zum Erdradius (Erde links, Meerwasser rechts)',
+        color: 0x2b88ff // Leuchtendes, kontrastreiches Ozeanblau für klare Sichtbarkeit im Mini-Canvas
+      },
+      {
+        id: 'glaciers',
+        name: 'Gletscher & Polareis',
+        emoji: '🧊',
+        lat: 72.0,
+        lon: -40.0,
+        volumeKm3: 24064000,
+        volumeStr: '24.064.000 km³',
+        shareTotal: '1,74 %',
+        shareFreshLabel: 'Süßwasser-Anteil',
+        shareFresh: '68,7 % des Süßwassers',
+        categoryType: 'Kryosphäre (Gefroren)',
+        taskAnswers: null,
+        barrierText: 'Über zwei Drittel allen Süßwassers stecken festgefroren in Grönland oder der Antarktis. Sie liegen fernab jeder menschlichen Zivilisation. Schmilzt das Eis klimabedingt ab, stürzt es sofort ins Meer und versalzt unwiederbringlich [USGS, 2019].',
+        termTitle: '💡 Fachbegriff: Kryosphäre & Inlandeis',
+        termText: 'Die Kryosphäre umfasst alle eisigen Gebiete unseres Planeten. Inlandeisschilde türmen sich bis zu 3.000 Meter hoch auf. Sie wirken wie ein riesiger Sonnenspiegel für das Weltklima und stabilisieren die Erdtemperatur.',
+        relevance: 'Praxis der Wasserversorgung: Eisberge abzuschleppen oder Schmelzwasser über Ozeane zu pumpen, scheitert an den astronomischen Transportkosten. Gletscher kühlen unseren Planeten, füllen aber keine Wasserleitungen.',
+        earthShareBadge: 'ca. 0,0022 % Erdvolumen',
+        scaleText: '3D-Größenvergleich: Kugelradius ca. 1 : 35,6 im Verhältnis zum Erdradius (Erde links, Polareis rechts)',
+        color: 0x9be2ff
+      },
+      {
+        id: 'groundwater',
+        name: 'Grundwasserleiter',
+        emoji: '💧',
+        lat: 51.0,
+        lon: 10.5,
+        volumeKm3: 23400000,
+        volumeStr: '23.400.000 km³',
+        shareTotal: '1,69 %',
+        shareFreshLabel: 'Süßwasser-Anteil',
+        shareFresh: '30,1 % des Süßwassers',
+        categoryType: 'Aquifer (Unterirdisch)',
+        taskAnswers: null,
+        barrierText: 'Tiefes Grundwasser ist oft uralt, stark versalzen oder mit Schwefel beladen. Zudem sickern Pestizide und Nitrat aus der intensiven Landwirtschaft in flachere Schichten. Ist ein unterirdischer Wasserspeicher erst einmal vergiftet, bleibt er es für Jahrzehnte [BGR, 2021].',
+        termTitle: '💡 Fachbegriff: Aquifer & Bodenpassage',
+        termText: 'Ein Aquifer ist eine unterirdische Gesteinsschicht aus Kies, Sand oder geklüftetem Fels, durch die Wasser fließt. Die Bodenpassage wirkt wie ein natürlicher Kaffeefilter: Sie hält Dreck und Krankheitserreger biologisch zurück.',
+        relevance: 'Praxis der Wasserversorgung: In Deutschland gewinnen Wasserwerke rund 70 % des Trinkwassers aus dem Grundwasser. Umwelttechnologen weisen Wasserschutzgebiete aus, damit keine Gülle oder Tankstellenabfälle ins Wasser gelangen.',
+        earthShareBadge: 'ca. 0,0021 % Erdvolumen',
+        scaleText: '3D-Größenvergleich: Kugelradius ca. 1 : 35,9 im Verhältnis zum Erdradius (Erde links, Grundwasser rechts)',
+        color: 0x00d4ff
+      },
+      {
+        id: 'surface',
+        name: 'Oberflächengewässer',
+        emoji: '🏞️',
+        lat: 45.0,
+        lon: -84.0,
+        volumeKm3: 179000,
+        volumeStr: '179.000 km³',
+        shareTotal: '0,013 %',
+        shareFreshLabel: 'Süßwasser-Anteil',
+        shareFresh: '1,2 % des Süßwassers',
+        categoryType: 'Seen & Flüsse',
+        taskAnswers: null,
+        barrierText: 'Flüsse und Seen machen einen winzigen Bruchteil des Wassers aus. Sie liegen völlig ungeschützt da: Hitze lässt sie austrocknen, Algenblüten ersticken Fische, und Industrieabwässer oder Mikroplastik landen direkt in der Welle [DVGW, 2020].',
+        termTitle: '💡 Fachbegriff: Anthropogene Spurenstoffe',
+        termText: 'Das Wort „anthropogen“ bedeutet „vom Menschen verursacht“. Spurenstoffe sind mikroskopische Reste unserer Wohlstandsgesellschaft im Wasser: Schmerzmittel, Röntgenkontrastmittel, Kosmetika oder Pflanzenschutzgifte.',
+        relevance: 'Praxis der Wasserversorgung: Talsperren- und Flusswasser verlangen den höchsten Reinigungsaufwand. Wasserwerke schalten Ozonanlagen, Aktivkohlefilter und Sandfiltration hintereinander, um das Wasser genusstauglich zu machen.',
+        earthShareBadge: 'ca. 0,000016 % Erdvolumen',
+        scaleText: '3D-Größenvergleich: Kugelradius ca. 1 : 182 im Verhältnis zum Erdradius (Erde links, Flüsse & Seen rechts)',
+        color: 0x80ffff
+      }
+    ];
+
+    /* --- DIE 5 VERGLEICHSKÖRPER IM 3D-MENGENVERGLEICH [USGS, 2019] --- */
+    const R_BASE = 3.6;
+    const V_TOTAL_WATER = 1386000000;
+    function calcWaterRadius(vol) {
+      return R_BASE * Math.cbrt(vol / V_TOTAL_WATER);
+    }
+
+    const COMPARISON_BODIES = [
+      {
+        id: 'total',
+        title: '1. Gesamtes Wasservolumen',
+        volume: '1.386.000.000 km³',
+        details: [
+          '100 % des globalen Wassers',
+          'Entspricht ca. 0,13 % des Erdvolumens',
+          'Umfasst alle Meere, Eismassen und Süßwasservorkommen'
+        ],
+        radius: R_BASE,
+        color: 0x0044cc,
+        posX: -15.0,
+        sliderPercent: 0
+      },
+      {
+        id: 'oceans',
+        title: '2. Meerwasseranteil',
+        volume: '1.338.000.000 km³',
+        details: [
+          '96,54 % des weltweiten Wassers',
+          'Entspricht ca. 0,12 % des gesamten Erdvolumens',
+          'Salzwasser: Ca. 35 g Salz pro Liter (nicht trinkbar)'
+        ],
+        radius: calcWaterRadius(1338000000),
+        color: 0x0066ff,
+        posX: -6.5,
+        sliderPercent: 28
+      },
+      {
+        id: 'glaciers',
+        title: '3. Gletscher & Polareis',
+        volume: '24.064.000 km³',
+        details: [
+          '1,74 % des Gesamtwassers',
+          '68,7 % aller globalen Süßwasservorräte',
+          'Als Inlandeis in Arktis & Antarktis fest gebunden'
+        ],
+        radius: calcWaterRadius(24064000),
+        color: 0xa8e6ff,
+        posX: 0.5,
+        sliderPercent: 55
+      },
+      {
+        id: 'groundwater',
+        title: '4. Grundwasser',
+        volume: '23.400.000 km³',
+        details: [
+          '1,69 % des Gesamtwassers',
+          '30,1 % aller globalen Süßwasservorräte',
+          'Wichtigste Trinkwasserquelle der Menschen'
+        ],
+        radius: calcWaterRadius(23400000),
+        color: 0x00d4ff,
+        posX: 4.5,
+        sliderPercent: 78
+      },
+      {
+        id: 'surface',
+        title: '5. Oberflächenwasser',
+        volume: '179.000 km³',
+        details: [
+          'Nur 0,013 % des Gesamtwassers',
+          'Lediglich 1,2 % aller Süßwasservorräte',
+          'Alle Flüsse & Süßwasserseen der Erde zusammen'
+        ],
+        radius: Math.max(0.22, calcWaterRadius(179000)),
+        color: 0x66ffff,
+        posX: 8.0,
+        sliderPercent: 100
+      }
+    ];
+
+    /* --- GLOBALS --- */
+    const exploredSet = new Set();
+    let isComparisonActive = false;
+    let comparisonGroup = new THREE.Group();
+    let hotspotMeshes = [];
+
+    let scene, camera, renderer, controls;
+    let earthMesh, atmosphereMesh, starField;
+    let raycaster, mouse;
+
+    let miniScene, miniCamera, miniRenderer, miniControls;
+    let miniEarthMesh, miniWaterSphere;
+    let miniAnimId = null;
+    let sharedEarthTexture = null;
+
+    let compTargetX = -3.5;
+    let compCurrentX = -3.5;
+    let compTargetZ = 34.0;
+    let compCurrentZ = 34.0;
+
+    function getSafeDistance(radius = 5.6) {
+      const aspect = camera.aspect;
+      const vFovRad = (camera.fov * Math.PI) / 180;
+      const distV = radius / Math.tan(vFovRad / 2);
+      const hFovRad = 2 * Math.atan(Math.tan(vFovRad / 2) * aspect);
+      const distH = radius / Math.tan(hFovRad / 2);
+      return Math.max(distV, distH, 14.5);
+    }
+
+    function init() {
+      const canvas = document.getElementById('webgl-canvas');
+      scene = new THREE.Scene();
+
+      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+      
+      renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: true,
+        alpha: false,
+        powerPreference: "high-performance"
+      });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.05;
+
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.target.copy(CENTER);
+      controls.enablePan = false;
+      controls.autoRotate = false;
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      
+      updateCameraDistances();
+
+      const startDist = getSafeDistance(5.6);
+      camera.position.set(0, startDist * 0.18, startDist);
+      camera.lookAt(CENTER);
+
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.92);
+      scene.add(ambientLight);
+
+      const d1 = new THREE.DirectionalLight(0xffffff, 0.6);
+      d1.position.set(25, 20, 25);
+      scene.add(d1);
+
+      const d2 = new THREE.DirectionalLight(0xddeeff, 0.5);
+      d2.position.set(-25, 10, -25);
+      scene.add(d2);
+
+      const d3 = new THREE.DirectionalLight(0xffffff, 0.35);
+      d3.position.set(0, -25, 10);
+      scene.add(d3);
+
+      createStarfield();
+      createEarth();
+      createHotspots();
+      buildComparisonObjects();
+
+      raycaster = new THREE.Raycaster();
+      mouse = new THREE.Vector2();
+
+      initMiniScene();
+      setupUIEvents();
+
+      window.addEventListener('resize', onWindowResize, false);
+      canvas.addEventListener('pointerdown', onCanvasClick, false);
+
+      window.addEventListener('wheel', onWindowWheel, { passive: false });
+      setupTouchInteraction();
+
+      animate();
+    }
+
+    function updateCameraDistances() {
+      const safeMin = getSafeDistance(5.3);
+      controls.minDistance = safeMin;
+      controls.maxDistance = safeMin * 2.8;
+    }
+
+    function createProceduralEarthTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1024;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#0b233a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#1e5430';
+      function drawBlob(x, y, rx, ry) {
+        ctx.beginPath();
+        ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      drawBlob(580, 180, 140, 90);
+      drawBlob(540, 290, 80, 100);
+      drawBlob(260, 180, 90, 80);
+      drawBlob(320, 320, 70, 100);
+      drawBlob(780, 340, 50, 40);
+      ctx.fillStyle = '#d8eef8';
+      drawBlob(370, 70, 45, 30);
+      drawBlob(512, 485, 490, 25);
+      return new THREE.CanvasTexture(canvas);
+    }
+
+    function createStarfield() {
+      const geo = new THREE.BufferGeometry();
+      const count = 1600;
+      const pos = new Float32Array(count * 3);
+      for (let i = 0; i < count * 3; i += 3) {
+        const theta = 2 * Math.PI * Math.random();
+        const phi = Math.acos(2 * Math.random() - 1);
+        const r = 160 + Math.random() * 80;
+        pos[i] = r * Math.sin(phi) * Math.cos(theta);
+        pos[i + 1] = r * Math.sin(phi) * Math.sin(theta);
+        pos[i + 2] = r * Math.cos(phi);
+      }
+      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      const mat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.9, transparent: true, opacity: 0.65 });
+      starField = new THREE.Points(geo, mat);
+      scene.add(starField);
+    }
+
+    function createEarth() {
+      const geo = new THREE.SphereGeometry(EARTH_RADIUS, 64, 64);
+      const texLoader = new THREE.TextureLoader();
+      texLoader.setCrossOrigin('anonymous');
+
+      sharedEarthTexture = createProceduralEarthTexture();
+
+      const surfaceMapUrl = 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/planets/earth_atmos_2048.jpg';
+      const normalMapUrl = 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/planets/earth_normal_2048.jpg';
+      const specularMapUrl = 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/planets/earth_specular_2048.jpg';
+
+      const earthMat = new THREE.MeshPhongMaterial({
+        map: sharedEarthTexture,
+        shininess: 25,
+        specular: new THREE.Color(0x222222)
+      });
+
+      texLoader.load(surfaceMapUrl, (t) => {
+        t.minFilter = THREE.LinearFilter;
+        earthMat.map = t;
+        earthMat.needsUpdate = true;
+        if (miniEarthMesh && miniEarthMesh.material) {
+          miniEarthMesh.material.map = t;
+          miniEarthMesh.material.needsUpdate = true;
+        }
+      });
+      texLoader.load(normalMapUrl, (t) => {
+        earthMat.normalMap = t;
+        earthMat.normalScale = new THREE.Vector2(0.85, 0.85);
+        earthMat.needsUpdate = true;
+      });
+      texLoader.load(specularMapUrl, (t) => {
+        earthMat.specularMap = t;
+        earthMat.specular = new THREE.Color(0x333333);
+        earthMat.needsUpdate = true;
+      });
+
+      earthMesh = new THREE.Mesh(geo, earthMat);
+      earthMesh.position.copy(CENTER);
+      scene.add(earthMesh);
+
+      const atmosGeo = new THREE.SphereGeometry(EARTH_RADIUS * 1.018, 64, 64);
+      const atmosMat = new THREE.MeshLambertMaterial({
+        color: 0x3a82f7,
+        transparent: true,
+        opacity: 0.16,
+        blending: THREE.AdditiveBlending,
+        side: THREE.BackSide
+      });
+      atmosphereMesh = new THREE.Mesh(atmosGeo, atmosMat);
+      atmosphereMesh.position.copy(CENTER);
+      scene.add(atmosphereMesh);
+    }
+
+    function latLonToVector3(lat, lon, radius) {
+      const phi = (90 - lat) * (Math.PI / 180);
+      const theta = (lon + 180) * (Math.PI / 180);
+      return new THREE.Vector3(
+        -(radius * Math.sin(phi) * Math.cos(theta)),
+        (radius * Math.cos(phi)),
+        (radius * Math.sin(phi) * Math.sin(theta))
+      );
+    }
+
+    function createHotspots() {
+      RESERVOIRS.forEach((data) => {
+        const markerGroup = new THREE.Group();
+        const pos = latLonToVector3(data.lat, data.lon, EARTH_RADIUS * 1.008);
+        markerGroup.position.copy(pos);
+        markerGroup.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), pos.clone().normalize());
+
+        const coreGeo = new THREE.SphereGeometry(0.12, 16, 16);
+        const coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.95 });
+        const core = new THREE.Mesh(coreGeo, coreMat);
+        markerGroup.add(core);
+
+        const ringGeo = new THREE.RingGeometry(0.16, 0.24, 32);
+        const ringMat = new THREE.MeshBasicMaterial({ color: data.color, side: THREE.DoubleSide, transparent: true, opacity: 0.85 });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        markerGroup.add(ring);
+
+        const hitGeo = new THREE.SphereGeometry(0.38, 12, 12);
+        const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+        const hitTarget = new THREE.Mesh(hitGeo, hitMat);
+        hitTarget.userData = { reservoirId: data.id };
+        markerGroup.add(hitTarget);
+
+        markerGroup.userData = { ringMesh: ring, data: data };
+        scene.add(markerGroup);
+        hotspotMeshes.push(markerGroup);
+      });
+    }
+
+    function createComparisonSprite(title, volume, details) {
+      const dpr = Math.min(window.devicePixelRatio, 2);
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      const w = 580 * dpr;
+      const h = 290 * dpr;
+      canvas.width = w;
+      canvas.height = h;
+      ctx.scale(dpr, dpr);
+
+      const rx = 12, ry = 12, rw = 556, rh = 266, r = 18;
+      
+      const bgGrad = ctx.createLinearGradient(0, ry, 0, ry + rh);
+      bgGrad.addColorStop(0, 'rgba(28, 34, 48, 0.95)');
+      bgGrad.addColorStop(1, 'rgba(16, 20, 28, 0.95)');
+      ctx.fillStyle = bgGrad;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.24)';
+      ctx.lineWidth = 2.4;
+
+      ctx.beginPath();
+      ctx.moveTo(rx + r, ry);
+      ctx.lineTo(rx + rw - r, ry);
+      ctx.quadraticCurveTo(rx + rw, ry, rx + rw, ry + r);
+      ctx.lineTo(rx + rw, ry + rh - r);
+      ctx.quadraticCurveTo(rx + rw, ry + rh, rx + rw - r, ry + rh);
+      ctx.lineTo(rx + r, ry + rh);
+      ctx.quadraticCurveTo(rx, ry + rh, rx, ry + rh - r);
+      ctx.lineTo(rx, ry + r);
+      ctx.quadraticCurveTo(rx, ry, rx + r, ry);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#0078d4';
+      ctx.beginPath();
+      ctx.roundRect ? ctx.roundRect(rx + 24, ry + 12, rw - 48, 4, 2) : ctx.rect(rx + 24, ry + 12, rw - 48, 4);
+      ctx.fill();
+
+      // Titel
+      ctx.font = '700 24px "Segoe UI", system-ui, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.fillText(title, 290, 54);
+
+      // Volumen
+      ctx.font = '800 28px "Segoe UI", system-ui, sans-serif';
+      ctx.fillStyle = '#60cdff';
+      ctx.fillText(volume, 290, 98);
+
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.16)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(rx + 36, 120);
+      ctx.lineTo(rx + rw - 36, 120);
+      ctx.stroke();
+
+      // Details untereinander
+      const startY = 156;
+      const lineHeight = 36;
+      details.forEach((line, idx) => {
+        if (idx === 0) {
+          ctx.font = '600 18.5px "Segoe UI", system-ui, sans-serif';
+          ctx.fillStyle = '#ffffff';
+        } else {
+          ctx.font = '500 17px "Segoe UI", system-ui, sans-serif';
+          ctx.fillStyle = '#d2dcf0';
+        }
+        ctx.fillText(line, 290, startY + idx * lineHeight);
+      });
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.minFilter = THREE.LinearFilter;
+      const spriteMat = new THREE.SpriteMaterial({ map: texture, depthTest: false });
+      const sprite = new THREE.Sprite(spriteMat);
+      sprite.scale.set(5.6, 2.8, 1.0);
+      return sprite;
+    }
+
+    function buildComparisonObjects() {
+      comparisonGroup.visible = false;
+      scene.add(comparisonGroup);
+
+      const lineGeo = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(-20, -4.2, 0),
+        new THREE.Vector3(14, -4.2, 0)
+      ]);
+      const lineMat = new THREE.LineBasicMaterial({ color: 0x224466, transparent: true, opacity: 0.5 });
+      comparisonGroup.add(new THREE.Line(lineGeo, lineMat));
+
+      COMPARISON_BODIES.forEach((wb) => {
+        const itemGroup = new THREE.Group();
+        itemGroup.position.set(wb.posX, 0, 0);
+
+        const geo = new THREE.SphereGeometry(wb.radius, 48, 48);
+        const mat = new THREE.MeshPhysicalMaterial({
+          color: wb.color,
+          roughness: 0.1,
+          metalness: 0.05,
+          transmission: 0.55,
+          opacity: 0.95,
+          transparent: true,
+          clearcoat: 0.9,
+          clearcoatRoughness: 0.1
+        });
+        const mesh = new THREE.Mesh(geo, mat);
+        itemGroup.add(mesh);
+
+        const labelOffsetY = Math.max(wb.radius + 2.0, 2.7);
+        const sprite = createComparisonSprite(wb.title, wb.volume, wb.details);
+        sprite.position.set(0, labelOffsetY, 0);
+        itemGroup.add(sprite);
+
+        const dotGeo = new THREE.CircleGeometry(0.14, 16);
+        const dotMat = new THREE.MeshBasicMaterial({ color: wb.color, side: THREE.DoubleSide });
+        const dot = new THREE.Mesh(dotGeo, dotMat);
+        dot.rotation.x = Math.PI / 2;
+        dot.position.set(0, -4.2, 0);
+        itemGroup.add(dot);
+
+        comparisonGroup.add(itemGroup);
+      });
+    }
+
+    function updateComparisonPan(percent) {
+      compTargetX = -15.0 + (percent / 100) * 23.0;
+    }
+
+    function updateComparisonZoom(zDistance) {
+      compTargetZ = Math.max(14.0, Math.min(55.0, zDistance));
+    }
+
+    function setOverviewMode() {
+      const slider = document.getElementById('compare-slider');
+      const zoomSlider = document.getElementById('zoom-slider');
+      slider.value = 48;
+      zoomSlider.value = 34;
+      compTargetX = -3.5;
+      compTargetZ = 34.0;
+    }
+
+    function onWindowWheel(e) {
+      if (!isComparisonActive) return;
+      e.preventDefault();
+      const zoomSlider = document.getElementById('zoom-slider');
+      let newZ = compTargetZ + (e.deltaY > 0 ? 2.5 : -2.5);
+      newZ = Math.max(14, Math.min(55, newZ));
+      zoomSlider.value = newZ;
+      updateComparisonZoom(newZ);
+    }
+
+    function setupTouchInteraction() {
+      let touchStartX = 0;
+      let initialDist = 0;
+
+      window.addEventListener('touchstart', (e) => {
+        if (!isComparisonActive) return;
+        if (e.touches.length === 1) {
+          touchStartX = e.touches[0].clientX;
+        } else if (e.touches.length === 2) {
+          initialDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!isComparisonActive) return;
+        if (e.touches.length === 1) {
+          const deltaX = touchStartX - e.touches[0].clientX;
+          touchStartX = e.touches[0].clientX;
+          const slider = document.getElementById('compare-slider');
+          let val = parseFloat(slider.value) + deltaX * 0.15;
+          val = Math.max(0, Math.min(100, val));
+          slider.value = val;
+          updateComparisonPan(val);
+        } else if (e.touches.length === 2) {
+          const currentDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          const diff = initialDist - currentDist;
+          initialDist = currentDist;
+          const zoomSlider = document.getElementById('zoom-slider');
+          let newZ = compTargetZ + diff * 0.08;
+          newZ = Math.max(14, Math.min(55, newZ));
+          zoomSlider.value = newZ;
+          updateComparisonZoom(newZ);
+        }
+      }, { passive: true });
+    }
+
+    function toggleVolumeComparison() {
+      if (!isComparisonActive) {
+        activateVolumeComparison();
+      } else {
+        deactivateVolumeComparison();
+      }
+    }
+
+    function activateVolumeComparison() {
+      isComparisonActive = true;
+      closeInfoCard();
+
+      document.getElementById('comparison-dock').classList.add('visible');
+      document.getElementById('btn-compare').classList.add('btn-primary');
+
+      earthMesh.visible = false;
+      atmosphereMesh.visible = false;
+      hotspotMeshes.forEach(h => h.visible = false);
+
+      comparisonGroup.visible = true;
+      controls.enabled = false;
+
+      setOverviewMode();
+
+      new TWEEN.Tween(camera.position)
+        .to({ x: compTargetX, y: 0, z: compTargetZ }, 900)
+        .easing(TWEEN.Easing.Cubic.Out)
+        .start();
+    }
+
+    function deactivateVolumeComparison() {
+      isComparisonActive = false;
+      document.getElementById('comparison-dock').classList.remove('visible');
+      document.getElementById('btn-compare').classList.remove('btn-primary');
+
+      comparisonGroup.visible = false;
+
+      earthMesh.visible = true;
+      atmosphereMesh.visible = true;
+      hotspotMeshes.forEach(h => h.visible = true);
+
+      controls.enabled = true;
+      controls.target.copy(CENTER);
+
+      const safeDist = getSafeDistance(5.6);
+      new TWEEN.Tween(camera.position)
+        .to({ x: 0, y: safeDist * 0.18, z: safeDist }, 1000)
+        .easing(TWEEN.Easing.Cubic.Out)
+        .start();
+    }
+
+    function focusHotspot(reservoir) {
+      if (isComparisonActive) return;
+
+      const markerPos = latLonToVector3(reservoir.lat, reservoir.lon, EARTH_RADIUS);
+      const safeDist = getSafeDistance(5.6);
+      const targetCamPos = markerPos.clone().normalize().multiplyScalar(safeDist);
+
+      new TWEEN.Tween(camera.position)
+        .to(targetCamPos, 1200)
+        .easing(TWEEN.Easing.Cubic.Out)
+        .start();
+
+      controls.target.copy(CENTER);
+
+      exploredSet.add(reservoir.id);
+      updateExplorationBadge();
+      openInfoCard(reservoir);
+    }
+
+    function updateExplorationBadge() {
+      const badge = document.getElementById('badge-progress');
+      const count = exploredSet.size;
+      badge.textContent = `Erkundet: ${count}/4`;
+
+      if (count === 4) {
+        badge.style.background = 'rgba(16, 137, 62, 0.3)';
+        badge.style.borderColor = 'rgba(16, 137, 62, 0.8)';
+        badge.style.color = '#60e08b';
+
+        const btnCompare = document.getElementById('btn-compare');
+        btnCompare.classList.add('unlocked');
+        btnCompare.title = '3D-Mengenvergleich öffnen';
+        document.getElementById('compare-icon').textContent = '💧';
+      }
+    }
+
+    function openInfoCard(data) {
+      const card = document.getElementById('info-card');
+      document.getElementById('card-title').textContent = `${data.emoji} ${data.name}`;
+      
+      // Spezifische Schüler-Aufgabenbox steuern
+      const taskBox = document.getElementById('card-task-box');
+      const taskList = document.getElementById('card-task-list');
+      if (data.taskAnswers && data.taskAnswers.length > 0) {
+        taskList.innerHTML = data.taskAnswers.map(ans => `<li>${ans}</li>`).join('');
+        taskBox.style.display = 'block';
+      } else {
+        taskBox.style.display = 'none';
+      }
+
+      document.getElementById('card-barrier').textContent = data.barrierText;
+      document.getElementById('card-term-title').textContent = data.termTitle;
+      document.getElementById('card-term-text').textContent = data.termText;
+
+      const radiusRatio = Math.cbrt(data.volumeKm3 / V_EARTH);
+      const radiusInverse = (1 / radiusRatio).toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+      document.getElementById('metric-vol').textContent = data.volumeStr;
+      document.getElementById('metric-share').textContent = data.shareTotal;
+      document.getElementById('metric-sub-label').textContent = data.shareFreshLabel || 'Süßwasser-Anteil';
+      document.getElementById('metric-fresh').textContent = data.shareFresh;
+      document.getElementById('metric-type').textContent = data.categoryType;
+      document.getElementById('card-relevance').textContent = data.relevance;
+      
+      // Größenvergleich-Elemente im unteren Bereich
+      document.getElementById('card-comp-badge').textContent = data.earthShareBadge;
+      document.getElementById('card-scale-label').textContent = data.scaleText;
+
+      card.classList.add('visible');
+      updateMiniScene(radiusRatio, data.color, data.id);
+    }
+
+    function closeInfoCard() {
+      document.getElementById('info-card').classList.remove('visible');
+      if (miniAnimId) {
+        cancelAnimationFrame(miniAnimId);
+        miniAnimId = null;
+      }
+    }
+
+    function initMiniScene() {
+      const miniCanvas = document.getElementById('mini-canvas');
+      miniScene = new THREE.Scene();
+
+      miniCamera = new THREE.PerspectiveCamera(38, miniCanvas.clientWidth / miniCanvas.clientHeight, 0.1, 50);
+      miniCamera.position.set(0, 0, 3.2);
+
+      miniRenderer = new THREE.WebGLRenderer({ canvas: miniCanvas, antialias: true, alpha: true });
+      miniRenderer.setSize(miniCanvas.clientWidth, miniCanvas.clientHeight);
+      miniRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      miniControls = new THREE.OrbitControls(miniCamera, miniRenderer.domElement);
+      miniControls.target.set(0, 0, 0);
+      miniControls.enablePan = false;
+      miniControls.enableZoom = false;
+      miniControls.autoRotate = false;
+
+      miniScene.add(new THREE.AmbientLight(0xffffff, 0.95));
+      const dl = new THREE.DirectionalLight(0xffffff, 0.95);
+      dl.position.set(4, 4, 4);
+      miniScene.add(dl);
+
+      const dl2 = new THREE.DirectionalLight(0x70b8ff, 0.4);
+      dl2.position.set(-4, -2, 2);
+      miniScene.add(dl2);
+
+      // 1. Miniatur-Erde links
+      const miniEarthGeo = new THREE.SphereGeometry(0.72, 32, 32);
+      const miniEarthMat = new THREE.MeshPhongMaterial({
+        map: sharedEarthTexture || createProceduralEarthTexture(),
+        shininess: 20
+      });
+      miniEarthMesh = new THREE.Mesh(miniEarthGeo, miniEarthMat);
+      miniEarthMesh.position.set(-0.75, 0, 0);
+      miniScene.add(miniEarthMesh);
+
+      // 2. Wasserkugel rechts
+      const wGeo = new THREE.SphereGeometry(0.2, 32, 32);
+      const wMat = new THREE.MeshPhysicalMaterial({
+        color: 0x2b88ff,
+        transmission: 0.15,
+        roughness: 0.15,
+        metalness: 0.1,
+        transparent: true,
+        opacity: 0.95,
+        clearcoat: 0.9,
+        clearcoatRoughness: 0.1
+      });
+      miniWaterSphere = new THREE.Mesh(wGeo, wMat);
+      miniWaterSphere.position.set(0.75, 0, 0);
+      miniScene.add(miniWaterSphere);
+    }
+
+    function updateMiniScene(radiusRatio, colorHex, id) {
+      if (miniAnimId) cancelAnimationFrame(miniAnimId);
+
+      const miniCanvas = document.getElementById('mini-canvas');
+      miniRenderer.setSize(miniCanvas.clientWidth, miniCanvas.clientHeight);
+      miniCamera.aspect = miniCanvas.clientWidth / miniCanvas.clientHeight;
+      miniCamera.updateProjectionMatrix();
+
+      // Proportionaler Radius zur Miniatur-Erde (Radius = 0.72)
+      const calculatedRadius = 0.72 * radiusRatio;
+      const visualRadius = Math.max(0.045, calculatedRadius);
+
+      miniWaterSphere.geometry.dispose();
+      miniWaterSphere.geometry = new THREE.SphereGeometry(visualRadius, 32, 32);
+      
+      // Für Meerwasser kräftigeres, deckenderes Blau mit sanftem Glanz für optimalen Kontrast
+      miniWaterSphere.material.color.setHex(colorHex);
+      miniWaterSphere.material.transmission = (id === 'oceans') ? 0.15 : 0.45;
+      miniWaterSphere.material.roughness = 0.15;
+      miniWaterSphere.material.needsUpdate = true;
+
+      miniEarthMesh.position.set(-0.75, 0, 0);
+      miniWaterSphere.position.set(0.75, 0, 0);
+      miniControls.target.set(0, 0, 0);
+      miniCamera.position.set(0, 0, 3.2);
+
+      function miniLoop() {
+        miniAnimId = requestAnimationFrame(miniLoop);
+        miniEarthMesh.rotation.y += 0.01;
+        miniWaterSphere.rotation.y += 0.01;
+        miniControls.update();
+        miniRenderer.render(miniScene, miniCamera);
+      }
+      miniLoop();
+    }
+
+    function onCanvasClick(event) {
+      if (isComparisonActive) return;
+
+      const rect = renderer.domElement.getBoundingClientRect();
+      mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+
+      const clickable = [];
+      hotspotMeshes.forEach(h => h.children.forEach(c => clickable.push(c)));
+      const intersects = raycaster.intersectObjects(clickable, false);
+
+      if (intersects.length > 0) {
+        const parent = intersects[0].object.parent;
+        if (parent && parent.userData && parent.userData.data) {
+          focusHotspot(parent.userData.data);
+        }
+      }
+    }
+
+    function setupUIEvents() {
+      document.getElementById('btn-start').addEventListener('click', () => {
+        document.getElementById('help-modal').classList.add('hidden');
+      });
+
+      document.getElementById('btn-help').addEventListener('click', () => {
+        document.getElementById('help-modal').classList.remove('hidden');
+      });
+
+      document.getElementById('btn-close-card').addEventListener('click', closeInfoCard);
+      document.getElementById('btn-exit-comp').addEventListener('click', deactivateVolumeComparison);
+
+      document.getElementById('btn-reset').addEventListener('click', () => {
+        if (isComparisonActive) {
+          deactivateVolumeComparison();
+        } else {
+          closeInfoCard();
+          const safeDist = getSafeDistance(5.6);
+          new TWEEN.Tween(camera.position)
+            .to({ x: 0, y: safeDist * 0.18, z: safeDist }, 1200)
+            .easing(TWEEN.Easing.Cubic.Out)
+            .start();
+          controls.target.copy(CENTER);
+        }
+      });
+
+      document.getElementById('btn-compare').addEventListener('click', () => {
+        if (exploredSet.size >= 4) {
+          toggleVolumeComparison();
+        }
+      });
+
+      const slider = document.getElementById('compare-slider');
+      slider.addEventListener('input', (e) => {
+        updateComparisonPan(parseFloat(e.target.value));
+      });
+
+      const zoomSlider = document.getElementById('zoom-slider');
+      zoomSlider.addEventListener('input', (e) => {
+        updateComparisonZoom(parseFloat(e.target.value));
+      });
+
+      document.getElementById('snap-all-view').addEventListener('click', setOverviewMode);
+
+      COMPARISON_BODIES.forEach((wb, idx) => {
+        const btn = document.getElementById(`snap-${idx}`);
+        if (btn) {
+          btn.addEventListener('click', () => {
+            slider.value = wb.sliderPercent;
+            updateComparisonPan(wb.sliderPercent);
+          });
+        }
+      });
+    }
+
+    function onWindowResize() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      updateCameraDistances();
+    }
+
+    function animate(time) {
+      requestAnimationFrame(animate);
+      TWEEN.update();
+
+      if (!isComparisonActive) {
+        controls.target.copy(CENTER);
+        controls.update();
+
+        const elapsed = time * 0.001;
+        hotspotMeshes.forEach((h, i) => {
+          const ring = h.userData.ringMesh;
+          if (ring) {
+            const scale = 1.0 + 0.18 * Math.sin(elapsed * 3.5 + i * 1.5);
+            ring.scale.set(scale, scale, scale);
+            ring.material.opacity = 0.5 + 0.3 * Math.sin(elapsed * 3.5 + i * 1.5);
+          }
+        });
+      } else {
+        compCurrentX += (compTargetX - compCurrentX) * 0.08;
+        compCurrentZ += (compTargetZ - compCurrentZ) * 0.08;
+        camera.position.set(compCurrentX, 0, compCurrentZ);
+        camera.lookAt(compCurrentX, 0, 0);
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
