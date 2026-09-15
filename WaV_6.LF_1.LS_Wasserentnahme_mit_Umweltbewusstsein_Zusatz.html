@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Der natürliche Wasserkreislauf – Didaktisches Stufenquiz</title>
+  <title>Der natürliche Wasserkreislauf – Fachkompetenz Umwelttechnik</title>
   
-  <!-- KaTeX Integration via CDN -->
+  <!-- KaTeX Integration via stabiles Standard-CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
@@ -19,7 +19,7 @@
       --warning: #ff9500;
       --text-main: #1d1d1f;
       --text-muted: #86868b;
-      --glass-bg: rgba(255, 255, 255, 0.72);
+      --glass-bg: rgba(255, 255, 255, 0.75);
       --glass-border: rgba(255, 255, 255, 0.85);
       --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
       --radius-large: 24px;
@@ -291,7 +291,7 @@
       margin-top: 0;
     }
     .feedback-drawer.open {
-      max-height: 280px;
+      max-height: 320px;
       opacity: 1;
       margin-top: 20px;
     }
@@ -475,7 +475,7 @@
       font-size: 1rem;
       color: var(--text-muted);
       text-align: center;
-      max-width: 600px;
+      max-width: 620px;
       margin: 0 auto 32px;
       line-height: 1.5;
     }
@@ -798,7 +798,7 @@
         <div class="cert-badge-text">Offizieller Fachkompetenznachweis</div>
         <h1 class="cert-title">Der natürliche Wasserkreislauf</h1>
         <p class="cert-subtitle">
-          Didaktisch geprüfte Qualifikation in hydrologischen Phasenübergängen, quantitativen Wasserhaushaltsbilanzen und Expertennormen nach DIN 4049, DVGW und DWA.
+          Fachqualifikation Umwelttechnik (11. Jahrgangsstufe): Phasenübergänge im Wasserkreislauf, Infiltration und Aquiferdynamik sowie Expertennormen nach DIN 4049, DVGW und DWA.
         </p>
 
         <div class="name-input-box">
@@ -897,295 +897,296 @@
   <script>
     /* =========================================================================
        FRAGENPOOL: 10 STUFEN MIT JE 2 PARALLELEN FRAGEN (A & B) = 20 FRAGEN
-       Fachlich fundiert basierend auf dem natürlichen Wasserkreislauf & DIN/DWA
+       100 % fokussiert auf den Wasserkreislauf im umwelttechnischen Kontext.
+       Fundiert nach DIN 4049, DVGW, DWA und Umweltbundesamt (UBA).
        ========================================================================= */
     const QUESTION_DATABASE = [
-      // STUFE 1 (Grundbegriffe & Definitionen)
+      // STUFE 1 (Grundbegriffe & Definitionen des Wasserkreislaufs)
       {
         stage: 1,
         category: "Stufe 1: Grundbegriffe & Definitionen",
         questionA: {
-          title: "Welche vier Erdsphären durchläuft das Wasser im kontinuierlichen natürlichen Wasserkreislauf?",
+          title: "Welche vier Erdsphären durchwandert das Wasser im kontinuierlichen globalen Wasserkreislauf?",
           options: [
-            "Hydrosphäre, Lithosphäre, Biosphäre und Atmosphäre",
             "Troposphäre, Stratosphäre, Mesosphäre und Thermosphäre",
+            "Hydrosphäre, Lithosphäre, Atmosphäre und Biosphäre",
             "Kryosphäre, Pedosphäre, Asthenosphäre und Exosphäre",
             "Hydrosphäre, Ionosphäre, Barysphäre und Ozonsphäre"
           ],
-          correct: 0,
-          explanation: "Der globale Wasserkreislauf verknüpft alle vier Hauptsphären: Gewässer (Hydrosphäre), Gesteins- und Bodenschichten (Lithosphäre), belebte Organismen (Biosphäre) und die gasförmige Hülle (Atmosphäre) [DIN 4049-1, 1992]."
+          correct: 1,
+          explanation: "Der globale Wasserkreislauf verbindet alle vier Großsphären: Gewässer (Hydrosphäre), Gesteins- und Bodenkörper (Lithosphäre), Lufthülle (Atmosphäre) und Lebewesen (Biosphäre) [DIN 4049-1, 1992]."
         },
         questionB: {
-          title: "Wie wird der Begriff „Wasserkreislauf“ fachlich exakt definiert?",
+          title: "Wie definiert die hydrologische Fachnorm DIN 4049-1 den Begriff „Wasserkreislauf“ fachlich präzise?",
           options: [
-            "Der rein oberirdische Abfluss von Gebirgsbächen in die Weltmeere",
-            "Der kontinuierliche Transport und die Speicherung von Wasser auf globaler wie regionaler Ebene unter periodischem Phasenwechsel",
-            "Die einmalige Versickerung von Niederschlagswasser in tief liegende Erdschichten",
-            "Die ausschließliche Speicherung von fossilem Grundwasser ohne Verdunstung"
+            "Die kontinuierliche Zirkulation und Speicherung von Wasser zwischen Atmosphäre, Erdoberfläche und Untergrund unter periodischem Phasenwechsel",
+            "Den rein oberirdischen Abfluss von Gebirgsflüssen in die Weltmeere ohne Verdunstungsanteile",
+            "Die irreversible Versickerung von Niederschlagswasser in unzugängliche Erdmantelschichten",
+            "Die künstliche Verteilung und Aufbereitung von Rohwasser in städtischen Versorgungsnetzen"
           ],
-          correct: 1,
-          explanation: "Der Wasserkreislauf umfasst die fortwährende Zirkulation und Speicherung von Wasser zwischen Atmosphäre und Litho-/Hydrosphäre, angetrieben von Sonneneinstrahlung und Schwerkraft [DIN 4049-1, 1992]."
+          correct: 0,
+          explanation: "Der Wasserkreislauf umfasst die ständige Zirkulation und Speicherung des Wassers in allen Aggregatzuständen zwischen Atmosphäre, Landoberfläche und Untergrund [DIN 4049-1, 1992]."
         }
       },
 
-      // STUFE 2 (Grundbegriffe & Definitionen)
+      // STUFE 2 (Phasenübergänge im atmosphärischen Wasserkreislauf)
       {
         stage: 2,
         category: "Stufe 2: Grundbegriffe & Definitionen",
         questionA: {
-          title: "Welcher Aggregatzustandswechsel findet bei Station 1 (Verdunstung) an Oberflächengewässern statt?",
+          title: "Welche Funktion erfüllen Aerosole (Schwebeteilchen) bei der Wolkenbildung im Wasserkreislauf?",
           options: [
-            "Gasförmig $\\rightarrow$ Flüssig",
-            "Flüssig $\\rightarrow$ Gasförmig",
-            "Fest $\\rightarrow$ Flüssig",
-            "Flüssig $\\rightarrow$ Fest"
-          ],
-          correct: 1,
-          explanation: "Bei der Verdunstung (Evaporation) geht flüssiges Wasser durch thermische Energiezufuhr in gasförmigen Wasserdampf über und steigt in die Atmosphäre auf [DIN 4049-3, 1994]."
-        },
-        questionB: {
-          title: "Welcher thermodynamische Phasenübergang kennzeichnet Station 2 (Kondensation) bei der Wolkenbildung?",
-          options: [
-            "Gasförmig $\\rightarrow$ Flüssig",
-            "Flüssig $\\rightarrow$ Gasförmig",
-            "Fest $\\rightarrow$ Gasförmig (Sublimation)",
-            "Flüssig $\\rightarrow$ Fest (Kristallisation)"
+            "Sie dienen als Kondensationskerne, an denen gasförmiger Wasserdampf zu flüssigen Wolkentröpfchen kondensiert",
+            "Sie verhindern das Abregnen von Wolken durch elektrostatische Abstoßungskräfte",
+            "Sie zersetzen gasförmigen Wasserdampf katalytisch in elementaren Wasserstoff und Sauerstoff",
+            "Sie kühlen die Luftmassen durch chemische Absorptionsprozesse schlagartig ab"
           ],
           correct: 0,
-          explanation: "Kühlt wasserdampfgesättigte Luft in der Atmosphäre unter ihren Taupunkt ab, geht das Wasser vom gasförmigen in den flüssigen Zustand über und bildet Wolkentröpfchen [DIN 4049-3, 1994]."
+          explanation: "Ohne mikroskopische Aerosole als Kondensationskeime setzt die Tröpfchenbildung selbst bei voller Wasserdampfsättigung der Luft kaum ein [DIN 4049-3, 1994]."
+        },
+        questionB: {
+          title: "Wie bezeichnet die Umwelttechnik die Summe aus direkter Verdunstung von Boden-/Wasserflächen und pflanzlicher Transpiration im Wasserkreislauf?",
+          options: [
+            "Sublimation",
+            "Interzeption",
+            "Evapotranspiration",
+            "Infiltration"
+          ],
+          correct: 2,
+          explanation: "Die Evapotranspiration fasst die physikalische Evaporation an unbelebten Grenzflächen und die regulierte Transpiration der Pflanzen zusammen [DIN 4049-3, 1994]."
         }
       },
 
-      // STUFE 3 (Grundbegriffe & Definitionen)
+      // STUFE 3 (Niederschlagsaufteilung & Abflusspfade im Wasserkreislauf)
       {
         stage: 3,
         category: "Stufe 3: Grundbegriffe & Definitionen",
         questionA: {
-          title: "In welchen Aggregatzuständen kann Wasser bei Station 3 (Niederschlag) auf die Erdoberfläche treffen?",
+          title: "Welcher Anteil des Niederschlags speist im Wasserkreislauf direkt den ober- und unterirdischen Abfluss?",
           options: [
-            "Ausschließlich im flüssigen Zustand als Regen",
-            "Flüssig (z. B. Regen) oder fest (z. B. Schnee, Hagel, Graupel)",
-            "Ausschließlich im gasförmigen Zustand als warmer Dunst",
-            "Im überkritischen Zustand als ionisiertes Plasma"
+            "Der Bruttoniederschlag vor Erreichen der Vegetationsschicht",
+            "Das ausschließlich in Gletschern akkumulierte Eisvolumen",
+            "Die reine Tau- und Reifbildung an Pflanzenoberflächen",
+            "Der Effektivniederschlag nach Abzug von Verdunstungs- und Retentionsverlusten"
           ],
-          correct: 1,
-          explanation: "Niederschlag scheidet sich in Abhängigkeit der Schicht- und Bodentemperaturen flüssig als Regen oder in fester Form als Schnee bzw. Hagel ab [DIN 4049-3, 1994]."
+          correct: 3,
+          explanation: "Der Effektivniederschlag bleibt nach Abzug von Interzeption, Benetzung und Muldenrückhalt übrig und gelangt tatsächlich zum Abfluss [DIN 4049-1, 1992]."
         },
         questionB: {
-          title: "Welche zwei Hauptpfade schlägt das Wasser an Station 4 nach dem Auftreffen auf die Erdoberfläche ein?",
+          title: "In welche drei Abflusspfade teilt sich gefallener Niederschlag an der Landoberfläche auf?",
           options: [
-            "Direkte Kernspaltung oder vollständige Sublimation in das Weltall",
-            "Oberflächenabfluss in Gewässer oder Versickerung (Infiltration) in den Untergrund",
-            "Permanente Fixierung im Wurzelgewebe ohne weiteren Rückfluss",
-            "Sofortiger Phasenübergang in festes Packeis unabhängig von der Temperatur"
+            "Laminare Grenzschichtströmung, turbulente Wirbelfäden und Kavitationsabfluss",
+            "Oberflächenabfluss ($A_o$), Zwischenabfluss (Interflow im Bodenkörper) und Grundwasserabfluss ($A_u$)",
+            "Molekulare Gravitationsdiffusion, stratosphärischer Auftrieb und Sublimationsstrom",
+            "Freispiegelfluss, Druckrohrströmung und hydraulischer Schachtüberstau"
           ],
           correct: 1,
-          explanation: "Niederschlagswasser fließt entweder gravitativ über die Geländeoberfläche in Vorfluter ab oder infiltriert durch Bodenporen in tiefere Schichten zur Grundwasserbildung [DIN 4049-1, 1992]."
+          explanation: "Niederschlag fließt über die Geländeoberfläche ($A_o$), bodennah im ungesättigten Porenraum (Interflow) oder nach Tiefenpassage im Grundwasserleiter ($A_u$) ab [DIN 4049-1, 1992]."
         }
       },
 
-      // STUFE 4 (Berechnungen & Prozessverständnis)
+      // STUFE 4 (Bodenpassage & Infiltration im Wasserkreislauf)
       {
         stage: 4,
-        category: "Stufe 4: Berechnungen & Prozessverständnis",
+        category: "Stufe 4: Prozessverständnis & Dynamik",
         questionA: {
-          title: "In einem Einzugsgebiet fallen $N = 950\\text{ mm/a}$ Niederschlag. Die Verdunstung beträgt $V = 550\\text{ mm/a}$. Wie groß ist der Gesamtabfluss $A$ bei stationärem Speicher ($\\Delta S = 0\\text{ mm/a}$)?",
+          title: "Welchen hydraulischen Schutz erbringt die Interzeption im Kronendach eines Waldes für den Wasserkreislauf?",
           options: [
-            "$A = 400\\text{ mm/a}$",
-            "$A = 1500\\text{ mm/a}$",
-            "$A = 250\\text{ mm/a}$",
-            "$A = 522\\text{ mm/a}$"
+            "Sie bremst den Tropfenaufprall, mindert Bodenverschlämmung und kappt Hochwasserspitzen durch temporären Wasserrückhalt",
+            "Sie wandelt das auftreffende Niederschlagswasser chemisch in sauerstofffreies Tiefenwasser um",
+            "Sie verhindert jegliche Grundwasserneubildung durch die totale Verdampfung aller Niederschläge",
+            "Sie beschleunigt den Abfluss in Fließgewässer, um Staunässe im Wurzelbereich vollständig zu unterbinden"
           ],
           correct: 0,
-          explanation: "Nach der Wasserhaushaltsgleichung $N = A + V + \\Delta S$ folgt direkt $A = N - V - \\Delta S = 950\\text{ mm/a} - 550\\text{ mm/a} = 400\\text{ mm/a}$ [DIN 4049-1, 1992]."
+          explanation: "Das Kronendach speichert Niederschlag auf Blättern und Nadeln, dämpft den kinetischen Tropfenaufschlag und verzögert den Abfluss in Oberflächengewässer wirksam [DVWK, 1996; DIN 4049-1, 1992]."
         },
         questionB: {
-          title: "Gegeben sei ein Gebiet mit $N = 800\\text{ mm/a}$, Gesamtabfluss $A = 300\\text{ mm/a}$ und Verdunstung $V = 450\\text{ mm/a}$. Welcher Wert resultiert für die Speicheränderung $\\Delta S$?",
+          title: "Wovon hängt die Infiltrationskapazität des Bodens beim Eintritt des Niederschlagswassers in den Untergrund primär ab?",
           options: [
-            "$\\Delta S = -50\\text{ mm/a}$ (Speicherentleerung)",
-            "$\\Delta S = +50\\text{ mm/a}$ (Speicherzuwachs / Grundwasserneubildung)",
-            "$\\Delta S = +1050\\text{ mm/a}$ (Hypertrophie)",
-            "$\\Delta S = 0\\text{ mm/a}$ (Exakter Gleichgewichtszustand)"
+            "Vom horizontalen Verlauf des Erdmagnetfeldes im Wurzelraum",
+            "Ausschließlich vom Gehalt an gelöstem Kohlendioxid im fallenden Regenwasser",
+            "Von der Porengrößenverteilung, der Bodenstruktur und der aktuellen Vorfeuchte der Bodenmatrix",
+            "Vom Sauerstoffpartialdruck der umgebenden bodennahen Luftschichten"
           ],
-          correct: 1,
-          explanation: "Umgestellt nach der Speicheränderung lautet die Bilanz $\\Delta S = N - A - V = 800 - 300 - 450 = +50\\text{ mm/a}$. Der positive Wert dokumentiert einen Nettozuwachs des Grundwasserkörpers [DIN 4049-1, 1992]."
+          correct: 2,
+          explanation: "Korngrößen und Hohlraumgeometrie bestimmen das hydraulische Saugspannungspotenzial; mit fortschreitender Bodenfeuchte sinkt die Infiltration auf den Durchlässigkeitsbeiwert ab [DIN 18130-1, 1998; Scheffer/Schachtschabel, 2018]."
         }
       },
 
-      // STUFE 5 (Berechnungen & Prozessverständnis)
+      // STUFE 5 (Aquiferdynamik im unterirdischen Wasserkreislauf)
       {
         stage: 5,
-        category: "Stufe 5: Berechnungen & Prozessverständnis",
+        category: "Stufe 5: Prozessverständnis & Dynamik",
         questionA: {
-          title: "Welche thermische Energie $Q$ wird benötigt, um eine Wassermasse von $m = 1000\\text{ kg}$ isotherm zu verdunsten (spezifische Verdampfungsenthalpie $\\Delta h_v \\approx 2{,}45\\text{ MJ/kg}$)?",
+          title: "Warum gelten Porengrundwasserleiter (Sande, Kiese) im Wasserkreislauf als hygienisch sicherer als Karstgrundwasserleiter?",
           options: [
-            "$Q = 245\\text{ MJ}$",
-            "$Q = 2450\\text{ MJ} = 2{,}45\\text{ GJ}$",
-            "$Q = 4184\\text{ kJ}$",
-            "$Q = 24{,}5\\text{ kJ}$"
-          ],
-          correct: 1,
-          explanation: "Mit $Q = m \\cdot \\Delta h_v = 1000\\text{ kg} \\cdot 2{,}45\\text{ MJ/kg} = 2450\\text{ MJ}$. Dieser enorme Energiebedarf entzieht der Umgebung fühlbare Wärme und bewirkt den mikroklimatischen Kühleffekt [DIN 4049-3, 1994]."
-        },
-        questionB: {
-          title: "Ein Einzugsgebiet ($A_E = 50\\text{ km}^2$) weist eine Abflussspende von $q = 10\\text{ L/(s}\\cdot\\text{km}^2)$ auf. Welcher Volumenstrom $Q$ wird am Gebietsauslass gemessen?",
-          options: [
-            "$Q = 500\\text{ L/s} = 0{,}5\\text{ m}^3/\\text{s}$",
-            "$Q = 50\\text{ L/s} = 0{,}05\\text{ m}^3/\\text{s}$",
-            "$Q = 5000\\text{ m}^3/\\text{s}$",
-            "$Q = 5\\text{ m}^3/\\text{min}$"
+            "Porengrundwasserleiter filtern Trübstoffe mechanisch heraus und bieten durch lange Verweilzeiten sicheren Keimabbau",
+            "Karstgrundwasserleiter enthalten naturbedingt toxische Schwermetallkonzentrationen",
+            "In Porengrundwasserleitern wirkt keine Gravitation, weshalb Bakterien an der Oberfläche verbleiben",
+            "Porenleiter reinigen sich durch dauerhafte vulkanische Erhitzung im Erdinneren selbst"
           ],
           correct: 0,
-          explanation: "Der Gesamtabfluss berechnet sich aus $Q = q \\cdot A_E = 10\\text{ L/(s}\\cdot\\text{km}^2) \\cdot 50\\text{ km}^2 = 500\\text{ L/s} = 0{,}5\\text{ m}^3/\\text{s}$ [DIN 4049-1, 1992]."
+          explanation: "Engmaschige Bodenporen halten Schwebstoffe zurück und verlangsamen den Grundwasserstrom. In offenen Karstklüften fließt das Wasser dagegen mit mehreren Kilometern pro Tag fast ungefiltert [DVGW W 101, 2006; Bieske, 2013]."
+        },
+        questionB: {
+          title: "Was kennzeichnet einen „gespannten“ Grundwasserkörper im unterirdischen Abschnitt des Wasserkreislaufs?",
+          options: [
+            "Das Wasser steht unter ständigem Unterdruck und kann nur durch Vakuumpumpen gefördert werden",
+            "Die piezometrische Grundwasserdruckfläche liegt höher als die Unterkante der undurchlässigen Deckschicht",
+            "Der Grundwasserleiter enthält ausschließlich überhitzten Wasserdampf unter hohem Druck",
+            "Es existieren keinerlei Deckschichten, sodass die Wasseroberfläche direkt mit der Atmosphäre in Verbindung steht"
+          ],
+          correct: 1,
+          explanation: "Bei gespanntem Grundwasser begrenzt ein undurchlässiger Grundwasserstauer den Aquifer nach oben; bohrt man die Schicht an, steigt der Wasserspiegel im Bohrloch über die Schichtunterkante [DIN 4049-3, 1994]."
         }
       },
 
-      // STUFE 6 (Berechnungen & Prozessverständnis)
+      // STUFE 6 (Vertikale Bodenpassage & Kapillareffekte im Wasserkreislauf)
       {
         stage: 6,
-        category: "Stufe 6: Berechnungen & Prozessverständnis",
+        category: "Stufe 6: Prozessverständnis & Dynamik",
         questionA: {
-          title: "Grundwasserabfluss an Station 5: Bei $k_f = 1 \\cdot 10^{-3}\\text{ m/s}$ und hydraulischem Gefälle $I = 0{,}02$ beträgt die Filtergeschwindigkeit nach Darcy ($v_f = k_f \\cdot I$):",
+          title: "Welche Zonen durchwandert versickerndes Wasser auf seinem Weg von der Erdoberfläche zum Grundwasserspiegel?",
           options: [
-            "$v_f = 2 \\cdot 10^{-5}\\text{ m/s} = 0{,}02\\text{ mm/s}$",
-            "$v_f = 2 \\cdot 10^{-2}\\text{ m/s} = 20\\text{ mm/s}$",
-            "$v_f = 5 \\cdot 10^{-4}\\text{ m/s}$",
-            "$v_f = 0{,}2\\text{ m/s}$"
+            "Gesättigte Zone $\\rightarrow$ Kapillarsaum $\\rightarrow$ ungesättigte Sickerwasserzone $\\rightarrow$ Grundwasserstauer",
+            "Grundwasserleiter $\\rightarrow$ artesische Deckschicht $\\rightarrow$ Oberboden $\\rightarrow$ Vorfluter",
+            "Bodenwasserzone (Wurzelraum) $\\rightarrow$ ungesättigte Zone (Vadosa) $\\rightarrow$ Kapillarsaum $\\rightarrow$ gesättigte Zone (Phreatik)",
+            "Filterkiespackung $\\rightarrow$ Brunnenrohr $\\rightarrow$ Sedimentationsraum $\\rightarrow$ Pumpensumpf"
           ],
-          correct: 0,
-          explanation: "Das Darcy-Gesetz liefert $v_f = 10^{-3}\\text{ m/s} \\cdot 0{,}02 = 2 \\cdot 10^{-5}\\text{ m/s}$. Dies illustriert rechnerisch die im Vergleich zum Oberflächenabfluss extreme Langsamkeit unterirdischer Fließvorgänge [DIN 4049-3, 1994]."
+          correct: 2,
+          explanation: "Das Sickerwasser passiert zunächst die biologisch aktive Wurzelzone, durchquert die ungesättigte Vadosa und den Kapillarsaum, ehe es die vollständig gesättigte Grundwasserzone erreicht [DIN 4049-3, 1994]."
         },
         questionB: {
-          title: "Welcher Speicher des globalen Wasserkreislaufs besitzt für Wassermoleküle die kürzeste mittlere Verweilzeit?",
+          title: "Wie unterscheidet sich der kapillare Aufstieg von Grundwasser in feinen Tonböden gegenüber groben Sandböden?",
           options: [
-            "Porengrundwasserleiter (Jahre bis Jahrtausende)",
-            "Atmosphäre (ca. 8 bis 10 Tage)",
-            "Weltmeere (ca. 3.000 bis 4.000 Jahre)",
-            "Gletscher und polare Eisschilde (Jahrtausende)"
+            "In Sandböden steigt das Wasser um ein Vielfaches höher auf als in feinkörnigen Tonböden",
+            "Tonböden leiten das Wasser durch große Röhrenporen extrem schnell in die Verdunstungszone",
+            "Kapillarer Wasseraufstieg tritt physikalisch ausschließlich in künstlichen Drainagebauwerken auf",
+            "Tonböden erzielen eine wesentlich größere Steighöhe, der Aufstieg erfolgt jedoch weitaus langsamer als im Sand"
           ],
-          correct: 1,
-          explanation: "Durch den dynamischen Zyklus aus rascher Verdunstung, Hebung und Kondensation verbleibt ein Wassermolekül durchschnittlich nur etwa 9 Tage in der Atmosphäre [Baumgartner & Liebscher, 1996]."
+          correct: 3,
+          explanation: "Enge Kapillarporen im Ton erzeugen starke Meniskus-Zugkräfte (große Steighöhe bis mehrere Meter), bewirken durch die hohe Wandreibung aber eine sehr langsame Fließgeschwindigkeit [Scheffer/Schachtschabel, 2018; DIN 4049-3, 1994]."
         }
       },
 
-      // STUFE 7 (Berechnungen & Prozessverständnis)
+      // STUFE 7 (Selbstreinigung & Verweilzeiten im Wasserkreislauf)
       {
         stage: 7,
-        category: "Stufe 7: Berechnungen & Prozessverständnis",
+        category: "Stufe 7: Prozessverständnis & Dynamik",
         questionA: {
-          title: "Ein Gewerbedach ($A = 1000\\text{ m}^2 = 0{,}1\\text{ ha}$) mit Spitzenbeiwert $\\Psi = 0{,}9$ erfährt eine Regenintensität von $r = 150\\text{ L/(s}\\cdot\\text{ha)}$. Wie hoch ist der Spitzenabfluss $Q_p$?",
+          title: "Welche drei Reinigungsmechanismen laufen bei der natürlichen Bodenpassage des Sickerwassers simultan ab?",
           options: [
-            "$Q_p = 13{,}5\\text{ L/s}$",
-            "$Q_p = 135\\text{ L/s}$",
-            "$Q_p = 1{,}35\\text{ L/s}$",
-            "$Q_p = 150\\text{ L/s}$"
+            "Mechanische Siebung in Porenräumen, Adsorption an Ton-Humus-Komplexen und biologischer Schadstoffabbau",
+            "Thermische Destillation durch Erdwärme, radioaktive Spaltung und magnetische Ausrichtung",
+            "Elektrostatische Entkeimung durch Blitzeinschläge, chemische Ozonisierung und Zentrifugalkraft",
+            "Katalytische Wasserspaltung, saure Hydrolyse von Mineralien und permanente Chlorid-Fällung"
           ],
           correct: 0,
-          explanation: "Nach dem Bemessungsverfahren $Q_p = \\Psi \\cdot r \\cdot A$ ergibt sich $0{,}9 \\cdot 150\\text{ L/(s}\\cdot\\text{ha)} \\cdot 0{,}1\\text{ ha} = 13{,}5\\text{ L/s}$ [DWA-A 118, 2006]."
+          explanation: "Die Bodenpassage wirkt als natürlicher Mehrschichtfilter: Porenräume halten Partikel mechanisch zurück, Tonminerale binden Schadstoffe und Bodenbakterien bauen organische Lasten ab [DVGW W 101, 2006; UBA, 2021]."
         },
         questionB: {
-          title: "Welcher Zustand tritt ein, wenn aufsteigende feuchte Luftmassen am Kondensationsniveau den Taupunkt erreichen?",
+          title: "In welchem Speicher des globalen Wasserkreislaufs verweilt ein Wassermolekül im Durchschnitt am kürzesten?",
           options: [
-            "Relative Luftfeuchte erreicht $U = 100\\,\\%$, Sättigungsdampfdruck wird erreicht und latente Wärme wird freigesetzt",
-            "Der Luftdruck fällt schlagartig auf $0\\text{ hPa}$ ab",
-            "Das Wasser desublimiert unmittelbar zu reinem Wasserstoffgas",
-            "Die Luftmasse erwärmt sich sprunghaft um $50^\\circ\\text{C}$ ohne Phasenumwandlung"
+            "In den tiefen Porengrundwasserleitern (Jahre bis Jahrtausende)",
+            "In der Erdatmosphäre (nur ca. 8 bis 10 Tage)",
+            "In den Ozeanen und Weltmeeren (ca. 3.000 bis 4.000 Jahre)",
+            "In den polaren Inlandeisschilden (viele Jahrtausende)"
           ],
-          correct: 0,
-          explanation: "Bei Erreichen der Taupunkttemperatur beträgt die relative Feuchte $100\\,\\%$. Überschüssiger Dampf kondensiert an Aerosolen zu Wolkentröpfchen, wobei latente Kondensationswärme an die Umgebungsluft abgegeben wird [DIN 4049-3, 1994]."
+          correct: 1,
+          explanation: "Durch den schnellen Wechsel von Verdunstung, Luftmassentransport und Niederschlag beträgt die mittlere Verweilzeit des Wassers in der Atmosphäre lediglich rund 9 Tage [Baumgartner & Liebscher, 1996]."
         }
       },
 
-      // STUFE 8 (Fehleranalysen & Expertennormen)
+      // STUFE 8 (Anthropogene Störungen des Wasserkreislaufs)
       {
         stage: 8,
         category: "Stufe 8: Fehleranalysen & Expertennormen",
         questionA: {
-          title: "Fehleranalyse: Warum führt eine fortschreitende Flächenversiegelung im urbanen Raum zu sinkenden Grundwasserständen bei Station 5?",
+          title: "Fehleranalyse Brunnenbetrieb: Was geschieht im Grundwasserkörper, wenn die Entnahmerate dauerhaft die Neubildungsrate übersteigt?",
           options: [
-            "Die Infiltration an Station 4 wird blockiert; Niederschlagswasser fließt schlagartig oberflächlich ab, statt das Grundwasser zu speisen",
-            "Versiegelte Schichten ziehen das Grundwasser durch chemische Kapillarkräfte nach oben ab",
-            "Asphaltbeläge stoppen jegliche Wolkenbildung und vernichten die Schwerkraft",
-            "Das versickernde Wasser zersetzt die unterirdischen Erdschichten vollständig"
+            "Der Grundwasserspiegel steigt kontinuierlich bis zur Geländeoberkante an",
+            "Das Tiefengrundwasser kocht durch Druckentlastung spontan auf",
+            "Der Grundwasserspiegel sinkt ab, Brunnen fallen trocken und Lufteintrag führt zu Filterverockerung",
+            "Der Grundwasserleiter verfestigt sich innerhalb kurzer Zeit zu dichtem Festgestein"
           ],
-          correct: 0,
-          explanation: "Bodenversiegelung unterbricht die Infiltrationspassage. Das Niederschlagswasser wird als Oberflächenabfluss kanalisiert, wodurch die Grundwasserneubildung drastisch einbricht und Brunnen versiegen können [DWA-M 550, 2018; UBA, 2020]."
+          correct: 2,
+          explanation: "Dauerhafte Übernutzung vertieft den Absenktrichter. Fällt der Wasserspiegel unter die Filteroberkante, oxidieren gelöstes Eisen und Mangan zu unlöslichen Krusten, die den Filterkies zusetzen [DVGW W 115, 2006; DIN 4049-3, 1994]."
         },
         questionB: {
-          title: "Fehleranalyse bei Brunnenförderung (Station 5): Welche Gefahr besteht, wenn die Entnahmerate $Q_{\\text{ent}}$ dauerhaft über der Neubildungsrate $Q_{\\text{neu}}$ liegt?",
+          title: "Fehleranalyse Siedlungsbau: Welche hydrologische Störungskette verursacht eine fortschreitende Flächenversiegelung im Wasserkreislauf?",
           options: [
-            "Permanente Grundwasserspiegelabsenkung, Brunnenabrisse, Setzungsschäden und Austrocknung von Feuchtbiotopen",
-            "Spontane Umwandlung des Grundwasserleiters in einen aktiven Vulkan",
-            "Stetiger Anstieg des Grundwasserspiegels bis zur Geländeoberkante",
-            "Bildung von kochendem Heißwasser durch gravitative Reibung"
+            "Asphaltbeläge blockieren die Infiltration, Grundwasserstände sinken und Niederschläge fließen schlagartig oberflächlich ab",
+            "Versiegelte Schichten ziehen Grundwasser durch kapillare Sogkräfte aktiv an die Erdoberfläche",
+            "Versiegelte Stadtflächen absorbieren Wolkenmassen und verhindern jeden Regenfall",
+            "Versickerndes Regenwasser löst Fundamente chemisch auf und verfestigt das Porenvolumen"
           ],
           correct: 0,
-          explanation: "Gilt dauerhaft $Q_{\\text{ent}} > Q_{\\text{neu}}$, wird der Grundwasserleiter übernutzt. Der Absenktrichter vertieft sich irreversibel, Flurabstände vergrößern sich und Nachbarbrunnen fallen trocken [DVGW W 101, 2006; DIN 4049-3, 1994]."
+          explanation: "Versiegelung unterbricht die Infiltration. Niederschläge schießen direkt in Kanalnetze oder Flüsse, was Hochwasserspitzen verschärft und die Grundwasserneubildung drastisch drosselt [DWA-M 550, 2018; UBA, 2020]."
         }
       },
 
-      // STUFE 9 (Fehleranalysen & Expertennormen)
+      // STUFE 9 (Expertennormen: DIN 4049 & DVGW W 101 im Grundwasserschutz)
       {
         stage: 9,
         category: "Stufe 9: Fehleranalysen & Expertennormen",
         questionA: {
-          title: "Wie grenzt die DIN 4049-3 Grundwasser physikalisch eindeutig vom Sickerwasser der ungesättigten Zone ab?",
+          title: "Wie grenzt die hydrogeologische Fachnorm DIN 4049-3 Grundwasser physikalisch eindeutig von Sickerwasser ab?",
           options: [
-            "Grundwasser füllt Hohlräume vollständig zusammenhängend aus und unterliegt hydrostatischem Druck; Sickerwasser bewegt sich gravitativ bei teilweiser Luftfüllung",
-            "Grundwasser darf keine Mineralien enthalten, während Sickerwasser stets salzig ist",
-            "Sickerwasser existiert ausschließlich in künstlichen Betonbauwerken",
-            "Es existiert keinerlei hydraulische oder physikalische Unterscheidung in der Norm"
+            "Grundwasser enthält grundsätzlich keine Mineralien, während Sickerwasser stets salzhaltig ist",
+            "Grundwasser füllt Hohlräume lückenlos aus und steht unter hydrostatischem Druck ($p \\ge p_{\\text{atm}}$); Sickerwasser bewegt sich gravitativ in teils luftgefüllten Poren",
+            "Sickerwasser kommt ausschließlich in künstlich angelegten Drainagerohren vor",
+            "Die DIN-Norm definiert keinerlei physikalische oder hydraulische Unterscheidung"
           ],
-          correct: 0,
-          explanation: "Nach DIN 4049-3 ist Grundwasser unterirdisches Wasser, das Hohlräume lückenlos ausfüllt und dessen Druck größer oder gleich dem Atmosphärendruck ist, wohingegen Sickerwasser die ungesättigte Bodenzone passiert [DIN 4049-3, 1994]."
+          correct: 1,
+          explanation: "Grundwasser sättigt den Porenraum vollständig aus und besitzt einen Druck größer oder gleich dem Atmosphärendruck. Sickerwasser durchfließt hingegen die ungesättigte Bodenzone [DIN 4049-3, 1994]."
         },
         questionB: {
-          title: "Welcher hydrogeologische Bemessungsgrundsatz definiert die Wasserschutzzone II (Engere Schutzzone) nach DVGW-Arbeitsblatt W 101?",
+          title: "Welcher hydrogeologische Grundsatz bemisst die engere Wasserschutzzone (Zone II) nach DVGW-Arbeitsblatt W 101?",
           options: [
-            "Gewährleistung einer Grundwasserfließzeit von mindestens 50 Tagen bis zur Fassung zum Schutz vor mikrobiellen Verunreinigungen",
-            "Ein pauschaler Kreisradius von exakt $20\\text{ km}$ um jeden Tiefbrunnen",
-            "Das vollständige Verbot von Regenwasserniederschlägen über dem Areal",
-            "Eine Begrenzung der Infiltration auf exakt $0\\text{ mm/a}$"
+            "Ein pauschaler Kreisradius von genau $500\\text{ m}$ um jeden Trinkwasserbrunnen",
+            "Das vollständige Verbot jeglicher landwirtschaftlicher Beregnung im gesamten Einzugsgebiet",
+            "Eine Mindesttiefe der Brunnenfassung von mindestens $100\\text{ m}$ unter Flur",
+            "Die 50-Tage-Fließzeitlinie im Grundwasserstrom, um mikrobielle Krankheitserreger vor der Fassung abzubauen"
           ],
-          correct: 0,
-          explanation: "Die 50-Tage-Linie stellt sicher, dass pathogene Keime und Viren während der unterirdischen Passage im Bodenkörper vor Erreichen der Fassungsanlage absterben [DVGW W 101, 2006]."
+          correct: 3,
+          explanation: "Die 50-Tage-Linie stellt sicher, dass pathogene Bakterien und Viren während der unterirdischen Bodenpassage vor Erreichen der Fassungsanlage inaktiviert werden [DVGW W 101, 2006]."
         }
       },
 
-      // STUFE 10 (Fehleranalysen & Expertennormen)
+      // STUFE 10 (Klimawandel & Extremereignisse im Wasserkreislauf)
       {
         stage: 10,
         category: "Stufe 10: Fehleranalysen & Expertennormen",
         questionA: {
-          title: "Expertenanalyse (UBA): Was kennzeichnet den durch Klimawandel anthropogen modifizierten Wasserkreislauf maßgeblich?",
+          title: "Expertenanalyse (UBA): Welche Auswirkung hat die globale Erwärmung auf die thermodynamische Dynamik des Wasserkreislaufs?",
           options: [
-            "Häufung konvektiver Starkregenereignisse, verlängerte sommerliche Dürreperioden und reduzierte nutzbare Grundwasserneubildung",
-            "Ein weltweiter Rückgang der Verdunstungsleistung um exakt $95\\,\\%$",
-            "Vollständiges Versiegen aller Weltmeere bei gleichbleibendem Niederschlag",
-            "Ein rein gleichmäßiger kontinuierlicher Nieselregen auf allen Kontinenten"
+            "Wärmere Luft speichert mehr Wasserdampf (Clausius-Clapeyron: $\\approx 7\\,\\%/\\text{K}$), was Starkregen intensiviert und Trockenperioden verlängert",
+            "Die weltweite Verdunstung über den Ozeanen geht um über $90\\,\\%$ zurück",
+            "Niederschlagsmengen verteilen sich vollkommen gleichmäßig auf alle Tage des Jahres",
+            "Der globale Wasserkreislauf verlangsamt sich und friert auf den Kontinenten vollständig ein"
           ],
           correct: 0,
-          explanation: "Höhere Lufttemperaturen steigern die Wasserdampfaufnahmekapazität der Atmosphäre (Clausius-Clapeyron: $\\approx 7\\,\\%/\\text{K}$), was zu intensiveren Starkregen mit hohem Oberflächenabfluss führt, während Dürreperioden die Infiltration einschränken [UBA, 2020]."
+          explanation: "Höhere Temperaturen steigern die Wasserdampfaufnahmekapazität der Atmosphäre. Dies begünstigt extreme konvektive Starkregen mit hohem Abfluss und verschärft sommerliche Dürren [UBA, 2020; DWA-Themen, 2021]."
         },
         questionB: {
-          title: "Warum sinkt nach DIN 19700 und DWA-A 118 die Infiltrationsleistung eines Bodens während langanhaltender Starkregen drastisch ab?",
+          title: "Fehleranalyse Starkregen (DWA-A 118): Warum erzeugen sommerliche Gewitterregen nach Hitzeperioden oft extreme Sturzfluten?",
           options: [
-            "Weil durch Bodenmatrixsättigung das kapillare Saugspannungspotenzial gegen Null geht und nur die minimale Durchlässigkeit $k_f$ verbleibt",
-            "Weil Bodenpartikel bei Befeuchtung spontan verdampfen",
-            "Weil der atmosphärische Luftdruck während des Regens auf null abfällt",
-            "Weil das Wasser im Porenraum durch chemische Schockreaktion aushärtet"
+            "Heißer Regen verdampft bereits beim Fallen und erreicht den Erdboden überhaupt nicht",
+            "Ausgetrocknete Böden bilden hydrophobe (wasserabweisende) Krusten, die Infiltration bricht ein und Wasser schießt oberflächlich ab",
+            "Bodenpartikel wandeln sich durch Hitze in wasserundurchlässige Kristalle um",
+            "Die Gravitation setzt während starker Sommergewitter temporär aus"
           ],
-          correct: 0,
-          explanation: "Gemäß der Infiltrationsdynamik (Horton) nimmt das Infiltrationsvermögen bei fortschreitender Bodenfeuchte von einem hohen Anfangswert exponentiell ab, bis nur die gravitative Endinfiltrationsrate $f_c \\approx k_f$ wirksam ist [DWA-A 118, 2006; DIN 19700, 2004]."
+          correct: 1,
+          explanation: "Ausgetrocknete Böden wirken hydrophob; bindige Feinteile verschlämmen die Poren. Das Niederschlagswasser kann nicht schnell genug infiltrieren und fließt oberflächlich ab [DWA-A 118, 2006; Scheffer/Schachtschabel, 2018]."
         }
       }
     ];
 
     /* =========================================================================
-       ZUSTANDSVERWALTUNG (DATENSPARSAMKEIT & TRANSIENZ GEMÄSS PRIVACY BY DESIGN)
+       ZUSTANDSVERWALTUNG (TRANSIENZ GEMÄSS PRIVACY BY DESIGN)
        ========================================================================= */
     let quizState = {
-      round: 1,                 // 1 = Hauptdurchlauf, 2 = Revanche (ungespielte Alternativfragen)
+      round: 1,                 // 1 = Standardpfad, 2 = Ungespielte Alternativfragen
       currentStageIndex: 0,     // 0 bis 9
       round1Selections: [],     // 'A' oder 'B' pro Stufe in Durchlauf 1
       activeQuestion: null,     // Aktuelles Frageobjekt
@@ -1214,7 +1215,7 @@
       quizState.completedRound2 = false;
       quizState.certificateUnlocked = false;
 
-      // Zufällige Zuweisung für Durchlauf 1 (A oder B)
+      // Zufallsauswahl pro Stufe für Durchlauf 1 festlegen
       for (let i = 0; i < 10; i++) {
         quizState.round1Selections.push(Math.random() < 0.5 ? 'A' : 'B');
       }
@@ -1238,7 +1239,7 @@
 
       quizState.activeQuestion = stageData[variantKey];
 
-      // UI-Header aktualisieren
+      // Kopfzeile aktualisieren
       document.getElementById("stage-badge-text").textContent = `Stufe ${stageData.stage} von 10`;
       document.getElementById("question-category").textContent = stageData.category;
       document.getElementById("round-indicator").textContent = quizState.round === 1 
@@ -1248,7 +1249,7 @@
       const progressPercent = ((quizState.currentStageIndex + 1) / 10) * 100;
       document.getElementById("progress-fill").style.width = `${progressPercent}%`;
 
-      // Fragetext & Optionen setzen
+      // Fragetext & Optionen befüllen
       document.getElementById("question-title").innerHTML = quizState.activeQuestion.title;
       for (let i = 0; i < 4; i++) {
         document.getElementById(`opt-text-${i}`).innerHTML = quizState.activeQuestion.options[i];
@@ -1283,7 +1284,7 @@
       const correctIdx = quizState.activeQuestion.correct;
       let wrongIndices = [0, 1, 2, 3].filter(idx => idx !== correctIdx);
       
-      // Zwei zufällige falsche Optionen auswählen und ausblenden
+      // Zwei falsche Optionen ermitteln und verbergen
       wrongIndices.sort(() => Math.random() - 0.5);
       const toHide = wrongIndices.slice(0, 2);
 
@@ -1311,10 +1312,10 @@
       const correctIndex = quizState.activeQuestion.correct;
 
       if (selectedIndex === correctIndex) {
-        // Richtige Antwort: Grün-Hervorhebung
+        // Richtige Antwort: Grün markieren
         buttons[selectedIndex].classList.add("selected-correct");
         
-        // Quellengestütztes Feedback-Feld aufklappen
+        // Didaktische Erklärung aufklappen
         const feedbackDrawer = document.getElementById("feedback-drawer");
         const feedbackContent = document.getElementById("feedback-content");
         feedbackContent.innerHTML = quizState.activeQuestion.explanation;
@@ -1331,7 +1332,7 @@
         
         feedbackDrawer.classList.add("open");
       } else {
-        // Falsche Antwort: Rot-Hervorhebung mit Shake; KEINE Erklärung, KEINE Lösung
+        // Falsche Antwort: Rot markieren mit Shake; KEINE Lösung verraten
         buttons[selectedIndex].classList.add("selected-wrong");
         
         setTimeout(() => {
@@ -1357,13 +1358,13 @@
         quizState.currentStageIndex++;
         loadQuestion();
       } else {
-        // Stufe 10 gemeistert!
+        // Stufe 10 gemeistert
         triggerConfetti();
         if (quizState.round === 1) {
           quizState.completedRound1 = true;
           document.getElementById("victory-modal").classList.add("active");
         } else {
-          // Durchlauf 2 ebenfalls gemeistert -> 20 von 20 Fragen gelöst!
+          // Durchlauf 2 ebenfalls gemeistert -> Alle 20 Fragen gelöst!
           quizState.completedRound2 = true;
           quizState.certificateUnlocked = true;
           showCertificateView();
@@ -1378,7 +1379,7 @@
       document.getElementById("fail-modal").classList.remove("active");
       quizState.totalAttempts++;
       quizState.currentStageIndex = 0;
-      quizState.jokersRemaining = 2; // Joker-Reset für neuen Anlauf
+      quizState.jokersRemaining = 2; // Frische Joker für neuen Anlauf
       updateJokerUI();
       loadQuestion();
     }
@@ -1398,11 +1399,11 @@
       const certContainer = document.getElementById("certificate-container");
       certContainer.classList.add("active");
 
-      // Leistungsstatistik einbinden
+      // Leistungsdaten einbinden
       document.getElementById("cert-stat-attempts").textContent = quizState.totalAttempts;
       document.getElementById("cert-stat-jokers").textContent = `${quizState.jokersUsedTotal} / 2`;
 
-      // Aktuelles Tagesdatum formatieren
+      // Datum formatieren
       const today = new Date().toLocaleDateString('de-DE', {
         day: '2-digit',
         month: '2-digit',
@@ -1431,7 +1432,7 @@
       const banner = document.getElementById("post-print-banner");
       banner.classList.remove("active");
       
-      // Floating Rand-Button aktivieren als permanent sichtbaren Fallback
+      // Floating Rand-Button als permanenten Fallback aktivieren
       const floatBtn = document.getElementById("floating-reset-btn");
       floatBtn.classList.add("active");
     }
@@ -1450,7 +1451,7 @@
     function executeHardReset() {
       closeResetModal();
       
-      // Vollständiger State-Reset (Keine persistenten Spuren)
+      // Vollständiger State-Reset (Flüchtige Speicherung im DOM)
       document.getElementById("student-name-input").value = "";
       document.getElementById("post-print-banner").classList.remove("active");
       document.getElementById("floating-reset-btn").classList.remove("active");
