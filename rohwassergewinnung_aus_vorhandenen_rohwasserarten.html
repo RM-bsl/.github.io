@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fachkunde Rohwassergewinnung – Interaktive Lernanwendung</title>
+
+  <!-- KaTeX für mathematische Formelsätze -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+  <!-- Canvas Confetti für Endgame-Animationen -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <style>
+    /* ==========================================================================
+       1. CSS Custom Properties & Apple Frosted Glass Design System
+       ========================================================================== */
+    :root {
+      --primary: #0071e3;
+      --primary-hover: #0077ed;
+      --primary-glow: rgba(0, 113, 227, 0.25);
+      --success: #10b981;
+      --success-surface: rgba(16, 185, 129, 0.12);
+      --danger: #ef4444;
+      --danger-surface: rgba(239, 68, 68, 0.12);
+      --bg-gradient-start: #eef5fc;
+      --bg-gradient-end: #e6eff9;
+      --glass-bg: rgba(255, 255, 255, 0.72);
+      --glass-card: rgba(255, 255, 255, 0.82);
+      --glass-border: rgba(255, 255, 255, 0.65);
+      --glass-shadow: 0 12px 40px rgba(0, 40, 80, 0.08);
+      --text-main: #1d1d1f;
+      --text-muted: #6e6e73;
+      --border-radius: 20px;
+      --transition-smooth: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 1.5rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Light Orbs im Hintergrund */
+    .ambient-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(90px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+    .orb-1 {
+      width: 450px;
+      height: 450px;
+      background: rgba(0, 122, 255, 0.15);
+      top: -100px;
+      left: -100px;
+    }
+    .orb-2 {
+      width: 500px;
+      height: 500px;
+      background: rgba(52, 199, 89, 0.12);
+      bottom: -150px;
+      right: -100px;
+    }
+
+    /* App-Rahmen */
+    .app-container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ==========================================================================
+       2. Header & Progressions-Leiter
+       ========================================================================== */
+    .header-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      border-radius: var(--border-radius);
+      padding: 1.25rem 1.75rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .badge-tag {
+      background: rgba(0, 113, 227, 0.1);
+      color: var(--primary);
+      padding: 0.35rem 0.85rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .stats-bar {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.6);
+      padding: 0.4rem 0.9rem;
+      border-radius: 50px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .joker-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #ffffff;
+      border: 1px solid rgba(0, 113, 227, 0.3);
+      color: var(--primary);
+      padding: 0.4rem 0.9rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      box-shadow: 0 2px 8px rgba(0, 113, 227, 0.1);
+    }
+    .joker-btn:hover:not(:disabled) {
+      background: var(--primary);
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+    .joker-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      border-color: rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    /* Fortschrittsbalken */
+    .progress-container {
+      width: 100%;
+      height: 8px;
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 50px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 10%;
+      background: linear-gradient(90deg, var(--primary) 0%, #34c759 100%);
+      border-radius: 50px;
+      transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ==========================================================================
+       3. Quiz-Karte & Interaktives Antwortgitter
+       ========================================================================== */
+    .quiz-card {
+      background: var(--glass-card);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      border-radius: var(--border-radius);
+      padding: 2.25rem;
+      position: relative;
+      transition: var(--transition-smooth);
+    }
+
+    .question-category {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.5rem;
+    }
+
+    .question-text {
+      font-size: 1.35rem;
+      font-weight: 600;
+      line-height: 1.45;
+      color: var(--text-main);
+      margin-bottom: 2rem;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 680px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+      .quiz-card {
+        padding: 1.5rem;
+      }
+    }
+
+    .option-btn {
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 16px;
+      padding: 1.1rem 1.25rem;
+      text-align: left;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      transition: var(--transition-smooth);
+      position: relative;
+      outline: none;
+    }
+    .option-btn:hover:not(:disabled) {
+      background: #ffffff;
+      border-color: rgba(0, 113, 227, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    }
+    .option-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .option-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: rgba(0, 113, 227, 0.08);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+      transition: var(--transition-smooth);
+    }
+
+    /* Antwortzustände */
+    .option-btn.correct {
+      background: var(--success) !important;
+      border-color: var(--success) !important;
+      color: #ffffff !important;
+      box-shadow: 0 6px 25px rgba(16, 185, 129, 0.35) !important;
+    }
+    .option-btn.correct .option-letter {
+      background: #ffffff;
+      color: var(--success);
+    }
+
+    .option-btn.wrong {
+      background: var(--danger) !important;
+      border-color: var(--danger) !important;
+      color: #ffffff !important;
+      box-shadow: 0 6px 25px rgba(239, 68, 68, 0.35) !important;
+      animation: shake 0.45s ease-in-out;
+    }
+    .option-btn.wrong .option-letter {
+      background: #ffffff;
+      color: var(--danger);
+    }
+
+    .option-btn.joker-hidden {
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    /* ==========================================================================
+       4. Didaktisches Ausklapp-Feedback (Smooth Expand)
+       ========================================================================== */
+    .feedback-panel {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease, margin-top 0.35s ease;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 16px;
+      padding: 0 1.25rem;
+    }
+    .feedback-panel.active {
+      max-height: 250px;
+      opacity: 1;
+      margin-top: 1.25rem;
+      padding: 1.25rem;
+    }
+
+    .feedback-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #065f46;
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 0.4rem;
+    }
+    .feedback-text {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #1f2937;
+    }
+    .feedback-source {
+      display: inline-block;
+      margin-top: 0.4rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #047857;
+      background: rgba(16, 185, 129, 0.15);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .action-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1.6rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition-smooth);
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 113, 227, 0.35);
+    }
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    /* ==========================================================================
+       5. Modale Dialoge & Sicherheitsabfragen
+       ========================================================================== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 15, 35, 0.4);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+      padding: 1.5rem;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 24px;
+      max-width: 480px;
+      width: 100%;
+      padding: 2.25rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      transform: scale(0.92);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .modal-overlay.active .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    .modal-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.75rem;
+    }
+    .modal-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 1.75rem;
+    }
+    .modal-btn-row {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+
+    .btn-secondary {
+      background: rgba(0, 0, 0, 0.06);
+      color: var(--text-main);
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1.4rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+    .btn-secondary:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1.4rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    /* ==========================================================================
+       6. Post-Print Banner & Permanenter Rand-Fallback Button
+       ========================================================================== */
+    .post-print-banner {
+      display: none;
+      background: var(--glass-card);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(0, 113, 227, 0.3);
+      border-radius: var(--border-radius);
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--glass-shadow);
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      animation: slideDown 0.4s ease;
+    }
+    .post-print-banner.active {
+      display: flex;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-15px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .banner-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .banner-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .close-banner-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.3rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.2rem 0.5rem;
+      border-radius: 8px;
+      transition: var(--transition-smooth);
+    }
+    .close-banner-btn:hover {
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--text-main);
+    }
+
+    /* Floating Action Button am Seitenrand */
+    .floating-reset-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      color: var(--primary);
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      cursor: pointer;
+      z-index: 990;
+      transition: var(--transition-smooth);
+    }
+    .floating-reset-btn.active {
+      display: flex;
+    }
+    .floating-reset-btn:hover {
+      transform: scale(1.1) rotate(180deg);
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 12px 35px var(--primary-glow);
+    }
+    .floating-reset-btn .tooltip {
+      position: absolute;
+      right: 64px;
+      background: #1d1d1f;
+      color: #ffffff;
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .floating-reset-btn:hover .tooltip {
+      opacity: 1;
+    }
+
+    /* ==========================================================================
+       7. Abschlusszertifikat (A4-kompatibles Layout)
+       ========================================================================== */
+    .certificate-container {
+      display: none;
+    }
+    .certificate-container.active {
+      display: block;
+    }
+
+    .name-input-box {
+      background: var(--glass-card);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--border-radius);
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--glass-shadow);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      justify-content: space-between;
+    }
+
+    .name-input-group {
+      flex: 1;
+      min-width: 260px;
+    }
+    .name-input-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+    .name-input-field {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      background: #ffffff;
+      font-size: 1rem;
+      color: var(--text-main);
+      outline: none;
+      transition: var(--transition-smooth);
+    }
+    .name-input-field:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .cert-sheet {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 3.5rem 3rem;
+      box-shadow: 0 15px 50px rgba(0, 20, 60, 0.1);
+      border: 2px solid #e2e8f0;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .cert-sheet::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background: linear-gradient(90deg, #0071e3, #34c759, #0071e3);
+    }
+
+    .cert-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .cert-super-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--primary);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .cert-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+    .cert-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+    }
+
+    .cert-body {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .cert-recipient-intro {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+    .cert-recipient-name {
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: #0f172a;
+      min-height: 2.5rem;
+      border-bottom: 2px solid #cbd5e1;
+      display: inline-block;
+      padding: 0 2rem 0.35rem 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .cert-text {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #334155;
+      max-width: 680px;
+      margin: 0 auto 2rem auto;
+    }
+
+    .cert-competencies {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 1.5rem;
+      max-width: 680px;
+      margin: 0 auto 2.5rem auto;
+      text-align: left;
+    }
+    .cert-competencies h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.75rem;
+    }
+    .cert-competencies ul {
+      list-style-type: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .cert-competencies li {
+      font-size: 0.9rem;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .cert-competencies li::before {
+      content: "✓";
+      color: var(--success);
+      font-weight: 800;
+    }
+
+    .cert-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      max-width: 680px;
+      margin: 0 auto 2rem auto;
+      text-align: center;
+    }
+    .cert-stat-box {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 0.9rem;
+    }
+    .cert-stat-val {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .cert-stat-lbl {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    .cert-footer {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       8. Print Stylesheet (Reines DIN A4 Druckbild)
+       ========================================================================== */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 15mm;
+      }
+
+      body {
+        background: #ffffff !important;
+        padding: 0 !important;
+        color: #000000 !important;
+      }
+
+      .ambient-orb,
+      .header-panel,
+      .quiz-card,
+      .post-print-banner,
+      .floating-reset-btn,
+      .name-input-box,
+      .modal-overlay,
+      .action-row,
+      .btn-primary,
+      .btn-secondary {
+        display: none !important;
+      }
+
+      .app-container {
+        max-width: 100% !important;
+        width: 100% !important;
+      }
+
+      .certificate-container {
+        display: block !important;
+      }
+
+      .cert-sheet {
+        box-shadow: none !important;
+        border: 2px solid #0f172a !important;
+        border-radius: 0 !important;
+        padding: 2.5rem 2rem !important;
+        margin: 0 !important;
+      }
+
+      .cert-sheet::before {
+        background: #0f172a !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Light Orbs -->
+  <div class="ambient-orb orb-1"></div>
+  <div class="ambient-orb orb-2"></div>
+
+  <!-- App Main Frame -->
+  <div class="app-container">
+
+    <!-- Post-Print Banner (erscheint nach Druckdialog) -->
+    <div id="post-print-banner" class="post-print-banner">
+      <div class="banner-left">
+        <span>📄</span>
+        <span>Druckvorgang abgeschlossen! Möchtest du das Quiz zurücksetzen?</span>
+      </div>
+      <div class="banner-actions">
+        <button class="btn-primary" onclick="promptResetGame()">Jetzt zurücksetzen</button>
+        <button class="close-banner-btn" onclick="dismissBanner()" title="Banner schließen">✕</button>
+      </div>
+    </div>
+
+    <!-- Header Panel mit Stats & Progress -->
+    <header class="header-panel" id="main-header">
+      <div class="header-top">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span class="badge-tag" id="run-indicator">Durchlauf 1 / 2</span>
+          <span style="font-weight: 700; font-size: 1.05rem;">Wasserversorgungstechnik</span>
+        </div>
+        <div class="stats-bar">
+          <div class="stat-pill">
+            <span>Stufe</span>
+            <span id="level-display" style="color: var(--primary);">1 / 10</span>
+          </div>
+          <button class="joker-btn" id="joker-5050" onclick="useJoker()">
+            <span>⚡ 50:50</span>
+            <span id="joker-count">(2)</span>
+          </button>
+        </div>
+      </div>
+      <div class="progress-container">
+        <div class="progress-fill" id="progress-bar"></div>
+      </div>
+    </header>
+
+    <!-- Quiz View -->
+    <main id="quiz-view">
+      <div class="quiz-card" id="quiz-card">
+        <div class="question-category" id="question-category">Kategorie: Grundbegriffe</div>
+        <div class="question-text" id="question-text">Lade Fragestellung...</div>
+
+        <!-- Antwortgitter A-D -->
+        <div class="options-grid" id="options-grid">
+          <!-- Dynamisch via JavaScript -->
+        </div>
+
+        <!-- Ausklappbares Didaktisches Feedback -->
+        <div class="feedback-panel" id="feedback-panel">
+          <div class="feedback-header">
+            <span>✓</span>
+            <span>Fachdidaktische Erläuterung</span>
+          </div>
+          <div class="feedback-text" id="feedback-text"></div>
+          <div class="feedback-source" id="feedback-source"></div>
+        </div>
+
+        <!-- Next Action -->
+        <div class="action-row" id="action-row" style="display: none;">
+          <button class="btn-primary" id="btn-next" onclick="nextQuestion()">
+            <span>Nächste Frage</span>
+            <span>➔</span>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Certificate View -->
+    <section class="certificate-container" id="certificate-view">
+      <!-- Flüchtige Namenseingabe (Privacy by Design) -->
+      <div class="name-input-box">
+        <div class="name-input-group">
+          <label class="name-input-label" for="student-name">Vollständiger Name des Absolventen / der Absolventin (wird nicht gespeichert):</label>
+          <input type="text" id="student-name" class="name-input-field" placeholder="Vorname Nachname eingeben..." oninput="updateVolatileName(this.value)">
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+          <button class="btn-primary" onclick="triggerPrint()">📄 Drucken / Als PDF speichern</button>
+          <button class="btn-secondary" onclick="promptResetGame()">Zurücksetzen</button>
+        </div>
+      </div>
+
+      <!-- Zertifikatsblatt (DIN-A4 optimiert) -->
+      <div class="cert-sheet" id="certificate-sheet">
+        <div class="cert-header">
+          <div class="cert-super-title">Kompetenznachweis Wasserversorgungstechnik</div>
+          <h1 class="cert-title">Abschlusszertifikat: Fachkunde Rohwasser</h1>
+          <p class="cert-subtitle">Eignung, Gewinnungsverfahren, Hydrodynamik und DVGW-Regelwerke</p>
+        </div>
+
+        <div class="cert-body">
+          <p class="cert-recipient-intro">Dieses Zertifikat bescheinigt, dass</p>
+          <div class="cert-recipient-name" id="cert-name-display">Vorname Nachname</div>
+          <p class="cert-text">
+            beide Stufenfolgen (Haupt- und Revanche-Pfad) mit allen 20 komplexen Fachfragen zu hydrogeologischen
+            Berechnungen, Uferfiltration, Infiltration, Trinkwasseraufbereitung sowie Fehleranalysen
+            gemäß DVGW- und TrinkwV-Standards erfolgreich und fehlerfrei durchlaufen hat.
+          </p>
+
+          <div class="cert-competencies">
+            <h4>Nachgewiesene Fachdidaktische Kernkompetenzen:</h4>
+            <ul>
+              <li>Differenzierung und hydrogeologische Bewertung von Rohwasserarten (Grund-, Quell- und Oberflächenwasser)</li>
+              <li>Berechnung hydrodynamischer Untergrundverweilzeiten ($s = v_a \cdot t$) und Pumpenförderströme</li>
+              <li>Berechnung von Filtergeschwindigkeiten, Chemikaliendosierungen und spezifischen Brunnenleistungen</li>
+              <li>Analyse von Störfaktoren (Kolmation, Trübungsschübe) und vierstufige Aufbereitung nach DVGW W 216</li>
+              <li>Mikrobiologische Grenzwertüberwachung (TrinkwV) und automatisches Havariemonitoring</li>
+            </ul>
+          </div>
+
+          <div class="cert-stats-grid">
+            <div class="cert-stat-box">
+              <div class="cert-stat-val" id="cert-total-questions">20 / 20</div>
+              <div class="cert-stat-lbl">Fachfragen gelöst</div>
+            </div>
+            <div class="cert-stat-box">
+              <div class="cert-stat-val" id="cert-total-attempts">1</div>
+              <div class="cert-stat-lbl">Benötigte Versuche</div>
+            </div>
+            <div class="cert-stat-box">
+              <div class="cert-stat-val" id="cert-jokers-used">0</div>
+              <div class="cert-stat-lbl">Verbrauchte Joker</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cert-footer">
+          <div>Prüfstandard: DWA / DVGW-Regelwerk & TrinkwV</div>
+          <div>Datum: <span id="cert-date-display">--.--.----</span></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Permanenter Rand-Fallback Button (Floating Action Element) -->
+  <button id="floating-reset-btn" class="floating-reset-btn" onclick="promptResetGame()" aria-label="Quiz zurücksetzen">
+    🔄
+    <span class="tooltip">Quiz zurücksetzen</span>
+  </button>
+
+  <!-- Modales Dialogfenster (Permadeath / Sieg / Reset) -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-icon" id="modal-icon">⚠️</div>
+      <h2 class="modal-title" id="modal-title">Aktion erforderlich</h2>
+      <p class="modal-desc" id="modal-desc">Beschreibungstext</p>
+      <div class="modal-btn-row" id="modal-btn-row">
+        <!-- Dynamische Aktions-Buttons -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       9. Anwendungslogik & Datenbestand
+       ========================================================================== -->
+  <script>
+    /* --------------------------------------------------------------------------
+       Datenbestand: 20 modulare Fachfragen (10 Stufen à 2 Varianten A & B)
+       Keinerlei Bezugnahme auf Ortsnamen; rein fachlich fundiert.
+       -------------------------------------------------------------------------- */
+    const quizData = [
+      // STUFE 1: Grundbegriffe & Definitionen
+      {
+        level: 1,
+        variant: "A",
+        category: "Grundbegriffe & Rohwasserarten",
+        question: "Welche Rohwasserart bildet mit einem Anteil von über 60 % an der Gesamtförderung die tragende Säule der öffentlichen Trinkwasserversorgung in Deutschland?",
+        options: [
+          "Echtes Grundwasser aus tiefen Grundwasserleitern",
+          "Flusswasser aus ungeschützter Direktentnahme",
+          "Künstlich aufgestautes Talsperrenwasser",
+          "Uferfiltrat aus oberflächennahen Schotterkörpern"
+        ],
+        correct: 0,
+        explanation: "Grundwasser bildet mit mehr als 60 % das Rückgrat der deutschen Wasserversorgung und zeichnet sich durch seine natürliche Filterung aus.",
+        source: "[Mutschmann und Stimmelmayr, 2019]"
+      },
+      {
+        level: 1,
+        variant: "B",
+        category: "Grundbegriffe & Definitionen",
+        question: "Wie wird der Begriff „Rohwasser“ in der Wasserversorgungstechnik normgerecht definiert?",
+        options: [
+          "Trinkwasser, das den Hochbehälter verlässt, jedoch noch nicht im Netz gechlort wurde",
+          "Unbehandeltes Naturwasser vor der Entnahme und Aufbereitung im Wasserwerk",
+          "Mechanisch geklärtes Abwasser vor der Einleitung in einen natürlichen Vorfluter",
+          "Kondensiertes Wasserdampfgemisch zur industriellen Speisewassernutzung"
+        ],
+        correct: 1,
+        explanation: "Als Rohwasser bezeichnet man die Herkunft beziehungsweise den Typ des unbehandelten Naturwassers, das einer Gewinnungsanlage entnommen wird.",
+        source: "[DVGW, 2018]"
+      },
+
+      // STUFE 2: Physikalische & Biologische Kenngrößen
+      {
+        level: 2,
+        variant: "A",
+        category: "Physikalische Kenngrößen",
+        question: "In welchem Temperaturbereich liegt geschütztes Grundwasser typischerweise ganzjährig und warum ist dies hygienisch von Vorteil?",
+        options: [
+          "$18\\,\\text{°C}$ bis $22\\,\\text{°C}$; beschleunigt den biologischen Nitratabbau",
+          "$0\\,\\text{°C}$ bis $4\\,\\text{°C}$; inaktiviert Viren durch Kryokonservierung",
+          "$8\\,\\text{°C}$ bis $12\\,\\text{°C}$; unterdrückt übermäßiges Keimwachstum wirksam",
+          "$25\\,\\text{°C}$ bis $30\\,\\text{°C}$; optimiert die chemische Flockung"
+        ],
+        correct: 2,
+        explanation: "Konstante Kühle von $8\\,\\text{°C}$ bis $12\\,\\text{°C}$ im sauerstoffarmen Untergrund entzieht Krankheitserregern die Lebensgrundlage.",
+        source: "[DVGW, 2018]"
+      },
+      {
+        level: 2,
+        variant: "B",
+        category: "Biologische Kenngrößen",
+        question: "Welches erhebliche mikrobiologische Risiko entsteht bei der Entnahme von oberflächennahem Flusswasser bei Wassertemperaturen über $20\\,\\text{°C}$?",
+        options: [
+          "Explosives Bakterienwachstum und beschleunigte Wiederverkeimung im Leitungsnetz",
+          "Spontane Ausfällung gelöster Kalziumionen als harter Gipsstein",
+          "Vollständiger Stillstand biologischer Abbauprozesse im Flussbett",
+          "Kavitation in Entnahmepumpen infolge veränderter Wasserviskosität"
+        ],
+        correct: 0,
+        explanation: "Offenes Oberflächenwasser über $20\\,\\text{°C}$ begünstigt die Vermehrung von Krankheitskeimen massiv und gefährdet die Trinkwassersicherheit.",
+        source: "[DVGW, 2018]"
+      },
+
+      // STUFE 3: Mechanismen der Bodenpassage
+      {
+        level: 3,
+        variant: "A",
+        category: "Mechanismen der Bodenpassage",
+        question: "Welcher hydrogeologische Prozess bewirkt die hohe Trübungsfreiheit bei Uferfiltrat und natürlichem Grundwasser?",
+        options: [
+          "Mechanische Partikelabscheidung in den Porenräumen mächtiger Sand- und Kiesschichten",
+          "Künstliche Zugabe von Koagulierungsmitteln direkt in das Flusssohlensediment",
+          "Thermische Zersetzung mineralischer Schwebstoffe im Grundwasserleiter",
+          "Elektrostatische Neutralisation von Feinststoffen durch Feldspatminerale"
+        ],
+        correct: 0,
+        explanation: "Die Schotter- und Sandkörper wirken wie ein natürlicher Mehrschichtfilter und scheiden ungelöste Schwebstoffe mechanisch vollständig ab.",
+        source: "[Mutschmann und Stimmelmayr, 2019]"
+      },
+      {
+        level: 3,
+        variant: "B",
+        category: "Biologische Selbstreinigung",
+        question: "Auf welche Weise baut die natürliche Untergrundpassage gelöste organische Schadstofffrachten wirksam ab?",
+        options: [
+          "Durch sessile Mikroorganismen in Biofilmen auf den Sand- und Kieskörnern",
+          "Durch Einwirkung natürlicher UV-Strahlung im sauerstoffarmen Porenraum",
+          "Durch hydraulische Druckentlastung beim Passieren der Brunnenfilterschlitze",
+          "Durch spontane Verdampfung flüchtiger Kohlenwasserstoffe im Gesteinsbett"
+        ],
+        correct: 0,
+        explanation: "Auf den Kornoberflächen siedeln natürliche Biofilme, die organische Verunreinigungen während der Fließzeit biochemisch zersetzen.",
+        source: "[DVGW, 2018]"
+      },
+
+      // STUFE 4: Hydrodynamische Verweilzeiten (Berechnungen)
+      {
+        level: 4,
+        variant: "A",
+        category: "Hydrodynamische Berechnung",
+        question: "Nach DVGW-Richtlinien ist bei künstlicher Anreicherung eine Verweilzeit von mindestens $t = 50\\,\\text{d}$ einzuhalten. Welche Fließstrecke $s$ muss bei einer Abstandsgeschwindigkeit von $v_a = 1{,}2\\,\\text{m/d}$ mindestens vorliegen?",
+        options: [
+          "$s = 41{,}7\\,\\text{m}$",
+          "$s = 60\\,\\text{m}$",
+          "$s = 120\\,\\text{m}$",
+          "$s = 25\\,\\text{m}$"
+        ],
+        correct: 1,
+        explanation: "Gemäß der Fließformel $s = v_a \\cdot t$ ergibt sich die Mindestdistanz zu $1{,}2\\,\\text{m/d} \\cdot 50\\,\\text{d} = 60\\,\\text{m}$.",
+        source: "[DVGW, 2018]"
+      },
+      {
+        level: 4,
+        variant: "B",
+        category: "Hydrodynamische Berechnung",
+        question: "Bei einer Uferfiltrationsanlage beträgt der Abstand von der Uferlinie zum Brunnen $s = 75\\,\\text{m}$. Die Fließgeschwindigkeit beträgt $v_a = 1{,}5\\,\\text{m/d}$. Welche hydraulische Verweilzeit $t$ ergibt sich?",
+        options: [
+          "$t = 50\\,\\text{d}$",
+          "$t = 112{,}5\\,\\text{d}$",
+          "$t = 25\\,\\text{d}$",
+          "$t = 70\\,\\text{d}$"
+        ],
+        correct: 0,
+        explanation: "Aus $t = \\frac{s}{v_a}$ errechnet sich die Verweilzeit zu $\\frac{75\\,\\text{m}}{1{,}5\\,\\text{m/d}} = 50\\,\\text{d}$, was der seuchenhygienischen Mindestverweilzeit entspricht.",
+        source: "[DVGW, 2018]"
+      },
+
+      // STUFE 5: Fördertechnik und Brunnenhydraulik (Berechnungen)
+      {
+        level: 5,
+        variant: "A",
+        category: "Fördertechnik-Berechnung",
+        question: "Ein Wasserwerk muss einen Tagesbedarf von $V = 4.800\\,\\text{m}^3/\\text{d}$ decken. Der Brunnen wird täglich exakt $t = 16\\,\\text{h}$ lang betrieben. Welcher Förderstrom $Q$ der Pumpe ist erforderlich?",
+        options: [
+          "$Q = 200\\,\\text{m}^3/\\text{h}$",
+          "$Q = 150\\,\\text{m}^3/\\text{h}$",
+          "$Q = 300\\,\\text{m}^3/\\text{h}$",
+          "$Q = 450\\,\\text{m}^3/\\text{h}$"
+        ],
+        correct: 2,
+        explanation: "Der Förderstrom errechnet sich über $Q = \\frac{V}{t} = \\frac{4.800\\,\\text{m}^3}{16\\,\\text{h}} = 300\\,\\text{m}^3/\\text{h}$.",
+        source: "[Mutschmann und Stimmelmayr, 2019]"
+      },
+      {
+        level: 5,
+        variant: "B",
+        category: "Hydraulische Leistungsberechnung",
+        question: "Eine Rohwasserpumpe fördert $Q = 180\\,\\text{m}^3/\\text{h}$ ($0{,}05\\,\\text{m}^3/\\text{s}$) über eine Förderhöhe von $H = 40\\,\\text{m}$ (mit $\\rho = 1.000\\,\\text{kg/m}^3$, $g = 9{,}81\\,\\text{m/s}^2$). Wie groß ist bei Wirkungsgrad $\\eta = 0{,}75$ die elektrische Leistungsaufnahme $P_{\\text{el}}$?",
+        options: [
+          "$P_{\\text{el}} \\approx 26{,}2\\,\\text{kW}$",
+          "$P_{\\text{el}} \\approx 19{,}6\\,\\text{kW}$",
+          "$P_{\\text{el}} \\approx 35{,}8\\,\\text{kW}$",
+          "$P_{\\text{el}} \\approx 14{,}7\\,\\text{kW}$"
+        ],
+        correct: 0,
+        explanation: "Mit $P_{\\text{hyd}} = \\rho \\cdot g \\cdot Q \\cdot H = 19{,}62\\,\\text{kW}$ folgt $P_{\\text{el}} = \\frac{19{,}62\\,\\text{kW}}{0{,}75} = 26{,}16\\,\\text{kW} \\approx 26{,}2\\,\\text{kW}$.",
+        source: "[Mutschmann und Stimmelmayr, 2019]"
+      },
+
+      // STUFE 6: Chemisch-technologische Verfahren (Berechnungen)
+      {
+        level: 6,
+        variant: "A",
+        category: "Flockungsstufen-Berechnung",
+        question: "Zur Flockung von trübem Flusswasser werden kontinuierlich $c = 15\\,\\text{g/m}^3$ Eisen(III)-chlorid zudosiert. Welcher stündliche Fällmittelmassenstrom $\\dot{m}$ wird bei $Q = 500\\,\\text{m}^3/\\text{h}$ verbraucht?",
+        options: [
+          "$\\dot{m} = 1{,}5\\,\\text{kg/h}$",
+          "$\\dot{m} = 7{,}5\\,\\text{kg/h}$",
+          "$\\dot{m} = 33{,}3\\,\\text{kg/h}$",
+          "$\\dot{m} = 75{,}0\\,\\text{kg/h}$"
+        ],
+        correct: 1,
+        explanation: "Der Massenstrom errechnet sich direkt aus $\\dot{m} = Q \\cdot c = 500\\,\\text{m}^3/\\text{h} \\cdot 15\\,\\text{g/m}^3 = 7.500\\,\\text{g/h} = 7{,}5\\,\\text{kg/h}$.",
+        source: "[DVGW, 2016]"
+      },
+      {
+        level: 6,
+        variant: "B",
+        category: "Filtrationskinetik-Berechnung",
+        question: "Drei Schnellsandfilter mit einer Filterfläche von je $A_1 = 25\\,\\text{m}^2$ (Gesamtfläche $A = 75\\,\\text{m}^2$) reinigen einen Volumenstrom von $Q = 600\\,\\text{m}^3/\\text{h}$. Welche Filtergeschwindigkeit $v_f$ stellt sich ein?",
+        options: [
+          "$v_f = 24{,}0\\,\\text{m/h}$",
+          "$v_f = 4{,}5\\,\\text{m/h}$",
+          "$v_f = 8{,}0\\,\\text{m/h}$",
+          "$v_f = 12{,}0\\,\\text{m/h}$"
+        ],
+        correct: 2,
+        explanation: "Die Filtergeschwindigkeit beträgt $v_f = \\frac{Q}{A} = \\frac{600\\,\\text{m}^3/\\text{h}}{75\\,\\text{m}^2} = 8{,}0\\,\\text{m/h}$.",
+        source: "[Mutschmann und Stimmelmayr, 2019]"
+      },
+
+      // STUFE 7: Infiltration und Brunnenleistung (Berechnungen)
+      {
+        level: 7,
+        variant: "A",
+        category: "Hydrogeologische Kennwerte",
+        question: "Ein Vertikalfilterbrunnen liefert einen Förderstrom von $Q = 120\\,\\text{m}^3/\\text{h}$ bei einer gemessenen Wasserspiegelabsenkung von $s = 4{,}0\\,\\text{m}$. Wie groß ist die spezifische Brunnenleistung $q_s$?",
+        options: [
+          "$q_s = 30\\,\\text{m}^3/(\\text{h}\\cdot\\text{m})$",
+          "$q_s = 480\\,\\text{m}^3/(\\text{h}\\cdot\\text{m})$",
+          "$q_s = 0{,}033\\,\\text{m}/(\\text{m}^3/\\text{h})$",
+          "$q_s = 15\\,\\text{m}^3/(\\text{h}\\cdot\\text{m})$"
+        ],
+        correct: 0,
+        explanation: "Die spezifische Ergiebigkeit beschreibt die Fördermenge je Meter Absenkung: $q_s = \\frac{Q}{s} = \\frac{120}{4{,}0} = 30\\,\\text{m}^3/(\\text{h}\\cdot\\text{m})$.",
+        source: "[Mutschmann und Stimmelmayr, 2019]"
+      },
+      {
+        level: 7,
+        variant: "B",
+        category: "Infiltrations-Dimensionierung",
+        question: "Ein künstliches Versickerungsbecken weist eine Sohlfläche von $A = 2.500\\,\\text{m}^2$ auf. Bei einer Infiltrationsrate von $v_i = 1{,}2\\,\\text{m/d}$, welches tägliche Volumen $V_{\\text{tag}}$ versickert in den Untergrund?",
+        options: [
+          "$V_{\\text{tag}} = 2.083\\,\\text{m}^3/\\text{d}$",
+          "$V_{\\text{tag}} = 1.250\\,\\text{m}^3/\\text{d}$",
+          "$V_{\\text{tag}} = 5.000\\,\\text{m}^3/\\text{d}$",
+          "$V_{\\text{tag}} = 3.000\\,\\text{m}^3/\\text{d}$"
+        ],
+        correct: 3,
+        explanation: "Das tägliche Infiltrationsvolumen berechnet sich über $V_{\\text{tag}} = A \\cdot v_i = 2.500\\,\\text{m}^2 \\cdot 1{,}2\\,\\text{m/d} = 3.000\\,\\text{m}^3/\\text{d}$.",
+        source: "[DVGW, 2018]"
+      },
+
+      // STUFE 8: Technische Fehleranalysen (Kolmation & Trübungen)
+      {
+        level: 8,
+        variant: "A",
+        category: "Störungsanalyse: Kolmation",
+        question: "Welches physikalisch-biologische Phänomen führt bei Infiltrationsbecken und Uferfiltration zur Kolmation und wie wird es betrieblich beseitigt?",
+        options: [
+          "Verstopfung der Sedimentporen durch Schlick und Algen; Sanierung durch Gegenspülen oder Abschälen der Sohle",
+          "Korrosion von Filterkiesen durch Kohlensäure; Sanierung durch Zudosierung von Natronlauge",
+          "Versalzung des Porenraums durch Auskristallisation; Sanierung durch Anlegen elektrischer Spannungsfelder",
+          "Hydraulischer Grundbruch infolge von Unterdruck; Sanierung durch Auffüllen mit Grobschotter"
+        ],
+        correct: 0,
+        explanation: "Kolmation bezeichnet das Verstopfen der Porenräume durch Feinstoffe und Biofilme, was mechanisches Abbaggern oder Gegenspülen erfordert.",
+        source: "[Mutschmann und Stimmelmayr, 2019]"
+      },
+      {
+        level: 8,
+        variant: "B",
+        category: "Störungsanalyse: Karst- & Kluftquellen",
+        question: "Warum müssen Wasserversorger Karst- oder Kluftquellen bei plötzlich auftretenden Trübungsschüben nach Starkregen sofort vom Netz trennen?",
+        options: [
+          "Trübungsschübe kehren die hydraulische Fließrichtung im Hauptrohrnetz um",
+          "Fehlende Feinporen im Fels lassen Keime ungefiltert durchbrechen; Trübung indiziert akute Verkeimung",
+          "Kalkschwebstoffe reagieren mit dem Rohrleitungsmaterial exotherm zu gefährlichen Dämpfen",
+          "Die Trübung zerstört die UV-Lampen der Desinfektion durch mechanischen Schliff"
+        ],
+        correct: 1,
+        explanation: "Kluftsysteme bieten keine feine Siebwirkung. Bei Starkregen brechen Oberflächenkeime wie E. coli ungefiltert durch.",
+        source: "[DVGW, 2018]"
+      },
+
+      // STUFE 9: Expertennormen & Anlagenbau
+      {
+        level: 9,
+        variant: "A",
+        category: "Anlagenbau: Talsperrenentnahme",
+        question: "Über welche Vorrichtung verfügen Trinkwassertalsperren-Entnahmetürme, um flexibel auf Algenblüten und Faulschlamm zu reagieren?",
+        options: [
+          "Übereinanderliegende Absperrriegel zur selektiven Entnahme aus den saubersten Tiefenschichten",
+          "Permanent rotierende Mischflügel, die das Stauseewasser ganzjährig homogenisieren",
+          "Vollflächige Aktivkohlevliese, die schwimmend auf der Seeoberfläche ausgebracht werden",
+          "Thermostatisierte Heizlanzen, die das Tiefenwasser künstlich auf $60\\,\\text{°C}$ erwärmen"
+        ],
+        correct: 0,
+        explanation: "Entnahmetürme mit Riegeln ermöglichen die Wasserfassung unterhalb der oberflächennahen Algenzone und oberhalb des fauligen Bodenschlamms.",
+        source: "[Mutschmann und Stimmelmayr, 2019]"
+      },
+      {
+        level: 9,
+        variant: "B",
+        category: "Verfahrensketten nach DVGW",
+        question: "Welche vierstufige Verfahrenskette verlangt das DVGW-Regelwerk zwingend bei der direkten Trinkwasseraufbereitung aus trübem Oberflächenwasser?",
+        options: [
+          "Flockung $\\rightarrow$ Sandfiltration $\\rightarrow$ Ozonung $\\rightarrow$ Aktivkohlefiltration",
+          "Belüftung $\\rightarrow$ Entsäuerung $\\rightarrow$ Kiesbettfiltration $\\rightarrow$ Enteisung",
+          "Mikrofiltration $\\rightarrow$ Chlorung $\\rightarrow$ Enthärtung $\\rightarrow$ Fluoridierung",
+          "Sedimentation $\\rightarrow$ UV-Bestrahlung $\\rightarrow$ Erhitzung $\\rightarrow$ Ionenaustausch"
+        ],
+        correct: 0,
+        explanation: "Die Kette aus Flockung, Filtration, Ozonung (Keimoxidation) und Aktivkohle (Adsorption gelöster Spurenstoffe) sichert die Trinkwasserqualität.",
+        source: "[DVGW, 2016]"
+      },
+
+      // STUFE 10: Rechtliche Grenzwerte & Havariemonitoring
+      {
+        level: 10,
+        variant: "A",
+        category: "Trinkwasserhygiene & Grenzwerte",
+        question: "Warum gelten Cryptosporidien als gefährlichste Erreger im Oberflächenwasser und welcher Grenzwert gilt gemäß TrinkwV für E. coli im Trinkwasser?",
+        options: [
+          "Oozysten trotzen chemischer Chlorung; Grenzwert für E. coli: $0\\,\\text{KBE}/100\\,\\text{mL}$",
+          "Cryptosporidien spalten Ozonmoleküle; Grenzwert für E. coli: $10\\,\\text{KBE}/100\\,\\text{mL}$",
+          "Sie zersetzen Sandfilterstrukturen; Grenzwert für E. coli: $100\\,\\text{KBE}/100\\,\\text{mL}$",
+          "Sie bilden toxische Schwefelverbindungen; Grenzwert für E. coli: $20\\,\\text{KBE}/100\\,\\text{mL}$"
+        ],
+        correct: 0,
+        explanation: "Cryptosporidien-Dauerformen sind extrem chlorresistent. Trinkwasser muss nach TrinkwV ausnahmslos frei von E. coli ($0/100\\,\\text{mL}$) sein.",
+        source: "[TrinkwV, 2023; DVGW, 2021]"
+      },
+      {
+        level: 10,
+        variant: "B",
+        category: "Gewässerschutz & Havariemonitoring",
+        question: "Wie sichern Wasserwerke direkte Entnahmebauwerke an Schifffahrtsflüssen gegen unvorhersehbare Giftfrachten (z. B. nach Schiffsunfällen) ab?",
+        options: [
+          "Durch automatische Biomonitore (z. B. Daphnientests) mit Schnellschlussschützen am Einlauf",
+          "Durch manuelle Schöpfproben, die einmal wöchentlich im Zentrallabor bebrütet werden",
+          "Durch großflächige Ölsperren, die dauerhaft und starr im Flussbett verankert sind",
+          "Durch kontinuierliche Zudosierung von Natriumhypochlorit direkt in den Hauptstrom"
+        ],
+        correct: 0,
+        explanation: "Biomonitore registrieren Vergiftungen lebender Indikatoren in Echtzeit und schließen das Einlaufschütz vollautomatisch vor der Schadstoffwelle.",
+        source: "[Umweltbundesamt, 2023]"
+      }
+    ];
+
+    /* --------------------------------------------------------------------------
+       Zustandsverwaltung (Game Engine State)
+       -------------------------------------------------------------------------- */
+    let currentRun = 1;              // 1 = Erster Durchlauf, 2 = Revanche-Durchlauf
+    let currentLevel = 1;            // Stufe 1 bis 10
+    let totalAttempts = 1;           // Zähler für Fehlversuche / Neustarts
+    let jokersLeft = 2;              // 2 Joker pro Spielrunde
+    let totalJokersUsed = 0;         // Statistik für das Abschlusszertifikat
+    let currentQuestion = null;      // Aktives Frageobjekt
+    let run1Selections = {};         // Gewählte Varianten aus Run 1
+    let selectedOptionIdx = null;
+
+    /* Initialisierung */
+    document.addEventListener("DOMContentLoaded", () => {
+      initGame();
+      setupPrintListener();
+    });
+
+    function initGame() {
+      currentRun = 1;
+      currentLevel = 1;
+      totalAttempts = 1;
+      jokersLeft = 2;
+      totalJokersUsed = 0;
+      run1Selections = {};
+      loadQuestion();
+      updateUI();
+    }
+
+    /* Fragedispatcher nach Stufen und Durchläufen */
+    function loadQuestion() {
+      // 50:50-Joker Zustand zurücksetzen
+      const jokerBtn = document.getElementById("joker-5050");
+      jokerBtn.disabled = (jokersLeft <= 0);
+
+      // Feedback und Buttons resetten
+      document.getElementById("feedback-panel").classList.remove("active");
+      document.getElementById("action-row").style.display = "none";
+      selectedOptionIdx = null;
+
+      // Fragenfilter für die aktuelle Stufe
+      const levelQuestions = quizData.filter(q => q.level === currentLevel);
+
+      if (currentRun === 1) {
+        // Run 1: Zufallswahl zwischen A und B
+        if (!run1Selections[currentLevel]) {
+          const randIdx = Math.random() < 0.5 ? 0 : 1;
+          run1Selections[currentLevel] = levelQuestions[randIdx].variant;
+        }
+        currentQuestion = levelQuestions.find(q => q.variant === run1Selections[currentLevel]);
+      } else {
+        // Run 2: Exakt die jeweils ungespielte Alternativvariante wählen
+        const previousVariant = run1Selections[currentLevel];
+        currentQuestion = levelQuestions.find(q => q.variant !== previousVariant);
+      }
+
+      renderQuestionUI();
+    }
+
+    function renderQuestionUI() {
+      document.getElementById("question-category").textContent = `Stufe ${currentLevel} • ${currentQuestion.category}`;
+      document.getElementById("question-text").textContent = currentQuestion.question;
+
+      const grid = document.getElementById("options-grid");
+      grid.innerHTML = "";
+
+      const letters = ["A", "B", "C", "D"];
+      currentQuestion.options.forEach((optText, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.id = `opt-${idx}`;
+        btn.onclick = () => handleAnswer(idx);
+
+        const badge = document.createElement("span");
+        badge.className = "option-letter";
+        badge.textContent = letters[idx];
+
+        const label = document.createElement("span");
+        label.textContent = optText;
+
+        btn.appendChild(badge);
+        btn.appendChild(label);
+        grid.appendChild(btn);
+      });
+
+      // Formelsatz über KaTeX triggern
+      if (window.renderMathInElement) {
+        renderMathInElement(document.getElementById("quiz-card"), {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false
+        });
+      }
+
+      updateUI();
+    }
+
+    function updateUI() {
+      document.getElementById("level-display").textContent = `${currentLevel} / 10`;
+      document.getElementById("run-indicator").textContent = `Durchlauf ${currentRun} / 2`;
+      document.getElementById("joker-count").textContent = `(${jokersLeft})`;
+
+      const pct = (currentLevel / 10) * 100;
+      document.getElementById("progress-bar").style.width = `${pct}%`;
+    }
+
+    /* --------------------------------------------------------------------------
+       Joker-Mechanik (50:50)
+       -------------------------------------------------------------------------- */
+    function useJoker() {
+      if (jokersLeft <= 0 || selectedOptionIdx !== null) return;
+
+      jokersLeft--;
+      totalJokersUsed++;
+      document.getElementById("joker-count").textContent = `(${jokersLeft})`;
+      document.getElementById("joker-5050").disabled = true;
+
+      // Bestimme zwei falsche Optionen zum Ausblenden
+      const wrongIndices = [0, 1, 2, 3].filter(idx => idx !== currentQuestion.correct);
+      // Zufälliges Mischen der falschen Optionen
+      wrongIndices.sort(() => Math.random() - 0.5);
+      const toHide = wrongIndices.slice(0, 2);
+
+      toHide.forEach(idx => {
+        const btn = document.getElementById(`opt-${idx}`);
+        if (btn) btn.classList.add("joker-hidden");
+      });
+    }
+
+    /* --------------------------------------------------------------------------
+       Antwortprüfung, Permadeath & Didaktisches Feedback
+       -------------------------------------------------------------------------- */
+    function handleAnswer(idx) {
+      if (selectedOptionIdx !== null) return; // Klicksperre
+      selectedOptionIdx = idx;
+
+      // Alle Optionen deaktivieren
+      for (let i = 0; i < 4; i++) {
+        const b = document.getElementById(`opt-${i}`);
+        if (b) b.disabled = true;
+      }
+
+      const chosenBtn = document.getElementById(`opt-${idx}`);
+
+      if (idx === currentQuestion.correct) {
+        // RICHTIGE ANTWORT: Grün-Hervorhebung & didaktisches Feedback
+        chosenBtn.classList.add("correct");
+
+        const fbPanel = document.getElementById("feedback-panel");
+        document.getElementById("feedback-text").textContent = currentQuestion.explanation;
+        document.getElementById("feedback-source").textContent = `Quelle: ${currentQuestion.source}`;
+        fbPanel.classList.add("active");
+
+        document.getElementById("action-row").style.display = "flex";
+
+        if (window.renderMathInElement) {
+          renderMathInElement(fbPanel, {
+            delimiters: [
+              { left: "$$", right: "$$", display: true },
+              { left: "$", right: "$", display: false }
+            ],
+            throwOnError: false
+          });
+        }
+      } else {
+        // FALSCHE ANTWORT: Rot-Hervorhebung, Shake, Permadeath ohne Erklärung
+        chosenBtn.classList.add("wrong");
+        totalAttempts++;
+
+        setTimeout(() => {
+          showModal({
+            icon: "❌",
+            title: "Falsche Antwort!",
+            desc: "Im Permadeath-Modus scheidest du bei einem Fehler sofort aus. Die korrekte Lösung bleibt verborgen, um den eigenständigen Lernprozess zu sichern. Starte Stufe 1 erneut!",
+            buttons: [
+              {
+                text: "Zurück zu Stufe 1",
+                class: "btn-danger",
+                action: () => {
+                  hideModal();
+                  currentLevel = 1;
+                  loadQuestion();
+                }
+              }
+            ]
+          });
+        }, 650);
+      }
+    }
+
+    function nextQuestion() {
+      if (currentLevel < 10) {
+        currentLevel++;
+        loadQuestion();
+      } else {
+        // Stufe 10 abgeschlossen!
+        fireConfetti();
+
+        if (currentRun === 1) {
+          // Durchlauf 1 beendet -> Modal für Revanche mit ungespielten Fragen
+          showModal({
+            icon: "🎉",
+            title: "Durchlauf 1 gemeistert!",
+            desc: "Hervorragende Leistung! Du hast alle 10 Stufen des ersten Pfades fehlerfrei absolviert. Um dein offizielles Fachzertifikat freizuschalten, musst du nun den Revanche-Durchlauf mit den 10 bisher ungespielten Alternativfragen bestehen.",
+            buttons: [
+              {
+                text: "Ungespielte Alternativfragen spielen",
+                class: "btn-primary",
+                action: () => {
+                  hideModal();
+                  currentRun = 2;
+                  currentLevel = 1;
+                  jokersLeft = 2; // Frische Joker für den Revanche-Durchlauf
+                  loadQuestion();
+                }
+              }
+            ]
+          });
+        } else {
+          // Beide Durchläufe komplett fehlerfrei durchlaufen!
+          showModal({
+            icon: "🏆",
+            title: "Maximaler Lernerfolg erzielt!",
+            desc: "Großartig! Du hast alle 20 Fachfragen aus Haupt- und Revanche-Pfad erfolgreich gemeistert. Dein persönliches Abschlusszertifikat ist nun freigeschaltet.",
+            buttons: [
+              {
+                text: "Abschlusszertifikat öffnen",
+                class: "btn-primary",
+                action: () => {
+                  hideModal();
+                  unlockCertificate();
+                }
+              }
+            ]
+          });
+        }
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       Zertifikatsansicht & Privacy by Design
+       -------------------------------------------------------------------------- */
+    function unlockCertificate() {
+      document.getElementById("quiz-view").style.display = "none";
+      document.getElementById("main-header").style.display = "none";
+
+      const certView = document.getElementById("certificate-view");
+      certView.classList.add("active");
+
+      // Statistiken befüllen
+      document.getElementById("cert-total-questions").textContent = "20 / 20";
+      document.getElementById("cert-total-attempts").textContent = totalAttempts;
+      document.getElementById("cert-jokers-used").textContent = totalJokersUsed;
+
+      // Automatische Datumsformatierung
+      const today = new Date().toLocaleDateString("de-DE", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+      });
+      document.getElementById("cert-date-display").textContent = today;
+    }
+
+    /* Flüchtige DOM-Verarbeitung des Namens ohne jede Speicherung */
+    function updateVolatileName(val) {
+      const display = document.getElementById("cert-name-display");
+      display.textContent = val.trim() !== "" ? val : "Vorname Nachname";
+    }
+
+    function triggerPrint() {
+      window.print();
+    }
+
+    /* --------------------------------------------------------------------------
+       Post-Print Workflow & Reset-Absicherung
+       -------------------------------------------------------------------------- */
+    function setupPrintListener() {
+      window.addEventListener("afterprint", () => {
+        const banner = document.getElementById("post-print-banner");
+        banner.classList.add("active");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
+
+    function dismissBanner() {
+      document.getElementById("post-print-banner").classList.remove("active");
+      document.getElementById("floating-reset-btn").classList.add("active");
+    }
+
+    function promptResetGame() {
+      showModal({
+        icon: "⚠️",
+        title: "Quiz wirklich zurücksetzen?",
+        desc: "Möchtest du das Quiz wirklich zurücksetzen? Ungedruckte Zertifikatsdaten gehen dabei unwiderruflich verloren.",
+        buttons: [
+          {
+            text: "Abbrechen",
+            class: "btn-secondary",
+            action: () => hideModal()
+          },
+          {
+            text: "Zurücksetzen",
+            class: "btn-danger",
+            action: () => {
+              hideModal();
+              executeFullReset();
+            }
+          }
+        ]
+      });
+    }
+
+    function executeFullReset() {
+      // Alle UI-Zustände und DOM-Eingaben leeren
+      document.getElementById("student-name").value = "";
+      document.getElementById("cert-name-display").textContent = "Vorname Nachname";
+      document.getElementById("post-print-banner").classList.remove("active");
+      document.getElementById("floating-reset-btn").classList.remove("active");
+      document.getElementById("certificate-view").classList.remove("active");
+
+      document.getElementById("quiz-view").style.display = "block";
+      document.getElementById("main-header").style.display = "flex";
+
+      initGame();
+    }
+
+    /* --------------------------------------------------------------------------
+       Modal-Hilfsfunktionen & Konfetti
+       -------------------------------------------------------------------------- */
+    function showModal(config) {
+      const overlay = document.getElementById("modal-overlay");
+      document.getElementById("modal-icon").textContent = config.icon || "ℹ️";
+      document.getElementById("modal-title").textContent = config.title || "";
+      document.getElementById("modal-desc").textContent = config.desc || "";
+
+      const btnRow = document.getElementById("modal-btn-row");
+      btnRow.innerHTML = "";
+
+      config.buttons.forEach(b => {
+        const btn = document.createElement("button");
+        btn.className = b.class || "btn-primary";
+        btn.textContent = b.text;
+        btn.onclick = b.action;
+        btnRow.appendChild(btn);
+      });
+
+      overlay.classList.add("active");
+    }
+
+    function hideModal() {
+      document.getElementById("modal-overlay").classList.remove("active");
+    }
+
+    function fireConfetti() {
+      if (typeof confetti === "function") {
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      }
+    }
+  </script>
+</body>
+</html>
