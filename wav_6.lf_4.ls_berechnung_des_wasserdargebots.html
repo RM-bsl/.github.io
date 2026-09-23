@@ -1,0 +1,1834 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wasserdargebot D_ref & Speicher-Dynamik – Fachklasse Umwelttechnologe für Wasserversorgung [BS 11]</title>
+  <style>
+    :root {
+      --primary: #1565C0;
+      --primary-hover: #0D47A1;
+      --success: #2E7D32;
+      --warning-bg: #FEF9E7;
+      --error-bg: #FDE8E8;
+      --error-text: #7F1D1D;
+      --neutral-bg: #F8FAFC;
+      --neutral-border: #E2E8F0;
+      --neutral-inactive: #E2E8F0;
+      --text-main: #0F172A;
+      --text-muted: #475569;
+      
+      /* Semantische Farbbrücke für Variablen */
+      --color-dref: #0D47A1;
+      --color-n: #1A73E8;
+      --color-ref: #E65100;
+      --color-wint: #2E7D32;
+      --color-z: #7C3AED;
+      --color-ds: #D97706;
+      --color-dgw: #0284C7;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #F1F5F9;
+      color: var(--text-main);
+      line-height: 1.5;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1180px;
+      background: #FFFFFF;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header & Stepper (6 Bildschirme) */
+    header {
+      padding: 24px 32px 16px;
+      border-bottom: 1px solid var(--neutral-border);
+      background: #FFFFFF;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .badge-bs {
+      background: #E0F2FE;
+      color: #0369A1;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .stepper-nav {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+
+    .step-pill {
+      flex: 1;
+      min-width: 125px;
+      text-align: center;
+      padding: 10px 12px;
+      border-radius: 30px;
+      font-size: 0.86rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: var(--neutral-inactive);
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .step-pill.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(21, 101, 192, 0.3);
+    }
+
+    .step-pill.completed {
+      background: var(--success);
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .step-pill.locked {
+      background: #FEF3C7;
+      color: #92400E;
+      border: 1px dashed #F59E0B;
+    }
+
+    /* Bildschirme */
+    main {
+      padding: 32px;
+      flex: 1;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid var(--neutral-border);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: #E2E8F0;
+      color: #334155;
+    }
+
+    .btn-secondary:hover {
+      background: #CBD5E1;
+    }
+
+    .btn-warning {
+      background: #D97706;
+      color: #FFFFFF;
+    }
+
+    .btn-warning:hover {
+      background: #B45309;
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /* Typografische Farbbrücke */
+    .c-dref { color: var(--color-dref); }
+    .c-n { color: var(--color-n); }
+    .c-ref { color: var(--color-ref); }
+    .c-wint { color: var(--color-wint); }
+    .c-z { color: var(--color-z); }
+    .c-ds { color: var(--color-ds); }
+    .c-dgw { color: var(--color-dgw); }
+
+    /* Klickbare Fachbegriffe */
+    .math-term-clickable {
+      color: var(--color-n);
+      font-weight: 600;
+      text-decoration: underline dotted 1.5px var(--color-n);
+      cursor: pointer;
+    }
+
+    .math-term-clickable:hover {
+      color: var(--primary-hover);
+    }
+
+    /* Gestapelter Bruch */
+    .math-fraction {
+      display: inline-flex;
+      flex-direction: column;
+      vertical-align: middle;
+      text-align: center;
+      padding: 0 4px;
+      line-height: 1.1;
+    }
+
+    .math-numerator {
+      padding-bottom: 2px;
+    }
+
+    .math-denominator {
+      border-top: 1.5px solid currentColor;
+      padding-top: 2px;
+    }
+
+    /* Geschützter Einzeiler für Quotienten */
+    .inline-equation-lock {
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid #FCD34D;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin: 0 3px;
+      font-weight: 600;
+    }
+
+    /* Screen 1 Karten */
+    .info-box-yellow {
+      background: var(--warning-bg);
+      color: #000000;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 28px;
+      border-left: 5px solid #F59E0B;
+    }
+
+    .hero-formula-card {
+      background: #F8FAFC;
+      border: 1px solid var(--neutral-border);
+      border-radius: 14px;
+      padding: 30px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .hero-formula {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin: 16px 0;
+    }
+
+    /* Screen 2 Kacheln */
+    .country-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .country-card {
+      background: #F1F5F9;
+      color: #0F172A;
+      border: 1px solid var(--neutral-border);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .country-card:hover {
+      border-color: #94A3B8;
+      transform: translateY(-2px);
+    }
+
+    .country-card.selected {
+      background: #3B82F6;
+      color: #FFFFFF;
+      border-color: #2563EB;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .country-card.selected h3,
+    .country-card.selected p,
+    .country-card.selected span {
+      color: #FFFFFF !important;
+    }
+
+    /* Screen 3 & 4 Layouts */
+    .context-anchor-banner {
+      background: #E0F2FE;
+      color: #0369A1;
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .lab-layout {
+      display: grid;
+      grid-template-columns: 430px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .lab-sidebar {
+      position: sticky;
+      top: 20px;
+      background: #FFFFFF;
+      border: 1px solid var(--neutral-border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .live-formula-display {
+      background: #F8FAFC;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 18px;
+      border: 1px solid var(--neutral-border);
+      text-align: center;
+    }
+
+    .live-formula-vars {
+      font-size: 1.02rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--neutral-border);
+    }
+
+    .live-formula-nums {
+      font-size: 1.02rem;
+      font-weight: 700;
+    }
+
+    .locked-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #FEE2E2;
+      color: #991B1B;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 14px;
+    }
+
+    .slider-group {
+      margin-bottom: 14px;
+    }
+
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    input[type=range] {
+      width: 100%;
+      accent-color: var(--primary);
+    }
+
+    input[type=range]:disabled {
+      cursor: not-allowed;
+      opacity: 0.65;
+    }
+
+    .canvas-container {
+      margin-top: 18px;
+      text-align: center;
+    }
+
+    canvas {
+      width: 100%;
+      max-width: 390px;
+      background: #FFFFFF;
+      border: 1px solid var(--neutral-border);
+      border-radius: 8px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .chart-legend {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 12px;
+      font-size: 0.78rem;
+      text-align: left;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    /* Merkmalskarten rechts */
+    .feature-card {
+      background: var(--warning-bg);
+      color: #000000;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 16px;
+      border: 1px solid #FDE68A;
+    }
+
+    .feature-card h4 {
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+    }
+
+    .feature-card .param-line {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+    }
+
+    .feature-card .context-box {
+      margin-top: 8px;
+      font-size: 0.92rem;
+      border-top: 1px dashed rgba(0, 0, 0, 0.15);
+      padding-top: 8px;
+      line-height: 1.5;
+    }
+
+    .inst-badge {
+      display: inline-block;
+      background: #E0F2FE;
+      color: #0369A1;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-top: 8px;
+      border: 1px solid #BAE6FD;
+    }
+
+    /* Szenario-Leiste in Screen 4 */
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .scenario-btn {
+      background: #F8FAFC;
+      border: 1px solid var(--neutral-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+    }
+
+    .scenario-btn:hover {
+      background: #E2E8F0;
+    }
+
+    .scenario-btn.active {
+      background: #1565C0;
+      color: #FFFFFF;
+      border-color: #0D47A1;
+    }
+
+    /* Quiz-Styles */
+    .quiz-card {
+      background: #FFFFFF;
+      border: 1px solid var(--neutral-border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .quiz-option-btn {
+      text-align: left;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--neutral-border);
+      background: #F8FAFC;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+
+    .quiz-option-btn:hover {
+      background: #E2E8F0;
+    }
+
+    .quiz-option-btn.correct {
+      background: #E6F4EA !important;
+      color: #1E8E3E !important;
+      border-color: #34A853 !important;
+      font-weight: 600;
+    }
+
+    .quiz-option-btn.wrong {
+      background: var(--error-bg) !important;
+      color: var(--error-text) !important;
+      border-color: #F87171 !important;
+      font-weight: 600;
+    }
+
+    .quiz-feedback {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .score-banner {
+      background: #E0F2FE;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      margin-top: 24px;
+      display: none;
+    }
+
+    /* Modale Popovers */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: 14px;
+      padding: 24px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      position: relative;
+    }
+
+    .modal-header {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 12px;
+      padding-right: 24px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      cursor: pointer;
+      color: #64748B;
+      font-size: 1.25rem;
+      border: none;
+      background: transparent;
+      font-weight: 700;
+    }
+
+    .modal-body {
+      color: #334155;
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+
+    .password-input-field {
+      width: 100%;
+      padding: 12px;
+      font-size: 1.05rem;
+      border: 1.5px solid var(--neutral-border);
+      border-radius: 8px;
+      margin-top: 12px;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+    }
+
+    .password-input-field:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    /* Automatisches Responsive Design (Mobile & Tablet First) */
+    @media (max-width: 992px) {
+      body {
+        padding: 10px;
+      }
+      main {
+        padding: 16px;
+      }
+      .lab-layout {
+        grid-template-columns: 1fr;
+      }
+      .lab-sidebar {
+        position: static;
+        width: 100%;
+      }
+      canvas {
+        max-width: 100%;
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <header>
+    <div class="header-top">
+      <div>
+        <span class="badge-bs">[BS 11] Umwelttechnologe für Wasserversorgung</span>
+        <h1 style="font-size: 1.45rem; margin-top: 6px;">Ermittlung des erneuerbaren Wasserdargebots D<sub>ref</sub> & Speicher-Dynamik</h1>
+      </div>
+      <div style="font-size: 0.85rem; color: var(--text-muted);">Wasserhaushalt nach DIN 4049-3 / WMO-Referenz (1991–2020)</div>
+    </div>
+
+    <!-- Stepper mit 6 Bildschirmen -->
+    <nav class="stepper-nav">
+      <button class="step-pill active" onclick="goToScreen(1)" id="pill-1">1. Einstieg</button>
+      <button class="step-pill" onclick="goToScreen(2)" id="pill-2">2. Länderwahl</button>
+      <button class="step-pill" onclick="goToScreen(3)" id="pill-3">3. Dargebot-Labor</button>
+      <button class="step-pill" onclick="goToScreen(4)" id="pill-4">4. Speicher-Dynamik</button>
+      <button class="step-pill locked" onclick="handlePill5Click()" id="pill-5">5. Naturhaushalt 🔒</button>
+      <button class="step-pill" onclick="goToScreen(6)" id="pill-6">6. Check</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- SCREEN 1: Didaktischer Einstieg & Mathematische Gleichung -->
+    <section id="screen-1" class="screen active">
+      <div class="info-box-yellow">
+        <h3 style="margin-bottom: 8px;">💡 Warum berechnen Umwelttechnologen das Wasserdargebot D<sub>ref</sub>?</h3>
+        <p>
+          Wasserversorgungsunternehmen gewinnen Rohwasser aus Grundwasserleitern, Quellfassungen, Talsperren und Uferfiltrat. 
+          Das <span class="math-term-clickable" onclick="openGlossar('dref')">mittlere Wasserdargebot D<sub>ref</sub></span> bildet die feste Obergrenze dafür, wie viel Rohwasser ein Land dauerhaft entnehmen darf, ohne den Naturhaushalt zu übernutzen [DIN Deutsches Institut für Normung, 1992]. 
+          Das <span class="math-term-clickable" onclick="openGlossar('uba')">Umweltbundesamt (UBA)</span> nutzt diese Bezugsgröße als festen Nenner im Quotienten <span class="inline-equation-lock">Q&nbsp;=&nbsp;<span class="math-fraction"><span class="math-numerator">E</span><span class="math-denominator">D<sub>ref</sub></span></span>&nbsp;(Wassernutzungs-Index)</span>, um Nutzungskonflikte zwischen öffentlicher Trinkwasserversorgung, Industrie und Landwirtschaft rechtzeitig zu erkennen [Umweltbundesamt, 2021].
+        </p>
+      </div>
+
+      <div class="hero-formula-card">
+        <h2 style="font-size: 1.15rem; color: var(--text-muted); font-weight: 600;">
+          Amtliche Wasserhaushaltsgleichung (Langfristiges Gleichgewicht: &Delta;S = 0, &Delta;GW = 0)
+        </h2>
+        
+        <div class="hero-formula">
+          <span class="c-dref">D<sub>ref</sub></span> = 
+          (<span class="c-n">N</span> &minus; <span class="c-ref">Ref</span>) + 
+          <span class="c-z">Z</span> = 
+          <span class="c-wint">W<sub>int</sub></span> + 
+          <span class="c-z">Z</span>
+        </div>
+
+        <p style="font-size: 0.92rem; color: #475569; max-width: 860px; margin: 0 auto; line-height: 1.6;">
+          Semantische Farbbrücke & Speicherdefinitionen:<br>
+          <strong class="c-dref">D<sub>ref</sub></strong> = Erneuerbares Wasserdargebot (30-Jahres-Mittel) | 
+          <strong class="c-n">N</strong> = Gebietsniederschlag | 
+          <strong class="c-ref">Ref</strong> = Reale Evapotranspiration | 
+          <strong class="c-wint">W<sub>int</sub></strong> = Inländische Wasserneubildung | 
+          <strong class="c-z">Z</strong> = Zufluss aus Nachbarländern<br>
+          <strong class="c-ds">&Delta;S</strong> = <span class="math-term-clickable" onclick="openGlossar('ds')">Änderung des Boden- und Oberflächenspeichers</span> (= 0 im 30-Jahres-Mittel) [DIN Deutsches Institut für Normung, 1992]<br>
+          <strong class="c-dgw">&Delta;GW</strong> = <span class="math-term-clickable" onclick="openGlossar('dgw')">Änderung des Grundwasserspeichers</span> (= 0 im 30-Jahres-Mittel) [DIN Deutsches Institut für Normung, 1992]
+        </p>
+      </div>
+
+      <div style="background: #F8FAFC; border: 1px solid var(--neutral-border); border-radius: 12px; padding: 18px;">
+        <h4 style="margin-bottom: 6px;">Didaktischer Auftrag für die Unterrichtsstunde:</h4>
+        <p style="font-size: 0.9rem; color: var(--text-muted);">
+          Auf den nächsten Bildschirmen analysierst du internationale Einzugsgebiete (Schweiz, Frankreich, USA, China, Russland) sowie das dynamische Speicherverhalten von Boden und Grundwasser. Diese Schritte dienen als direkte Vorlage für dein Arbeitsblatt, auf dem du anschließend das <strong>deutsche Wasserdargebot</strong> mit den amtlichen Zahlen der Bundesanstalt für Gewässerkunde eigenständig bestimmst [Bundesanstalt für Gewässerkunde, 2021].
+        </p>
+      </div>
+
+      <div class="btn-row" style="justify-content: flex-end;">
+        <button class="btn btn-primary" onclick="goToScreen(2)">Weiter zur Länderwahl →</button>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: Themenauswahl (5 Länder + Sandbox) -->
+    <section id="screen-2" class="screen">
+      <h2>Wähle ein internationales Referenzland</h2>
+      <p style="color: var(--text-muted); margin-top: 4px;">
+        Untersuche, wie Topografie, Klima und Flussgebietszuflüsse das nutzbare Rohwasserdargebot prägen.
+      </p>
+
+      <div class="country-grid">
+        <div class="country-card" id="card-CH" onclick="selectCountry('CH')">
+          <div>
+            <div style="font-size: 1.3rem; margin-bottom: 6px;">🇨🇭 Schweiz (Wasserschloss Europas)</div>
+            <p style="font-size: 0.88rem; margin-bottom: 12px;">
+              Extrem hohe Alpen-Niederschläge, geringe Verdunstung. Quellgebiet europäischer Ströme mit massivem Wasser-Export.
+            </p>
+          </div>
+          <div style="font-size: 0.82rem; font-weight: 600; opacity: 0.85;">
+            Bilanz: N = 60,5 | Ref = 20,0 | Z = 13,0 Mrd. m<sup>3</sup>/a
+          </div>
+        </div>
+
+        <div class="country-card" id="card-FR" onclick="selectCountry('FR')">
+          <div>
+            <div style="font-size: 1.3rem; margin-bottom: 6px;">🇫🇷 Frankreich (Gemäßigtes Transitland)</div>
+            <p style="font-size: 0.88rem; margin-bottom: 12px;">
+              Großflächiges Flussnetz mit bedeutenden alpinen Zuflüssen (Rhône aus der Schweiz) und intensiver Uferfiltratnutzung.
+            </p>
+          </div>
+          <div style="font-size: 0.82rem; font-weight: 600; opacity: 0.85;">
+            Bilanz: N = 478,0 | Ref = 303,0 | Z = 36,0 Mrd. m<sup>3</sup>/a
+          </div>
+        </div>
+
+        <div class="country-card" id="card-US" onclick="selectCountry('US')">
+          <div>
+            <div style="font-size: 1.3rem; margin-bottom: 6px;">🇺🇸 USA (Kontinentale Extreme)</div>
+            <p style="font-size: 0.88rem; margin-bottom: 12px;">
+              Gewaltige Ströme (Mississippi), aber drastische Dürrezonen im Südwesten mit übernutzten Grundwasserleitern.
+            </p>
+          </div>
+          <div style="font-size: 0.82rem; font-weight: 600; opacity: 0.85;">
+            Bilanz: N = 7.030,0 | Ref = 4.228,0 | Z = 160,0 Mrd. m<sup>3</sup>/a
+          </div>
+        </div>
+
+        <div class="country-card" id="card-CN" onclick="selectCountry('CN')">
+          <div>
+            <div style="font-size: 1.3rem; margin-bottom: 6px;">🇨🇳 China (Monsun & Bevölkerungsdruck)</div>
+            <p style="font-size: 0.88rem; margin-bottom: 12px;">
+              Gewaltige absolute Abflüsse im Süden, aber akuter Wasserstress im trockenen Norden mit über 1,4 Mrd. Einwohnern.
+            </p>
+          </div>
+          <div style="font-size: 0.82rem; font-weight: 600; opacity: 0.85;">
+            Bilanz: N = 6.190,0 | Ref = 3.359,0 | Z = 25,0 Mrd. m<sup>3</sup>/a
+          </div>
+        </div>
+
+        <div class="country-card" id="card-RU" onclick="selectCountry('RU')">
+          <div>
+            <div style="font-size: 1.3rem; margin-bottom: 6px;">🇷🇺 Russland (Sibirische Riesenströme)</div>
+            <p style="font-size: 0.88rem; margin-bottom: 12px;">
+              Kühles Klima, geringe reale Verdunstungsraten und gigantische, weitgehend unberührte Süßwasser-Ressourcen.
+            </p>
+          </div>
+          <div style="font-size: 0.82rem; font-weight: 600; opacity: 0.85;">
+            Bilanz: N = 7.865,0 | Ref = 3.676,0 | Z = 180,0 Mrd. m<sup>3</sup>/a
+          </div>
+        </div>
+
+        <div class="country-card" id="card-CUSTOM" onclick="selectCountry('CUSTOM')">
+          <div>
+            <div style="font-size: 1.3rem; margin-bottom: 6px;">📐 Freies Einzugsgebiet (Simulator)</div>
+            <p style="font-size: 0.88rem; margin-bottom: 12px;">
+              Verstelle die Schieberegler frei, um ein lokales Versorgungsgebiet oder fiktive Klimaszenarien zu testen.
+            </p>
+          </div>
+          <div style="font-size: 0.82rem; font-weight: 600; opacity: 0.85;">
+            Freie Parametrierung: Niederschlag, Verdunstung, Zufluss
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goToScreen(1)">← Zurück zum Einstieg</button>
+        <button class="btn btn-primary" id="btn-to-screen-3" onclick="goToScreen(3)" disabled>Weiter zum Dargebot-Labor →</button>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: Dargebot-Labor mit 2-Säulen-Diagramm -->
+    <section id="screen-3" class="screen">
+      <div class="context-anchor-banner" id="active-country-banner">
+        <span>📍 Aktives Referenzland: Schweiz (Wasserschloss Europas)</span>
+      </div>
+
+      <div class="lab-layout">
+        <!-- Linke Spalte: Schieberegler & 2-Säulen-Canvas -->
+        <div class="lab-sidebar">
+          <div class="live-formula-display">
+            <div class="live-formula-vars">
+              <span class="c-dref">D<sub>ref</sub></span> = (<span class="c-n">N</span> &minus; <span class="c-ref">Ref</span>) + <span class="c-z">Z</span> = <span class="c-wint">W<sub>int</sub></span> + <span class="c-z">Z</span>
+            </div>
+            <div class="live-formula-nums" id="live-formula-values">
+              <span class="c-dref">D<sub>ref</sub></span> = (<span class="c-n">60,5</span> &minus; <span class="c-ref">20,0</span>) + <span class="c-z">13,0</span> = <span class="c-dref">53,5 Mrd. m<sup>3</sup>/a</span>
+            </div>
+          </div>
+
+          <div id="locked-status-badge" class="locked-badge">
+            🔒 Amtliche 30-Jahres-Werte (1991–2020) gesperrt
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label">
+              <span class="c-n">Gebietsniederschlag N:</span>
+              <span id="val-n" class="c-n" style="font-weight: 700;">60,5 Mrd. m<sup>3</sup>/a</span>
+            </div>
+            <input type="range" id="slider-n" min="10" max="9000" step="5" disabled oninput="updateSimulation()">
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label">
+              <span class="c-ref">Reale Evapotranspiration Ref:</span>
+              <span id="val-ref" class="c-ref" style="font-weight: 700;">20,0 Mrd. m<sup>3</sup>/a</span>
+            </div>
+            <input type="range" id="slider-ref" min="5" max="5000" step="5" disabled oninput="updateSimulation()">
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label">
+              <span class="c-z">Flusszufluss Z aus Nachbarländern:</span>
+              <span id="val-z" class="c-z" style="font-weight: 700;">13,0 Mrd. m<sup>3</sup>/a</span>
+            </div>
+            <input type="range" id="slider-z" min="0" max="300" step="1" disabled oninput="updateSimulation()">
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label">
+              <span>Einwohnerzahl E:</span>
+              <span id="val-pop" style="font-weight: 700;">8,9 Mio. EW</span>
+            </div>
+            <input type="range" id="slider-pop" min="1" max="1500" step="1" disabled oninput="updateSimulation()">
+          </div>
+
+          <!-- 2-Säulen-Diagramm Canvas -->
+          <div class="canvas-container">
+            <canvas id="columnCanvas" width="390" height="280"></canvas>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <span class="legend-color" style="background: var(--color-n);"></span>
+                <span class="c-n">Niederschlag N</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-color" style="background: var(--color-z);"></span>
+                <span class="c-z">Zufluss Z</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-color" style="background: var(--color-ref);"></span>
+                <span class="c-ref">Verdunstung Ref</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-color" style="background: var(--color-dref); border: 1px dashed #FFFFFF;"></span>
+                <span class="c-dref">Dargebot D<sub>ref</sub></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rechte Spalte: 4 Fachkarten -->
+        <div class="lab-analysis">
+          <div class="feature-card">
+            <h4>
+              <span class="math-term-clickable c-n" onclick="openGlossar('n')">1. Gebietsniederschlag (N)</span>
+            </h4>
+            <div class="param-line">
+              Gemessenes Niederschlagsvolumen: <span id="card-n-val" class="c-n">60,5 Mrd. m<sup>3</sup>/a</span>
+            </div>
+            <div class="context-box">
+              <strong>Umwelttechnischer Hintergrund:</strong><br>
+              Regen und Schnee stellen den primären Süßwassereintrag dar. Für Wasserversorger füllt der Niederschlag die Bodenfeuchte auf und bildet die Ausgangsbasis für jegliche Rohwasserneubildung.<br>
+              <div class="inst-badge">🏛️ Zuständige Behörde: Deutscher Wetterdienst (DWD)</div><br>
+              Der DWD betreibt rund 2.000 Messstationen. Sensoren erfassen ununterbrochen Niederschlagshöhen, Lufttemperatur, Strahlung und Wind als unverzichtbare Eingangsdaten [DWD, 2021].
+            </div>
+          </div>
+
+          <div class="feature-card">
+            <h4>
+              <span class="math-term-clickable c-ref" onclick="openGlossar('ref')">2. Reale Evapotranspiration (Ref)</span>
+            </h4>
+            <div class="param-line">
+              Verdunstungsverlust: <span id="card-ref-val" class="c-ref">20,0 Mrd. m<sup>3</sup>/a</span>
+            </div>
+            <div class="context-box">
+              <strong>Bedeutung für die Rohwassergewinnung:</strong><br>
+              Die reale Verdunstung aus Böden, Gewässern und durch Pflanzenatmung entzieht dem Wasserkreislauf Wasser. Steigen sommerliche Temperaturen, klettert Ref; weniger Wasser versickert zu den Brunnenfassungen.<br>
+              <div class="inst-badge">💻 Modellierung: Bundesanstalt für Gewässerkunde (BfG)</div><br>
+              Da Verdunstung nicht flächendeckend mit einem Zähler ablesbar ist, berechnet die BfG den Ref-Wert mit hydrologischen Simulationsmodellen für jeden Quadratkilometer [Bundesanstalt für Gewässerkunde, 2021].
+            </div>
+          </div>
+
+          <div class="feature-card">
+            <h4>
+              <span class="math-term-clickable c-z" onclick="openGlossar('z')">3. Grenzüberschreitender Zufluss (Z)</span>
+            </h4>
+            <div class="param-line">
+              Flusszufluss über Landesgrenzen: <span id="card-z-val" class="c-z">13,0 Mrd. m<sup>3</sup>/a</span>
+            </div>
+            <div class="context-box">
+              <strong>Bedeutung für Uferfiltrat-Wasserwerke:</strong><br>
+              Wasserversorger an großen Flüssen (z. B. Rhein, Donau) gewinnen Trinkwasser über Brunnen nahe der Uferlinie (Uferfiltrat). Z sichert diesen Versorgern das Rohwasser, birgt aber Abhängigkeiten vom Ausland.<br>
+              <div class="inst-badge">🌊 Pegelüberwachung: Landesämter für Umwelt & Wasserwirtschaftsämter</div><br>
+              Landesbehörden (z. B. LfU Bayern) betreiben fest verankerte Messpegel an Grenzflüssen und registrieren Durchflussmengen sekundengenau [LfU Bayern, 2021].
+            </div>
+          </div>
+
+          <div class="feature-card">
+            <h4>
+              <span class="math-term-clickable c-wint" onclick="openGlossar('wint')">4. Inländische Neubildung (W<sub>int</sub> = N &minus; Ref) & D<sub>ref</sub></span>
+            </h4>
+            <div class="param-line">
+              Inlandsneubildung: <span id="card-wint-val" class="c-wint">40,5 Mrd. m<sup>3</sup>/a</span> | Gesamtdargebot: <span id="card-dref-val" class="c-dref">53,5 Mrd. m<sup>3</sup>/a</span>
+            </div>
+            <div class="context-box">
+              <strong>Zentrale Versorgungs- und Planungsgröße:</strong><br>
+              W<sub>int</sub> beziffert das tatsächlich im Inland versickernde Grundwasser und den Oberflächenabfluss. Zusammen mit Z ergibt sich das Gesamtdargebot D<sub>ref</sub> als langfristige Obergrenze.<br>
+              <div class="inst-badge">📊 Richtlinien: Umweltbundesamt (UBA) & WMO</div><br>
+              Die Weltorganisation für Meteorologie (WMO) schreibt die 30-Jahres-Periode vor [WMO, 2021]. Das UBA setzt D<sub>ref</sub> als Nenner im Wassernutzungs-Index fest, um die 20-%-Stressgrenze zu wahren [Umweltbundesamt, 2021].
+            </div>
+          </div>
+
+          <div style="background: #F8FAFC; border: 1px solid var(--neutral-border); border-radius: 10px; padding: 14px; font-size: 0.9rem;">
+            <strong>Pro-Kopf-Versorgung nach Falkenmark:</strong> 
+            <span id="falkenmark-eval" style="font-weight: 700; color: var(--color-wint);">Reichhaltig versorgt (&gt; 1.700 m<sup>3</sup>/(EW&middot;a))</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goToScreen(2)">← Zurück zur Länderwahl</button>
+        <button class="btn btn-primary" onclick="goToScreen(4)">Weiter zur Speicher-Dynamik (&Delta;S & &Delta;GW) →</button>
+      </div>
+    </section>
+
+    <!-- SCREEN 4: Speicher-Dynamik -->
+    <section id="screen-4" class="screen">
+      <div class="context-anchor-banner" style="background: #FEF3C7; color: #92400E;">
+        <span>💧 Speicher-Dynamik: Pufferfunktion des Bodens (&Delta;S) und des Grundwassers (&Delta;GW)</span>
+      </div>
+
+      <div class="lab-layout">
+        <div class="lab-sidebar">
+          <div class="live-formula-display">
+            <div class="live-formula-vars">
+              Gesamte Speicheränderung: &Delta;S<sub>ges</sub> = <span class="c-ds">&Delta;S</span> + <span class="c-dgw">&Delta;GW</span>
+            </div>
+            <div class="live-formula-nums" id="live-storage-balance">
+              &Delta;S<sub>ges</sub> = <span class="c-ds">&plusmn;0,0</span> + <span class="c-dgw">&plusmn;0,0</span> = <strong>&plusmn;0,0 Mrd. m<sup>3</sup>/a</strong>
+            </div>
+          </div>
+
+          <p style="font-size: 0.85rem; font-weight: 600; margin-bottom: 8px;">Klima- und Entnahmeszenarien:</p>
+          <div class="scenario-grid">
+            <button class="scenario-btn active" id="scen-normal" onclick="applyStorageScenario('normal')">⚖️ Normalzustand (30-Jahre)</button>
+            <button class="scenario-btn" id="scen-rain" onclick="applyStorageScenario('rain')">🌧️ Starkregen / Schmelze</button>
+            <button class="scenario-btn" id="scen-drought" onclick="applyStorageScenario('drought')">☀️ Sommerdürre</button>
+            <button class="scenario-btn" id="scen-overpump" onclick="applyStorageScenario('overpump')">⚠️ Tiefbrunnen-Überlast</button>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label">
+              <span class="c-ds">Boden- & Oberflächenspeicher &Delta;S:</span>
+              <span id="val-ds" class="c-ds" style="font-weight: 700;">&plusmn;0,0 Mrd. m<sup>3</sup>/a</span>
+            </div>
+            <input type="range" id="slider-ds" min="-25" max="25" step="0.5" value="0" oninput="updateStorageSim()">
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label">
+              <span class="c-dgw">Grundwasserspeicher &Delta;GW:</span>
+              <span id="val-dgw" class="c-dgw" style="font-weight: 700;">&plusmn;0,0 Mrd. m<sup>3</sup>/a</span>
+            </div>
+            <input type="range" id="slider-dgw" min="-30" max="30" step="0.5" value="0" oninput="updateStorageSim()">
+          </div>
+
+          <div class="canvas-container">
+            <canvas id="storageProfileCanvas" width="380" height="260"></canvas>
+            <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 6px;">
+              Bodenprofil: Ungesättigte Bodenzone (&Delta;S) über gesättigtem Grundwasserleiter (&Delta;GW)
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-analysis">
+          <div class="feature-card">
+            <h4>
+              <span class="math-term-clickable c-ds" onclick="openGlossar('ds')">&Delta;S (Änderung des Boden- und Oberflächenspeichers)</span>
+            </h4>
+            <div class="param-line">
+              Aktuelle Bilanz: <span id="card-ds-status" class="c-ds">&plusmn;0,0 Mrd. m<sup>3</sup>/a (Gleichgewicht)</span>
+            </div>
+            <div class="context-box">
+              <strong>Definition der Größe:</strong><br>
+              Erfasst die Zu- oder Abnahme des Wassers in der ungesättigten Bodenzone (Bodenfeuchte), in Schnee- und Eismassen sowie in oberirdischen Gewässern wie Seen und Rückhaltebecken [DIN Deutsches Institut für Normung, 1992].
+            </div>
+          </div>
+
+          <div class="feature-card">
+            <h4>
+              <span class="math-term-clickable c-dgw" onclick="openGlossar('dgw')">&Delta;GW (Änderung des Grundwasserspeichers)</span>
+            </h4>
+            <div class="param-line">
+              Aktuelle Bilanz: <span id="card-dgw-status" class="c-dgw">&plusmn;0,0 Mrd. m<sup>3</sup>/a (Gleichgewicht)</span>
+            </div>
+            <div class="context-box">
+              <strong>Definition der Größe:</strong><br>
+              Beziffert das Ansteigen oder Absinken des Wasservolumens in der vollständig gesättigten Zone des Untergrunds (im Grundwasserleiter) [DIN Deutsches Institut für Normung, 1992].
+            </div>
+          </div>
+          <div style="background: #FEF3C7; border: 1.5px solid #F59E0B; border-radius: 12px; padding: 18px; margin-top: 18px;">
+            <h4 style="color: #92400E; margin-bottom: 6px;">🔒 Weiterführendes Experten-Dossier (Reiter 5)</h4>
+            <p style="font-size: 0.88rem; color: #78350F; margin-bottom: 12px;">
+              Die vertiefte ökologische Auswertung zur Schwammfunktion, Überlebensgarantie und zum Frühwarnsystem ist mit einem Lehrer-Zugangscode gesichert.
+            </p>
+            <button class="btn btn-warning" onclick="requestPasswordAccess()">
+              🔑 Experten-Dossier freischalten (Reiter 5) →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goToScreen(3)">← Zurück zum Dargebot-Labor</button>
+        <button class="btn btn-primary" onclick="goToScreen(6)">Direkt zum Verständnis-Check →</button>
+      </div>
+    </section>
+
+    <!-- SCREEN 5: Naturhaushalt (PASSWORTGESCHÜTZT: 2793) -->
+    <section id="screen-5" class="screen">
+      <div class="context-anchor-banner" style="background: #DCFCE7; color: #166534;">
+        <span>🌿 Experten-Dossier: Bedeutung und Bezug zum Naturhaushalt [LfU Bayern, 2021]</span>
+      </div>
+
+      <div style="margin-bottom: 24px;">
+        <h2>Hydrologische Pufferfunktion der Wasserspeicher</h2>
+        <p style="color: var(--text-muted); margin-top: 4px;">
+          Beide Speicher fungieren als hydrologische Puffer und stabilisieren den gesamten Naturhaushalt [LfU Bayern, 2021]:
+        </p>
+      </div>
+
+      <div class="feature-card" style="border-left: 5px solid #1A73E8;">
+        <h4 style="color: #1A73E8; font-size: 1.15rem;">
+          🌧️ Schwammfunktion bei Niederschlägen (&Delta;S &gt; 0, &Delta;GW &gt; 0)
+        </h4>
+        <div class="context-box" style="border-top: none; font-size: 0.95rem;">
+          Bei Starkregen oder Schneeschmelzen nehmen Boden und Untergrund enorme Wassermengen auf (&Delta;S &gt; 0, &Delta;GW &gt; 0) [DIN Deutsches Institut für Normung, 1992]. Sie bremsen den direkten Abfluss und mindern Hochwasserspitzen in Flüssen wirksam ab [LfU Bayern, 2021].
+        </div>
+      </div>
+
+      <div class="feature-card" style="border-left: 5px solid #D97706;">
+        <h4 style="color: #D97706; font-size: 1.15rem;">
+          ☀️ Überlebensgarantie in Trockenzeiten (&Delta;S &lt; 0, &Delta;GW &lt; 0)
+        </h4>
+        <div class="context-box" style="border-top: none; font-size: 0.95rem;">
+          Bleibt Regen im Sommer wochenlang aus, speisen diese Speicher das Ökosystem [LfU Bayern, 2021]. Pflanzen ziehen Wasser direkt aus der Bodenfeuchte (&Delta;S &lt; 0), während Grundwasserleiter Wasser kontinuierlich über Quellen und Uferfiltrat an Bäche abgeben (&Delta;GW &lt; 0) [DIN Deutsches Institut für Normung, 1992]. Dieser Basisabfluss verhindert das Trockenfallen von Flussläufen und erhält Lebensräume für Fische und Mikroorganismen [LfU Bayern, 2021].
+        </div>
+      </div>
+
+      <div class="feature-card" style="border-left: 5px solid #DC2626;">
+        <h4 style="color: #DC2626; font-size: 1.15rem;">
+          🚨 Frühwarnsystem für Übernutzung (&Delta;GW dauerhaft &lt; 0)
+        </h4>
+        <div class="context-box" style="border-top: none; font-size: 0.95rem;">
+          Verharren die Bilanzen über mehrere Jahre im negativen Bereich (&Delta;GW &lt; 0), leert sich das System unumkehrbar [LfU Bayern, 2021]. Quellen versiegen, Moor- und Feuchtgebiete verlanden, und tiefwurzelnde Baumbestände sterben durch absinkende Grundwasserspiegel großflächig ab [LfU Bayern, 2021].
+        </div>
+      </div>
+
+      <div style="background: #F8FAFC; border: 1px solid var(--neutral-border); border-radius: 12px; padding: 18px; margin-top: 16px;">
+        <h4 style="margin-bottom: 6px;">Praxisbedeutung für Fachkräfte der Wasserversorgung:</h4>
+        <p style="font-size: 0.9rem; color: var(--text-muted);">
+          Brunnenförderungen müssen sich stets an der Grundwasserneubildungsrate orientieren. Werden Grundwasserleiter über mehrere Trockenjahre hinweg stärker abgepumpt als Sickerwasser nachfließt, drohen Pumpenabriss, Sauerstoffeintrag in den Aquifer und langfristige Setzungsschäden [LfU Bayern, 2021].
+        </p>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goToScreen(4)">← Zurück zur Speicher-Dynamik</button>
+        <button class="btn btn-primary" onclick="goToScreen(6)">Weiter zum Verständnis-Check →</button>
+      </div>
+    </section>
+
+    <!-- SCREEN 6: Reflexion & Verständnis-Check -->
+    <section id="screen-6" class="screen">
+      <h2>Verständnis-Check: Wasserhaushalt & Speicher-Dynamik</h2>
+      <p style="color: var(--text-muted); margin-bottom: 24px;">
+        Prüfe dein Fachwissen, bevor du das Arbeitsblatt für Deutschland mit den amtlichen Zahlen bearbeitest.
+      </p>
+
+      <div class="quiz-card" id="quiz-1">
+        <div style="font-weight: 700; font-size: 1.05rem;">
+          Frage 1: Warum gilt für die amtliche Ermittlung des Wasserdargebots D<sub>ref</sub> der Ansatz &Delta;S = 0 und &Delta;GW = 0?
+        </div>
+        <div class="quiz-options">
+          <button class="quiz-option-btn" onclick="checkAnswer(1, 0)">Weil Boden und Grundwasserleiter überhaupt kein Wasser aufnehmen können.</button>
+          <button class="quiz-option-btn" onclick="checkAnswer(1, 1)">Weil sich Speicherauffüllung und Speicherentleerung über die 30-jährige Referenzperiode rechnerisch ausgleichen.</button>
+          <button class="quiz-option-btn" onclick="checkAnswer(1, 2)">Weil die Verdunstung in jedem Jahr exakt dem Niederschlag entspricht.</button>
+        </div>
+        <div class="quiz-feedback" id="feedback-1"></div>
+      </div>
+
+      <div class="quiz-card" id="quiz-2">
+        <div style="font-weight: 700; font-size: 1.05rem;">
+          Frage 2: Was geschieht hydrologisch, wenn in einer mehrwöchigen Sommerdürre &Delta;S &lt; 0 und &Delta;GW &lt; 0 sind?
+        </div>
+        <div class="quiz-options">
+          <button class="quiz-option-btn" onclick="checkAnswer(2, 0)">Pflanzen zehren an der Bodenfeuchte und Grundwasser speist als Basisabfluss Bäche und Flüsse.</button>
+          <button class="quiz-option-btn" onclick="checkAnswer(2, 1)">Flüsse führen schlagartig Hochwasser, da der Boden kein Wasser mehr speichert.</button>
+          <button class="quiz-option-btn" onclick="checkAnswer(2, 2)">Die reale Evapotranspiration steigt auf unendlich hohe Werte an.</button>
+        </div>
+        <div class="quiz-feedback" id="feedback-2"></div>
+      </div>
+
+      <div class="quiz-card" id="quiz-3">
+        <div style="font-weight: 700; font-size: 1.05rem;">
+          Frage 3: Welches Risiko signalisiert eine über mehrere aufeinanderfolgende Jahre negative Grundwasserbilanz (&Delta;GW &lt; 0)?
+        </div>
+        <div class="quiz-options">
+          <button class="quiz-option-btn" onclick="checkAnswer(3, 0)">Es droht eine dauerhafte Entleerung des Grundwasserleiters mit versiegenden Quellen und Waldschäden.</button>
+          <button class="quiz-option-btn" onclick="checkAnswer(3, 1)">Wasserwerke müssen keine Filterrückspülungen mehr vornehmen.</button>
+          <button class="quiz-option-btn" onclick="checkAnswer(3, 2)">Die Grenzflüsse kehren ihre Fließrichtung um.</button>
+        </div>
+        <div class="quiz-feedback" id="feedback-3"></div>
+      </div>
+
+      <div class="score-banner" id="score-card">
+        <h3 style="font-size: 1.3rem; margin-bottom: 8px;">🎉 Check erfolgreich abgeschlossen!</h3>
+        <p id="score-text" style="font-size: 1.1rem; font-weight: 600;"></p>
+        <p style="font-size: 0.95rem; margin-top: 8px; color: var(--text-muted);">
+          Du beherrschst die Wasserhaushaltsgleichung und die Speicher-Dynamik. Öffne jetzt dein Arbeitsblatt und berechne das deutsche Wasserdargebot:<br>
+          <strong>W<sub>int</sub> = 283 &minus; 176 = 107 Mrd. m<sup>3</sup>/a</strong> | 
+          <strong>D<sub>ref</sub> = 107 + 69 = 176 Mrd. m<sup>3</sup>/a</strong> [Bundesanstalt für Gewässerkunde, 2021; Umweltbundesamt, 2021].
+        </p>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goToScreen(4)">← Zurück zur Speicher-Dynamik</button>
+        <button class="btn btn-primary" onclick="goToScreen(1)">↺ Zurück zum Anfang</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Modal Glossar -->
+<div class="modal-backdrop" id="glossarModal" onclick="closeGlossarOnBackdrop(event)">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeGlossar()">✕</button>
+    <div class="modal-header" id="modal-title">Fachbegriff</div>
+    <div class="modal-body" id="modal-content">Erklärung lädt...</div>
+  </div>
+</div>
+
+<!-- Modal Passwort-Abfrage für Screen 5 -->
+<div class="modal-backdrop" id="passwordModal" onclick="closePasswordOnBackdrop(event)">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closePasswordModal()">✕</button>
+    <div class="modal-header">🔑 Zugangscode erforderlich</div>
+    <div class="modal-body">
+      <div style="background: #FEF9E7; border-left: 4px solid #F59E0B; padding: 12px; border-radius: 6px; margin-bottom: 14px; font-weight: 600; color: #78350F;">
+        Frage deine Lehrkraft, falls du bei der Aufgabe 3 auf dem Arbeitsblatt nicht weiterkommst.
+      </div>
+      <p style="font-size: 0.9rem; color: var(--text-muted);">
+        Gib das vierstellige Freigabe-Passwort ein, um Reiter 5 (Naturhaushalt) freizuschalten:
+      </p>
+      <input type="password" id="pw-input" class="password-input-field" placeholder="Passwort eingeben..." maxlength="10" onkeydown="handlePwKey(event)">
+      <div id="pw-error" style="color: #DC2626; font-size: 0.85rem; font-weight: 600; display: none; margin-bottom: 10px;">
+        ❌ Falsches Passwort. Bitte überprüfe deine Eingabe!
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px;">
+        <button class="btn btn-secondary" onclick="closePasswordModal()">Abbrechen</button>
+        <button class="btn btn-primary" onclick="submitPassword()">Entsperren</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Amtliche 30-Jahres-Mittelwerte (1991–2020) [FAO AQUASTAT; WMO; BfG]
+  const PRESETS = {
+    CH: { name: "Schweiz (Wasserschloss Europas)", n: 60.5, ref: 20.0, z: 13.0, pop: 8.9, locked: true },
+    FR: { name: "Frankreich (Gemäßigtes Transitland)", n: 478.0, ref: 303.0, z: 36.0, pop: 68.0, locked: true },
+    US: { name: "USA (Kontinentale Extreme)", n: 7030.0, ref: 4228.0, z: 160.0, pop: 335.0, locked: true },
+    CN: { name: "China (Monsun & Bevölkerungsdruck)", n: 6190.0, ref: 3359.0, z: 25.0, pop: 1410.0, locked: true },
+    RU: { name: "Russland (Sibirische Riesenströme)", n: 7865.0, ref: 3676.0, z: 180.0, pop: 144.0, locked: true },
+    CUSTOM: { name: "Freies Einzugsgebiet (Simulator)", n: 100.0, ref: 60.0, z: 20.0, pop: 10.0, locked: false }
+  };
+
+  let activePresetKey = 'CH';
+  let completedScreens = new Set([1]);
+  let quizAnswers = { 1: null, 2: null, 3: null };
+  let isScreen5Unlocked = false;
+
+  function goToScreen(screenNum) {
+    if (screenNum === 5 && !isScreen5Unlocked) {
+      requestPasswordAccess();
+      return;
+    }
+
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(`screen-${screenNum}`);
+    if (target) target.classList.add('active');
+
+    completedScreens.add(screenNum);
+
+    for (let i = 1; i <= 6; i++) {
+      const pill = document.getElementById(`pill-${i}`);
+      pill.classList.remove('active');
+      if (i === screenNum) {
+        pill.classList.add('active');
+      } else if (completedScreens.has(i)) {
+        pill.classList.add('completed');
+        if (!pill.innerText.startsWith('✓') && i !== 5) {
+          pill.innerText = '✓ ' + pill.innerText.replace(/^✓\s*/, '');
+        }
+      }
+    }
+
+    if (screenNum === 3) {
+      setTimeout(drawColumnChart, 40);
+    }
+    if (screenNum === 4) {
+      setTimeout(drawStorageProfile, 40);
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function handlePill5Click() {
+    if (isScreen5Unlocked) {
+      goToScreen(5);
+    } else {
+      requestPasswordAccess();
+    }
+  }
+
+  function requestPasswordAccess() {
+    if (isScreen5Unlocked) {
+      goToScreen(5);
+      return;
+    }
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-error').style.display = 'none';
+    document.getElementById('passwordModal').classList.add('open');
+    setTimeout(() => {
+      document.getElementById('pw-input').focus();
+    }, 100);
+  }
+
+  function closePasswordModal() {
+    document.getElementById('passwordModal').classList.remove('open');
+  }
+
+  function closePasswordOnBackdrop(e) {
+    if (e.target.id === 'passwordModal') closePasswordModal();
+  }
+
+  function handlePwKey(e) {
+    if (e.key === 'Enter') submitPassword();
+  }
+
+  function submitPassword() {
+    const inputVal = document.getElementById('pw-input').value.trim();
+    if (inputVal === '2793') {
+      isScreen5Unlocked = true;
+      closePasswordModal();
+      
+      const pill5 = document.getElementById('pill-5');
+      pill5.classList.remove('locked');
+      pill5.innerText = '5. Naturhaushalt';
+      
+      goToScreen(5);
+    } else {
+      document.getElementById('pw-error').style.display = 'block';
+      const inputEl = document.getElementById('pw-input');
+      inputEl.style.borderColor = '#DC2626';
+      inputEl.focus();
+    }
+  }
+
+  function selectCountry(key) {
+    activePresetKey = key;
+    document.querySelectorAll('.country-card').forEach(c => c.classList.remove('selected'));
+    const card = document.getElementById(`card-${key}`);
+    if (card) card.classList.add('selected');
+
+    document.getElementById('btn-to-screen-3').disabled = false;
+
+    const data = PRESETS[key];
+    const isLocked = data.locked;
+
+    ['slider-n', 'slider-ref', 'slider-z', 'slider-pop'].forEach(id => {
+      const el = document.getElementById(id);
+      el.disabled = isLocked;
+    });
+
+    const badge = document.getElementById('locked-status-badge');
+    if (isLocked) {
+      badge.style.display = 'inline-flex';
+      badge.innerHTML = '🔒 Amtliche 30-Jahres-Werte (1991–2020) gesperrt';
+      badge.style.background = '#FEE2E2';
+      badge.style.color = '#991B1B';
+    } else {
+      badge.style.display = 'inline-flex';
+      badge.innerHTML = '🔓 Freie Simulation: Regler freigeschaltet';
+      badge.style.background = '#DCFCE7';
+      badge.style.color = '#166534';
+    }
+
+    document.getElementById('slider-n').value = data.n;
+    document.getElementById('slider-ref').value = data.ref;
+    document.getElementById('slider-z').value = data.z;
+    document.getElementById('slider-pop').value = data.pop;
+
+    document.getElementById('active-country-banner').innerHTML = `<span>📍 Aktives Referenzland: ${data.name}</span>`;
+    updateSimulation();
+  }
+
+  function updateSimulation() {
+    const N = parseFloat(document.getElementById('slider-n').value);
+    const Ref = parseFloat(document.getElementById('slider-ref').value);
+    const Z = parseFloat(document.getElementById('slider-z').value);
+    const pop = parseFloat(document.getElementById('slider-pop').value);
+
+    const W_int = Math.max(0, N - Ref);
+    const D_ref = W_int + Z;
+    const d_capita = (D_ref * 1e9) / (pop * 1e6);
+
+    const fmt = val => val.toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+    document.getElementById('val-n').innerText = `${fmt(N)} Mrd. m³/a`;
+    document.getElementById('val-ref').innerText = `${fmt(Ref)} Mrd. m³/a`;
+    document.getElementById('val-z').innerText = `${fmt(Z)} Mrd. m³/a`;
+    document.getElementById('val-pop').innerText = `${fmt(pop)} Mio. EW`;
+
+    document.getElementById('live-formula-values').innerHTML = 
+      `<span class="c-dref">D<sub>ref</sub></span> = (<span class="c-n">${fmt(N)}</span> &minus; <span class="c-ref">${fmt(Ref)}</span>) + <span class="c-z">${fmt(Z)}</span> = <span class="c-dref">${fmt(D_ref)} Mrd. m<sup>3</sup>/a</span>`;
+
+    document.getElementById('card-n-val').innerHTML = `${fmt(N)} Mrd. m<sup>3</sup>/a`;
+    document.getElementById('card-ref-val').innerHTML = `${fmt(Ref)} Mrd. m<sup>3</sup>/a`;
+    document.getElementById('card-z-val').innerHTML = `${fmt(Z)} Mrd. m<sup>3</sup>/a`;
+    document.getElementById('card-wint-val').innerHTML = `${fmt(W_int)} Mrd. m<sup>3</sup>/a`;
+    document.getElementById('card-dref-val').innerHTML = `${fmt(D_ref)} Mrd. m<sup>3</sup>/a`;
+
+    const falkSpan = document.getElementById('falkenmark-eval');
+    const capFormatted = Math.round(d_capita).toLocaleString('de-DE');
+    if (d_capita >= 1700) {
+      falkSpan.innerHTML = `Reichhaltig versorgt (${capFormatted} m<sup>3</sup>/(EW&middot;a))`;
+      falkSpan.style.color = 'var(--color-wint)';
+    } else if (d_capita >= 1000) {
+      falkSpan.innerHTML = `Leichter Wasserstress (${capFormatted} m<sup>3</sup>/(EW&middot;a))`;
+      falkSpan.style.color = '#D97706';
+    } else if (d_capita >= 500) {
+      falkSpan.innerHTML = `Chronische Wasserknappheit (${capFormatted} m<sup>3</sup>/(EW&middot;a))`;
+      falkSpan.style.color = '#EA580C';
+    } else {
+      falkSpan.innerHTML = `Absolute Wasserknappheit (${capFormatted} m<sup>3</sup>/(EW&middot;a))`;
+      falkSpan.style.color = '#DC2626';
+    }
+
+    drawColumnChart();
+  }
+
+  // NEUES 2-Säulen-Diagramm auf nativer HDPI Canvas
+  function drawColumnChart() {
+    const canvas = document.getElementById('columnCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    const N = parseFloat(document.getElementById('slider-n').value);
+    const Ref = parseFloat(document.getElementById('slider-ref').value);
+    const Z = parseFloat(document.getElementById('slider-z').value);
+
+    const W_int = Math.max(0, N - Ref);
+    const D_ref = W_int + Z;
+    const totalGross = N + Z; // Gesamter Wasserzugewinn
+
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = 280 * dpr;
+    ctx.scale(dpr, dpr);
+
+    const w = rect.width;
+    const h = 280;
+
+    ctx.clearRect(0, 0, w, h);
+
+    const baseY = 230;
+    const chartHeight = 180;
+    const maxVal = Math.max(totalGross, Ref, 1.0) * 1.18; // Ausreichend Puffer nach oben
+
+    const barWidth = Math.min(84, w * 0.23);
+    const col1X = w * 0.28 - barWidth / 2;
+    const col2X = w * 0.72 - barWidth / 2;
+
+    const fmtShort = val => val.toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+    // Horizontale Null-Linie
+    ctx.strokeStyle = "#CBD5E1";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(18, baseY);
+    ctx.lineTo(w - 18, baseY);
+    ctx.stroke();
+
+    // ------------------------------------------------------------------
+    // SÄULE 1: Wasser-Zugewinn (Gestapelt aus Niederschlag N + Zufluss Z)
+    // ------------------------------------------------------------------
+    const h_N = (N / maxVal) * chartHeight;
+    const h_Z = (Z / maxVal) * chartHeight;
+    const y_N = baseY - h_N;
+    const y_Z = y_N - h_Z;
+
+    // Segment N (Blau)
+    ctx.fillStyle = "#1A73E8";
+    ctx.fillRect(col1X, y_N, barWidth, h_N);
+
+    // Segment Z (Lila)
+    ctx.fillStyle = "#7C3AED";
+    ctx.fillRect(col1X, y_Z, barWidth, h_Z);
+
+    // Rahmen um Säule 1
+    ctx.strokeStyle = "#0F172A";
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(col1X, y_Z, barWidth, h_N + h_Z);
+
+    // Einzelwert-Beschriftung in Segment Z
+    if (h_Z >= 18) {
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "bold 10px sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(`+Z: ${fmtShort(Z)}`, col1X + barWidth / 2, y_Z + h_Z / 2);
+    }
+
+    // Einzelwert-Beschriftung in Segment N
+    if (h_N >= 22) {
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "bold 11px sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(`N: ${fmtShort(N)}`, col1X + barWidth / 2, y_N + h_N / 2);
+    }
+
+    // Summenwert über Säule 1
+    ctx.fillStyle = "#0F172A";
+    ctx.font = "bold 11px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "bottom";
+    ctx.fillText(`${fmtShort(totalGross)} Mrd.`, col1X + barWidth / 2, y_Z - 4);
+
+    // Achsenbeschriftung Säule 1
+    ctx.fillStyle = "#1E293B";
+    ctx.font = "bold 12px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+    ctx.fillText("1. Zugewinn", col1X + barWidth / 2, baseY + 6);
+    ctx.font = "10px sans-serif";
+    ctx.fillStyle = "#64748B";
+    ctx.fillText("(N + Z)", col1X + barWidth / 2, baseY + 22);
+
+    // ------------------------------------------------------------------
+    // SÄULE 2: Wasser-Abzug (Reale Evapotranspiration Ref)
+    // ------------------------------------------------------------------
+    const h_Ref = (Ref / maxVal) * chartHeight;
+    const y_Ref = baseY - h_Ref;
+
+    // Segment Ref (Orange)
+    ctx.fillStyle = "#E65100";
+    ctx.fillRect(col2X, y_Ref, barWidth, h_Ref);
+
+    // Rahmen um Säule 2
+    ctx.strokeStyle = "#0F172A";
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(col2X, y_Ref, barWidth, h_Ref);
+
+    // Beschriftung in Segment Ref
+    if (h_Ref >= 22) {
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "bold 11px sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(`Ref: ${fmtShort(Ref)}`, col2X + barWidth / 2, y_Ref + h_Ref / 2);
+    }
+
+    // Wert über Säule 2
+    ctx.fillStyle = "#0F172A";
+    ctx.font = "bold 11px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "bottom";
+    ctx.fillText(`${fmtShort(Ref)} Mrd.`, col2X + barWidth / 2, y_Ref - 4);
+
+    // Achsenbeschriftung Säule 2
+    ctx.fillStyle = "#1E293B";
+    ctx.font = "bold 12px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+    ctx.fillText("2. Abzug", col2X + barWidth / 2, baseY + 6);
+    ctx.font = "10px sans-serif";
+    ctx.fillStyle = "#64748B";
+    ctx.fillText("(Ref)", col2X + barWidth / 2, baseY + 22);
+
+    // ------------------------------------------------------------------
+    // DIFFERENZ-KLAMMER: Verbleibendes Wasserdargebot D_ref
+    // ------------------------------------------------------------------
+    const bracketX = w * 0.90;
+    const diffHeight = Math.max(4, ((totalGross - Ref) / maxVal) * chartHeight);
+    const bracketTopY = y_Z;
+    const bracketBottomY = bracketTopY + diffHeight;
+
+    // Gestrichelte Horizontale von Säule 1 zur Klammer
+    ctx.strokeStyle = "#0D47A1";
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(col1X + barWidth, y_Z);
+    ctx.lineTo(bracketX + 4, y_Z);
+    ctx.stroke();
+
+    // Vertikaler Differenz-Indikator
+    ctx.beginPath();
+    ctx.moveTo(bracketX, bracketTopY);
+    ctx.lineTo(bracketX, bracketBottomY);
+    ctx.stroke();
+
+    // Kleines Häkchen
+    ctx.beginPath();
+    ctx.moveTo(bracketX - 4, bracketBottomY);
+    ctx.lineTo(bracketX + 4, bracketBottomY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Text für Dargebot D_ref an der Differenz
+    ctx.fillStyle = "#0D47A1";
+    ctx.font = "bold 10px sans-serif";
+    ctx.textAlign = "right";
+    ctx.textBaseline = "middle";
+    ctx.fillText(`D_ref = ${fmtShort(D_ref)}`, bracketX - 6, bracketTopY + diffHeight / 2);
+  }
+
+  // SCREEN 4: Simulation der Speicher-Dynamik (Delta S & Delta GW)
+  const SCENARIOS = {
+    normal: { ds: 0.0, dgw: 0.0 },
+    rain: { ds: 16.5, dgw: 11.0 },
+    drought: { ds: -14.0, dgw: -9.5 },
+    overpump: { ds: -6.0, dgw: -22.5 }
+  };
+
+  function applyStorageScenario(key) {
+    document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`scen-${key}`).classList.add('active');
+
+    const scen = SCENARIOS[key];
+    document.getElementById('slider-ds').value = scen.ds;
+    document.getElementById('slider-dgw').value = scen.dgw;
+
+    updateStorageSim();
+  }
+
+  function updateStorageSim() {
+    const ds = parseFloat(document.getElementById('slider-ds').value);
+    const dgw = parseFloat(document.getElementById('slider-dgw').value);
+    const sum = ds + dgw;
+
+    const fmtSign = val => {
+      const formatted = Math.abs(val).toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+      if (val > 0) return `+${formatted}`;
+      if (val < 0) return `&minus;${formatted}`;
+      return `&plusmn;0,0`;
+    };
+
+    document.getElementById('val-ds').innerHTML = `${fmtSign(ds)} Mrd. m<sup>3</sup>/a`;
+    document.getElementById('val-dgw').innerHTML = `${fmtSign(dgw)} Mrd. m<sup>3</sup>/a`;
+
+    document.getElementById('live-storage-balance').innerHTML = 
+      `&Delta;S<sub>ges</sub> = <span class="c-ds">${fmtSign(ds)}</span> + <span class="c-dgw">${fmtSign(dgw)}</span> = <strong>${fmtSign(sum)} Mrd. m<sup>3</sup>/a</strong>`;
+
+    const dsStatus = document.getElementById('card-ds-status');
+    if (ds > 0) {
+      dsStatus.innerHTML = `${fmtSign(ds)} Mrd. m<sup>3</sup>/a (Speicherauffüllung / Sättigung)`;
+      dsStatus.style.color = '#1565C0';
+    } else if (ds < 0) {
+      dsStatus.innerHTML = `${fmtSign(ds)} Mrd. m<sup>3</sup>/a (Bodenfeuchtezehrung durch Pflanzen)`;
+      dsStatus.style.color = '#D97706';
+    } else {
+      dsStatus.innerHTML = `&plusmn;0,0 Mrd. m<sup>3</sup>/a (Gleichgewichtszustand)`;
+      dsStatus.style.color = 'var(--color-ds)';
+    }
+
+    const dgwStatus = document.getElementById('card-dgw-status');
+    if (dgw > 0) {
+      dgwStatus.innerHTML = `${fmtSign(dgw)} Mrd. m<sup>3</sup>/a (Grundwasseranstieg / Pufferung)`;
+      dgwStatus.style.color = '#1565C0';
+    } else if (dgw < -15) {
+      dgwStatus.innerHTML = `${fmtSign(dgw)} Mrd. m<sup>3</sup>/a (Kritische Übernutzung!)`;
+      dgwStatus.style.color = '#DC2626';
+    } else if (dgw < 0) {
+      dgwStatus.innerHTML = `${fmtSign(dgw)} Mrd. m<sup>3</sup>/a (Basisabfluss an Bäche & Brunnen)`;
+      dgwStatus.style.color = '#D97706';
+    } else {
+      dgwStatus.innerHTML = `&plusmn;0,0 Mrd. m<sup>3</sup>/a (Gleichgewichtszustand)`;
+      dgwStatus.style.color = 'var(--color-dgw)';
+    }
+
+    drawStorageProfile();
+  }
+
+  function drawStorageProfile() {
+    const canvas = document.getElementById('storageProfileCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    const ds = parseFloat(document.getElementById('slider-ds').value);
+    const dgw = parseFloat(document.getElementById('slider-dgw').value);
+
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = 260 * dpr;
+    ctx.scale(dpr, dpr);
+
+    const w = rect.width;
+    const h = 260;
+
+    ctx.clearRect(0, 0, w, h);
+
+    const groundLevelY = 45;
+    const baseWaterTableY = 140;
+    const gwShift = (dgw / 30) * 35;
+    const waterTableY = baseWaterTableY - gwShift;
+
+    // 1. Atmosphäre / Geländeoberfläche
+    ctx.fillStyle = "#E0F2FE";
+    ctx.fillRect(0, 0, w, groundLevelY);
+
+    ctx.fillStyle = "#15803D";
+    ctx.fillRect(0, groundLevelY - 4, w, 4);
+
+    // 2. Ungesättigte Bodenzone
+    const soilGradient = ctx.createLinearGradient(0, groundLevelY, 0, waterTableY);
+    if (ds >= 0) {
+      soilGradient.addColorStop(0, "#854D0E");
+      soilGradient.addColorStop(1, "#A16207");
+    } else {
+      soilGradient.addColorStop(0, "#D97706");
+      soilGradient.addColorStop(1, "#FBBF24");
+    }
+    ctx.fillStyle = soilGradient;
+    ctx.fillRect(0, groundLevelY, w, Math.max(10, waterTableY - groundLevelY));
+
+    // 3. Gesättigte Zone (Aquifer)
+    const gwGradient = ctx.createLinearGradient(0, waterTableY, 0, h);
+    gwGradient.addColorStop(0, "#38BDF8");
+    gwGradient.addColorStop(1, "#0284C7");
+    ctx.fillStyle = gwGradient;
+    ctx.fillRect(0, waterTableY, w, h - waterTableY);
+
+    // Grundwasserspiegel-Linie
+    ctx.strokeStyle = "#0369A1";
+    ctx.lineWidth = 2.5;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(10, waterTableY);
+    ctx.lineTo(w - 10, waterTableY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = "#0F172A";
+    ctx.font = "bold 11px sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText("🌿 Geländeoberfläche", 14, 28);
+
+    ctx.fillStyle = "#FFFFFF";
+    ctx.font = "bold 12px sans-serif";
+    ctx.fillText("Ungesättigte Bodenzone (Bodenfeuchte ΔS)", 14, groundLevelY + 30);
+    ctx.font = "11px sans-serif";
+    ctx.fillText(ds >= 0 ? "Bodenpuffer gefüllt" : "Bodenfeuchte ausgetrocknet", 14, groundLevelY + 48);
+
+    ctx.fillStyle = "#FFFFFF";
+    ctx.font = "bold 12px sans-serif";
+    ctx.fillText("Gesättigter Grundwasserleiter (Aquifer ΔGW)", 14, Math.min(h - 35, waterTableY + 30));
+    ctx.font = "11px sans-serif";
+    ctx.fillText(`Grundwasserspiegel: ${dgw >= 0 ? "erhöht / stabil" : "abgesenkt"}`, 14, Math.min(h - 18, waterTableY + 48));
+  }
+
+  // Quiz-Auswertung
+  const correctKeys = { 1: 1, 2: 0, 3: 0 };
+  const explanations = {
+    1: "Richtig! Über die 30-jährige WMO-Referenzperiode heben sich feuchte Zyklen mit Auffüllung und trockene Perioden mit Zehrung im ungestörten Naturhaushalt gegenseitig auf (&Delta;S = 0, &Delta;GW = 0).",
+    2: "Exakt! Bei fehlendem Regen zehren Pflanzen direkt an der Bodenfeuchte (&Delta;S &lt; 0), während Grundwasserleiter Wasser kontinuierlich über Quellen und Uferfiltrat an Flüsse abgeben (&Delta;GW &lt; 0).",
+    3: "Hervorragend erkannt! Dauerhafte negative Grundwasserbilanzen (&Delta;GW &lt; 0) leeren den Grundwasserleiter unumkehrbar. Quellen versiegen, Moor- und Feuchtgebiete verlanden, und Brunnen fallen trocken."
+  };
+
+  function checkAnswer(qNum, optIdx) {
+    quizAnswers[qNum] = optIdx;
+    const card = document.getElementById(`quiz-${qNum}`);
+    const buttons = card.querySelectorAll('.quiz-option-btn');
+    const feedback = document.getElementById(`feedback-${qNum}`);
+
+    buttons.forEach((btn, idx) => {
+      btn.disabled = true;
+      btn.classList.remove('correct', 'wrong');
+      if (idx === correctKeys[qNum]) {
+        btn.classList.add('correct');
+      } else if (idx === optIdx) {
+        btn.classList.add('wrong');
+      }
+    });
+
+    feedback.style.display = 'block';
+    if (optIdx === correctKeys[qNum]) {
+      feedback.style.background = '#E6F4EA';
+      feedback.style.color = '#1E8E3E';
+      feedback.innerHTML = `<strong>Richtig!</strong> ${explanations[qNum]}`;
+    } else {
+      feedback.style.background = '#FDE8E8';
+      feedback.style.color = '#7F1D1D';
+      feedback.innerHTML = `<strong>Leider falsch.</strong> ${explanations[qNum]}`;
+    }
+
+    if (quizAnswers[1] !== null && quizAnswers[2] !== null && quizAnswers[3] !== null) {
+      let score = 0;
+      for (let k = 1; k <= 3; k++) {
+        if (quizAnswers[k] === correctKeys[k]) score++;
+      }
+      const scoreCard = document.getElementById('score-card');
+      scoreCard.style.display = 'block';
+      document.getElementById('score-text').innerText = `Ergebnis: ${score} von 3 Fragen fachlich richtig beantwortet!`;
+    }
+  }
+
+  // Modal Glossar
+  const GLOSSAR = {
+    dref: {
+      title: "Wasserdargebot Dref [DIN 4049-3, 1992]",
+      text: "D_ref beziffert das gesamte erneuerbare Süßwasservolumen, das der Naturhaushalt im langjährigen 30-Jahres-Mittel (1991–2020) jedes Jahr zur Verfügung stellt. Es setzt sich zusammen aus W_int und dem Zufluss Z [Umweltbundesamt, 2021]."
+    },
+    uba: {
+      title: "Umweltbundesamt (UBA) & Wassernutzungs-Index",
+      text: "Das UBA setzt D_ref als festen Nenner im Quotienten Q = E / D_ref fest. Es vergleicht die tatsächlichen Entnahmen (E) aller Sektoren mit dem Dargebot und überwacht das Einhalten der 20-%-Grenze [OECD, 2012; Umweltbundesamt, 2021]."
+    },
+    n: {
+      title: "Gebietsniederschlag (N) & DWD",
+      text: "Gesamtes flüssiges und festes Niederschlagsvolumen über dem Staatsgebiet. Der Deutsche Wetterdienst (DWD) erfasst diese Daten über sein bundesweites Netz aus rund 2.000 Messstationen [DWD, 2021]."
+    },
+    ref: {
+      title: "Reale Evapotranspiration (Ref) & BfG",
+      text: "Summe aus unbeleblicher Boden- und Gewässerverdunstung (Evaporation) sowie pflanzlicher Transpiration. Die Bundesanstalt für Gewässerkunde (BfG) modelliert diesen Wert computergestützt für jeden Quadratkilometer [Bundesanstalt für Gewässerkunde, 2021]."
+    },
+    z: {
+      title: "Flusszufluss (Z) & Landesämter",
+      text: "Grenzüberschreitender Zufluss aus Nachbarstaaten über Flusssysteme (z. B. Rhein, Donau, Inn). Landesämter (wie das LfU Bayern) überwachen diese Volumina an Grenzpegeln sekundengenau [LfU Bayern, 2021]."
+    },
+    wint: {
+      title: "Inländische Wasserneubildung (Wint)",
+      text: "W_int = N &minus; Ref beziffert die im Inland gebildete Wassermenge, die im Boden versickert (Grundwasserneubildung) oder oberflächlich abfließt. Sie bestimmt das primäre Rohwasserpotenzial für Wasserversorger [DIN Deutsches Institut für Normung, 1992]."
+    },
+    ds: {
+      title: "ΔS (Änderung des Boden- und Oberflächenspeichers)",
+      text: "Erfasst die Zu- oder Abnahme des Wassers in der ungesättigten Bodenzone (Bodenfeuchte), in Schnee- und Eismassen sowie in oberirdischen Gewässern wie Seen und Rückhaltebecken [DIN Deutsches Institut für Normung, 1992]."
+    },
+    dgw: {
+      title: "ΔGW (Änderung des Grundwasserspeichers)",
+      text: "Beziffert das Ansteigen oder Absinken des Wasservolumens in der vollständig gesättigten Zone des Untergrunds (im Grundwasserleiter) [DIN Deutsches Institut für Normung, 1992]."
+    }
+  };
+
+  function openGlossar(key) {
+    const item = GLOSSAR[key];
+    if (!item) return;
+    document.getElementById('modal-title').innerText = item.title;
+    document.getElementById('modal-content').innerText = item.text;
+    document.getElementById('glossarModal').classList.add('open');
+  }
+
+  function closeGlossar() {
+    document.getElementById('glossarModal').classList.remove('open');
+  }
+
+  function closeGlossarOnBackdrop(e) {
+    if (e.target.id === 'glossarModal') closeGlossar();
+  }
+
+  window.addEventListener('load', () => {
+    selectCountry('CH');
+    updateSimulation();
+    updateStorageSim();
+  });
+</script>
+</body>
+</html>
