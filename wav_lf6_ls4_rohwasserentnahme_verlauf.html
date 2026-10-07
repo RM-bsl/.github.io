@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="de" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rohwasserentnahme Deutschland – Minimalistische Übersicht</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #FFFFFF;
+      color: #0F172A;
+    }
+    .clean-border {
+      border: 1px solid #E2E8F0;
+    }
+    /* Ensure completely static appearance without interactive cursors */
+    .static-chart path {
+      cursor: default;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="min-h-full bg-white text-slate-800 antialiased flex flex-col justify-between">
+
+  <!-- Header: Minimalist & Clean -->
+  <header class="border-b border-slate-100 bg-white">
+    <div class="max-w-5xl mx-auto px-6 py-8">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-sky-50 text-sky-600 text-base">
+          💧
+        </span>
+        <span class="text-xs uppercase tracking-widest font-semibold text-slate-400">
+          Statistischer Umweltbericht
+        </span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+        Rohwasserentnahme nach Wirtschaftssektoren
+      </h1>
+      <p class="text-sm text-slate-500 mt-1 max-w-2xl">
+        Proportionale Verteilung der bundesweiten Rohwassergewinnung nach zentralen Verbrauchs- und Wirtschaftsbereichen.
+      </p>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="max-w-5xl mx-auto px-6 py-8 flex-1 w-full space-y-10">
+
+    <!-- Qualitative Overview Cards (No numbers, purely categorical) -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-slate-50/70 clean-border rounded-xl p-4">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">⚡</span>
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Hauptanteil</span>
+        </div>
+        <div class="font-bold text-slate-900 mt-2 text-base">Energieversorgung</div>
+        <p class="text-xs text-slate-500 mt-1">Vorwiegend Kühlwasserbedarf thermischer Kraftwerke</p>
+      </div>
+
+      <div class="bg-slate-50/70 clean-border rounded-xl p-4">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">🚰</span>
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Stabiler Grundbedarf</span>
+        </div>
+        <div class="font-bold text-slate-900 mt-2 text-base">Öffentliche Versorgung</div>
+        <p class="text-xs text-slate-500 mt-1">Kontinuierliche Trink- und Brauchwasserbereitstellung</p>
+      </div>
+
+      <div class="bg-slate-50/70 clean-border rounded-xl p-4">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">⚙️</span>
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Industriebedarf</span>
+        </div>
+        <div class="font-bold text-slate-900 mt-2 text-base">Gewerbe & Bergbau</div>
+        <p class="text-xs text-slate-500 mt-1">Produktionswasser, Werkskühlung und Grubenentwässerung</p>
+      </div>
+
+      <div class="bg-slate-50/70 clean-border rounded-xl p-4">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">🌾</span>
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Geringer Anteil</span>
+        </div>
+        <div class="font-bold text-slate-900 mt-2 text-base">Landwirtschaft</div>
+        <p class="text-xs text-slate-500 mt-1">Punktuelle und witterungsabhängige Feldberegnung</p>
+      </div>
+    </section>
+
+    <!-- Minimalist Pie Chart & Visual Legend Section -->
+    <section class="clean-border rounded-2xl p-6 sm:p-10 bg-white">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        
+        <!-- Static SVG Pie Chart -->
+        <div class="md:col-span-7 flex justify-center">
+          <div class="relative w-full max-w-[340px] aspect-square">
+            <svg viewBox="0 0 400 400" class="w-full h-full static-chart overflow-visible">
+              <!-- Slice: Energieversorgung (approx. 40% proportional arc) -->
+              <!-- Start: 0 deg (top), End: ~143.6 deg -->
+              <path d="M 200,200 L 200,30 A 170,170 0 0,1 336.8,301.2 Z" 
+                    fill="#2563EB" 
+                    stroke="#FFFFFF" 
+                    stroke-width="3" />
+
+              <!-- Slice: Öffentliche Wasserversorgung (approx. 31% proportional arc) -->
+              <!-- Start: ~143.6 deg, End: ~255.0 deg -->
+              <path d="M 200,200 L 336.8,301.2 A 170,170 0 0,1 35.8,244.0 Z" 
+                    fill="#0284C7" 
+                    stroke="#FFFFFF" 
+                    stroke-width="3" />
+
+              <!-- Slice: Verarbeitendes Gewerbe & Bergbau (approx. 26% proportional arc) -->
+              <!-- Start: ~255.0 deg, End: ~349.3 deg -->
+              <path d="M 200,200 L 35.8,244.0 A 170,170 0 0,1 168.5,33.0 Z" 
+                    fill="#6366F1" 
+                    stroke="#FFFFFF" 
+                    stroke-width="3" />
+
+              <!-- Slice: Landwirtschaftliche Bewässerung (approx. 3% proportional arc) -->
+              <!-- Start: ~349.3 deg, End: 360 deg -->
+              <path d="M 200,200 L 168.5,33.0 A 170,170 0 0,1 200,30 Z" 
+                    fill="#10B981" 
+                    stroke="#FFFFFF" 
+                    stroke-width="3" />
+
+              <!-- Emoji Labels inside Slices -->
+              <!-- Energieversorgung Emoji -->
+              <text x="275" y="165" font-size="28" text-anchor="middle" dominant-baseline="central">⚡</text>
+
+              <!-- Öffentliche Wasserversorgung Emoji -->
+              <text x="200" y="315" font-size="26" text-anchor="middle" dominant-baseline="central">🚰</text>
+
+              <!-- Verarbeitendes Gewerbe & Bergbau Emoji -->
+              <text x="110" y="170" font-size="24" text-anchor="middle" dominant-baseline="central">⚙️</text>
+
+              <!-- Landwirtschaft Emoji -->
+              <text x="184" y="55" font-size="14" text-anchor="middle" dominant-baseline="central">🌾</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Static Elegant Legend -->
+        <div class="md:col-span-5 flex flex-col justify-center space-y-4">
+          <div class="border-b border-slate-100 pb-3">
+            <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Sektorale Anteile</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Rangfolge nach relativem Fördervolumen</p>
+          </div>
+
+          <div class="space-y-3 text-sm">
+            <div class="flex items-start gap-3">
+              <span class="w-3.5 h-3.5 rounded-full bg-blue-600 mt-1 shrink-0"></span>
+              <div>
+                <div class="font-medium text-slate-900 flex items-center gap-1.5">
+                  <span>⚡</span>
+                  <span>Energieversorgung</span>
+                </div>
+                <div class="text-xs text-slate-500">Größter Gesamtförderanteil</div>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <span class="w-3.5 h-3.5 rounded-full bg-sky-600 mt-1 shrink-0"></span>
+              <div>
+                <div class="font-medium text-slate-900 flex items-center gap-1.5">
+                  <span>🚰</span>
+                  <span>Öffentliche Wasserversorgung</span>
+                </div>
+                <div class="text-xs text-slate-500">Zweitgrößter Sektor, nahezu konstant</div>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <span class="w-3.5 h-3.5 rounded-full bg-indigo-500 mt-1 shrink-0"></span>
+              <div>
+                <div class="font-medium text-slate-900 flex items-center gap-1.5">
+                  <span>⚙️</span>
+                  <span>Verarbeitendes Gewerbe & Bergbau</span>
+                </div>
+                <div class="text-xs text-slate-500">Bedeutender industrieller Brauchwasserbedarf</div>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 mt-1 shrink-0"></span>
+              <div>
+                <div class="font-medium text-slate-900 flex items-center gap-1.5">
+                  <span>🌾</span>
+                  <span>Landwirtschaftliche Bewässerung</span>
+                </div>
+                <div class="text-xs text-slate-500">Geringster Anteil im Gesamtgefüge</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Qualitative & Quantitative Sector Matrix with 10-Year Column Charts -->
+    <section class="clean-border rounded-2xl p-6 sm:p-8 bg-white">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-6 border-b border-slate-100 pb-4">
+        <div>
+          <h3 class="text-base font-bold text-slate-900">
+            Sektorale Hintergründe & 10-Jahres-Dynamiken
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5">
+            Entwicklung der Rohwasserentnahme der letzten Dekade basierend auf den dreijährlichen Destatis-Erhebungen.
+          </p>
+        </div>
+        <span class="text-[11px] font-medium text-slate-400 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200/60 self-start sm:self-auto">
+          Werte in Mrd. m³
+        </span>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-600 leading-relaxed">
+        
+        <!-- Sector 1: Energieversorgung -->
+        <div class="p-5 bg-white rounded-xl clean-border flex flex-col justify-between">
+          <div>
+            <div class="font-semibold text-slate-900 flex items-center justify-between mb-2 text-sm">
+              <div class="flex items-center gap-2">
+                <span class="text-base">⚡</span>
+                <span>Energiewirtschaft & Kraftwerke</span>
+              </div>
+              <span class="text-[11px] font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
+                −35,6 %
+              </span>
+            </div>
+            <p class="text-slate-600 mb-4">
+              Dieser Sektor verzeichnete den stärksten kontinuierlichen Rückgang. Ursachen sind die schrittweise Abschaltung thermischer Großkraftwerke (Atomausstieg und Kohleverstromungsrückgang) und der damit entfallende Durchlaufkühlwasserbedarf.
+            </p>
+          </div>
+
+          <!-- Column Chart: Energieversorgung -->
+          <div class="pt-3 border-t border-slate-100">
+            <div class="flex items-center justify-between text-[11px] font-semibold text-slate-500 mb-1">
+              <span>10-Jahres-Verlauf</span>
+              <span class="text-slate-400 font-normal">in Mrd. m³</span>
+            </div>
+            <div class="w-full">
+              <svg viewBox="0 0 244 110" class="w-full h-28 overflow-visible">
+                <!-- Base Axis -->
+                <line x1="12" y1="84" x2="232" y2="84" stroke="#E2E8F0" stroke-width="1" />
+                
+                <!-- 2013: 10,4 Mrd. -->
+                <rect x="18" y="27" width="28" height="57" rx="3" fill="#2563EB" opacity="0.65" />
+                <text x="32" y="21" font-size="11" font-weight="600" fill="#334155" text-anchor="middle">10,4</text>
+                <text x="32" y="99" font-size="10" font-weight="500" fill="#94A3B8" text-anchor="middle">2013</text>
+
+                <!-- 2016: 9,4 Mrd. -->
+                <rect x="78" y="33" width="28" height="51" rx="3" fill="#2563EB" opacity="0.75" />
+                <text x="92" y="27" font-size="11" font-weight="600" fill="#334155" text-anchor="middle">9,4</text>
+                <text x="92" y="99" font-size="10" font-weight="500" fill="#94A3B8" text-anchor="middle">2016</text>
+
+                <!-- 2019: 8,9 Mrd. -->
+                <rect x="138" y="35" width="28" height="49" rx="3" fill="#2563EB" opacity="0.85" />
+                <text x="152" y="29" font-size="11" font-weight="600" fill="#334155" text-anchor="middle">8,9</text>
+                <text x="152" y="99" font-size="10" font-weight="500" fill="#94A3B8" text-anchor="middle">2019</text>
+
+                <!-- 2022: 6,7 Mrd. -->
+                <rect x="198" y="47" width="28" height="37" rx="3" fill="#2563EB" />
+                <text x="212" y="41" font-size="11" font-weight="700" fill="#2563EB" text-anchor="middle">6,7</text>
+                <text x="212" y="99" font-size="10" font-weight="700" fill="#2563EB" text-anchor="middle">2022</text>
+              </svg>
+            </div>
+            <div class="mt-1 flex items-center justify-between text-[11px] text-slate-500 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
+              <span class="text-slate-400">Veränderung 2013–2022:</span>
+              <span class="font-semibold text-slate-700">−3,7 Mrd. m³ Förderentlastung</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sector 2: Öffentliche Wasserversorgung -->
+        <div class="p-5 bg-white rounded-xl clean-border flex flex-col justify-between">
+          <div>
+            <div class="font-semibold text-slate-900 flex items-center justify-between mb-2 text-sm">
+              <div class="flex items-center gap-2">
+                <span class="text-base">🚰</span>
+                <span>Kommunale Wasserwirtschaft</span>
+              </div>
+              <span class="text-[11px] font-semibold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-md border border-sky-100">
+                ±0,0 % (stabil)
+              </span>
+            </div>
+            <p class="text-slate-600 mb-4">
+              Die Trinkwassergewinnung für private Haushalte und das Kleingewerbe bildet das stabile Fundament der Daseinsvorsorge. Schwankungen entstehen primär durch Sommerwitterungen, bleiben aber langfristig fast unverändert.
+            </p>
+          </div>
+
+          <!-- Column Chart: Öffentliche Wasserversorgung -->
+          <div class="pt-3 border-t border-slate-100">
+            <div class="flex items-center justify-between text-[11px] font-semibold text-slate-500 mb-1">
+              <span>10-Jahres-Verlauf</span>
+              <span class="text-slate-400 font-normal">in Mrd. m³</span>
+            </div>
+            <div class="w-full">
+              <svg viewBox="0 0 244 110" class="w-full h-28 overflow-visible">
+                <!-- Base Axis -->
+                <line x1="12" y1="84" x2="232" y2="84" stroke="#E2E8F0" stroke-width="1" />
+
+                <!-- 2013: 5,1 Mrd. -->
+                <rect x="18" y="33" width="28" height="51" rx="3" fill="#0284C7" opacity="0.65" />
+                <text x="32" y="27" font-size="11" font-weight="600" fill="#334155" text-anchor="middle">5,1</text>
+                <text x="32" y="99" font-size="10" font-weight="500" fill="#94A3B8" text-anchor="middle">2013</text>
+
+                <!-- 2016: 5,2 Mrd. -->
+                <rect x="78" y="32" width="28" height="52" rx="3" fill="#0284C7" opacity="0.75" />
+                <text x="92" y="26" font-size="11" font-weight="600" fill="#334155" text-anchor="middle">5,2</text>
+                <text x="92" y="99" font-size="10" font-weight="500" fill="#94A3B8" text-anchor="middle">2016</text>
+
+                <!-- 2019: 5,4 Mrd. -->
+                <rect x="138" y="30" width="28" height="54" rx="3" fill="#0284C7" opacity="0.85" />
+                <text x="152" y="24" font-size="11" font-weight="600" fill="#334155" text-anchor="middle">5,4</text>
+                <text x="152" y="99" font-size="10" font-weight="500" fill="#94A3B8" text-anchor="middle">2019</text>
+
+                <!-- 2022: 5,2 Mrd. -->
+                <rect x="198" y="32" width="28" height="52" rx="3" fill="#0284C7" />
+                <text x="212" y="26" font-size="11" font-weight="700" fill="#0284C7" text-anchor="middle">5,2</text>
+                <text x="212" y="99" font-size="10" font-weight="700" fill="#0284C7" text-anchor="middle">2022</text>
+              </svg>
+            </div>
+            <div class="mt-1 flex items-center justify-between text-[11px] text-slate-500 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
+              <span class="text-slate-400">Veränderung 2013–2022:</span>
+              <span class="font-semibold text-slate-700">+0,1 Mrd. m³ (konstantes Niveau)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sector 3: Verarbeitendes Gewerbe & Bergbau -->
+        <div class="p-5 bg-white rounded-xl clean-border flex flex-col justify-between">
+          <div>
+            <div class="font-semibold text-slate-900 flex items-center justify-between mb-2 text-sm">
+              <div class="flex items-center gap-2">
+                <span class="text-base">⚙️</span>
+                <span>Industrie & Rohstoffgewinnung</span>
+              </div>
+              <span class="text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100">
+                −13,7 %
+              </span>
+            </div>
+            <p class="text-slate-600 mb-4">
+              Beinhaltet chemische Industrie, Metallerzeugung, Papierherstellung und Tagebau-Sümpfungen. Investitionen in interne Kreislaufnutzungen, Kaskadensysteme und Wasseraufbereitung führen zu stetigen Einsparungen.
+            </p>
+          </div>
+
+          <!-- Column Chart: Industrie & Bergbau -->
+          <div class="pt-3 border-t border-slate-100">
+            <div class="flex items-center justify-between text-[11px] font-semibold text-slate-500 mb-1">
+              <span>10-Jahres-Verlauf</span>
+              <span class="text-slate-400 font-normal">in Mrd. m³</span>
+            </div>
+            <div class="w-full">
+              <svg viewBox="0 0 244 110" class="w-full h-28 overflow-visible">
+                <!-- Base Axis -->
+                <line x1="12" y1="84" x2="232" y2="84" stroke="#E2E8F0" stroke-width="1" />
+
+                <!-- 2013: 5,1 Mrd. -->
+                <rect x="18" y="33" width="28" height="51" rx="3" fill="#6366F1" opacity="0.65" />
+                <text x="32" y="27" font-size="11" font-weight="600" fill="#334155" text-anchor="middle">5,1</text>
+                <text x="32" y="99" font-size="10" font-weight="500" fill="#94A3B8" text-anchor="middle">2013</text>
+
+                <!-- 2016: 4,8 Mrd. -->
+                <rect x="78" y="36" width="28" height="48" rx="3" fill="#6366F1" opacity="0.75" />
+                <text x="92" y="30" font-size="11" font-weight="600" fill="#334155" text-anchor="middle">4,8</text>
+                <text x="92" y="99" font-size="10" font-weight="500" fill="#94A3B8" text-anchor="middle">2016</text>
+
+                <!-- 2019: 4,7 Mrd. -->
+                <rect x="138" y="37" width="28" height="47" rx="3" fill="#6366F1" opacity="0.85" />
+                <text x="152" y="31" font-size="11" font-weight="600" fill="#334155" text-anchor="middle">4,7</text>
+                <text x="152" y="99" font-size="10" font-weight="500" fill="#94A3B8" text-anchor="middle">2019</text>
+
+                <!-- 2022: 4,4 Mrd. -->
+                <rect x="198" y="40" width="28" height="44" rx="3" fill="#6366F1" />
+                <text x="212" y="34" font-size="11" font-weight="700" fill="#6366F1" text-anchor="middle">4,4</text>
+                <text x="212" y="99" font-size="10" font-weight="700" fill="#6366F1" text-anchor="middle">2022</text>
+              </svg>
+            </div>
+            <div class="mt-1 flex items-center justify-between text-[11px] text-slate-500 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
+              <span class="text-slate-400">Veränderung 2013–2022:</span>
+              <span class="font-semibold text-slate-700">−0,7 Mrd. m³ Effizienzgewinn</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sector 4: Landwirtschaftliche Bewässerung -->
+        <div class="p-5 bg-white rounded-xl clean-border flex flex-col justify-between">
+          <div>
+            <div class="font-semibold text-slate-900 flex items-center justify-between mb-2 text-sm">
+              <div class="flex items-center gap-2">
+                <span class="text-base">🌾</span>
+                <span>Landwirtschaftliche Bewässerung</span>
+              </div>
+              <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
+                +92,0 % (Bedarfsanstieg)
+              </span>
+            </div>
+            <p class="text-slate-600 mb-4">
+              Obgleich der relative Gesamtförderanteil mit circa 3 Prozent gering bleibt, verzeichnet die Bewässerungslandwirtschaft infolge mehrjähriger Dürre- und Trockenperioden den dynamischsten relativen Zuwachs.
+            </p>
+          </div>
+
+          <!-- Column Chart: Landwirtschaft -->
+          <div class="pt-3 border-t border-slate-100">
+            <div class="flex items-center justify-between text-[11px] font-semibold text-slate-500 mb-1">
+              <span>10-Jahres-Verlauf</span>
+              <span class="text-slate-400 font-normal">in Mrd. m³</span>
+            </div>
+            <div class="w-full">
+              <svg viewBox="0 0 244 110" class="w-full h-28 overflow-visible">
+                <!-- Base Axis -->
+                <line x1="12" y1="84" x2="232" y2="84" stroke="#E2E8F0" stroke-width="1" />
+
+                <!-- 2013: 0,25 Mrd. -->
+                <rect x="18" y="58" width="28" height="26" rx="3" fill="#10B981" opacity="0.65" />
+                <text x="32" y="52" font-size="11" font-weight="600" fill="#334155" text-anchor="middle">0,25</text>
+                <text x="32" y="99" font-size="10" font-weight="500" fill="#94A3B8" text-anchor="middle">2013</text>
+
+                <!-- 2016: 0,33 Mrd. -->
+                <rect x="78" y="50" width="28" height="34" rx="3" fill="#10B981" opacity="0.75" />
+                <text x="92" y="44" font-size="11" font-weight="600" fill="#334155" text-anchor="middle">0,33</text>
+                <text x="92" y="99" font-size="10" font-weight="500" fill="#94A3B8" text-anchor="middle">2016</text>
+
+                <!-- 2019: 0,42 Mrd. -->
+                <rect x="138" y="41" width="28" height="43" rx="3" fill="#10B981" opacity="0.85" />
+                <text x="152" y="35" font-size="11" font-weight="600" fill="#334155" text-anchor="middle">0,42</text>
+                <text x="152" y="99" font-size="10" font-weight="500" fill="#94A3B8" text-anchor="middle">2019</text>
+
+                <!-- 2022: 0,48 Mrd. -->
+                <rect x="198" y="34" width="28" height="50" rx="3" fill="#10B981" />
+                <text x="212" y="28" font-size="11" font-weight="700" fill="#059669" text-anchor="middle">0,48</text>
+                <text x="212" y="99" font-size="10" font-weight="700" fill="#059669" text-anchor="middle">2022</text>
+              </svg>
+            </div>
+            <div class="mt-1 flex items-center justify-between text-[11px] text-slate-500 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
+              <span class="text-slate-400">Veränderung 2013–2022:</span>
+              <span class="font-semibold text-slate-700">+0,23 Mrd. m³ (Fast verdoppelt)</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Clean Minimalist Footer -->
+  <footer class="border-t border-slate-100 py-6 mt-8">
+    <div class="max-w-5xl mx-auto px-6 text-center text-xs text-slate-400">
+      Datenbasis: Statistisches Bundesamt (Destatis) • Fachserie Umwelt & Rohwasserentnahme
+    </div>
+  </footer>
+
+</body>
+</html>
