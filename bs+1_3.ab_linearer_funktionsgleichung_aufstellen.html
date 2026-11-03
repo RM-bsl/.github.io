@@ -629,8 +629,213 @@
     }
 
     /* ==========================================================================
-       5. OBERFLÄCHE 2A: DYNAMISCHE TIMELINE (4 ETAPPEN)
+       5. OBERFLÄCHE 2A: PLENUM-GRUNDLAGEN, ALLGEMEINE FUNKTION & TIMELINE
        ========================================================================== */
+    .plenum-intro-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+      margin: 0.85rem 0 1.2rem;
+    }
+
+    .plenum-why-box {
+      background: #F8F9FC;
+      border: 1px solid var(--ios-separator);
+      border-radius: var(--ios-radius-lg);
+      padding: 0.95rem 1.1rem;
+    }
+
+    .plenum-why-kicker {
+      display: inline-block;
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ios-blue);
+      margin-bottom: 0.3rem;
+    }
+
+    .plenum-why-title {
+      margin: 0 0 0.35rem;
+      font-size: 0.98rem;
+      font-weight: 750;
+      color: var(--ios-text-primary);
+    }
+
+    .plenum-why-text {
+      margin: 0;
+      font-size: 0.9rem;
+      line-height: 1.54;
+      color: var(--ios-text-secondary);
+    }
+
+    /* Große farbige Formelbühne für das Unterrichtsgespräch */
+    .general-formula-stage {
+      background: linear-gradient(180deg, #F9FAFF 0%, #FFFFFF 100%);
+      border: 1.5px solid rgba(0, 122, 255, 0.20);
+      border-radius: 20px;
+      padding: 1.15rem 1.25rem 1.25rem;
+      box-shadow: 0 6px 22px rgba(0, 122, 255, 0.06);
+    }
+
+    .formula-stage-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.9rem;
+    }
+
+    .formula-stage-label {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ios-text-secondary);
+    }
+
+    .formula-alt-pill {
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.24rem 0.72rem;
+      border-radius: var(--ios-radius-pill);
+      background: #F2F2F7;
+      color: var(--ios-text-primary);
+      border: 1px solid var(--ios-separator);
+    }
+
+    .hero-equation-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      padding: 1.05rem 0.9rem 1.15rem;
+      background: #FFFFFF;
+      border-radius: 16px;
+      border: 1px solid rgba(60, 60, 67, 0.10);
+      margin-bottom: 1.05rem;
+    }
+
+    .eq-token {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.14rem;
+      min-width: 112px;
+      padding: 0.65rem 1.05rem 0.58rem;
+      border-radius: 14px;
+      border: 2px solid transparent;
+    }
+
+    .eq-token-sym {
+      font-size: clamp(1.55rem, 3.2vw, 2.15rem);
+      font-weight: 800;
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+    }
+
+    .eq-token-tag {
+      margin-top: 0.18rem;
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .eq-op {
+      font-size: clamp(1.5rem, 2.8vw, 1.95rem);
+      font-weight: 800;
+      color: #3A3A3C;
+      padding: 0 0.2rem;
+    }
+
+    /* Farbcodierung der 4 Funktionsbestandteile */
+    .var-theme-y {
+      background: #F8F0FC;
+      border-color: #AF52DE;
+      color: #7E22CE;
+    }
+
+    .var-theme-m {
+      background: #FFF6E8;
+      border-color: #FF9500;
+      color: #B45309;
+    }
+
+    .var-theme-x {
+      background: #EFF6FF;
+      border-color: #007AFF;
+      color: #0055D4;
+    }
+
+    .var-theme-t0 {
+      background: #ECFDF3;
+      border-color: #34C759;
+      color: #15803D;
+    }
+
+    .variable-legend-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .var-legend-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.78rem;
+      background: #FFFFFF;
+      border-radius: 14px;
+      padding: 0.82rem 0.95rem;
+      border: 1.5px solid var(--ios-separator);
+    }
+
+    .var-legend-card.card-y { border-left: 5px solid #AF52DE; }
+    .var-legend-card.card-x { border-left: 5px solid #007AFF; }
+    .var-legend-card.card-m { border-left: 5px solid #FF9500; }
+    .var-legend-card.card-t0 { border-left: 5px solid #34C759; }
+
+    .var-symbol-pill {
+      flex-shrink: 0;
+      min-width: 52px;
+      height: 40px;
+      padding: 0 0.55rem;
+      border-radius: 11px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.08rem;
+      font-weight: 800;
+      border: 1.5px solid transparent;
+    }
+
+    .var-legend-title {
+      margin: 0 0 0.18rem;
+      font-size: 0.92rem;
+      font-weight: 780;
+      color: var(--ios-text-primary);
+    }
+
+    .var-legend-desc {
+      margin: 0;
+      font-size: 0.84rem;
+      line-height: 1.46;
+      color: var(--ios-text-secondary);
+    }
+
+    .plenum-domain-note {
+      margin-top: 0.85rem;
+      padding: 0.68rem 0.95rem;
+      border-radius: 12px;
+      background: #F2F2F7;
+      font-size: 0.85rem;
+      color: var(--ios-text-primary);
+      line-height: 1.48;
+    }
+
     .ios-timeline {
       position: relative;
       margin: 0.9rem 0 0.4rem;
@@ -647,7 +852,7 @@
       top: 18px;
       bottom: 18px;
       width: 3px;
-      background: linear-gradient(180deg, var(--scenario-accent) 0%, var(--ios-blue) 60%, var(--ios-green) 100%);
+      background: linear-gradient(180deg, var(--ios-blue) 0%, #5856D6 55%, var(--ios-green) 100%);
       border-radius: 2px;
     }
 
@@ -672,7 +877,7 @@
       width: 34px;
       height: 34px;
       border-radius: 50%;
-      background: var(--scenario-accent);
+      background: var(--ios-blue);
       color: #FFFFFF;
       font-weight: 800;
       font-size: 0.9rem;
@@ -701,7 +906,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      color: var(--scenario-accent-strong);
+      color: var(--ios-blue);
     }
 
     .timeline-duration-pill {
@@ -1134,14 +1339,340 @@
       color: #FFFFFF;
     }
 
+    .real-scene-bullet-list {
+      margin: 0.35rem 0 0.58rem;
+      padding: 0.52rem 0.72rem 0.52rem 1.65rem;
+      border-radius: 10px;
+      background: rgba(0, 122, 255, 0.06);
+      border: 1px solid rgba(0, 122, 255, 0.16);
+      list-style-type: disc;
+      color: var(--ios-text-primary);
+      font-size: 0.81rem;
+      line-height: 1.44;
+    }
+
+    body[data-scenario="technik"] .real-scene-bullet-list {
+      background: rgba(31, 157, 85, 0.07);
+      border-color: rgba(31, 157, 85, 0.22);
+    }
+
+    body[data-scenario="digital"] .real-scene-bullet-list {
+      background: rgba(88, 86, 214, 0.07);
+      border-color: rgba(88, 86, 214, 0.22);
+    }
+
+    .real-scene-bullet-list li {
+      margin: 0;
+      padding: 0;
+    }
+
     .real-scene-canvas {
       display: block;
       width: 100%;
-      height: 168px;
+      height: 232px;
       border-radius: 10px;
       background: #FFFFFF;
       border: 1px solid rgba(60, 60, 67, 0.08);
       user-select: none;
+    }
+
+    /* Roter Faden: Entzerrte, übersichtliche Darstellung der allgemeinen Gleichung */
+    .roter-faden-card {
+      margin: 1.1rem 0 1.25rem;
+      padding: 1.15rem 1.3rem;
+      border-radius: var(--ios-radius-lg);
+      background: #FFFFFF;
+      border: 1.5px solid rgba(0, 122, 255, 0.18);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.035);
+    }
+
+    .roter-faden-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      padding-bottom: 0.72rem;
+      margin-bottom: 0.95rem;
+      border-bottom: 1px solid var(--ios-separator);
+    }
+
+    .roter-faden-eyebrow {
+      font-size: 0.85rem;
+      font-weight: 780;
+      letter-spacing: -0.005em;
+      color: var(--ios-text-primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .roter-faden-step-badge {
+      font-size: 0.8rem;
+      font-weight: 750;
+      padding: 0.28rem 0.82rem;
+      border-radius: var(--ios-radius-pill);
+      border: 1px solid transparent;
+    }
+
+    .roter-faden-step-badge.badge-t0 {
+      background: #ECFDF3;
+      color: #15803D;
+      border-color: #34C759;
+    }
+
+    .roter-faden-step-badge.badge-m {
+      background: #FFF6E8;
+      color: #B45309;
+      border-color: #FF9500;
+    }
+
+    .roter-faden-step-badge.badge-dw {
+      background: #EFF6FF;
+      color: #0055D4;
+      border-color: #007AFF;
+    }
+
+    .roter-faden-step-badge.badge-danger {
+      background: #FFECEB;
+      color: #B91C1C;
+      border-color: #FF3B30;
+    }
+
+    .roter-faden-eq-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      padding: 1.05rem 1rem;
+      background: #F7F8FA;
+      border-radius: 15px;
+      border: 1px solid rgba(60, 60, 67, 0.09);
+    }
+
+    .rf-slot {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.28rem;
+      min-width: 128px;
+      padding: 0.72rem 1.05rem 0.7rem;
+      border-radius: 14px;
+      border-width: 1.5px;
+      border-style: solid;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    /* Ruhige Darstellung nicht aktiver Variablen: Weißer Grund + dezenter Farbstreifen oben */
+    .rf-slot.is-muted-var {
+      background: #FFFFFF;
+      border-color: rgba(60, 60, 67, 0.15);
+      color: #2C2C2E;
+    }
+
+    .rf-slot.var-theme-y.is-muted-var { border-top: 3.5px solid #AF52DE; }
+    .rf-slot.var-theme-m.is-muted-var { border-top: 3.5px solid #FF9500; }
+    .rf-slot.var-theme-x.is-muted-var { border-top: 3.5px solid #007AFF; }
+    .rf-slot.var-theme-t0.is-muted-var { border-top: 3.5px solid #34C759; }
+
+    .rf-slot.var-theme-y.is-muted-var .rf-gen-sym { color: #7E22CE; }
+    .rf-slot.var-theme-m.is-muted-var .rf-gen-sym { color: #B45309; }
+    .rf-slot.var-theme-x.is-muted-var .rf-gen-sym { color: #0055D4; }
+    .rf-slot.var-theme-t0.is-muted-var .rf-gen-sym { color: #15803D; }
+
+    /* Bereits bestimmte Variablen: Dezente Farbtönung ohne Überladung */
+    .rf-slot.is-solved-var {
+      border-width: 1.8px;
+    }
+
+    /* Aktuell gesuchte Variable: Klarer visueller Fokus */
+    .rf-slot.is-focus-var {
+      border-width: 2.5px;
+      transform: translateY(-2px);
+    }
+
+    .rf-slot.var-theme-t0.is-focus-var {
+      box-shadow: 0 8px 20px rgba(52, 199, 89, 0.22);
+    }
+
+    .rf-slot.var-theme-m.is-focus-var {
+      box-shadow: 0 8px 20px rgba(255, 149, 0, 0.24);
+    }
+
+    .rf-slot.var-theme-x.is-focus-var,
+    .rf-slot.var-theme-y.is-focus-var {
+      box-shadow: 0 8px 20px rgba(0, 122, 255, 0.18);
+    }
+
+    .rf-slot.is-danger-var {
+      background: #FFECEB !important;
+      border-color: #FF3B30 !important;
+      color: #B91C1C !important;
+      border-width: 2.5px;
+      box-shadow: 0 8px 20px rgba(255, 59, 48, 0.20);
+    }
+
+    .rf-slot-status {
+      font-size: 0.72rem;
+      font-weight: 780;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .rf-slot.is-muted-var .rf-slot-status {
+      color: var(--ios-text-secondary);
+      font-weight: 650;
+    }
+
+    .rf-slot.is-focus-var .rf-slot-status,
+    .rf-slot.is-solved-var .rf-slot-status {
+      padding: 0.14rem 0.56rem;
+      border-radius: var(--ios-radius-pill);
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid currentColor;
+    }
+
+    .rf-gen-sym {
+      font-size: clamp(1.42rem, 2.5vw, 1.68rem);
+      font-weight: 820;
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+      margin: 0.06rem 0;
+    }
+
+    .rf-slot-role {
+      font-size: 0.81rem;
+      font-weight: 680;
+      color: var(--ios-text-secondary);
+      line-height: 1.25;
+      white-space: nowrap;
+    }
+
+    .rf-slot.is-focus-var .rf-slot-role,
+    .rf-slot.is-solved-var .rf-slot-role {
+      color: currentColor;
+      font-weight: 740;
+    }
+
+    .rf-op {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: #3A3A3C;
+      padding: 0 0.18rem;
+    }
+
+    /* Entzerrter 2-Spalten-Detailbereich unterhalb der allgemeinen Gleichung */
+    .roter-faden-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+      margin-top: 0.95rem;
+    }
+
+    .rf-detail-box {
+      padding: 0.85rem 1.02rem;
+      border-radius: 13px;
+      background: #FAFAFC;
+      border: 1px solid var(--ios-separator);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.28rem;
+    }
+
+    .rf-detail-box.focus-t0 {
+      background: #F4FBF7;
+      border-color: rgba(52, 199, 89, 0.42);
+      border-left: 4px solid #34C759;
+    }
+
+    .rf-detail-box.focus-m {
+      background: #FFFBF4;
+      border-color: rgba(255, 149, 0, 0.45);
+      border-left: 4px solid #FF9500;
+    }
+
+    .rf-detail-box.focus-dw {
+      background: #F5F9FF;
+      border-color: rgba(0, 122, 255, 0.38);
+      border-left: 4px solid #007AFF;
+    }
+
+    .rf-detail-box.focus-danger {
+      background: #FFF5F5;
+      border-color: rgba(255, 59, 48, 0.48);
+      border-left: 4px solid #FF3B30;
+    }
+
+    .rf-detail-label {
+      font-size: 0.75rem;
+      font-weight: 760;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ios-text-secondary);
+    }
+
+    .rf-detail-main {
+      font-size: 1.14rem;
+      font-weight: 800;
+      color: var(--ios-text-primary);
+      line-height: 1.38;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .rf-detail-sub {
+      margin: 0;
+      font-size: 0.84rem;
+      line-height: 1.46;
+      color: var(--ios-text-secondary);
+    }
+
+    .rf-inline-pill {
+      display: inline-block;
+      padding: 0.06rem 0.48rem;
+      border-radius: 8px;
+      font-weight: 820;
+      border-width: 1.5px;
+      border-style: solid;
+    }
+
+    .rf-inline-pill.pill-danger {
+      background: #FFECEB;
+      border-color: #FF3B30;
+      color: #B91C1C;
+    }
+
+    .phase-faden-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.34rem;
+      margin: 0.15rem 0 0.5rem;
+      padding: 0.24rem 0.6rem;
+      border-radius: 8px;
+      font-size: 0.76rem;
+      font-weight: 750;
+      border-width: 1px;
+      border-style: solid;
+    }
+
+    .world-eq-mapping {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.55rem;
+      flex-wrap: wrap;
+      font-size: 0.79rem;
+      font-weight: 700;
+      color: var(--ios-text-secondary);
+      margin-top: 0.42rem;
+      padding-top: 0.42rem;
+      border-top: 1px dashed rgba(60, 60, 67, 0.16);
     }
 
     .control-panel-card {
@@ -1621,7 +2152,10 @@
       .worlds-compare-grid,
       .phases-grid,
       .lab-split-grid,
-      .briefing-facts-grid {
+      .briefing-facts-grid,
+      .plenum-intro-grid,
+      .variable-legend-grid,
+      .roter-faden-detail-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -1661,12 +2195,50 @@
         height: 290px;
       }
       .real-scene-canvas {
-        height: 156px;
+        height: 212px;
+      }
+      .roter-faden-card {
+        padding: 0.95rem 0.9rem;
+      }
+      .roter-faden-eq-row {
+        gap: 0.45rem;
+        padding: 0.8rem 0.55rem;
+      }
+      .rf-slot {
+        min-width: 92px;
+        padding: 0.52rem 0.65rem 0.5rem;
+      }
+      .rf-gen-sym {
+        font-size: 1.24rem;
+      }
+      .rf-slot-role {
+        font-size: 0.75rem;
+      }
+      .rf-op {
+        font-size: 1.26rem;
+      }
+      .rf-detail-main {
+        font-size: 1.02rem;
       }
       .triangle-log-grid,
       .interval-readout-grid,
       .world-param-list {
         grid-template-columns: 1fr;
+      }
+      .general-formula-stage {
+        padding: 0.95rem 0.8rem;
+      }
+      .hero-equation-row {
+        gap: 0.45rem;
+        padding: 0.78rem 0.5rem 0.88rem;
+      }
+      .eq-token {
+        min-width: 74px;
+        padding: 0.48rem 0.65rem 0.44rem;
+        border-radius: 12px;
+      }
+      .eq-token-tag {
+        font-size: 0.66rem;
       }
     }
   </style>
@@ -1715,7 +2287,7 @@
           <nav class="ios-segmented" aria-label="Ansichtsmodus wählen">
             <button type="button" class="segment-btn is-active" id="seg-mode-timeline" data-view-mode="timeline">
               <span>Timeline (Plenum)</span>
-              <span class="segment-btn-sub">45-Minuten-Ablaufplan</span>
+              <span class="segment-btn-sub">Grundlagen &amp; Verlaufsplan</span>
             </button>
             <button type="button" class="segment-btn" id="seg-mode-discovery" data-view-mode="discovery">
               <span>Entdeckung (Labor)</span>
@@ -1891,7 +2463,12 @@
             slopeMeaning: 'Pro 1 Minute Ladezeit nimmt die gespeicherte Energie in der Traktionsbatterie konstant um 2 kWh zu (Ladeleistung).',
             inverseWarningExplain: 'Vertauscht man Zähler und Nenner zu \u0394t / \u0394E, erhält man 0,5 min/kWh (Zeitbedarf pro 1 kWh) statt der Änderungsrate m = 2 kWh/min!',
             breachLowExplain: 'Grenzwertverletzung links (t < 0 min): Negative Ladezeiten vor dem Anschließen des Fahrzeugs gehören nicht zum regulären Ladevorgang!',
-            breachHighExplain: 'Grenzwertverletzung rechts (t > 30 min bzw. E > 80 kWh): Ab 80 kWh regelt das Batteriemanagementsystem die Schnellladung zum Zellschutz ab!'
+            breachHighExplain: 'Grenzwertverletzung rechts (t > 30 min bzw. E > 80 kWh): Ab 80 kWh regelt das Batteriemanagementsystem die Schnellladung zum Zellschutz ab!',
+            animBullets: {
+              1: '<strong>Darstellung &amp; Praxisaufgabe:</strong> Die Animation zeigt eine 120-kW-Schnellladesäule samt 100-kWh-Traktionsbatterie (5 Zellmodule) &ndash; im echten E-Transporter erfasst das Batteriemanagement beim Anstecken (<span class="math-var">t</span> = 0 min) zuerst die vorhandene Restenergie <span class="math-var">t</span><sub>0</sub>, um Ladezeit und Reichweite exakt zu berechnen.',
+              2: '<strong>Darstellung &amp; Praxisaufgabe:</strong> Die Animation zeigt den Ladefortschritt zwischen zwei Messpunkten P<sub>1</sub> und P<sub>2</sub> &ndash; im realen Ladebetrieb überwacht die Steuerelektronik aus verstrichener Ladezeit (&Delta;<span class="math-var">t</span>) und nachgeladener Energie (&Delta;<span class="math-var">E</span>) die konstante Ladegeschwindigkeit <span class="math-var">m</span> = 2 kWh/min (120 kW Leistung).',
+              3: '<strong>Darstellung &amp; Praxisaufgabe:</strong> Die Animation zeigt den Sicherheits-Prüfstand des Batteriemanagementsystems (BMS) &ndash; im echten Fahrzeug gibt er das Schnellladen nur von 0 bis 30 min (20 bis 80 kWh) frei und regelt ab 80 % automatisch ab, um die Akkuzellen vor Überhitzung und Alterung zu schützen.'
+            }
           },
 
           digital: {
@@ -1972,7 +2549,12 @@
             slopeMeaning: 'Pro 1 Terabyte übertragenem Datenvolumen steigen die Serverkosten konstant um 1,5 € an (Traffic-Preis pro Einheit).',
             inverseWarningExplain: 'Vertauscht man Zähler und Nenner zu \u0394x / \u0394K, erhält man 0,67 TB/€ (Datenmenge pro 1 €) statt des Kostensatzes m = 1,5 €/TB!',
             breachLowExplain: 'Grenzwertverletzung links (x < 0 TB): Ein negatives Datenvolumen ist technisch unmöglich!',
-            breachHighExplain: 'Grenzwertverletzung rechts (x > 120 TB bzw. K > 220 €): Das gebuchte Server-Kontingent von 120 TB und die Budgetobergrenze von 220 € werden überschritten!'
+            breachHighExplain: 'Grenzwertverletzung rechts (x > 120 TB bzw. K > 220 €): Das gebuchte Server-Kontingent von 120 TB und die Budgetobergrenze von 220 € werden überschritten!',
+            animBullets: {
+              1: '<strong>Darstellung &amp; Praxisaufgabe:</strong> Die Animation zeigt ein Cloud-Rechenzentrum samt Monatsabrechnung bei 0 TB Abruf &ndash; im echten Plattformbetrieb verbucht das Abrechnungssystem damit die fixe Grundgebühr <span class="math-var">t</span><sub>0</sub> = 40 &euro;, die für reservierte Server, Strom und Ausfallschutz immer anfällt.',
+              2: '<strong>Darstellung &amp; Praxisaufgabe:</strong> Die Animation zeigt den Traffic-Zähler des Rechenzentrums zwischen zwei Messpunkten P<sub>1</sub> und P<sub>2</sub> &ndash; im realen Streaming-Betrieb misst er das gesendete Datenvolumen (&Delta;<span class="math-var">x</span>) und rechnet über den Tarif <span class="math-var">m</span> = 1,5 &euro;/TB automatisch die hinzukommenden Kosten (&Delta;<span class="math-var">K</span>) ab.',
+              3: '<strong>Darstellung &amp; Praxisaufgabe:</strong> Die Animation zeigt den automatischen Kontingent- und Budgetwächter der Cloud-Firewall &ndash; im echten Betrieb überwacht er das gebuchte Paket von 0 bis 120 TB (40 bis 220 &euro;) und riegelt Mehrtraffic rechtzeitig ab, um das Team vor einer Kostenexplosion zu schützen.'
+            }
           }
         },
 
@@ -1982,32 +2564,28 @@
             tag: 'Etappe 1',
             duration: '12 Min',
             titleHTML: 'Startwert-Analyse (<span class="math-var">t</span><sub>0</sub>) &ndash; Nullpunkt erfassen',
-            descTechnik: 'Wir untersuchen den Ordinatenabschnitt t\u2080 bei Ladezeit t = 0 min: Warum startet der Graph der Traktionsbatterie bereits bei 20 kWh statt im Ursprung?',
-            descDigital: 'Wir untersuchen den Ordinatenabschnitt t\u2080 bei x = 0 TB Datenvolumen: Warum starten die Serverkosten bereits bei 40 \u20AC Grundgebühr statt bei 0 \u20AC?'
+            desc: 'Schnittpunkt S\u1D67(0 | t\u2080) auf der vertikalen Achse ablesen und klären, wie der konstante Anfangswert t\u2080 bei x = 0 die Gerade parallel verschiebt.'
           },
           {
             id: 2,
             tag: 'Etappe 2',
             duration: '15 Min',
             titleHTML: 'Steigungsdreieck (<span class="math-var">m</span>) &ndash; Änderungsrate pro Einheit berechnen',
-            descTechnik: 'Über zwei bewegliche Ankerpunkte bestimmen wir m = \u0394E / \u0394t = 2 kWh/min und prüfen mit der Einheitenprobe, warum Zähler und Nenner nicht vertauscht werden dürfen.',
-            descDigital: 'Über zwei bewegliche Ankerpunkte bestimmen wir m = \u0394K / \u0394x = 1,5 \u20AC/TB und prüfen mit der Einheitenprobe, warum Zähler und Nenner nicht vertauscht werden dürfen.'
+            desc: 'Die Steigung m = \u0394y / \u0394x (Höhenunterschied geteilt durch Weite) an verschiedenen Steigungsdreiecken untersuchen und mit den Einheiten überprüfen.'
           },
           {
             id: 3,
             tag: 'Etappe 3',
             duration: '15 Min',
             titleHTML: 'Systemgrenzen (<span class="math-var">D</span> &amp; <span class="math-var">W</span>) &ndash; Randbedingungen als Intervalle modellieren',
-            descTechnik: 'Mit dem orthogonalen Projektions-Scanner begrenzen wir die Ladezeit auf D = [0 ; 30] und lesen den resultierenden Energieschatten W = [20 ; 80] auf der Hochachse ab.',
-            descDigital: 'Mit dem orthogonalen Projektions-Scanner begrenzen wir das Datenvolumen auf D = [0 ; 120] und lesen den resultierenden Kostenschatten W = [40 ; 220] auf der Hochachse ab.'
+            desc: 'Zulässige Minimal- und Maximalwerte festlegen und die Definitionsmenge D sowie die resultierende Wertemenge W in Intervallschreibweise [min ; max] bestimmen.'
           },
           {
             id: 4,
             tag: 'Abschluss',
             duration: '3 Min',
             titleHTML: 'Arbeitsblatt-Transfer',
-            descTechnik: 'Sicherung aller Ergebnisse aus deinem gewählten Technik-Szenario (Teilaufgaben 1, 2 und 3) auf dem ausgeteilten Arbeitsblatt.',
-            descDigital: 'Sicherung aller Ergebnisse aus deinem gewählten Digital-Szenario (Teilaufgaben 1, 2 und 3) auf dem ausgeteilten Arbeitsblatt.'
+            desc: 'Alle gewonnenen Erkenntnisse zu Startwert, Steigungsdreieck sowie Definitions- und Wertemenge strukturiert auf dem Arbeitsblatt sichern.'
           }
         ],
 
@@ -2016,6 +2594,8 @@
             id: 1,
             badge: 'Phase 1',
             title: 'Basiswert-Analyse',
+            fadenChipClass: 'var-theme-t0',
+            fadenChipHTML: 'Roter Faden: Variable <strong>t<sub>0</sub></strong> in f(x) = m &middot; x + <strong>t<sub>0</sub></strong> bestimmen',
             subtitleHTML: 'Ordinatenabschnitt <span class="math-var">t</span><sub>0</sub> als konstanter Anfangswert bei Rechtswert 0',
             summary: 'Verschiebe den Anfangswert auf der vertikalen Achse bei fester Steigung und deute den realen Zustand beim Nullpunkt.',
             formativeFeedback: 'Lies den Schnittpunkt des Graphen mit der vertikalen Achse ab. Welcher physikalische Zustand herrscht bei x = 0?',
@@ -2026,6 +2606,8 @@
             id: 2,
             badge: 'Phase 2',
             title: 'Dynamisches Steigungsdreieck',
+            fadenChipClass: 'var-theme-m',
+            fadenChipHTML: 'Roter Faden: Variable <strong>m</strong> in f(x) = <strong>m</strong> &middot; x + t<sub>0</sub> bestimmen',
             subtitleHTML: 'Steigung <span class="math-var">m</span> als Differenzenquotient &Delta;<span class="math-var">y</span> / &Delta;<span class="math-var">x</span>',
             summary: 'Ziehe zwei Ankerpunkte entlang des Funktionsgraphen, vergleiche verschiedene Steigungsdreiecke und überprüfe die Einheiten im Bruch.',
             formativeFeedback: 'Berechne stets den Höhenunterschied geteilt durch die Weite. Überprüfe die Einheiten im Bruch.',
@@ -2036,6 +2618,8 @@
             id: 3,
             badge: 'Phase 3',
             title: 'Projektions-Scanner (D & W)',
+            fadenChipClass: 'var-theme-x',
+            fadenChipHTML: 'Roter Faden: Fertige Gleichung &rarr; Grenzen <strong>D</strong> &amp; <strong>W</strong> bestimmen',
             subtitleHTML: 'Reale Systemgrenzen in Intervallschreibweise modellieren',
             summary: 'Stelle die zulässigen Systemgrenzen auf der Rechtsachse ein und beobachte die orthogonale Schattenprojektion auf beide Koordinatenachsen.',
             formativeFeedback: 'Prüfe, welche Minimal- und Maximalwerte die Größen im regulären Betrieb annehmen dürfen.',
@@ -2777,7 +3361,7 @@
 
           drawDraggableHandle(ctx, ptX, ptY, 9.5, handleColor, haloColor, 't0');
 
-          if (!(anim && anim.simActive && anim.phase === 1 && anim.progress > 0.04 && anim.progress < 0.35)) {
+          if (!(anim && anim.simActive && anim.phase === 1 && anim.progress >= 0 && anim.progress < 0.42)) {
             var badgeText = 'Sy(0 | ' + Formatters.formatNumber(currentT0) + ')  \u2192  t\u2080 = ' + Formatters.formatNumber(currentT0) + ' ' + scenario.unitY;
             drawBadge(
               ctx,
@@ -2792,6 +3376,58 @@
           }
 
           return plot;
+        }
+
+        function drawMiniTelemetryTile(ctx, x, y, tileW, tileH, label, value, sub, bgHex, borderHex, valHex) {
+          ctx.save();
+          drawRoundRect(ctx, x, y, tileW, tileH, 8);
+          ctx.fillStyle = bgHex || '#F8F9FB';
+          ctx.fill();
+          ctx.strokeStyle = borderHex || 'rgba(60, 60, 67, 0.14)';
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+
+          var compactTile = tileW < 118;
+          var padX = compactTile ? 6 : 8;
+
+          ctx.beginPath();
+          drawRoundRect(ctx, x + 1, y + 1, tileW - 2, tileH - 2, 7);
+          ctx.clip();
+
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'top';
+          ctx.font = '700 ' + (compactTile ? 8.2 : 8.9) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+          ctx.fillStyle = '#6C6C70';
+          ctx.fillText(label, x + padX, y + 6);
+
+          ctx.font = '800 ' + (compactTile ? 10.6 : 12) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+          ctx.fillStyle = valHex || '#1C1C1E';
+          ctx.fillText(value, x + padX, y + (tileH >= 64 ? 22 : 19));
+
+          if (sub && tileH >= 50) {
+            ctx.font = '600 ' + (compactTile ? 8.1 : 8.9) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillStyle = '#6C6C70';
+            ctx.fillText(sub, x + padX, y + tileH - 15);
+          }
+          ctx.restore();
+        }
+
+        function drawDiagonalHatch(ctx, x, y, w, h, color, step) {
+          if (w <= 1 || h <= 1) return;
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(x, y, w, h);
+          ctx.clip();
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 1;
+          var s = step || 8;
+          for (var d = -h; d < w + h; d += s) {
+            ctx.beginPath();
+            ctx.moveTo(x + d, y + h);
+            ctx.lineTo(x + d + h, y);
+            ctx.stroke();
+          }
+          ctx.restore();
         }
 
         /* --------------------------------------------------------------------
@@ -2817,122 +3453,201 @@
           var labelTotalY = targetT0 + addedY;
           var fullAddedPreview = scenario.m * scenario.dMaxTarget;
 
-          var iconBoxX = compact ? 10 : 14;
-          var iconBoxW = compact ? 42 : 52;
-          var cableEnd = iconBoxX + iconBoxW + (compact ? 18 : 26);
-          var barLeft = cableEnd;
-          var barRight = w - (compact ? 14 : 20);
-          var barW = Math.max(120, barRight - barLeft);
-          var barTop = 44;
-          var barH = 46;
-          var barMidY = barTop + barH / 2;
-
           var isTech = scenario.id === 'technik';
           var scaleMax = isTech ? 100 : 280;
           var limitVal = scenario.wMaxTarget; // 80 kWh bzw. 220 €
+          var overLimit = simActive && (totalY > limitVal + 0.2);
 
-          /* 1. Kopfzeile: Aktueller realer Systemzustand */
+          var pad = compact ? 10 : 14;
+          var iconBoxX = pad;
+          var iconBoxW = compact ? 48 : 62;
+          var cableEnd = iconBoxX + iconBoxW + (compact ? 16 : 26);
+          var barLeft = cableEnd;
+          var barRight = w - pad;
+          var barW = Math.max(120, barRight - barLeft);
+          var barTop = 50;
+          var barH = 52;
+          var barMidY = barTop + barH / 2;
+
           ctx.save();
-          ctx.font = '700 ' + (compact ? 11 : 12) + 'px -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif';
-          ctx.fillStyle = '#1C1C1E';
+
+          /* 1. Kopfzeile + Live-Zeit/Traffic-Badge rechts */
+          ctx.font = '700 ' + (compact ? 10.4 : 11.6) + 'px -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif';
+          ctx.fillStyle = overLimit ? '#B91C1C' : '#1C1C1E';
           ctx.textAlign = 'left';
           ctx.textBaseline = 'middle';
 
           var headerStr;
           if (simActive) {
             headerStr = isTech
-              ? 'Schnellladung läuft: nach ' + Formatters.formatNumber(curX, 1) + ' min stecken ' + Formatters.formatNumber(labelTotalY, 1) + ' kWh im Akku'
-              : 'Monatslauf läuft: bei ' + Formatters.formatNumber(curX, 0) + ' TB Traffic betragen die Kosten ' + Formatters.formatNumber(labelTotalY, 1) + ' \u20AC';
+              ? 'DC-Schnellladung läuft: ' + Formatters.formatNumber(labelTotalY, 1) + ' kWh im Akku'
+              : 'Streaming-Monat läuft: ' + Formatters.formatNumber(labelTotalY, 1) + ' \u20AC Gesamtrechnung';
           } else {
             headerStr = isTech
-              ? 'Zustand beim Anstecken (t = 0 min): ' + Formatters.formatNumber(targetT0, 0) + ' kWh Restladung bereits in den Zellen'
-              : 'Zustand Monatsstart (x = 0 TB): ' + Formatters.formatNumber(targetT0, 0) + ' \u20AC fixe Server-Grundgebühr fällt sofort an';
+              ? 'Anstecken bei t = 0 min: ' + Formatters.formatNumber(targetT0, 0) + ' kWh Restladung in den Zellen'
+              : 'Monatsstart bei x = 0 TB: ' + Formatters.formatNumber(targetT0, 0) + ' \u20AC fixe Grundgebühr aktiv';
           }
-          ctx.fillText(headerStr, iconBoxX, 20);
+          ctx.fillText(headerStr, pad, 17);
 
-          /* 2. Links: Schlichtes Apple-Vektor-Symbol (DC-Ladesäule vs. Cloud-Server-Rack) */
-          if (isTech) {
-            drawRoundRect(ctx, iconBoxX, barTop - 4, iconBoxW - 8, barH + 8, 9);
-            ctx.fillStyle = '#F2F2F7';
+          if (!compact) {
+            var clockStr = scenario.varX + ' = ' + Formatters.formatNumber(curX, isTech ? 1 : 0) + ' ' + scenario.unitX;
+            ctx.font = '800 10px -apple-system, BlinkMacSystemFont, sans-serif';
+            var clkW = ctx.measureText(clockStr).width + 16;
+            drawRoundRect(ctx, w - pad - clkW, 7, clkW, 20, 10);
+            ctx.fillStyle = simActive ? '#EFF6FF' : '#F2F2F7';
             ctx.fill();
-            ctx.strokeStyle = '#C7C7CC';
-            ctx.lineWidth = 1.4;
+            ctx.strokeStyle = simActive ? '#007AFF' : '#D1D1D6';
+            ctx.lineWidth = 1;
             ctx.stroke();
-
-            /* Grünes Display an der Ladesäule */
-            drawRoundRect(ctx, iconBoxX + 6, barTop + 4, iconBoxW - 20, 16, 4);
-            ctx.fillStyle = simActive ? '#1F9D55' : 'rgba(31, 157, 85, 0.22)';
-            ctx.fill();
-
-            ctx.font = '800 9px -apple-system, BlinkMacSystemFont, sans-serif';
-            ctx.fillStyle = simActive ? '#FFFFFF' : '#15803D';
+            ctx.fillStyle = simActive ? '#0055D4' : '#3A3A3C';
             ctx.textAlign = 'center';
-            ctx.fillText('120kW', iconBoxX + (iconBoxW - 8) / 2, barTop + 12.5);
+            ctx.fillText(clockStr, w - pad - clkW / 2, 17.5);
+          }
 
-            ctx.font = '700 8.5px -apple-system, BlinkMacSystemFont, sans-serif';
-            ctx.fillStyle = '#6C6C70';
-            ctx.fillText(simActive ? 'AKTIV' : 'BEREIT', iconBoxX + (iconBoxW - 8) / 2, barTop + 34);
-          } else {
-            drawRoundRect(ctx, iconBoxX, barTop - 4, iconBoxW - 6, barH + 8, 9);
+          /* 2. Links: Detailreiche Hardware-Illustration (120-kW-HPC-Säule vs. 19"-Server-Rack) */
+          var hwTop = 36;
+          var hwH = 74;
+          if (isTech) {
+            var colW = iconBoxW - 6;
+            /* Sockelplatte */
+            drawRoundRect(ctx, iconBoxX - 2, hwTop + hwH - 5, colW + 4, 6, 2);
+            ctx.fillStyle = '#AEAEB2';
+            ctx.fill();
+
+            /* Säulengehäuse */
+            drawRoundRect(ctx, iconBoxX, hwTop, colW, hwH - 4, 9);
             ctx.fillStyle = '#F2F2F7';
             ctx.fill();
-            ctx.strokeStyle = '#C7C7CC';
+            ctx.strokeStyle = simActive ? '#1F9D55' : '#C7C7CC';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            /* Oberer LED-Statusstreifen */
+            drawRoundRect(ctx, iconBoxX + 6, hwTop + 5, colW - 12, 4, 2);
+            ctx.fillStyle = simActive ? '#007AFF' : '#34C759';
+            ctx.fill();
+
+            /* Dunkles OLED-Leistungsdisplay */
+            drawRoundRect(ctx, iconBoxX + 5, hwTop + 13, colW - 10, 26, 5);
+            ctx.fillStyle = '#1C1C1E';
+            ctx.fill();
+
+            ctx.font = '800 ' + (compact ? 8.5 : 9.5) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillStyle = simActive ? '#34C759' : '#AEAEB2';
+            ctx.textAlign = 'center';
+            ctx.fillText(simActive ? '120 kW' : '0 kW', iconBoxX + colW / 2, hwTop + 22);
+
+            ctx.font = '700 7.2px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText(simActive ? 'DC LADEN' : 'STANDBY', iconBoxX + colW / 2, hwTop + 33);
+
+            /* CCS-Holster-Bucht unten an der Säule */
+            drawRoundRect(ctx, iconBoxX + 9, hwTop + 45, colW - 18, 16, 4);
+            ctx.fillStyle = '#E5E5EA';
+            ctx.fill();
+            ctx.font = '700 7.5px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillStyle = '#6C6C70';
+            ctx.fillText('CCS-2', iconBoxX + colW / 2, hwTop + 53.5);
+          } else {
+            var rackW = iconBoxW - 4;
+            drawRoundRect(ctx, iconBoxX, hwTop, rackW, hwH, 8);
+            ctx.fillStyle = '#2C2C2E';
+            ctx.fill();
+            ctx.strokeStyle = '#636366';
             ctx.lineWidth = 1.4;
             ctx.stroke();
 
-            /* 3 Server-Einschübe mit aktiven Bereitstellungs-LEDs */
+            /* 3 realistische 19"-Server-Blades mit Status-LEDs & Lüftungsschlitzen */
+            var bladeNames = ['CORE', 'RAID', 'CDN'];
             for (var sIdx = 0; sIdx < 3; sIdx++) {
-              var bladeY = barTop + 2 + sIdx * 14;
-              drawRoundRect(ctx, iconBoxX + 5, bladeY, iconBoxW - 16, 10, 3);
-              ctx.fillStyle = '#FFFFFF';
+              var bladeY = hwTop + 6 + sIdx * 21;
+              drawRoundRect(ctx, iconBoxX + 4, bladeY, rackW - 8, 17, 3.5);
+              ctx.fillStyle = '#3A3A3C';
               ctx.fill();
-              ctx.strokeStyle = '#D1D1D6';
+              ctx.strokeStyle = '#48484A';
               ctx.lineWidth = 1;
               ctx.stroke();
 
+              /* Grüne Betriebs-LED (auch bei 0 TB aktiv -> kostet 40 € Grundgebühr!) */
               ctx.beginPath();
-              ctx.arc(iconBoxX + 10, bladeY + 5, 2.2, 0, Math.PI * 2);
-              ctx.fillStyle = simActive ? '#5856D6' : '#34C759';
+              ctx.arc(iconBoxX + 10, bladeY + 8.5, 2.3, 0, Math.PI * 2);
+              ctx.fillStyle = '#34C759';
               ctx.fill();
+
+              /* Zweite Traffic-LED (blinkt bei aktivem Datenabruf) */
+              var blinkOn = simActive && (((Math.floor(anim.progress * 28) + sIdx) % 2) === 0);
+              ctx.beginPath();
+              ctx.arc(iconBoxX + 16.5, bladeY + 8.5, 2.2, 0, Math.PI * 2);
+              ctx.fillStyle = blinkOn ? '#38BDF8' : (simActive ? '#5856D6' : '#636366');
+              ctx.fill();
+
+              if (!compact) {
+                ctx.font = '700 7px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillStyle = '#D1D1D6';
+                ctx.textAlign = 'right';
+                ctx.fillText(bladeNames[sIdx], iconBoxX + rackW - 7, bladeY + 9);
+              }
             }
           }
 
-          /* Verbindungskabel / Datenleitung zum Hauptbalken + fließende Impulse */
-          var cableStartX = iconBoxX + (isTech ? iconBoxW - 8 : iconBoxW - 6);
-          ctx.strokeStyle = simActive ? scenario.accentHex : '#C7C7CC';
-          ctx.lineWidth = 3;
+          /* Geschwungenes DC-Ladekabel + CCS-Stecker bzw. Glasfaser-Leitung */
+          var cableStartX = iconBoxX + (isTech ? iconBoxW - 6 : iconBoxW - 4);
+          ctx.save();
+          ctx.strokeStyle = simActive ? (isTech ? '#1F9D55' : '#5856D6') : '#AEAEB2';
+          ctx.lineWidth = 3.4;
+          ctx.lineCap = 'round';
           ctx.beginPath();
-          ctx.moveTo(cableStartX, barMidY);
-          ctx.lineTo(barLeft, barMidY);
+          ctx.moveTo(cableStartX, barMidY + 6);
+          ctx.quadraticCurveTo((cableStartX + barLeft) / 2, barMidY + (isTech ? 14 : 0), barLeft - 4, barMidY);
           ctx.stroke();
 
+          /* Stecker-Muffe direkt am Batterie-/Konto-Eingang */
+          drawRoundRect(ctx, barLeft - 7, barMidY - 6, 7, 12, 2.5);
+          ctx.fillStyle = simActive ? '#1C1C1E' : '#8E8E93';
+          ctx.fill();
+
           if (simActive || pulse > 0.03) {
-            var phaseShift = simActive ? (anim.progress * 9) % 1 : (1 - pulse);
-            for (var pIdx = 0; pIdx < 2; pIdx++) {
-              var frac = (phaseShift + pIdx * 0.5) % 1;
-              var dotX = cableStartX + 3 + frac * Math.max(4, barLeft - cableStartX - 6);
+            var phaseShift = simActive ? (anim.progress * 10) % 1 : (1 - pulse);
+            for (var pIdx = 0; pIdx < 3; pIdx++) {
+              var frac = (phaseShift + pIdx / 3) % 1;
+              var tInv = 1 - frac;
+              var ctrlX = (cableStartX + barLeft) / 2;
+              var ctrlY = barMidY + (isTech ? 14 : 0);
+              var dotX = tInv * tInv * cableStartX + 2 * tInv * frac * ctrlX + frac * frac * (barLeft - 5);
+              var dotY = tInv * tInv * (barMidY + 6) + 2 * tInv * frac * ctrlY + frac * frac * barMidY;
               ctx.beginPath();
-              ctx.arc(dotX, barMidY, 3.2, 0, Math.PI * 2);
-              ctx.fillStyle = simActive ? '#007AFF' : scenario.accentHex;
+              ctx.arc(dotX, dotY, 3, 0, Math.PI * 2);
+              ctx.fillStyle = isTech ? '#34C759' : '#38BDF8';
               ctx.globalAlpha = simActive ? 0.95 : Math.min(1, pulse * 1.4);
               ctx.fill();
               ctx.globalAlpha = 1;
             }
           }
+          ctx.restore();
 
-          /* 3. Haupt-Realitätsbalken (100-kWh-Batteriegehäuse bzw. Monatsrechnungs-Leiste) */
+          /* Bauteil-Überschrift über dem Hauptbalken */
+          ctx.font = '700 ' + (compact ? 8.8 : 9.6) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+          ctx.fillStyle = '#6C6C70';
+          ctx.textAlign = 'left';
+          ctx.fillText(
+            isTech ? 'E-Transporter \u00b7 100-kWh-Akku (5 Zellmodule à 20 kWh)' : 'Monatsabrechnung \u00b7 Fixe Grundgebühr + Streaming-Traffic',
+            barLeft,
+            barTop - 9
+          );
+
+          /* 3. Haupt-Realitätsbalken (5-zellige 100-kWh-Traktionsbatterie bzw. Cloud-Rechnungsbalken) */
           var bodyW = isTech ? barW - 8 : barW;
           drawRoundRect(ctx, barLeft, barTop, bodyW, barH, 11);
           ctx.fillStyle = '#F2F2F7';
           ctx.fill();
-          ctx.strokeStyle = isExactTarget ? 'rgba(52, 199, 89, 0.65)' : '#C7C7CC';
+          ctx.strokeStyle = overLimit ? '#FF3B30' : (isExactTarget ? 'rgba(52, 199, 89, 0.75)' : '#C7C7CC');
           ctx.lineWidth = 1.8;
           ctx.stroke();
 
-          /* Pluspol-Kappe rechts bei der Traktionsbatterie */
+          /* Hochvolt-Pluspol rechts bei der Traktionsbatterie */
           if (isTech) {
-            drawRoundRect(ctx, barLeft + bodyW + 1.5, barMidY - 9, 5.5, 18, 2.5);
-            ctx.fillStyle = '#AEAEB2';
+            drawRoundRect(ctx, barLeft + bodyW + 1.5, barMidY - 10, 6, 20, 2.5);
+            ctx.fillStyle = '#8E8E93';
             ctx.fill();
           }
 
@@ -2949,7 +3664,7 @@
           var previewTotal = dispT0 + fullAddedPreview;
           var previewW = Math.max(0, Math.min(innerW, (previewTotal / scaleMax) * innerW));
           if (!simActive && previewW > baseW + 2) {
-            ctx.fillStyle = previewTotal > limitVal + 0.5 ? 'rgba(255, 59, 48, 0.10)' : 'rgba(60, 60, 67, 0.06)';
+            ctx.fillStyle = previewTotal > limitVal + 0.5 ? 'rgba(255, 59, 48, 0.11)' : 'rgba(60, 60, 67, 0.06)';
             ctx.fillRect(innerX + baseW, barTop + 2, previewW - baseW, barH - 4);
             ctx.strokeStyle = previewTotal > limitVal + 0.5 ? 'rgba(255, 59, 48, 0.45)' : 'rgba(60, 60, 67, 0.25)';
             ctx.lineWidth = 1.2;
@@ -2966,18 +3681,16 @@
 
           /* Sanfter Impuls-Glanz auf der Basis-Kante beim Verschieben des Reglers */
           if (pulse > 0.03 && !simActive && baseW > 2) {
-            ctx.fillStyle = 'rgba(255, 255, 255, ' + (0.45 * pulse).toFixed(2) + ')';
+            ctx.fillStyle = 'rgba(255, 255, 255, ' + (0.48 * pulse).toFixed(2) + ')';
             ctx.fillRect(Math.max(innerX, innerX + baseW - 10), barTop + 2, Math.min(10, baseW), barH - 4);
           }
 
           /* Dynamischer Zuwachs-Block (+ m * x) während der Play-Animation */
           if (simActive && addedY > 0.1) {
             var totW = Math.max(baseW, Math.min(innerW, (totalY / scaleMax) * innerW));
-            var overLimit = totalY > limitVal + 0.2;
             ctx.fillStyle = overLimit ? '#FF3B30' : (isTech ? '#1F9D55' : '#5856D6');
             ctx.fillRect(innerX + baseW, barTop + 2, Math.max(0, totW - baseW), barH - 4);
 
-            /* Trennlinie zwischen Sockel t0 und Zuwachs */
             ctx.strokeStyle = '#FFFFFF';
             ctx.lineWidth = 2;
             ctx.beginPath();
@@ -2986,12 +3699,24 @@
             ctx.stroke();
           }
 
+          /* 5 reale Batteriezell-Trennwände (20, 40, 60, 80 kWh) bzw. Tarifstufen */
+          var stepMarks = isTech ? [20, 40, 60, 80] : [40, 100, 160, 220];
+          for (var mIdx = 0; mIdx < stepMarks.length; mIdx++) {
+            var mPx = innerX + (stepMarks[mIdx] / scaleMax) * innerW;
+            ctx.strokeStyle = 'rgba(28, 28, 30, 0.14)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(mPx, barTop + 2);
+            ctx.lineTo(mPx, barTop + barH - 2);
+            ctx.stroke();
+          }
+
           ctx.restore();
 
           /* BMS-80-kWh bzw. 220-€-Limit-Markierung auf dem Gehäuse */
           var limitPx = barLeft + 2 + ((limitVal / scaleMax) * (bodyW - 4));
-          ctx.strokeStyle = (simActive && totalY > limitVal + 0.2) ? '#FF3B30' : 'rgba(60, 60, 67, 0.45)';
-          ctx.lineWidth = 1.6;
+          ctx.strokeStyle = overLimit ? '#FF3B30' : '#1C1C1E';
+          ctx.lineWidth = 1.7;
           ctx.setLineDash([3, 3]);
           ctx.beginPath();
           ctx.moveTo(limitPx, barTop - 4);
@@ -3000,7 +3725,7 @@
           ctx.setLineDash([]);
 
           /* Beschriftung direkt im Balken */
-          ctx.font = '700 ' + (compact ? 10 : 11) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+          ctx.font = '700 ' + (compact ? 9.8 : 10.8) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
           ctx.textBaseline = 'middle';
           var baseLabel = 't\u2080 = ' + Formatters.formatNumber(targetT0, 0) + ' ' + scenario.unitY;
           if (baseW >= 68) {
@@ -3010,54 +3735,137 @@
           } else {
             ctx.fillStyle = isExactTarget ? '#14532D' : '#0055D4';
             ctx.textAlign = 'left';
-            ctx.fillText(baseLabel, barLeft + 2 + baseW + 7, barMidY - (simActive ? 8 : 0));
+            ctx.fillText(baseLabel, barLeft + 2 + baseW + 7, barMidY - (simActive ? 9 : 0));
           }
 
           if (simActive && addedY >= (isTech ? 6 : 18)) {
             var curTotW = Math.min(bodyW - 4, (totalY / scaleMax) * (bodyW - 4));
             var segW = curTotW - baseW;
-            var addStr = '+ ' + Formatters.formatNumber(addedY, 0) + ' ' + scenario.unitY;
-            if (segW >= 54) {
+            var addStr = '+' + Formatters.formatNumber(addedY, 0) + ' ' + scenario.unitY;
+            if (segW >= 52) {
               ctx.fillStyle = '#FFFFFF';
               ctx.textAlign = 'center';
               ctx.fillText(addStr, barLeft + 2 + baseW + segW / 2, barMidY);
             }
           } else if (!simActive) {
             ctx.fillStyle = '#6C6C70';
-            ctx.font = '600 ' + (compact ? 9.5 : 10.5) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
-            var prevStr = '+ ' + Formatters.formatNumber(fullAddedPreview, 0) + ' ' + scenario.unitY + ' (bis ' + scenario.dMaxTarget + ' ' + scenario.unitX + ')';
+            ctx.font = '600 ' + (compact ? 9.2 : 10.2) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+            var prevStr = '+' + Formatters.formatNumber(fullAddedPreview, 0) + ' ' + scenario.unitY + ' (in ' + scenario.dMaxTarget + ' ' + scenario.unitX + ')';
             if (baseW >= 68 && previewW - baseW >= 112) {
               ctx.textAlign = 'center';
               ctx.fillText(prevStr, barLeft + 2 + baseW + (previewW - baseW) / 2, barMidY);
-            } else if (baseW < 68 && previewW - baseW >= 188) {
+            } else if (baseW < 68 && previewW - baseW >= 186) {
               ctx.textAlign = 'right';
               ctx.fillText(prevStr, barLeft + 2 + previewW - 8, barMidY);
             }
           }
 
-          /* 4. Skala & Merksatz unten */
-          var scaleY = barTop + barH + 15;
-          ctx.font = '600 10px -apple-system, BlinkMacSystemFont, sans-serif';
+          /* 4. Skalenzeile unter dem Hauptbalken */
+          var scaleY = barTop + barH + 13;
+          ctx.font = '600 ' + (compact ? 9.2 : 9.8) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
           ctx.fillStyle = '#6C6C70';
           ctx.textAlign = 'left';
           ctx.fillText('0 ' + scenario.unitY, barLeft, scaleY);
 
           ctx.textAlign = 'center';
-          ctx.fillStyle = (simActive && totalY > limitVal + 0.2) ? '#FF3B30' : '#6C6C70';
-          ctx.fillText(isTech ? '80 kWh (BMS-Ziel)' : '220 \u20AC (Budgetlimit)', limitPx, scaleY);
+          ctx.fillStyle = overLimit ? '#FF3B30' : '#15803D';
+          var limitLabelX = Math.min(barLeft + bodyW - (compact ? 66 : 78), limitPx);
+          ctx.fillText(isTech ? '80 kWh (80 % Ziel)' : '220 \u20AC (Deckel)', limitLabelX, scaleY);
 
           ctx.textAlign = 'right';
           ctx.fillStyle = '#6C6C70';
           ctx.fillText(scaleMax + ' ' + scenario.unitY, barLeft + bodyW, scaleY);
 
-          /* Kompakter Erkenntnis-Hinweis ganz unten */
-          ctx.font = '600 ' + (compact ? 10 : 10.8) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
-          ctx.fillStyle = (totalY > limitVal + 0.2 && simActive) ? '#B91C1C' : '#3A3A3C';
-          ctx.textAlign = 'left';
-          var footNote = (totalY > limitVal + 0.2 && simActive)
-            ? '\u26A0 Mit t\u2080 = ' + Formatters.formatNumber(dispT0, 0) + ' ' + scenario.unitY + ' überschreitet das System vor Ablauf von ' + scenario.dMaxTarget + ' ' + scenario.unitX + ' die reguläre Grenze!'
-            : 'Beobachte: t\u2080 verschiebt den Startsockel bei 0 ' + scenario.unitX + ' – das Tempo (+' + Formatters.formatNumber(scenario.m) + ' ' + scenario.slopeUnit + ') bleibt identisch.';
-          ctx.fillText(footNote, iconBoxX, h - 14);
+          /* 5. Drei Live-Praxis-Telemetrie-Kacheln im unteren Bereich */
+          var tilesTop = scaleY + 14;
+          var tilesH = Math.max(52, h - tilesTop - 8);
+          var gap = compact ? 6 : 8;
+          var tileW = (w - pad * 2 - gap * 2) / 3;
+
+          if (isTech) {
+            var rangeKm = Math.round(labelTotalY * 4); // ~25 kWh / 100 km im E-Transporter
+            drawMiniTelemetryTile(
+              ctx,
+              pad,
+              tilesTop,
+              tileW,
+              tilesH,
+              'Start-Restladung (t\u2080)',
+              Formatters.formatNumber(targetT0, 0) + ' kWh (' + Formatters.formatNumber(targetT0, 0) + ' %)',
+              isExactTarget ? '\u2713 Szenario-Startwert' : 'Vor dem Laden im Akku',
+              isExactTarget ? '#ECFDF3' : '#EFF6FF',
+              isExactTarget ? '#34C759' : 'rgba(0,122,255,0.35)',
+              isExactTarget ? '#15803D' : '#0055D4'
+            );
+            drawMiniTelemetryTile(
+              ctx,
+              pad + tileW + gap,
+              tilesTop,
+              tileW,
+              tilesH,
+              'Nachladung (+2\u00b7t)',
+              (simActive ? '+' + Formatters.formatNumber(addedY, 1) : '+0') + ' kWh',
+              simActive ? '120 kW Dauerleistung' : '0 kW (vor Ladestart)',
+              simActive ? '#F0FDF4' : '#F8F9FB',
+              simActive ? 'rgba(31,157,85,0.4)' : 'rgba(60,60,67,0.14)',
+              simActive ? '#15803D' : '#1C1C1E'
+            );
+            drawMiniTelemetryTile(
+              ctx,
+              pad + (tileW + gap) * 2,
+              tilesTop,
+              tileW,
+              tilesH,
+              'Praxis-Reichweite',
+              'ca. ' + rangeKm + ' km',
+              overLimit ? '\u26A0 Über 80-%-Schutzgrenze!' : ('Akku: ' + Formatters.formatNumber(labelTotalY, 1) + ' kWh'),
+              overLimit ? '#FFECEB' : '#F8F9FB',
+              overLimit ? '#FF3B30' : 'rgba(60,60,67,0.14)',
+              overLimit ? '#B91C1C' : '#1C1C1E'
+            );
+          } else {
+            var hdHours = Math.round(curX * 400); // 1 TB ≈ 400 Std. Full-HD-Stream
+            drawMiniTelemetryTile(
+              ctx,
+              pad,
+              tilesTop,
+              tileW,
+              tilesH,
+              'Fixe Grundgebühr (t\u2080)',
+              Formatters.formatNumber(targetT0, 0) + ' \u20AC / Monat',
+              isExactTarget ? '\u2713 Szenario-Startwert' : '24/7 Server & Schutz',
+              isExactTarget ? '#ECFDF3' : '#EFF6FF',
+              isExactTarget ? '#34C759' : 'rgba(0,122,255,0.35)',
+              isExactTarget ? '#15803D' : '#0055D4'
+            );
+            drawMiniTelemetryTile(
+              ctx,
+              pad + tileW + gap,
+              tilesTop,
+              tileW,
+              tilesH,
+              'Traffic-Kosten (+1,5\u00b7x)',
+              (simActive ? '+' + Formatters.formatNumber(addedY, 1) : '+0') + ' \u20AC',
+              Formatters.formatNumber(curX, 0) + ' TB Video-Abruf',
+              simActive ? '#F5F3FF' : '#F8F9FB',
+              simActive ? 'rgba(88,86,214,0.4)' : 'rgba(60,60,67,0.14)',
+              simActive ? '#4340B8' : '#1C1C1E'
+            );
+            drawMiniTelemetryTile(
+              ctx,
+              pad + (tileW + gap) * 2,
+              tilesTop,
+              tileW,
+              tilesH,
+              'Gesamtrechnung K',
+              Formatters.formatNumber(labelTotalY, 1) + ' \u20AC',
+              overLimit ? '\u26A0 Über 220-\u20AC-Budget!' : ('\u2248 ' + hdHours.toLocaleString('de-DE') + ' Std. HD-Stream'),
+              overLimit ? '#FFECEB' : '#F8F9FB',
+              overLimit ? '#FF3B30' : 'rgba(60,60,67,0.14)',
+              overLimit ? '#B91C1C' : '#1C1C1E'
+            );
+          }
+
           ctx.restore();
         }
 
@@ -3250,11 +4058,13 @@
 
           var x1 = (anim && typeof anim.dispX1 === 'number') ? anim.dispX1 : substate.p2X1;
           var x2 = (anim && typeof anim.dispX2 === 'number') ? anim.dispX2 : substate.p2X2;
+          var exactX1 = substate.p2X1;
+          var exactX2 = substate.p2X2;
           var y1 = scenario.m * x1 + scenario.t0Target;
-          var y2 = scenario.m * x2 + scenario.t0Target;
           var dx = x2 - x1;
-          var dy = y2 - y1;
+          var dy = scenario.m * dx;
           var swapped = !!substate.p2SwapQuotient;
+          var pulse = (anim && anim.pulse) ? anim.pulse : 0;
 
           var simActive = !!(anim && anim.simActive && anim.phase === 2 && Math.abs(dx) > 1e-6);
           var u = 1;
@@ -3264,116 +4074,200 @@
             v = anim.progress > 0.48 ? easeOutCubic((anim.progress - 0.48) / 0.52) : 0;
           }
 
-          var curDx = dx * u;
-          var curDy = dy * v;
-          var curY2 = y1 + curDy;
+          var curDx = simActive ? dx * u : (exactX2 - exactX1);
+          var curDy = simActive ? dy * v : (scenario.m * (exactX2 - exactX1));
+          var labelY1 = scenario.m * exactX1 + scenario.t0Target;
+          var curY2 = (simActive ? y1 : labelY1) + curDy;
           var isTech = scenario.id === 'technik';
           var maxScaleY = isTech ? 100 : 240;
 
           var pad = compact ? 10 : 14;
-          var rightCardW = compact ? 112 : 148;
-          var leftW = Math.max(135, w - pad * 3 - rightCardW);
+          var rightCardW = compact ? 116 : 154;
+          var leftW = Math.max(138, w - pad * 3 - rightCardW);
           var rightX = pad * 2 + leftW;
 
           ctx.save();
 
-          /* Linke Seite: Realer Systemvergleich von P1 zu P2 */
-          ctx.font = '700 ' + (compact ? 10.5 : 11.5) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
-          ctx.fillStyle = '#1C1C1E';
+          /* 1. Kopfzeile links */
+          ctx.font = '700 ' + (compact ? 10.2 : 11.4) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+          ctx.fillStyle = swapped ? '#B91C1C' : '#1C1C1E';
           ctx.textAlign = 'left';
           ctx.textBaseline = 'middle';
           var topTitle = simActive
-            ? (anim.progress <= 0.48 ? '1. Takt (Blau): Zeit / Daten schreiten um \u0394' + scenario.varX + ' voran ...' : '2. Takt (Orange): Realgröße ändert sich um \u0394' + scenario.varY + '!')
-            : (isTech ? 'Realer Akku-Vergleich zwischen P\u2081 und P\u2082:' : 'Realer Kosten-Vergleich zwischen P\u2081 und P\u2082:');
-          ctx.fillText(topTitle, pad, 17);
+            ? (anim.progress <= 0.48
+              ? '1. Takt (Blau): ' + (isTech ? 'Ladezeit' : 'Datenvolumen') + ' schreitet um \u0394' + scenario.varX + ' voran ...'
+              : '2. Takt (Orange): ' + (isTech ? 'Akkuenergie' : 'Rechnung') + ' ändert sich um \u0394' + scenario.varY + '!')
+            : (isTech ? 'Zwei-Punkt-Leistungsmessung (P\u2081 \u2192 P\u2082):' : 'Zwei-Punkt-Traffic-Abrechnung (P\u2081 \u2192 P\u2082):');
+          ctx.fillText(topTitle, pad, 16);
 
-          /* Balken 1: Zustand bei P1 */
-          var b1Y = 34;
-          var barH = 26;
-          drawRoundRect(ctx, pad, b1Y, leftW, barH, 7);
+          /* 2. Balken 1: Messpunkt P1 */
+          var b1Y = 31;
+          var barH = 32;
+          drawRoundRect(ctx, pad, b1Y, leftW, barH, 8);
           ctx.fillStyle = '#F2F2F7';
           ctx.fill();
-          ctx.strokeStyle = 'rgba(0, 122, 255, 0.35)';
-          ctx.lineWidth = 1.2;
+          ctx.strokeStyle = 'rgba(0, 122, 255, 0.38)';
+          ctx.lineWidth = 1.3;
           ctx.stroke();
 
           var w1 = Math.max(4, Math.min(leftW - 4, (y1 / maxScaleY) * (leftW - 4)));
-          drawRoundRect(ctx, pad + 2, b1Y + 2, w1, barH - 4, 5);
+          drawRoundRect(ctx, pad + 2, b1Y + 2, w1, barH - 4, 6);
           ctx.fillStyle = 'rgba(0, 122, 255, 0.22)';
           ctx.fill();
 
-          ctx.font = '700 ' + (compact ? 9.8 : 10.6) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
-          ctx.fillStyle = '#0055D4';
-          ctx.fillText('P\u2081 (' + Formatters.formatNumber(x1, 0) + ' ' + scenario.unitX + '): ' + Formatters.formatNumber(y1, 1) + ' ' + scenario.unitY, pad + 8, b1Y + barH / 2 + 0.5);
+          /* Zell-/Tarif-Teilstriche in Balken 1 */
+          var p2Ticks = isTech ? [20, 40, 60, 80] : [40, 100, 160, 220];
+          for (var tIdx = 0; tIdx < p2Ticks.length; tIdx++) {
+            var tx1 = pad + 2 + (p2Ticks[tIdx] / maxScaleY) * (leftW - 4);
+            ctx.strokeStyle = 'rgba(28, 28, 30, 0.09)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(tx1, b1Y + 2);
+            ctx.lineTo(tx1, b1Y + barH - 2);
+            ctx.stroke();
+          }
 
-          /* Mittlere Fortschritts-Brücke: Horizontale Änderung Delta x (#007AFF) */
-          var midY = 79;
-          var arrowLeft = pad + 8;
-          var arrowMaxW = leftW - 16;
-          ctx.strokeStyle = 'rgba(0, 122, 255, 0.20)';
-          ctx.lineWidth = 4;
-          ctx.lineCap = 'round';
-          ctx.beginPath();
-          ctx.moveTo(arrowLeft, midY);
-          ctx.lineTo(arrowLeft + arrowMaxW, midY);
-          ctx.stroke();
+          ctx.font = '700 ' + (compact ? 9.6 : 10.6) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+          ctx.fillStyle = '#0055D4';
+          ctx.textAlign = 'left';
+          ctx.fillText(
+            'P\u2081 (' + Formatters.formatNumber(exactX1, 0) + ' ' + scenario.unitX + '): ' + Formatters.formatNumber(labelY1, 1) + ' ' + scenario.unitY,
+            pad + 8,
+            b1Y + barH / 2 + 0.5
+          );
+          if (!compact) {
+            ctx.font = '600 9.2px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillStyle = '#6C6C70';
+            ctx.textAlign = 'right';
+            ctx.fillText(isTech ? (Formatters.formatNumber(labelY1, 0) + ' % Ladestand') : 'Startmessung', pad + leftW - 8, b1Y + barH / 2 + 0.5);
+          }
+
+          /* 3. Animierte Transfer-Pipeline Delta x (#007AFF) mit fließenden Energie-/Datenimpulsen */
+          var midY = 82;
+          var arrowLeft = pad + 10;
+          var arrowMaxW = leftW - 20;
+          drawRoundRect(ctx, arrowLeft, midY - 3.5, arrowMaxW, 7, 3.5);
+          ctx.fillStyle = 'rgba(0, 122, 255, 0.14)';
+          ctx.fill();
 
           if (Math.abs(dx) > 1e-6) {
-            var activeBridgeW = Math.max(8, arrowMaxW * u);
+            var activeBridgeW = Math.max(10, arrowMaxW * u);
+            var isReverse = dx < 0;
+            var lineStartX = isReverse ? (arrowLeft + arrowMaxW) : arrowLeft;
+            var lineEndX = isReverse ? (arrowLeft + arrowMaxW - activeBridgeW) : (arrowLeft + activeBridgeW);
+
             ctx.strokeStyle = '#007AFF';
-            ctx.lineWidth = 4;
+            ctx.lineWidth = 4.2;
+            ctx.lineCap = 'round';
             ctx.beginPath();
-            ctx.moveTo(arrowLeft, midY);
-            ctx.lineTo(arrowLeft + activeBridgeW, midY);
+            ctx.moveTo(lineStartX, midY);
+            ctx.lineTo(lineEndX, midY);
             ctx.stroke();
-            drawArrowHead(ctx, arrowLeft, midY, arrowLeft + activeBridgeW + 2, midY, '#007AFF', 6.5);
+            drawArrowHead(ctx, lineStartX, midY, lineEndX + (isReverse ? -2 : 2), midY, '#007AFF', 7);
+
+            if (simActive || pulse > 0.04) {
+              var pShift = simActive ? (anim.progress * 8) % 1 : (1 - pulse);
+              for (var dIdx = 0; dIdx < 3; dIdx++) {
+                var f = (pShift + dIdx / 3) % 1;
+                var pxDot = lineStartX + (lineEndX - lineStartX) * f;
+                ctx.beginPath();
+                ctx.arc(pxDot, midY, 2.8, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fill();
+              }
+            }
           }
 
           var signStrX = curDx > 0 ? '+' : '';
           var bridgeText = Math.abs(dx) < 1e-6
             ? '\u0394' + scenario.varX + ' = 0 ' + scenario.unitX + ' (Punkte identisch)'
-            : '\u0394' + scenario.varX + ' = ' + signStrX + Formatters.formatNumber(curDx, 1) + ' ' + scenario.unitX + (isTech ? ' Ladezeit' : ' Datenvolumen');
+            : '\u0394' + scenario.varX + ' = ' + signStrX + Formatters.formatNumber(curDx, 1) + ' ' + scenario.unitX + (isTech ? ' Ladezeit' : ' Datentransfer');
           drawBadge(ctx, leftW + pad * 2, bridgeText, pad + leftW / 2, midY, '#EFF6FF', '#0055D4', '#007AFF');
 
-          /* Balken 2: Zustand bei P2 mit hervorgehobenem orangem Differenz-Block Delta y (#FF9500) */
-          var b2Y = 100;
-          drawRoundRect(ctx, pad, b2Y, leftW, barH, 7);
+          /* 4. Balken 2: Messpunkt P2 mit hervorgehobenem orangem Differenz-Block Delta y (#FF9500) */
+          var b2Y = 102;
+          drawRoundRect(ctx, pad, b2Y, leftW, barH, 8);
           ctx.fillStyle = '#F2F2F7';
           ctx.fill();
-          ctx.strokeStyle = 'rgba(255, 149, 0, 0.55)';
-          ctx.lineWidth = 1.3;
+          ctx.strokeStyle = 'rgba(255, 149, 0, 0.65)';
+          ctx.lineWidth = 1.4;
           ctx.stroke();
 
-          var minYVal = Math.min(y1, curY2);
-          var maxYVal = Math.max(y1, curY2);
+          var dispY2Bar = y1 + dy * v;
+          var minYVal = Math.min(y1, dispY2Bar);
+          var maxYVal = Math.max(y1, dispY2Bar);
           var wBase = Math.max(2, Math.min(leftW - 4, (minYVal / maxScaleY) * (leftW - 4)));
           var wTop = Math.max(wBase, Math.min(leftW - 4, (maxYVal / maxScaleY) * (leftW - 4)));
 
-          drawRoundRect(ctx, pad + 2, b2Y + 2, wBase, barH - 4, 5);
+          drawRoundRect(ctx, pad + 2, b2Y + 2, wBase, barH - 4, 6);
           ctx.fillStyle = 'rgba(0, 122, 255, 0.18)';
           ctx.fill();
 
           if (wTop - wBase > 0.8) {
-            ctx.fillStyle = curDy >= 0 ? '#FF9500' : 'rgba(255, 149, 0, 0.48)';
+            ctx.fillStyle = curDy >= 0 ? 'rgba(255, 149, 0, 0.82)' : 'rgba(255, 149, 0, 0.42)';
             ctx.fillRect(pad + 2 + wBase, b2Y + 2, wTop - wBase, barH - 4);
           }
 
+          for (var tIdx2 = 0; tIdx2 < p2Ticks.length; tIdx2++) {
+            var tx2 = pad + 2 + (p2Ticks[tIdx2] / maxScaleY) * (leftW - 4);
+            ctx.strokeStyle = 'rgba(28, 28, 30, 0.09)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(tx2, b2Y + 2);
+            ctx.lineTo(tx2, b2Y + barH - 2);
+            ctx.stroke();
+          }
+
           var signStrY = curDy > 0 ? '+' : '';
-          ctx.font = '700 ' + (compact ? 9.8 : 10.6) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+          ctx.font = '700 ' + (compact ? 9.6 : 10.6) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
           ctx.fillStyle = '#1C1C1E';
-          var p2BarLabel = 'P\u2082 (' + Formatters.formatNumber(x1 + curDx, 0) + ' ' + scenario.unitX + '): ' +
+          ctx.textAlign = 'left';
+          var p2BarLabel = 'P\u2082 (' + Formatters.formatNumber((simActive ? x1 : exactX1) + curDx, 0) + ' ' + scenario.unitX + '): ' +
             Formatters.formatNumber(curY2, 1) + ' ' + scenario.unitY +
             (Math.abs(dx) > 1e-6 ? '  (\u0394' + scenario.varY + ' = ' + signStrY + Formatters.formatNumber(curDy, 1) + ' ' + scenario.unitY + ')' : '');
           ctx.fillText(p2BarLabel, pad + 8, b2Y + barH / 2 + 0.5);
 
-          /* Fußzeile links */
-          ctx.font = '600 10px -apple-system, BlinkMacSystemFont, sans-serif';
-          ctx.fillStyle = '#6C6C70';
-          ctx.fillText('Egal wie weit P\u2081 & P\u2082 auseinanderliegen – das Verhältnis rechts bleibt fest:', pad, h - 14);
+          /* 5. Reale Ingenieurs- & Tarif-Prüfbox unten links */
+          var infoTop = 146;
+          var infoH = Math.max(48, h - infoTop - 10);
+          drawRoundRect(ctx, pad, infoTop, leftW, infoH, 8);
+          ctx.fillStyle = swapped ? '#FFECEB' : '#F8F9FB';
+          ctx.fill();
+          ctx.strokeStyle = swapped ? '#FF3B30' : 'rgba(60, 60, 67, 0.14)';
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
 
-          /* Rechte Kachel: 1-Einheits-Takt bzw. Invers-Warnkarte */
-          var cardTop = 14;
-          var cardH = h - 28;
+          ctx.save();
+          drawRoundRect(ctx, pad + 1, infoTop + 1, leftW - 2, infoH - 2, 7);
+          ctx.clip();
+
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'top';
+          ctx.font = '700 ' + (compact ? 9.1 : 10) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+          ctx.fillStyle = swapped ? '#B91C1C' : '#1C1C1E';
+          var realCheckLine1 = swapped
+            ? (isTech
+              ? '\u26A0 Inverser Wert: 0,5 min/kWh = 30 Sek. Ladezeit pro 1 kWh'
+              : '\u26A0 Inverser Wert: 0,67 TB/\u20AC = 667 GB Datenmenge pro 1 \u20AC')
+            : (isTech
+              ? 'Praxis-Check: 2 kWh/min \u00b7 60 min/h = 120 kW konstante Ladeleistung'
+              : 'Praxis-Check: 1,5 \u20AC/TB = konstant 0,15 Cent pro Gigabyte Stream');
+          ctx.fillText(realCheckLine1, pad + 9, infoTop + 10);
+
+          if (infoH >= 52) {
+            ctx.font = '600 ' + (compact ? 8.6 : 9.4) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillStyle = swapped ? '#B91C1C' : '#6C6C70';
+            var realCheckLine2 = swapped
+              ? 'Achtung: Weite geteilt durch Höhe liefert NICHT die Steigung m!'
+              : 'Egal wo P\u2081 und P\u2082 liegen: Höhe geteilt durch Weite bleibt konstant!';
+            ctx.fillText(realCheckLine2, pad + 9, infoTop + 29);
+          }
+          ctx.restore();
+
+          /* 6. Rechte Kachel: 1-Einheits-Prüfkarte m mit Mini-Steigungsdreieck */
+          var cardTop = 12;
+          var cardH = h - 22;
+          var cxCard = rightX + rightCardW / 2;
           drawRoundRect(ctx, rightX, cardTop, rightCardW, cardH, 11);
           ctx.fillStyle = swapped ? '#FFECEB' : '#F0FDF4';
           ctx.fill();
@@ -3382,26 +4276,70 @@
           ctx.stroke();
 
           ctx.textAlign = 'center';
-          ctx.font = '800 ' + (compact ? 8.8 : 9.5) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+          ctx.textBaseline = 'middle';
+          ctx.font = '800 ' + (compact ? 8.2 : 9.2) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
           ctx.fillStyle = swapped ? '#B91C1C' : '#15803D';
-          ctx.fillText(swapped ? '\u26A0 QUOTIENT VERTAUSCHT' : '1-EINHEITS-TAKT (m)', rightX + rightCardW / 2, cardTop + 20);
+          ctx.fillText(swapped ? '\u26A0 EINHEIT VERTAUSCHT' : '1-EINHEITS-TAKT (m)', cxCard, cardTop + 18);
 
-          /* Großer Realitäts-Takt in der Kachelmitte */
-          ctx.font = '800 ' + (compact ? 11.5 : 13) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+          /* Mini-Einheitsdreieck in der Karte */
+          var triLeft = cxCard - (compact ? 32 : 40);
+          var triRight = cxCard + (compact ? 6 : 8);
+          var triBot = cardTop + (compact ? 74 : 84);
+          var triTop = cardTop + (compact ? 40 : 44);
+
+          ctx.strokeStyle = swapped ? '#FF3B30' : '#15803D';
+          ctx.lineWidth = 2.2;
+          ctx.beginPath();
+          ctx.moveTo(triLeft, triBot);
+          ctx.lineTo(triRight, triTop);
+          ctx.stroke();
+
+          /* Horizontale 1-Einheit-Kathete */
+          ctx.strokeStyle = '#007AFF';
+          ctx.lineWidth = 2.6;
+          ctx.beginPath();
+          ctx.moveTo(triLeft, triBot);
+          ctx.lineTo(triRight, triBot);
+          ctx.stroke();
+
+          /* Vertikale m-Kathete */
+          ctx.strokeStyle = '#FF9500';
+          ctx.lineWidth = 2.6;
+          ctx.beginPath();
+          ctx.moveTo(triRight, triBot);
+          ctx.lineTo(triRight, triTop);
+          ctx.stroke();
+
+          ctx.font = '700 8.4px -apple-system, BlinkMacSystemFont, sans-serif';
+          ctx.fillStyle = '#0055D4';
+          ctx.fillText('1 ' + scenario.unitX, (triLeft + triRight) / 2, triBot + 11);
+
+          ctx.textAlign = 'left';
+          ctx.fillStyle = '#B45309';
+          ctx.fillText('+' + Formatters.formatNumber(scenario.m) + ' ' + scenario.unitY, triRight + 5, (triTop + triBot) / 2);
+          ctx.textAlign = 'center';
+
+          /* Großer Realitäts-Takt darunter */
+          var textBaseY = cardTop + cardH - (compact ? 64 : 74);
+          ctx.font = '700 ' + (compact ? 10.5 : 11.8) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
           ctx.fillStyle = '#1C1C1E';
-          var unitLine1 = swapped ? ('Je 1 ' + scenario.unitY) : ('Je 1 ' + scenario.unitX);
+          var unitLine1 = swapped ? ('Je 1 ' + scenario.unitY) : ('Pro 1 ' + scenario.unitX);
           var unitLine2 = swapped
             ? ('\u2192 ' + Formatters.formatNumber(1 / scenario.m, 2) + ' ' + scenario.unitX)
             : ('\u2192 +' + Formatters.formatNumber(scenario.m) + ' ' + scenario.unitY);
 
-          ctx.fillText(unitLine1, rightX + rightCardW / 2, cardTop + cardH / 2 - 6);
+          ctx.fillText(unitLine1, cxCard, textBaseY);
           ctx.fillStyle = swapped ? '#FF3B30' : '#15803D';
-          ctx.font = '800 ' + (compact ? 12.5 : 14.5) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
-          ctx.fillText(unitLine2, rightX + rightCardW / 2, cardTop + cardH / 2 + 15);
+          ctx.font = '800 ' + (compact ? 12.2 : 14.2) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+          ctx.fillText(unitLine2, cxCard, textBaseY + 20);
 
-          ctx.font = '600 ' + (compact ? 9 : 9.8) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
-          ctx.fillStyle = swapped ? '#B91C1C' : '#6C6C70';
-          ctx.fillText(swapped ? 'Falsche Einheit!' : ('m = ' + Formatters.formatNumber(scenario.m) + ' ' + scenario.slopeUnit), rightX + rightCardW / 2, cardTop + cardH - 16);
+          ctx.font = '700 ' + (compact ? 8.6 : 9.6) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+          ctx.fillStyle = swapped ? '#B91C1C' : '#3A3A3C';
+          ctx.fillText(
+            swapped ? ('Falsch: ' + scenario.inverseSlopeUnit) : ('m = ' + Formatters.formatNumber(scenario.m) + ' ' + scenario.slopeUnit),
+            cxCard,
+            cardTop + cardH - 14
+          );
 
           ctx.restore();
         }
@@ -3677,11 +4615,12 @@
           var simActive = !!(anim && anim.simActive && anim.phase === 3);
           var isTech = scenario.id === 'technik';
 
-          var trackLeft = compact ? 14 : 22;
-          var trackRight = w - (compact ? 14 : 22);
+          var pad = compact ? 10 : 14;
+          var trackLeft = pad;
+          var trackRight = w - pad;
           var trackW = Math.max(140, trackRight - trackLeft);
-          var trackTop = 48;
-          var trackH = 48;
+          var trackTop = 36;
+          var trackH = 54;
           var spanX = scenario.p3PlotMaxX - scenario.p3PlotMinX;
 
           function toTrackX(val) {
@@ -3693,82 +4632,111 @@
           var pxMin = toTrackX(xMin);
           var pxMax = toTrackX(xMax);
 
+          var curScanX = simActive ? (xMin + (xMax - xMin) * anim.progress) : null;
+          var curScanY = simActive ? (scenario.m * curScanX + scenario.t0Target) : null;
+          var curScanBreach = simActive && (curScanX < -1e-6 || curScanX > scenario.dMaxTarget + 1e-6);
+
           ctx.save();
 
           /* 1. Kopfzeile mit Echtzeit-Systemdiagnose */
-          ctx.font = '700 ' + (compact ? 10.8 : 11.8) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+          ctx.font = '700 ' + (compact ? 10.2 : 11.4) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
           ctx.textAlign = 'left';
           ctx.textBaseline = 'middle';
 
           if (simActive) {
-            var curScanX = xMin + (xMax - xMin) * anim.progress;
-            var curScanY = scenario.m * curScanX + scenario.t0Target;
-            var curBreach = curScanX < -1e-6 || curScanX > scenario.dMaxTarget + 1e-6;
-            ctx.fillStyle = curBreach ? '#B91C1C' : '#1C1C1E';
+            ctx.fillStyle = curScanBreach ? '#B91C1C' : '#1C1C1E';
             ctx.fillText(
-              (curBreach ? '\u26A0 Sperrbereich erreicht: ' : 'System-Prüflauf regulär: ') +
+              (curScanBreach ? '\u26A0 Sperrzone erreicht: ' : 'Live-Prüflauf: ') +
               Formatters.formatNumber(curScanX, 1) + ' ' + scenario.unitX + '  \u2192  ' +
-              (isTech ? 'Akkustand ' : 'Rechnung ') + Formatters.formatNumber(curScanY, 1) + ' ' + scenario.unitY,
+              (isTech ? 'Akku ' : 'Kosten ') + Formatters.formatNumber(curScanY, 1) + ' ' + scenario.unitY,
               trackLeft,
-              20
+              17
             );
           } else {
             ctx.fillStyle = hasBreach ? '#B91C1C' : (isExact ? '#15803D' : '#1C1C1E');
             var diagText = hasBreach
-              ? (isTech ? '\u26A0 Warnung: Gewähltes Fenster verletzt den zulässigen BMS-Schnellladebereich!' : '\u26A0 Warnung: Gewähltes Fenster verletzt die gültigen Server-Tarifgrenzen!')
+              ? (isTech ? '\u26A0 Sicherheits-Alarm: Gewähltes Fenster verletzt die BMS-Grenzen!' : '\u26A0 Firewall-Alarm: Gewähltes Fenster verletzt die Tarifgrenzen!')
               : (isExact
-                ? (isTech ? '\u2713 Volles Schnelllade-Fenster aktiv: 20 kWh bis 80 kWh (0–30 min)' : '\u2713 Volles Tarif-Kontingent aktiv: 40 \u20AC bis 220 \u20AC (0–120 TB)')
-                : (isTech ? 'Gewähltes Akku-Fenster: ' : 'Gewähltes Kosten-Fenster: ') + Formatters.formatNumber(yMin, 0) + ' bis ' + Formatters.formatNumber(yMax, 0) + ' ' + scenario.unitY);
-            ctx.fillText(diagText, trackLeft, 20);
+                ? (isTech ? '\u2713 Optimales BMS-Schnellladefenster aktiv: 0–30 min (20–80 kWh)' : '\u2713 Volles Cloud-Kontingent aktiv: 0–120 TB (40–220 \u20AC)')
+                : (isTech ? 'Gewähltes Ladefenster: ' : 'Gewähltes Kostenfenster: ') + Formatters.formatNumber(yMin, 0) + ' bis ' + Formatters.formatNumber(yMax, 0) + ' ' + scenario.unitY);
+            ctx.fillText(diagText, trackLeft, 17);
           }
 
-          /* 2. Dreiteiliger Realitäts-Korridor (Links gesperrt | Mitte Regulär | Rechts Schutzstopp) */
+          /* 2. Dreiteiliger Sicherheits- & Tarif-Korridor */
           drawRoundRect(ctx, trackLeft, trackTop, trackW, trackH, 11);
           ctx.fillStyle = '#F2F2F7';
           ctx.fill();
-          ctx.strokeStyle = hasBreach ? '#FF3B30' : '#C7C7CC';
-          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = hasBreach ? '#FF3B30' : (isExact ? '#34C759' : '#C7C7CC');
+          ctx.lineWidth = 1.6;
           ctx.stroke();
 
           ctx.save();
           drawRoundRect(ctx, trackLeft + 1.5, trackTop + 1.5, trackW - 3, trackH - 3, 9.5);
           ctx.clip();
 
-          /* Zone Links (< 0): Technisch unmöglich */
+          /* Zone Links (< 0): Technisch unmöglich (mit Schraffur) */
+          var leftZoneW = Math.max(0, pxZero - trackLeft);
           ctx.fillStyle = breachLow ? 'rgba(255, 59, 48, 0.22)' : 'rgba(60, 60, 67, 0.08)';
-          ctx.fillRect(trackLeft, trackTop, Math.max(0, pxZero - trackLeft), trackH);
+          ctx.fillRect(trackLeft, trackTop, leftZoneW, trackH);
+          drawDiagonalHatch(ctx, trackLeft, trackTop, leftZoneW, trackH, breachLow ? 'rgba(255,59,48,0.28)' : 'rgba(60,60,67,0.12)', 8);
 
-          /* Zone Mitte (0 .. dMaxTarget): Reguläres Betriebsfenster */
-          ctx.fillStyle = 'rgba(52, 199, 89, 0.08)';
+          /* Zone Mitte (0 .. dMaxTarget): Reguläres Betriebsfenster + Teilstriche */
+          ctx.fillStyle = 'rgba(52, 199, 89, 0.11)';
           ctx.fillRect(pxZero, trackTop, Math.max(0, pxLim - pxZero), trackH);
 
-          /* Zone Rechts (> dMaxTarget): BMS-Zellschutz / Tarif-Sperre */
-          ctx.fillStyle = breachHigh ? 'rgba(255, 59, 48, 0.22)' : 'rgba(60, 60, 67, 0.08)';
-          ctx.fillRect(pxLim, trackTop, Math.max(0, trackRight - pxLim), trackH);
+          var safeStep = isTech ? 10 : 40;
+          for (var sv = safeStep; sv < scenario.dMaxTarget; sv += safeStep) {
+            var svPx = toTrackX(sv);
+            ctx.strokeStyle = 'rgba(21, 128, 61, 0.15)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(svPx, trackTop + 4);
+            ctx.lineTo(svPx, trackTop + trackH - 4);
+            ctx.stroke();
+          }
+
+          /* Zone Rechts (> dMaxTarget): BMS-Zellschutz / Firewall-Sperre (mit Schraffur) */
+          var rightZoneW = Math.max(0, trackRight - pxLim);
+          ctx.fillStyle = breachHigh ? 'rgba(255, 59, 48, 0.22)' : 'rgba(255, 149, 0, 0.10)';
+          ctx.fillRect(pxLim, trackTop, rightZoneW, trackH);
+          drawDiagonalHatch(ctx, pxLim, trackTop, rightZoneW, trackH, breachHigh ? 'rgba(255,59,48,0.28)' : 'rgba(255,149,0,0.22)', 8);
 
           /* Aktives ausgewähltes Betriebsfenster [xMin ; xMax] */
-          var activeW = Math.max(4, pxMax - pxMin);
-          var winFill = hasBreach ? 'rgba(255, 59, 48, 0.78)' : (isExact ? 'rgba(52, 199, 89, 0.85)' : 'rgba(0, 122, 255, 0.78)');
-          drawRoundRect(ctx, pxMin, trackTop + 8, activeW, trackH - 16, 6);
+          var activeW = Math.max(5, pxMax - pxMin);
+          var winFill = hasBreach ? 'rgba(255, 59, 48, 0.82)' : (isExact ? 'rgba(52, 199, 89, 0.88)' : 'rgba(0, 122, 255, 0.82)');
+          drawRoundRect(ctx, pxMin, trackTop + 9, activeW, trackH - 18, 6);
           ctx.fillStyle = winFill;
           ctx.fill();
 
-          /* Text im aktiven Betriebsfenster */
-          if (activeW >= 105) {
-            ctx.font = '700 ' + (compact ? 9.5 : 10.5) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+          /* Eckige Intervall-Klammerkappen [ und ] an den Enden des aktiven Fensters */
+          ctx.strokeStyle = '#FFFFFF';
+          ctx.lineWidth = 2.2;
+          ctx.beginPath();
+          ctx.moveTo(pxMin + 6, trackTop + 13);
+          ctx.lineTo(pxMin + 2.5, trackTop + 13);
+          ctx.lineTo(pxMin + 2.5, trackTop + trackH - 13);
+          ctx.lineTo(pxMin + 6, trackTop + trackH - 13);
+          ctx.moveTo(pxMax - 6, trackTop + 13);
+          ctx.lineTo(pxMax - 2.5, trackTop + 13);
+          ctx.lineTo(pxMax - 2.5, trackTop + trackH - 13);
+          ctx.lineTo(pxMax - 6, trackTop + trackH - 13);
+          ctx.stroke();
+
+          if (activeW >= 112) {
+            ctx.font = '800 ' + (compact ? 9.5 : 10.6) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.fillStyle = '#FFFFFF';
             ctx.textAlign = 'center';
             ctx.fillText(
-              'W: ' + Formatters.formatNumber(yMin, 0) + ' \u2013 ' + Formatters.formatNumber(yMax, 0) + ' ' + scenario.unitY,
+              'W = [' + Formatters.formatNumber(yMin, 0) + ' ; ' + Formatters.formatNumber(yMax, 0) + '] ' + scenario.unitY,
               (pxMin + pxMax) / 2,
               trackTop + trackH / 2 + 0.5
             );
           }
           ctx.restore();
 
-          /* Feste Systemgrenz-Linien bei 0 und dMaxTarget */
+          /* Feste Systemgrenz-Schranken bei 0 und dMaxTarget */
           ctx.strokeStyle = breachLow ? '#FF3B30' : '#1C1C1E';
-          ctx.lineWidth = 1.6;
+          ctx.lineWidth = 1.8;
           ctx.beginPath();
           ctx.moveTo(pxZero, trackTop - 4);
           ctx.lineTo(pxZero, trackTop + trackH + 4);
@@ -3782,21 +4750,19 @@
           ctx.stroke();
           ctx.setLineDash([]);
 
-          /* Beweglicher Sensor-Strahl im Realitäts-Monitor während des Scans */
+          /* Beweglicher Diagnose-Sensor während des Live-Scans */
           if (simActive) {
-            var sVal = xMin + (xMax - xMin) * anim.progress;
-            var sPx = toTrackX(sVal);
-            var sOut = sVal < -1e-6 || sVal > scenario.dMaxTarget + 1e-6;
-            ctx.strokeStyle = sOut ? '#FF3B30' : '#FFFFFF';
+            var sPx = toTrackX(curScanX);
+            ctx.strokeStyle = curScanBreach ? '#FF3B30' : '#FFFFFF';
             ctx.lineWidth = 3;
             ctx.beginPath();
-            ctx.moveTo(sPx, trackTop + 5);
-            ctx.lineTo(sPx, trackTop + trackH - 5);
+            ctx.moveTo(sPx, trackTop + 4);
+            ctx.lineTo(sPx, trackTop + trackH - 4);
             ctx.stroke();
 
             ctx.beginPath();
-            ctx.arc(sPx, trackTop + trackH / 2, 5.5, 0, Math.PI * 2);
-            ctx.fillStyle = sOut ? '#FF3B30' : '#007AFF';
+            ctx.arc(sPx, trackTop + trackH / 2, 6, 0, Math.PI * 2);
+            ctx.fillStyle = curScanBreach ? '#FF3B30' : '#007AFF';
             ctx.fill();
             ctx.strokeStyle = '#FFFFFF';
             ctx.lineWidth = 2;
@@ -3804,36 +4770,113 @@
           }
 
           /* 3. Zonen-Beschriftungen unter dem Korridor */
-          var zLabelY = trackTop + trackH + 15;
-          ctx.font = '700 ' + (compact ? 9.2 : 10) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+          var zLabelY = trackTop + trackH + 13;
+          ctx.font = '700 ' + (compact ? 9 : 9.8) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
 
           ctx.textAlign = 'left';
           ctx.fillStyle = breachLow ? '#FF3B30' : '#8E8E93';
-          ctx.fillText('< 0: ' + (isTech ? 'Vor Start' : 'Unmöglich'), trackLeft, zLabelY);
+          ctx.fillText('< 0: ' + (isTech ? 'Vor Anstecken' : 'Unmöglich'), trackLeft, zLabelY);
 
           ctx.textAlign = 'center';
           ctx.fillStyle = '#15803D';
           ctx.fillText(
-            isTech ? 'Regulär: 0–30 min (20–80 kWh)' : 'Regulär: 0–120 TB (40–220 \u20AC)',
+            isTech ? 'Freigabe: 0–30 min (20–80 kWh)' : 'Freigabe: 0–120 TB (40–220 \u20AC)',
             (pxZero + pxLim) / 2,
             zLabelY
           );
 
           ctx.textAlign = 'right';
-          ctx.fillStyle = breachHigh ? '#FF3B30' : '#8E8E93';
-          ctx.fillText(isTech ? '> 80 kWh: BMS-Stopp' : '> 220 \u20AC: Sperre', trackRight, zLabelY);
+          ctx.fillStyle = breachHigh ? '#FF3B30' : '#B45309';
+          ctx.fillText(isTech ? '> 80 %: BMS-Zellschutz' : '> 220 \u20AC: Port-Sperre', trackRight, zLabelY);
 
-          /* Fußzeile */
-          ctx.font = '600 ' + (compact ? 9.8 : 10.5) + 'px -apple-system, BlinkMacSystemFont, sans-serif';
-          ctx.fillStyle = '#6C6C70';
-          ctx.textAlign = 'left';
-          ctx.fillText(
-            isTech
-              ? 'Realität: Das BMS erlaubt Schnellladen nur von t = 0 min (20 kWh) bis t = 30 min (80 kWh).'
-              : 'Realität: Der Cloud-Vertrag gilt von x = 0 TB (40 \u20AC) bis zum Tarifdeckel x = 120 TB (220 \u20AC).',
-            trackLeft,
-            h - 13
-          );
+          /* 4. Drei Live-Schutzsensoren (unten) */
+          var tilesTop = zLabelY + 14;
+          var tilesH = Math.max(52, h - tilesTop - 8);
+          var gap = compact ? 6 : 8;
+          var tileW = (w - pad * 2 - gap * 2) / 3;
+
+          if (isTech) {
+            drawMiniTelemetryTile(
+              ctx,
+              pad,
+              tilesTop,
+              tileW,
+              tilesH,
+              'Start-Sensor (unten)',
+              breachLow ? '\u26A0 t < 0 min ungültig' : '\u2713 Ab 0 min (20 kWh)',
+              breachLow ? 'Vor Stecker-Verriegelung!' : 'CCS-Stecker gekoppelt',
+              breachLow ? '#FFECEB' : '#ECFDF3',
+              breachLow ? '#FF3B30' : '#34C759',
+              breachLow ? '#B91C1C' : '#15803D'
+            );
+            drawMiniTelemetryTile(
+              ctx,
+              pad + tileW + gap,
+              tilesTop,
+              tileW,
+              tilesH,
+              'Aktives Intervall D \u2192 W',
+              '[' + Formatters.formatNumber(exactMinX, 0) + ' ; ' + Formatters.formatNumber(exactMaxX, 0) + '] min',
+              'Akku: [' + Formatters.formatNumber(yMin, 0) + ' ; ' + Formatters.formatNumber(yMax, 0) + '] kWh',
+              hasBreach ? '#FFECEB' : (isExact ? '#ECFDF3' : '#EFF6FF'),
+              hasBreach ? '#FF3B30' : (isExact ? '#34C759' : 'rgba(0,122,255,0.35)'),
+              hasBreach ? '#B91C1C' : (isExact ? '#15803D' : '#0055D4')
+            );
+            drawMiniTelemetryTile(
+              ctx,
+              pad + (tileW + gap) * 2,
+              tilesTop,
+              tileW,
+              tilesH,
+              'BMS-Zellschutz & Temp.',
+              breachHigh ? '\u26A0 > 45 \u00b0C Überhitzung!' : '\u2713 ~31 \u00b0C (Zellen sicher)',
+              breachHigh ? 'Ab 80 % regelt BMS ab!' : 'Max. 80 % SoC eingehalten',
+              breachHigh ? '#FFECEB' : '#ECFDF3',
+              breachHigh ? '#FF3B30' : '#34C759',
+              breachHigh ? '#B91C1C' : '#15803D'
+            );
+          } else {
+            drawMiniTelemetryTile(
+              ctx,
+              pad,
+              tilesTop,
+              tileW,
+              tilesH,
+              'Traffic-Prüfer (unten)',
+              breachLow ? '\u26A0 x < 0 TB unmöglich' : '\u2713 Ab 0 TB (40 \u20AC)',
+              breachLow ? 'Negativer Datenfluss!' : 'Server-Basis aktiv',
+              breachLow ? '#FFECEB' : '#ECFDF3',
+              breachLow ? '#FF3B30' : '#34C759',
+              breachLow ? '#B91C1C' : '#15803D'
+            );
+            drawMiniTelemetryTile(
+              ctx,
+              pad + tileW + gap,
+              tilesTop,
+              tileW,
+              tilesH,
+              'Aktives Intervall D \u2192 W',
+              '[' + Formatters.formatNumber(exactMinX, 0) + ' ; ' + Formatters.formatNumber(exactMaxX, 0) + '] TB',
+              'Kosten: [' + Formatters.formatNumber(yMin, 0) + ' ; ' + Formatters.formatNumber(yMax, 0) + '] \u20AC',
+              hasBreach ? '#FFECEB' : (isExact ? '#ECFDF3' : '#EFF6FF'),
+              hasBreach ? '#FF3B30' : (isExact ? '#34C759' : 'rgba(0,122,255,0.35)'),
+              hasBreach ? '#B91C1C' : (isExact ? '#15803D' : '#0055D4')
+            );
+            drawMiniTelemetryTile(
+              ctx,
+              pad + (tileW + gap) * 2,
+              tilesTop,
+              tileW,
+              tilesH,
+              'Firewall & Budgetdeckel',
+              breachHigh ? '\u26A0 > 220 \u20AC Port-Sperre!' : '\u2713 Port frei (\u2264 220 \u20AC)',
+              breachHigh ? '120-TB-Paket überzogen!' : 'Kostenbremse schützt Team',
+              breachHigh ? '#FFECEB' : '#ECFDF3',
+              breachHigh ? '#FF3B30' : '#34C759',
+              breachHigh ? '#B91C1C' : '#15803D'
+            );
+          }
+
           ctx.restore();
         }
 
@@ -4032,8 +5075,12 @@
 
           var iconEl = document.getElementById('header-scenario-icon');
           var eyeEl = document.getElementById('header-eyebrow');
-          if (iconEl) iconEl.textContent = sc.icon;
-          if (eyeEl) eyeEl.textContent = sc.eyebrow;
+          if (iconEl) iconEl.textContent = st.viewMode === 'timeline' ? '\uD83D\uDCC8' : sc.icon;
+          if (eyeEl) {
+            eyeEl.textContent = st.viewMode === 'timeline'
+              ? 'BS+1 Bayern \u00b7 Grundlagen & Verlaufsplan im Plenum'
+              : sc.eyebrow;
+          }
 
           var btnTech = document.getElementById('seg-scenario-technik');
           var btnDig = document.getElementById('seg-scenario-digital');
@@ -4190,16 +5237,14 @@
         }
 
         /* ====================================================================
-           OBERFLÄCHE 2A: DYNAMISCHE TIMELINE (KLASSENPLENUM)
+           OBERFLÄCHE 2A: PLENUM-GRUNDLAGEN & KURZER VERLAUFSPLAN (OHNE SZENARIEN)
            ==================================================================== */
         function renderTimelineView() {
           var st = StateStore.get();
-          var sc = StateStore.getScenario();
           var allDone = st.completed[1] && st.completed[2] && st.completed[3];
 
           var stagesHTML = AppData.TIMELINE_STAGES.map(function (item) {
             var isDone = item.id <= 3 ? !!st.completed[item.id] : allDone;
-            var desc = sc.id === 'technik' ? item.descTechnik : item.descDigital;
             return (
               '<div class="timeline-item ' + (isDone ? 'is-done' : '') + '">' +
                 '<div class="timeline-marker ' + (isDone ? 'is-done' : '') + '">' + (isDone ? '&#10003;' : item.id) + '</div>' +
@@ -4208,22 +5253,109 @@
                   '<span class="timeline-duration-pill">&#9201; ' + Formatters.escapeHTML(item.duration) + '</span>' +
                 '</div>' +
                 '<h3 class="timeline-title">' + item.titleHTML + '</h3>' +
-                '<p class="timeline-desc">' + Formatters.escapeHTML(desc) + '</p>' +
+                '<p class="timeline-desc">' + Formatters.escapeHTML(item.desc) + '</p>' +
               '</div>'
             );
           }).join('');
 
           mainEl.innerHTML =
-            buildScenarioStripHTML(sc, false) +
-            buildScenarioBriefingHTML(sc) +
+            /* 1. Zentrale mathematische Grundlagen-Karte für das Unterrichtsgespräch */
             '<section class="ios-card">' +
-              '<span class="section-eyebrow">Oberfläche 2A &middot; Dynamische Unterrichts-Timeline (45 Min)</span>' +
-              '<h2 class="card-title">Vom realen System zum mathematischen Intervallmodell</h2>' +
-              '<p class="card-subtitle">So übersetzen wir das Praxisszenario Schritt für Schritt in ein präzises mathematisches Modell:</p>' +
+              '<span class="section-eyebrow eyebrow-blue">Oberfläche 2A &middot; Gemeinsame Grundlagen im Plenum</span>' +
+              '<h2 class="card-title">Die lineare Funktion: Gleichmäßige Veränderung verstehen</h2>' +
+              '<p class="card-subtitle">Bevor ihr euer eigenes Praxisszenario erkundet, klären wir gemeinsam den mathematischen Grundbauplan jeder linearen Funktion:</p>' +
+
+              '<div class="plenum-intro-grid">' +
+                '<div class="plenum-why-box">' +
+                  '<span class="plenum-why-kicker">Was ist eine lineare Funktion?</span>' +
+                  '<h3 class="plenum-why-title">Fester Startwert plus gleiches Tempo</h3>' +
+                  '<p class="plenum-why-text">Eine lineare Funktion beschreibt einen Zusammenhang zwischen zwei Größen, der sich <strong>vollkommen gleichmäßig</strong> verändert: Man startet bei einem festen Anfangswert, und für jede einzelne Einheit nach rechts kommt immer <strong>exakt derselbe Betrag</strong> hinzu (oder geht verloren). Im Koordinatensystem entsteht deshalb immer eine <strong>gerade Linie (Gerade)</strong>.</p>' +
+                '</div>' +
+                '<div class="plenum-why-box">' +
+                  '<span class="plenum-why-kicker">Wieso ist sie so wichtig?</span>' +
+                  '<h3 class="plenum-why-title">Reale Prozesse präzise vorhersagen</h3>' +
+                  '<p class="plenum-why-text">Überall in Technik, Wirtschaft und Alltag treffen feste Grundwerte auf konstante Raten &ndash; etwa bei Ladevorgängen, Heizprozessen, Tarifen mit Grundgebühr oder gleichmäßiger Produktion. Mit einer einzigen Gleichung lassen sich künftige Werte <strong>verlässlich berechnen</strong>, Änderungsraten vergleichen und <strong>sichere Betriebsgrenzen</strong> planen.</p>' +
+                '</div>' +
+              '</div>' +
+
+              /* Große farbcodierte Allgemeine Funktionsgleichung */
+              '<div class="general-formula-stage">' +
+                '<div class="formula-stage-top">' +
+                  '<span class="formula-stage-label">Allgemeine Funktionsgleichung &amp; Bedeutung der Variablen</span>' +
+                  '<span class="formula-alt-pill">Koordinatenform: <strong><span class="math-var">y</span> = <span class="math-var">m</span> &middot; <span class="math-var">x</span> + <span class="math-var">t</span><sub>0</sub></strong></span>' +
+                '</div>' +
+
+                '<div class="hero-equation-row" role="region" aria-label="Allgemeine lineare Funktionsgleichung">' +
+                  '<div class="eq-token var-theme-y">' +
+                    '<span class="eq-token-sym"><span class="math-var">f</span>(<span class="math-var">x</span>)</span>' +
+                    '<span class="eq-token-tag">Funktionswert (&thinsp;y&thinsp;)</span>' +
+                  '</div>' +
+                  '<span class="eq-op">=</span>' +
+                  '<div class="eq-token var-theme-m">' +
+                    '<span class="eq-token-sym"><span class="math-var">m</span></span>' +
+                    '<span class="eq-token-tag">Steigung</span>' +
+                  '</div>' +
+                  '<span class="eq-op">&middot;</span>' +
+                  '<div class="eq-token var-theme-x">' +
+                    '<span class="eq-token-sym"><span class="math-var">x</span></span>' +
+                    '<span class="eq-token-tag">Eingabewert</span>' +
+                  '</div>' +
+                  '<span class="eq-op">+</span>' +
+                  '<div class="eq-token var-theme-t0">' +
+                    '<span class="eq-token-sym"><span class="math-var">t</span><sub>0</sub></span>' +
+                    '<span class="eq-token-tag">Anfangswert</span>' +
+                  '</div>' +
+                '</div>' +
+
+                '<div class="variable-legend-grid">' +
+                  '<div class="var-legend-card card-y">' +
+                    '<span class="var-symbol-pill var-theme-y"><span class="math-var">f</span>(<span class="math-var">x</span>) / <span class="math-var">y</span></span>' +
+                    '<div>' +
+                      '<h4 class="var-legend-title">Funktionswert (abhängige Größe)</h4>' +
+                      '<p class="var-legend-desc">Wird auf der vertikalen <strong>Hochachse (<span class="math-var">y</span>-Achse)</strong> abgetragen und gibt das berechnete Gesamtergebnis an der Stelle <span class="math-var">x</span> an.</p>' +
+                    '</div>' +
+                  '</div>' +
+
+                  '<div class="var-legend-card card-x">' +
+                    '<span class="var-symbol-pill var-theme-x"><span class="math-var">x</span></span>' +
+                    '<div>' +
+                      '<h4 class="var-legend-title">Unabhängige Variable (Ausgangsgröße)</h4>' +
+                      '<p class="var-legend-desc">Steht auf der horizontalen <strong>Rechtsachse (<span class="math-var">x</span>-Achse)</strong>. Sie beschreibt die frei eingesetzte Größe (z.&thinsp;B. Zeit oder Menge).</p>' +
+                    '</div>' +
+                  '</div>' +
+
+                  '<div class="var-legend-card card-m">' +
+                    '<span class="var-symbol-pill var-theme-m"><span class="math-var">m</span></span>' +
+                    '<div>' +
+                      '<h4 class="var-legend-title">Steigung (konstante Änderungsrate)</h4>' +
+                      '<p class="var-legend-desc">Gibt an, um wie viel sich <span class="math-var">y</span> ändert, wenn <span class="math-var">x</span> um <strong>genau 1 Einheit</strong> wächst (<span class="math-var">m</span> = &Delta;<span class="math-var">y</span> / &Delta;<span class="math-var">x</span>). Steuert die Steilheit der Geraden.</p>' +
+                    '</div>' +
+                  '</div>' +
+
+                  '<div class="var-legend-card card-t0">' +
+                    '<span class="var-symbol-pill var-theme-t0"><span class="math-var">t</span><sub>0</sub></span>' +
+                    '<div>' +
+                      '<h4 class="var-legend-title">Anfangswert (<span class="math-var">y</span>-Achsenabschnitt)</h4>' +
+                      '<p class="var-legend-desc">Der feste Startsockel bei <strong><span class="math-var">x</span> = 0</strong>. Dort schneidet die Gerade die vertikale Achse im Punkt <strong><span class="math-var">S</span><sub>y</sub>(0 | <span class="math-var">t</span><sub>0</sub>)</strong>.</p>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+
+                '<div class="plenum-domain-note">' +
+                  '<strong>Wichtig für reale Anwendungen:</strong> In der Praxis gilt ein Modell nur innerhalb sinnvoller Grenzen &ndash; die <strong>Definitionsmenge <span class="math-var">D</span></strong> umfasst alle zulässigen <span class="math-var">x</span>-Werte, die <strong>Wertemenge <span class="math-var">W</span></strong> alle daraus entstehenden <span class="math-var">y</span>-Werte.' +
+                '</div>' +
+              '</div>' +
+            '</section>' +
+
+            /* 2. Kurzer Verlaufsplan als Orientierung für die Entdeckungsphase */
+            '<section class="ios-card">' +
+              '<span class="section-eyebrow">Stundenfahrplan &middot; Kurzer Verlaufsplan (45 Min)</span>' +
+              '<h2 class="card-title">Euer Fahrplan durch die drei Entdeckerbereiche</h2>' +
+              '<p class="card-subtitle">Im anschließenden Labor wählt ihr euer Praxisszenario selbst aus und untersucht diese Etappen Schritt für Schritt:</p>' +
               '<div class="ios-timeline">' + stagesHTML + '</div>' +
               '<div style="margin-top:1.15rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem;">' +
-                '<span style="font-size:0.86rem; color:var(--ios-text-secondary);">Du kannst oben jederzeit live zwischen <strong>E-Mobilität (Technik)</strong> und <strong>Cloud-Streaming (Digital)</strong> wechseln.</span>' +
-                '<button type="button" class="ios-btn ios-btn-primary" id="btn-start-discovery">Entdeckungsbereich öffnen &rarr;</button>' +
+                '<span style="font-size:0.86rem; color:var(--ios-text-secondary);">Im Entdeckungsbereich warten beide Praxisszenarien mit interaktiven Koordinatensystemen auf euch.</span>' +
+                '<button type="button" class="ios-btn ios-btn-primary" id="btn-start-discovery">Zum Entdeckungsbereich &amp; Szenario wählen &rarr;</button>' +
               '</div>' +
             '</section>';
 
@@ -4277,6 +5409,7 @@
                     statusBadge +
                   '</div>' +
                   '<h3 class="phase-hub-title">' + Formatters.escapeHTML(ph.title) + '</h3>' +
+                  '<div class="phase-faden-pill ' + ph.fadenChipClass + '">' + ph.fadenChipHTML + '</div>' +
                   '<p class="phase-hub-sub">' + ph.subtitleHTML + '</p>' +
                   '<p class="phase-hub-desc">' + Formatters.escapeHTML(ph.summary) + '</p>' +
                   (solved ? '<p style="margin:0.65rem 0 0; font-size:0.81rem; font-weight:700; color:var(--ios-green-dark);">&#128221; ' + Formatters.escapeHTML(ph.abInstruction) + '</p>' : '') +
@@ -4308,7 +5441,13 @@
                   '</div>' +
                   '<div style="font-size:0.88rem; font-weight:700; color:var(--ios-text-primary);">Traktionsbatterie &amp; Schnellladeprozess</div>' +
                   '<p class="world-tile-story">' + Formatters.escapeHTML(AppData.SCENARIOS.technik.tileTeaser) + '</p>' +
-                  '<div class="world-equation-box"><span class="math-var">E</span>(<span class="math-var">t</span>) = 2 &middot; <span class="math-var">t</span> + 20</div>' +
+                  '<div class="world-equation-box">' +
+                    '<div><span style="color:#7E22CE;" class="math-var">E</span>(<span style="color:#0055D4;" class="math-var">t</span>) = <span style="color:#B45309;">2</span> &middot; <span style="color:#0055D4;" class="math-var">t</span> + <span style="color:#15803D;">20</span></div>' +
+                    '<div class="world-eq-mapping">' +
+                      '<span>Bauplan: <span style="color:#7E22CE;">f(x)</span> = <span style="color:#B45309;">m</span> &middot; <span style="color:#0055D4;">x</span> + <span style="color:#15803D;">t<sub>0</sub></span></span>' +
+                      '<span><span style="color:#B45309;">m = 2</span> &middot; <span style="color:#15803D;">t<sub>0</sub> = 20</span></span>' +
+                    '</div>' +
+                  '</div>' +
                   '<div class="world-param-list">' +
                     '<div class="world-param-chip"><span>Basiswert (<span class="math-var">t</span> = 0 min)</span><strong><span class="math-var">t</span><sub>0</sub> = 20 kWh</strong></div>' +
                     '<div class="world-param-chip"><span>Änderungsrate</span><strong><span class="math-var">m</span> = 2 kWh/min</strong></div>' +
@@ -4325,7 +5464,13 @@
                   '</div>' +
                   '<div style="font-size:0.88rem; font-weight:700; color:var(--ios-text-primary);">Datenvolumen &amp; Serverkosten</div>' +
                   '<p class="world-tile-story">' + Formatters.escapeHTML(AppData.SCENARIOS.digital.tileTeaser) + '</p>' +
-                  '<div class="world-equation-box"><span class="math-var">K</span>(<span class="math-var">x</span>) = 1,5 &middot; <span class="math-var">x</span> + 40</div>' +
+                  '<div class="world-equation-box">' +
+                    '<div><span style="color:#7E22CE;" class="math-var">K</span>(<span style="color:#0055D4;" class="math-var">x</span>) = <span style="color:#B45309;">1,5</span> &middot; <span style="color:#0055D4;" class="math-var">x</span> + <span style="color:#15803D;">40</span></div>' +
+                    '<div class="world-eq-mapping">' +
+                      '<span>Bauplan: <span style="color:#7E22CE;">f(x)</span> = <span style="color:#B45309;">m</span> &middot; <span style="color:#0055D4;">x</span> + <span style="color:#15803D;">t<sub>0</sub></span></span>' +
+                      '<span><span style="color:#B45309;">m = 1,5</span> &middot; <span style="color:#15803D;">t<sub>0</sub> = 40</span></span>' +
+                    '</div>' +
+                  '</div>' +
                   '<div class="world-param-list">' +
                     '<div class="world-param-chip"><span>Basiswert (<span class="math-var">x</span> = 0 TB)</span><strong><span class="math-var">t</span><sub>0</sub> = 40 &euro;</strong></div>' +
                     '<div class="world-param-chip"><span>Änderungsrate</span><strong><span class="math-var">m</span> = 1,5 &euro;/TB</strong></div>' +
@@ -4459,6 +5604,202 @@
         }
 
         /* ====================================================================
+           ROTER FADEN: ALLGEMEINE LINEARE GLEICHUNG f(x) = m · x + t0 IM LABOR
+           ==================================================================== */
+        function buildRoterFadenInnerHTML(phaseId, sc, sub) {
+          if (phaseId === 1) {
+            var exactT0 = Math.abs(sub.p1CurrentT0 - sc.t0Target) < 0.01;
+            var t0Done = !!sub.p1TargetLocked;
+            var t0Formatted = Formatters.formatNumber(sub.p1CurrentT0);
+            var t0StatusHint = t0Done
+              ? ' &middot; <span style="color:#15803D;">&#10003; fixiert</span>'
+              : (exactT0
+                ? ' &middot; <span style="color:#15803D;">Zielwert erreicht</span>'
+                : ' <span style="font-weight:600; font-size:0.92rem; color:var(--ios-text-secondary);">(Ziel im Szenario: ' + sc.t0Target + ' ' + sc.unitY + ')</span>');
+
+            return (
+              '<div class="roter-faden-head">' +
+                '<span class="roter-faden-eyebrow">&#129525; Roter Faden &middot; Allgemeine lineare Gleichung im Szenario</span>' +
+                '<span class="roter-faden-step-badge badge-t0">' +
+                  (t0Done ? '&#10003; Startwert t<sub>0</sub> bestimmt' : 'Schritt 1 von 3 &middot; Startwert t<sub>0</sub>') +
+                '</span>' +
+              '</div>' +
+              '<div class="roter-faden-eq-row" aria-label="Allgemeine lineare Gleichung f(x) = m mal x plus t0">' +
+                '<div class="rf-slot var-theme-y is-muted-var">' +
+                  '<span class="rf-slot-status">Ausgabe</span>' +
+                  '<span class="rf-gen-sym"><span class="math-var">f</span>(<span class="math-var">x</span>)</span>' +
+                  '<span class="rf-slot-role">Hier: ' + sc.funcCallHTML + '</span>' +
+                '</div>' +
+                '<span class="rf-op">=</span>' +
+                '<div class="rf-slot var-theme-m is-muted-var">' +
+                  '<span class="rf-slot-status">Folgt in Phase 2</span>' +
+                  '<span class="rf-gen-sym"><span class="math-var">m</span></span>' +
+                  '<span class="rf-slot-role">Steigung (fest: ' + Formatters.formatNumber(sc.m) + ')</span>' +
+                '</div>' +
+                '<span class="rf-op">&middot;</span>' +
+                '<div class="rf-slot var-theme-x is-muted-var">' +
+                  '<span class="rf-slot-status">Beim Start = 0</span>' +
+                  '<span class="rf-gen-sym"><span class="math-var">x</span></span>' +
+                  '<span class="rf-slot-role"><span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + '</span>' +
+                '</div>' +
+                '<span class="rf-op">+</span>' +
+                '<div class="rf-slot var-theme-t0 is-focus-var">' +
+                  '<span class="rf-slot-status">' + (t0Done ? '&#10003; Bestimmt' : (exactT0 ? 'Zielwert erreicht' : 'Jetzt gesucht')) + '</span>' +
+                  '<span class="rf-gen-sym"><span class="math-var">t</span><sub>0</sub></span>' +
+                  '<span class="rf-slot-role">Startwert</span>' +
+                '</div>' +
+              '</div>' +
+              '<div class="roter-faden-detail-grid">' +
+                '<div class="rf-detail-box">' +
+                  '<span class="rf-detail-label">Dein Szenario-Modell</span>' +
+                  '<div class="rf-detail-main">' +
+                    sc.funcCallHTML + ' = ' + Formatters.formatNumber(sc.m) + ' &middot; <span class="math-var">' + sc.varX + '</span> + ' +
+                    '<span class="rf-inline-pill var-theme-t0">' + t0Formatted + '</span>' +
+                  '</div>' +
+                  '<p class="rf-detail-sub">Beim Start (<span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + ') fällt ' + Formatters.formatNumber(sc.m) + ' &middot; 0 weg &ndash; es bleibt direkt <span class="math-var">t</span><sub>0</sub> übrig.</p>' +
+                '</div>' +
+                '<div class="rf-detail-box focus-t0">' +
+                  '<span class="rf-detail-label">Gesuchte Größe in Phase 1 &middot; Anfangswert t<sub>0</sub></span>' +
+                  '<div class="rf-detail-main">' +
+                    '<span class="math-var">t</span><sub>0</sub> = ' + t0Formatted + ' ' + sc.unitY + t0StatusHint +
+                  '</div>' +
+                  '<p class="rf-detail-sub">Schnittpunkt des Graphen mit der vertikalen Achse bei <span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + '.</p>' +
+                '</div>' +
+              '</div>'
+            );
+          }
+
+          if (phaseId === 2) {
+            var dx = sub.p2X2 - sub.p2X1;
+            var dy = sc.m * dx;
+            var zeroDx = Math.abs(dx) < 1e-6;
+            var swapped = !!sub.p2SwapQuotient;
+            var mDone = (sub.p2LoggedTriangles.length >= 2) && !swapped;
+
+            var mInlineHTML = (swapped || zeroDx)
+              ? '<span class="rf-inline-pill pill-danger">?</span>'
+              : '<span class="rf-inline-pill var-theme-m">' + Formatters.formatNumber(sc.m) + '</span>';
+
+            var mCalcMainHTML = zeroDx
+              ? '&Delta;<span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + ' &ndash; bitte zwei verschiedene Punkte wählen'
+              : (swapped
+                ? '&Delta;<span class="math-var">' + sc.varX + '</span> / &Delta;<span class="math-var">' + sc.varY + '</span> = ' + Formatters.formatNumber(dx / dy, 2) + ' ' + sc.inverseSlopeUnit + ' &#10007; (Quotient vertauscht!)'
+                : '<span class="math-var">m</span> = ' + Formatters.formatNumber(dy) + ' ' + sc.unitY + ' / ' + Formatters.formatNumber(dx) + ' ' + sc.unitX + ' = ' + Formatters.formatNumber(sc.m) + ' ' + sc.slopeUnit);
+
+            return (
+              '<div class="roter-faden-head">' +
+                '<span class="roter-faden-eyebrow">&#129525; Roter Faden &middot; Allgemeine lineare Gleichung im Szenario</span>' +
+                '<span class="roter-faden-step-badge ' + (swapped || zeroDx ? 'badge-danger' : 'badge-m') + '">' +
+                  (swapped ? '&#9888; Quotient vertauscht!' : (zeroDx ? '&#9888; &Delta;' + sc.varX + ' darf nicht 0 sein' : (mDone ? '&#10003; Steigung m bestimmt' : 'Schritt 2 von 3 &middot; Steigung m'))) +
+                '</span>' +
+              '</div>' +
+              '<div class="roter-faden-eq-row" aria-label="Allgemeine lineare Gleichung f(x) = m mal x plus t0">' +
+                '<div class="rf-slot var-theme-y is-muted-var">' +
+                  '<span class="rf-slot-status">Ausgabe</span>' +
+                  '<span class="rf-gen-sym"><span class="math-var">f</span>(<span class="math-var">x</span>)</span>' +
+                  '<span class="rf-slot-role">Hier: ' + sc.funcCallHTML + '</span>' +
+                '</div>' +
+                '<span class="rf-op">=</span>' +
+                '<div class="rf-slot var-theme-m is-focus-var' + (swapped || zeroDx ? ' is-danger-var' : '') + '">' +
+                  '<span class="rf-slot-status">' + (swapped ? '&#9888; Falschrum' : (zeroDx ? '&#9888; &Delta;' + sc.varX + ' = 0' : (mDone ? '&#10003; Bestimmt' : 'Jetzt gesucht'))) + '</span>' +
+                  '<span class="rf-gen-sym"><span class="math-var">m</span></span>' +
+                  '<span class="rf-slot-role">Steigung</span>' +
+                '</div>' +
+                '<span class="rf-op">&middot;</span>' +
+                '<div class="rf-slot var-theme-x is-muted-var">' +
+                  '<span class="rf-slot-status">Eingabe</span>' +
+                  '<span class="rf-gen-sym"><span class="math-var">x</span></span>' +
+                  '<span class="rf-slot-role">Größe <span class="math-var">' + sc.varX + '</span> in ' + sc.unitX + '</span>' +
+                '</div>' +
+                '<span class="rf-op">+</span>' +
+                '<div class="rf-slot var-theme-t0 is-solved-var">' +
+                  '<span class="rf-slot-status">&#10003; Aus Phase 1</span>' +
+                  '<span class="rf-gen-sym"><span class="math-var">t</span><sub>0</sub></span>' +
+                  '<span class="rf-slot-role">t<sub>0</sub> = ' + sc.t0Target + ' ' + sc.unitY + '</span>' +
+                '</div>' +
+              '</div>' +
+              '<div class="roter-faden-detail-grid">' +
+                '<div class="rf-detail-box">' +
+                  '<span class="rf-detail-label">Dein Szenario-Modell</span>' +
+                  '<div class="rf-detail-main">' +
+                    sc.funcCallHTML + ' = ' + mInlineHTML + ' &middot; <span class="math-var">' + sc.varX + '</span> + <span style="color:#15803D;">' + sc.t0Target + '</span>' +
+                  '</div>' +
+                  '<p class="rf-detail-sub">Der Startwert <span class="math-var">t</span><sub>0</sub> = ' + sc.t0Target + ' ' + sc.unitY + ' steht bereits aus Phase 1 fest &ndash; jetzt bestimmst du den Faktor <span class="math-var">m</span>.</p>' +
+                '</div>' +
+                '<div class="rf-detail-box ' + (swapped || zeroDx ? 'focus-danger' : 'focus-m') + '">' +
+                  '<span class="rf-detail-label">Gesuchte Größe in Phase 2 &middot; Steigung m = &Delta;' + sc.varY + ' / &Delta;' + sc.varX + '</span>' +
+                  '<div class="rf-detail-main">' + mCalcMainHTML + '</div>' +
+                  '<p class="rf-detail-sub">Höhenunterschied geteilt durch Weite zwischen deinen zwei Messpunkten im Steigungsdreieck.</p>' +
+                '</div>' +
+              '</div>'
+            );
+          }
+
+          /* Phase 3: Fertige Gleichung (m & t0 bekannt) -> Systemgrenzen D & W bestimmen */
+          var xMin = Math.min(sub.p3MinX, sub.p3MaxX);
+          var xMax = Math.max(sub.p3MinX, sub.p3MaxX);
+          var yMin = sc.m * xMin + sc.t0Target;
+          var yMax = sc.m * xMax + sc.t0Target;
+          var hasBreach = (xMin < sc.dMinTarget - 1e-6) || (xMax > sc.dMaxTarget + 1e-6);
+          var dwDone = !!sub.p3BoundsLocked && !hasBreach;
+
+          return (
+            '<div class="roter-faden-head">' +
+              '<span class="roter-faden-eyebrow">&#129525; Roter Faden &middot; Allgemeine lineare Gleichung im Szenario</span>' +
+              '<span class="roter-faden-step-badge ' + (hasBreach ? 'badge-danger' : 'badge-dw') + '">' +
+                (hasBreach ? '&#9888; Systemgrenze verletzt!' : (dwDone ? '&#10003; Gleichung + D &amp; W komplett' : 'Schritt 3 von 3 &middot; Mengen D &amp; W')) +
+              '</span>' +
+            '</div>' +
+            '<div class="roter-faden-eq-row" aria-label="Allgemeine lineare Gleichung f(x) = m mal x plus t0">' +
+              '<div class="rf-slot var-theme-y is-focus-var' + (hasBreach ? ' is-danger-var' : '') + '">' +
+                '<span class="rf-slot-status">' + (hasBreach ? '&#9888; Grenze W' : (dwDone ? '&#10003; Wertemenge W' : 'Jetzt gesucht: W')) + '</span>' +
+                '<span class="rf-gen-sym"><span class="math-var">f</span>(<span class="math-var">x</span>)</span>' +
+                '<span class="rf-slot-role">Werte in <span class="math-var">W</span></span>' +
+              '</div>' +
+              '<span class="rf-op">=</span>' +
+              '<div class="rf-slot var-theme-m is-solved-var">' +
+                '<span class="rf-slot-status">&#10003; Aus Phase 2</span>' +
+                '<span class="rf-gen-sym"><span class="math-var">m</span></span>' +
+                '<span class="rf-slot-role">m = ' + Formatters.formatNumber(sc.m) + ' ' + sc.slopeUnit + '</span>' +
+              '</div>' +
+              '<span class="rf-op">&middot;</span>' +
+              '<div class="rf-slot var-theme-x is-focus-var' + (hasBreach ? ' is-danger-var' : '') + '">' +
+                '<span class="rf-slot-status">' + (hasBreach ? '&#9888; Grenze D' : (dwDone ? '&#10003; Menge D' : 'Jetzt gesucht: D')) + '</span>' +
+                '<span class="rf-gen-sym"><span class="math-var">x</span></span>' +
+                '<span class="rf-slot-role">Werte in <span class="math-var">D</span></span>' +
+              '</div>' +
+              '<span class="rf-op">+</span>' +
+              '<div class="rf-slot var-theme-t0 is-solved-var">' +
+                '<span class="rf-slot-status">&#10003; Aus Phase 1</span>' +
+                '<span class="rf-gen-sym"><span class="math-var">t</span><sub>0</sub></span>' +
+                '<span class="rf-slot-role">t<sub>0</sub> = ' + Formatters.formatNumber(sc.t0Target) + ' ' + sc.unitY + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="roter-faden-detail-grid">' +
+              '<div class="rf-detail-box">' +
+                '<span class="rf-detail-label">Fertige Funktionsgleichung im Szenario</span>' +
+                '<div class="rf-detail-main">' +
+                  sc.funcCallHTML + ' = <span style="color:#B45309;">' + Formatters.formatNumber(sc.m) + '</span> &middot; <span class="math-var">' + sc.varX + '</span> + <span style="color:#15803D;">' + Formatters.formatNumber(sc.t0Target) + '</span>' +
+                '</div>' +
+                '<p class="rf-detail-sub">Steigung <span class="math-var">m</span> = ' + Formatters.formatNumber(sc.m) + ' und Startwert <span class="math-var">t</span><sub>0</sub> = ' + Formatters.formatNumber(sc.t0Target) + ' sind beide fertig eingesetzt.</p>' +
+              '</div>' +
+              '<div class="rf-detail-box ' + (hasBreach ? 'focus-danger' : 'focus-dw') + '">' +
+                '<span class="rf-detail-label">Gesuchte Systemgrenzen in Phase 3 &middot; Intervalle D &amp; W</span>' +
+                '<div class="rf-detail-main">' +
+                  '<span class="math-var">D</span> = [' + Formatters.formatNumber(xMin) + ' ; ' + Formatters.formatNumber(xMax) + '] &nbsp;&middot;&nbsp; ' +
+                  '<span class="math-var">W</span> = [' + Formatters.formatNumber(yMin) + ' ; ' + Formatters.formatNumber(yMax) + ']' +
+                '</div>' +
+                '<p class="rf-detail-sub">' +
+                  (hasBreach
+                    ? 'Achtung: Dein Intervall überschreitet den zulässigen Praxisbereich (' + sc.dMinTarget + ' bis ' + sc.dMaxTarget + ' ' + sc.unitX + ').'
+                    : '<span class="math-var">D</span> legt die zulässigen ' + sc.xName + '-Werte (' + sc.unitX + ') fest, <span class="math-var">W</span> die zugehörigen ' + sc.yName + '-Werte (' + sc.unitY + ').') +
+                '</p>' +
+              '</div>' +
+            '</div>'
+          );
+        }
+
+        /* ====================================================================
            OBERFLÄCHE 3 – PHASE 1: BASISWERT-ANALYSE (t0 BEI x = 0)
            ==================================================================== */
         function renderPhase1Workspace() {
@@ -4474,6 +5815,8 @@
               '<span class="section-eyebrow">Oberfläche 3 &middot; Phase 1: Basiswert-Analyse</span>' +
               '<h2 class="card-title">Ordinatenabschnitt <span class="math-var">t</span><sub>0</sub> als konstanter Anfangswert</h2>' +
               '<p class="card-subtitle">Ziehe den Punkt direkt auf der vertikalen Achse oder bewege den Schieberegler: Die Steigung <span class="math-var">m</span> = ' + Formatters.formatNumber(sc.m) + ' ' + Formatters.escapeHTML(sc.slopeUnit) + ' bleibt fest verankert, während sich der Anfangswert <span class="math-var">t</span><sub>0</sub> verändert.</p>' +
+
+              '<div class="roter-faden-card" id="roter-faden-p1">' + buildRoterFadenInnerHTML(1, sc, sub) + '</div>' +
 
               '<div class="lab-split-grid">' +
                 '<div class="canvas-stage-box">' +
@@ -4491,6 +5834,7 @@
                       '</div>' +
                       '<button type="button" class="ios-anim-btn" id="btn-anim-p1"></button>' +
                     '</div>' +
+                    '<ul class="real-scene-bullet-list"><li>' + sc.animBullets[1] + '</li></ul>' +
                     '<canvas id="scene-canvas-p1" class="real-scene-canvas" aria-label="Realitäts-Monitor für den Anfangswert"></canvas>' +
                   '</div>' +
                 '</div>' +
@@ -4601,6 +5945,7 @@
               fb.className = 'feedback-banner feedback-success';
               fb.textContent = 'Perfekt eingestellt! Der Schnittpunkt Sy(0 | ' + sc.t0Target + ') zeigt den Anfangswert t\u2080 = ' + sc.t0Target + ' ' + sc.unitY + '.';
               fb.hidden = false;
+              updatePhase1LiveUI();
               checkPhase1Completion();
             } else {
               fb.className = 'feedback-banner feedback-hint';
@@ -4671,7 +6016,12 @@
 
           var eqEl = document.getElementById('p1-live-equation');
           if (eqEl) {
-            eqEl.innerHTML = sc.funcCallHTML + ' = ' + Formatters.formatNumber(sc.m) + ' &middot; <span class="math-var">' + sc.varX + '</span> + <span style="color:var(--ios-blue);">' + Formatters.formatNumber(sub.p1CurrentT0) + '</span>';
+            eqEl.innerHTML = sc.funcCallHTML + ' = ' + Formatters.formatNumber(sc.m) + ' &middot; <span class="math-var">' + sc.varX + '</span> + <span style="color:#15803D;">' + Formatters.formatNumber(sub.p1CurrentT0) + '</span>';
+          }
+
+          var rfP1 = document.getElementById('roter-faden-p1');
+          if (rfP1) {
+            rfP1.innerHTML = buildRoterFadenInnerHTML(1, sc, sub);
           }
 
           var chipEl = document.getElementById('p1-target-chip');
@@ -4724,6 +6074,8 @@
               '<h2 class="card-title">Steigung <span class="math-var">m</span> als Verhältnis vertikaler und horizontaler Differenzen</h2>' +
               '<p class="card-subtitle">Ziehe die beiden Ankerpunkte <strong>P<sub>1</sub></strong> und <strong>P<sub>2</sub></strong> direkt auf dem Funktionsgraphen. Beobachte die horizontale Kathete (<span class="delta-x-text">#007AFF</span>), die vertikale Kathete (<span class="delta-y-text">#FF9500</span>) und den Live-Bruch mit 60 FPS.</p>' +
 
+              '<div class="roter-faden-card" id="roter-faden-p2">' + buildRoterFadenInnerHTML(2, sc, sub) + '</div>' +
+
               '<div class="lab-split-grid">' +
                 '<div class="canvas-stage-box">' +
                   '<div class="canvas-stage-header">' +
@@ -4740,6 +6092,7 @@
                       '</div>' +
                       '<button type="button" class="ios-anim-btn" id="btn-anim-p2"></button>' +
                     '</div>' +
+                    '<ul class="real-scene-bullet-list"><li>' + sc.animBullets[2] + '</li></ul>' +
                     '<canvas id="scene-canvas-p2" class="real-scene-canvas" aria-label="Realitäts-Monitor für das Steigungsdreieck"></canvas>' +
                   '</div>' +
 
@@ -4982,6 +6335,11 @@
           if (b1) b1.textContent = Formatters.formatNumber(sub.p2X1) + ' ' + sc.unitX;
           if (b2) b2.textContent = Formatters.formatNumber(sub.p2X2) + ' ' + sc.unitX;
 
+          var rfP2 = document.getElementById('roter-faden-p2');
+          if (rfP2) {
+            rfP2.innerHTML = buildRoterFadenInnerHTML(2, sc, sub);
+          }
+
           var card = document.getElementById('p2-fraction-card');
           var eyebrow = document.getElementById('p2-fraction-eyebrow');
           var formula = document.getElementById('p2-fraction-formula');
@@ -5078,6 +6436,8 @@
               '<h2 class="card-title">Systemgrenzen als abgeschlossene Intervalle modellieren</h2>' +
               '<p class="card-subtitle">Verschiebe die Intervallgriffe <strong>[</strong> und <strong>]</strong> direkt auf der Rechtsachse. Orthogonale Projektionslinien werfen den Schatten des Graphenabschnitts auf beide Koordinatenachsen. Überschreitest du die Systemgrenzen, schlägt der Scanner auf System-Rot (<span class="danger-text">#FF3B30</span>) um.</p>' +
 
+              '<div class="roter-faden-card" id="roter-faden-p3">' + buildRoterFadenInnerHTML(3, sc, sub) + '</div>' +
+
               '<div class="lab-split-grid">' +
                 '<div class="canvas-stage-box">' +
                   '<div class="canvas-stage-header">' +
@@ -5094,6 +6454,7 @@
                       '</div>' +
                       '<button type="button" class="ios-anim-btn" id="btn-anim-p3"></button>' +
                     '</div>' +
+                    '<ul class="real-scene-bullet-list"><li>' + sc.animBullets[3] + '</li></ul>' +
                     '<canvas id="scene-canvas-p3" class="real-scene-canvas" aria-label="Realitäts-Monitor für Definitions- und Wertemenge"></canvas>' +
                   '</div>' +
 
@@ -5229,6 +6590,7 @@
               fb.className = 'feedback-banner feedback-success';
               fb.textContent = 'Exakt eingestellt! Für den regulären Betrieb gilt D = [' + sc.dMinTarget + ' ; ' + sc.dMaxTarget + '] und W = [' + sc.wMinTarget + ' ; ' + sc.wMaxTarget + '].';
               fb.hidden = false;
+              updatePhase3LiveUI();
               checkPhase3Completion();
             } else if (sub.p3MinX < sc.dMinTarget || sub.p3MaxX > sc.dMaxTarget) {
               fb.className = 'feedback-banner feedback-danger';
@@ -5313,6 +6675,11 @@
           var maxBadge = document.getElementById('p3-max-badge');
           if (minBadge) minBadge.textContent = Formatters.formatNumber(xMin) + ' ' + sc.unitX;
           if (maxBadge) maxBadge.textContent = Formatters.formatNumber(xMax) + ' ' + sc.unitX;
+
+          var rfP3 = document.getElementById('roter-faden-p3');
+          if (rfP3) {
+            rfP3.innerHTML = buildRoterFadenInnerHTML(3, sc, sub);
+          }
 
           var valD = document.getElementById('p3-val-d');
           var valW = document.getElementById('p3-val-w');
