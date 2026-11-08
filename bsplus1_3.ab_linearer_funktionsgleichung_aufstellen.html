@@ -87,6 +87,25 @@
     /* ==========================================================================
        2. ANTI-LATEX MATHEMATIK-TYPOGRAFIE & FLEXBOX-BRÜCHE
        ========================================================================== */
+    sub,
+    sup {
+      font-size: 0.72em;
+      line-height: 0;
+      position: relative;
+      vertical-align: baseline;
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    sub {
+      bottom: -0.24em;
+      margin-left: 0.03em;
+    }
+
+    sup {
+      top: -0.4em;
+    }
+
     .math-inline {
       display: inline-flex;
       align-items: center;
@@ -97,7 +116,44 @@
 
     .math-var {
       font-style: italic;
+      font-weight: 700;
+      padding-right: 0.04em;
+    }
+
+    .math-eq {
+      display: inline-block;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      font-weight: 750;
+    }
+
+    .math-frac-eq {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      row-gap: 0.35rem;
+      font-variant-numeric: tabular-nums;
+      font-weight: 750;
+    }
+
+    .math-term {
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .math-eq-op {
+      display: inline-block;
+      font-style: normal;
+      font-weight: 750;
+      margin: 0 0.28em;
+    }
+
+    .math-unit {
+      font-style: normal;
       font-weight: 650;
+      font-size: 0.86em;
+      color: var(--ios-text-secondary);
+      margin-left: 0.16em;
     }
 
     .math-fraction {
@@ -106,39 +162,43 @@
       align-items: center;
       justify-content: center;
       vertical-align: middle;
-      line-height: 1.12;
+      line-height: 1.15;
       font-size: 0.94em;
-      margin: 0 0.22em;
+      margin: 0 0.14em;
       font-weight: 700;
       font-variant-numeric: tabular-nums;
     }
 
     .math-fraction-num {
-      padding: 0 0.35em 0.12em;
-      border-bottom: 1.8px solid currentColor;
+      padding: 0 0.42em 0.24em;
+      border-bottom: 1.8px solid #2C2C2E;
       text-align: center;
       width: 100%;
     }
 
     .math-fraction-den {
-      padding: 0.12em 0.35em 0;
+      padding: 0.2em 0.42em 0;
       text-align: center;
       width: 100%;
     }
 
+    .live-calc-card.is-danger .math-fraction-num {
+      border-bottom-color: #B91C1C;
+    }
+
     .delta-x-text {
       color: var(--ios-blue);
-      font-weight: 700;
+      font-weight: 750;
     }
 
     .delta-y-text {
       color: var(--ios-orange);
-      font-weight: 700;
+      font-weight: 750;
     }
 
     .danger-text {
       color: var(--ios-red);
-      font-weight: 700;
+      font-weight: 750;
     }
 
     /* ==========================================================================
@@ -800,16 +860,17 @@
 
     .var-symbol-pill {
       flex-shrink: 0;
-      min-width: 52px;
+      min-width: 66px;
       height: 40px;
-      padding: 0 0.55rem;
+      padding: 0 0.65rem;
       border-radius: 11px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.08rem;
+      font-size: 1.02rem;
       font-weight: 800;
       border: 1.5px solid transparent;
+      white-space: nowrap;
     }
 
     .var-legend-title {
@@ -933,120 +994,84 @@
     }
 
     /* ==========================================================================
-       6. OBERFLÄCHE 2B: ADVANCE ORGANIZER (2 WELTEN) & PHASEN-HUB
+       6. OBERFLÄCHE 2B: FOKUSSIERTER SZENARIO-ÜBERBLICK & PHASEN-HUB
        ========================================================================== */
-    .worlds-compare-grid {
+    .scenario-model-overview {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-top: 0.95rem;
-    }
-
-    .world-tile {
-      position: relative;
-      border-radius: var(--ios-radius-lg);
-      padding: 1.15rem 1.25rem;
-      background: #FAFAFC;
-      border: 2px solid var(--ios-separator);
-      cursor: pointer;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.16s ease;
-    }
-
-    .world-tile:hover {
-      transform: translateY(-2px);
-    }
-
-    .world-tile.is-selected-technik {
-      background: linear-gradient(155deg, rgba(31, 157, 85, 0.09) 0%, #FFFFFF 100%);
-      border-color: #1F9D55;
-      box-shadow: 0 6px 20px rgba(31, 157, 85, 0.12);
-    }
-
-    .world-tile.is-selected-digital {
-      background: linear-gradient(155deg, rgba(88, 86, 214, 0.1) 0%, #FFFFFF 100%);
-      border-color: #5856D6;
-      box-shadow: 0 6px 20px rgba(88, 86, 214, 0.14);
-    }
-
-    .world-tile-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-      margin-bottom: 0.6rem;
-    }
-
-    .world-tag {
-      font-size: 0.75rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      padding: 0.22rem 0.62rem;
-      border-radius: var(--ios-radius-pill);
-    }
-
-    .world-tag.tag-technik {
-      background: rgba(31, 157, 85, 0.14);
-      color: #15803D;
-    }
-
-    .world-tag.tag-digital {
-      background: rgba(88, 86, 214, 0.14);
-      color: #4340B8;
-    }
-
-    .world-active-indicator {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--ios-text-secondary);
+      grid-template-columns: 1.05fr 1.25fr;
+      gap: 0.85rem;
+      align-items: stretch;
+      margin-top: 1rem;
+      padding-top: 0.95rem;
+      border-top: 1px solid rgba(60, 60, 67, 0.12);
     }
 
     .world-equation-box {
-      padding: 0.7rem 0.9rem;
+      padding: 0.9rem 1.05rem;
       border-radius: var(--ios-radius-md);
       background: var(--ios-card-bg);
       border: 1px solid var(--ios-separator);
-      font-size: 1.15rem;
-      font-weight: 800;
       color: var(--ios-text-primary);
-      margin: 0.55rem 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       font-variant-numeric: tabular-nums;
+    }
+
+    .world-eq-kicker {
+      display: block;
+      font-size: 0.71rem;
+      font-weight: 760;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ios-text-secondary);
+      margin-bottom: 0.24rem;
+    }
+
+    .world-eq-main {
+      font-size: 1.24rem;
+      font-weight: 820;
+      line-height: 1.3;
+      color: var(--ios-text-primary);
     }
 
     .world-param-list {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.5rem;
-      margin-top: 0.55rem;
+      gap: 0.6rem;
+      margin: 0;
     }
 
     .world-param-chip {
       background: var(--ios-card-bg);
       border: 1px solid var(--ios-separator);
-      border-radius: 10px;
-      padding: 0.45rem 0.65rem;
-      font-size: 0.83rem;
-    }
-
-    .world-param-chip span {
-      display: block;
-      font-size: 0.71rem;
-      color: var(--ios-text-secondary);
-      font-weight: 600;
-    }
-
-    .core-message-banner {
-      margin-top: 1rem;
-      padding: 0.88rem 1.1rem;
-      border-radius: var(--ios-radius-md);
-      background: linear-gradient(135deg, rgba(0, 122, 255, 0.09) 0%, rgba(88, 86, 214, 0.09) 100%);
-      border: 1.5px solid rgba(0, 122, 255, 0.24);
+      border-radius: 11px;
+      padding: 0.58rem 0.78rem;
       display: flex;
-      align-items: center;
-      gap: 0.7rem;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.2rem;
+    }
+
+    .world-param-label {
+      display: block;
+      font-size: 0.73rem;
+      color: var(--ios-text-secondary);
+      font-weight: 680;
+      line-height: 1.3;
+    }
+
+    .world-param-value {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.28rem;
       font-size: 0.94rem;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--ios-text-primary);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.35;
     }
 
     /* 3 Phasen Karten im Hub */
@@ -1149,10 +1174,11 @@
     }
 
     .phase-hub-sub {
-      margin: 0 0 0.45rem;
-      font-size: 0.81rem;
+      margin: 0.1rem 0 0.5rem;
+      font-size: 0.83rem;
       font-weight: 650;
       color: var(--scenario-accent-strong);
+      line-height: 1.5;
     }
 
     .phase-hub-desc {
@@ -1619,22 +1645,87 @@
     }
 
     .rf-detail-main {
-      font-size: 1.14rem;
+      font-size: 1.1rem;
       font-weight: 800;
       color: var(--ios-text-primary);
-      line-height: 1.38;
+      line-height: 1.42;
       font-variant-numeric: tabular-nums;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.45rem;
+    }
+
+    .rf-frac-row {
+      gap: 0.25rem 0;
+    }
+
+    .rf-interval-pair {
+      gap: 0.48rem;
+    }
+
+    .rf-interval-chip {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.14em;
+      padding: 0.22rem 0.64rem;
+      border-radius: 9px;
+      font-size: 0.96rem;
+      font-weight: 800;
+      border: 1.5px solid transparent;
+      white-space: nowrap;
+    }
+
+    .rf-interval-chip.is-d {
+      background: #EFF6FF;
+      border-color: rgba(0, 122, 255, 0.36);
+      color: #0055D4;
+    }
+
+    .rf-interval-chip.is-w {
+      background: #ECFDF3;
+      border-color: rgba(52, 199, 89, 0.42);
+      color: #15803D;
+    }
+
+    .rf-interval-chip.is-breach {
+      background: #FFECEB;
+      border-color: #FF3B30;
+      color: #B91C1C;
+    }
+
+    .rf-status-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.16rem 0.56rem;
+      border-radius: var(--ios-radius-pill);
+      font-size: 0.77rem;
+      font-weight: 740;
+      line-height: 1.25;
+      white-space: nowrap;
+    }
+
+    .rf-status-tag.is-ok {
+      background: rgba(52, 199, 89, 0.15);
+      color: #15803D;
+    }
+
+    .rf-status-tag.is-hint {
+      background: rgba(60, 60, 67, 0.08);
+      color: var(--ios-text-secondary);
+      font-weight: 660;
     }
 
     .rf-detail-sub {
       margin: 0;
       font-size: 0.84rem;
-      line-height: 1.46;
+      line-height: 1.48;
       color: var(--ios-text-secondary);
     }
 
     .rf-inline-pill {
-      display: inline-block;
+      display: inline-flex;
+      align-items: baseline;
       padding: 0.06rem 0.48rem;
       border-radius: 8px;
       font-weight: 820;
@@ -1649,30 +1740,80 @@
     }
 
     .phase-faden-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.34rem;
-      margin: 0.15rem 0 0.5rem;
-      padding: 0.24rem 0.6rem;
-      border-radius: 8px;
-      font-size: 0.76rem;
-      font-weight: 750;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.32rem;
+      width: 100%;
+      margin: 0.25rem 0 0.62rem;
+      padding: 0.56rem 0.78rem;
+      border-radius: 12px;
+      font-size: 0.78rem;
       border-width: 1px;
       border-style: solid;
+    }
+
+    .phase-faden-kicker {
+      font-size: 0.69rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      opacity: 0.9;
+    }
+
+    .phase-faden-eq {
+      display: inline-flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.24em;
+      font-size: 0.9rem;
+      font-weight: 760;
+      color: var(--ios-text-primary);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.35;
+    }
+
+    .phase-faden-focus {
+      display: inline-flex;
+      align-items: baseline;
+      padding: 0.06rem 0.42rem;
+      border-radius: 6px;
+      font-weight: 840;
+      border: 1.5px solid currentColor;
+      background: rgba(255, 255, 255, 0.94);
     }
 
     .world-eq-mapping {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 0.55rem;
+      gap: 0.5rem 0.75rem;
       flex-wrap: wrap;
-      font-size: 0.79rem;
+      font-size: 0.8rem;
       font-weight: 700;
       color: var(--ios-text-secondary);
-      margin-top: 0.42rem;
-      padding-top: 0.42rem;
+      margin-top: 0.55rem;
+      padding-top: 0.52rem;
       border-top: 1px dashed rgba(60, 60, 67, 0.16);
+    }
+
+    .world-eq-badges {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.42rem;
+      flex-wrap: wrap;
+    }
+
+    .eq-mini-badge {
+      display: inline-flex;
+      align-items: baseline;
+      padding: 0.14rem 0.54rem;
+      border-radius: 7px;
+      font-size: 0.79rem;
+      font-weight: 780;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
     }
 
     .control-panel-card {
@@ -1849,13 +1990,14 @@
     }
 
     .live-fraction-formula {
-      font-size: 1.04rem;
-      font-weight: 700;
+      font-size: 1.06rem;
+      font-weight: 750;
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      gap: 0.28rem;
+      gap: 0.25rem 0;
       font-variant-numeric: tabular-nums;
+      line-height: 1.38;
     }
 
     /* Intervall-Boxen für Phase 3 */
@@ -1991,12 +2133,16 @@
     }
 
     .triangle-log-slot {
-      padding: 0.68rem 0.85rem;
+      padding: 0.66rem 0.78rem;
       border-radius: var(--ios-radius-md);
       background: var(--ios-card-bg);
       border: 1.5px dashed rgba(60, 60, 67, 0.22);
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       color: var(--ios-text-secondary);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.28rem;
     }
 
     .triangle-log-slot.is-filled {
@@ -2005,6 +2151,29 @@
       background: rgba(52, 199, 89, 0.06);
       color: var(--ios-text-primary);
       font-weight: 650;
+    }
+
+    .tri-log-title {
+      font-size: 0.73rem;
+      font-weight: 760;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--ios-green-dark);
+    }
+
+    .tri-log-eq {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.22rem 0;
+      font-size: 0.85rem;
+      font-weight: 750;
+      font-variant-numeric: tabular-nums;
+      color: var(--ios-text-primary);
+    }
+
+    .tri-log-eq .math-eq-op {
+      margin: 0 0.22em;
     }
 
     /* Arbeitsblatt-Transfer Callout */
@@ -2046,6 +2215,23 @@
       background: #FFFFFF;
       border: 2px solid rgba(52, 199, 89, 0.5);
       box-shadow: var(--ios-shadow-card);
+    }
+
+    .merk-formula-box {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.25rem 0;
+      padding: 0.68rem 0.9rem;
+      margin-bottom: 0.68rem;
+      border-radius: 12px;
+      background: #F6FBF8;
+      border: 1px solid rgba(52, 199, 89, 0.34);
+      font-size: 0.98rem;
+      font-weight: 780;
+      color: var(--ios-text-primary);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.45;
     }
 
     .merkblatt-badge {
@@ -2148,8 +2334,14 @@
        8. RESPONSIVE DESIGN (TABLET, SMARTPHONE & MEBIS-IFRAME)
        ========================================================================== */
     @media (max-width: 992px) {
+      /* Auf Smartphones (Hoch- & Querformat) und kompakten Screens scrollt die obere Leiste mit der Seite nach oben */
+      .ios-header {
+        position: relative;
+        top: auto;
+      }
+
       .header-controls-grid,
-      .worlds-compare-grid,
+      .scenario-model-overview,
       .phases-grid,
       .lab-split-grid,
       .briefing-facts-grid,
@@ -2220,6 +2412,16 @@
       .rf-detail-main {
         font-size: 1.02rem;
       }
+      .world-eq-main {
+        font-size: 1.12rem;
+      }
+      .merk-formula-box {
+        font-size: 0.9rem;
+        padding: 0.62rem 0.78rem;
+      }
+      .phase-faden-eq {
+        font-size: 0.86rem;
+      }
       .triangle-log-grid,
       .interval-readout-grid,
       .world-param-list {
@@ -2283,7 +2485,7 @@
 
         <!-- 3-Oberflächen-Navigation: Timeline vs. Entdeckung -->
         <div class="control-group-box">
-          <span class="control-micro-label">Arbeitsmodus (3-Oberflächen-Architektur)</span>
+          <span class="control-micro-label">Arbeitsmodus</span>
           <nav class="ios-segmented" aria-label="Ansichtsmodus wählen">
             <button type="button" class="segment-btn is-active" id="seg-mode-timeline" data-view-mode="timeline">
               <span>Timeline (Plenum)</span>
@@ -2291,7 +2493,7 @@
             </button>
             <button type="button" class="segment-btn" id="seg-mode-discovery" data-view-mode="discovery">
               <span>Entdeckung (Labor)</span>
-              <span class="segment-btn-sub">Advance Organizer &amp; 3 Phasen</span>
+              <span class="segment-btn-sub">Dein Szenario &amp; 3 Phasen</span>
             </button>
           </nav>
         </div>
@@ -2375,6 +2577,14 @@
             '<span class="math-fraction-num">' + numHTML + '</span>' +
             '<span class="math-fraction-den">' + denHTML + '</span>' +
             '</span>';
+        },
+
+        mvar: function (sym, subHTML) {
+          return '<span class="math-var">' + sym + '</span>' + (subHTML != null ? '<sub>' + subHTML + '</sub>' : '');
+        },
+
+        op: function (symbol) {
+          return '<span class="math-eq-op">' + symbol + '</span>';
         }
       };
 
@@ -2465,8 +2675,8 @@
             breachLowExplain: 'Grenzwertverletzung links (t < 0 min): Negative Ladezeiten vor dem Anschließen des Fahrzeugs gehören nicht zum regulären Ladevorgang!',
             breachHighExplain: 'Grenzwertverletzung rechts (t > 30 min bzw. E > 80 kWh): Ab 80 kWh regelt das Batteriemanagementsystem die Schnellladung zum Zellschutz ab!',
             animBullets: {
-              1: '<strong>Darstellung &amp; Praxisaufgabe:</strong> Die Animation zeigt eine 120-kW-Schnellladesäule samt 100-kWh-Traktionsbatterie (5 Zellmodule) &ndash; im echten E-Transporter erfasst das Batteriemanagement beim Anstecken (<span class="math-var">t</span> = 0 min) zuerst die vorhandene Restenergie <span class="math-var">t</span><sub>0</sub>, um Ladezeit und Reichweite exakt zu berechnen.',
-              2: '<strong>Darstellung &amp; Praxisaufgabe:</strong> Die Animation zeigt den Ladefortschritt zwischen zwei Messpunkten P<sub>1</sub> und P<sub>2</sub> &ndash; im realen Ladebetrieb überwacht die Steuerelektronik aus verstrichener Ladezeit (&Delta;<span class="math-var">t</span>) und nachgeladener Energie (&Delta;<span class="math-var">E</span>) die konstante Ladegeschwindigkeit <span class="math-var">m</span> = 2 kWh/min (120 kW Leistung).',
+              1: '<strong>Darstellung &amp; Praxisaufgabe:</strong> Die Animation zeigt eine 120-kW-Schnellladesäule samt 100-kWh-Traktionsbatterie (5 Zellmodule) &ndash; im echten E-Transporter erfasst das Batteriemanagement beim Anstecken (<span class="math-eq"><span class="math-var">t</span> = 0 min</span>) zuerst die vorhandene Restenergie <span class="math-eq"><span class="math-var">t</span><sub>0</sub></span>, um Ladezeit und Reichweite exakt zu berechnen.',
+              2: '<strong>Darstellung &amp; Praxisaufgabe:</strong> Die Animation zeigt den Ladefortschritt zwischen zwei Messpunkten <span class="math-eq">P<sub>1</sub></span> und <span class="math-eq">P<sub>2</sub></span> &ndash; im realen Ladebetrieb überwacht die Steuerelektronik aus verstrichener Ladezeit (<span class="math-eq">&Delta;<span class="math-var">t</span></span>) und nachgeladener Energie (<span class="math-eq">&Delta;<span class="math-var">E</span></span>) die konstante Ladegeschwindigkeit <span class="math-eq"><span class="math-var">m</span> = 2 kWh/min</span> (120 kW Leistung).',
               3: '<strong>Darstellung &amp; Praxisaufgabe:</strong> Die Animation zeigt den Sicherheits-Prüfstand des Batteriemanagementsystems (BMS) &ndash; im echten Fahrzeug gibt er das Schnellladen nur von 0 bis 30 min (20 bis 80 kWh) frei und regelt ab 80 % automatisch ab, um die Akkuzellen vor Überhitzung und Alterung zu schützen.'
             }
           },
@@ -2551,8 +2761,8 @@
             breachLowExplain: 'Grenzwertverletzung links (x < 0 TB): Ein negatives Datenvolumen ist technisch unmöglich!',
             breachHighExplain: 'Grenzwertverletzung rechts (x > 120 TB bzw. K > 220 €): Das gebuchte Server-Kontingent von 120 TB und die Budgetobergrenze von 220 € werden überschritten!',
             animBullets: {
-              1: '<strong>Darstellung &amp; Praxisaufgabe:</strong> Die Animation zeigt ein Cloud-Rechenzentrum samt Monatsabrechnung bei 0 TB Abruf &ndash; im echten Plattformbetrieb verbucht das Abrechnungssystem damit die fixe Grundgebühr <span class="math-var">t</span><sub>0</sub> = 40 &euro;, die für reservierte Server, Strom und Ausfallschutz immer anfällt.',
-              2: '<strong>Darstellung &amp; Praxisaufgabe:</strong> Die Animation zeigt den Traffic-Zähler des Rechenzentrums zwischen zwei Messpunkten P<sub>1</sub> und P<sub>2</sub> &ndash; im realen Streaming-Betrieb misst er das gesendete Datenvolumen (&Delta;<span class="math-var">x</span>) und rechnet über den Tarif <span class="math-var">m</span> = 1,5 &euro;/TB automatisch die hinzukommenden Kosten (&Delta;<span class="math-var">K</span>) ab.',
+              1: '<strong>Darstellung &amp; Praxisaufgabe:</strong> Die Animation zeigt ein Cloud-Rechenzentrum samt Monatsabrechnung bei <span class="math-eq"><span class="math-var">x</span> = 0 TB</span> Abruf &ndash; im echten Plattformbetrieb verbucht das Abrechnungssystem damit die fixe Grundgebühr <span class="math-eq"><span class="math-var">t</span><sub>0</sub> = 40 &euro;</span>, die für reservierte Server, Strom und Ausfallschutz immer anfällt.',
+              2: '<strong>Darstellung &amp; Praxisaufgabe:</strong> Die Animation zeigt den Traffic-Zähler des Rechenzentrums zwischen zwei Messpunkten <span class="math-eq">P<sub>1</sub></span> und <span class="math-eq">P<sub>2</sub></span> &ndash; im realen Streaming-Betrieb misst er das gesendete Datenvolumen (<span class="math-eq">&Delta;<span class="math-var">x</span></span>) und rechnet über den Tarif <span class="math-eq"><span class="math-var">m</span> = 1,5 &euro;/TB</span> automatisch die hinzukommenden Kosten (<span class="math-eq">&Delta;<span class="math-var">K</span></span>) ab.',
               3: '<strong>Darstellung &amp; Praxisaufgabe:</strong> Die Animation zeigt den automatischen Kontingent- und Budgetwächter der Cloud-Firewall &ndash; im echten Betrieb überwacht er das gebuchte Paket von 0 bis 120 TB (40 bis 220 &euro;) und riegelt Mehrtraffic rechtzeitig ab, um das Team vor einer Kostenexplosion zu schützen.'
             }
           }
@@ -2564,28 +2774,28 @@
             tag: 'Etappe 1',
             duration: '12 Min',
             titleHTML: 'Startwert-Analyse (<span class="math-var">t</span><sub>0</sub>) &ndash; Nullpunkt erfassen',
-            desc: 'Schnittpunkt S\u1D67(0 | t\u2080) auf der vertikalen Achse ablesen und klären, wie der konstante Anfangswert t\u2080 bei x = 0 die Gerade parallel verschiebt.'
+            descHTML: 'Schnittpunkt <span class="math-eq"><span class="math-var">S</span><sub><span class="math-var">y</span></sub>(0 | <span class="math-var">t</span><sub>0</sub>)</span> auf der vertikalen Achse ablesen und klären, wie der konstante Anfangswert <span class="math-var">t</span><sub>0</sub> bei <span class="math-eq"><span class="math-var">x</span> = 0</span> die Gerade parallel verschiebt.'
           },
           {
             id: 2,
             tag: 'Etappe 2',
             duration: '15 Min',
             titleHTML: 'Steigungsdreieck (<span class="math-var">m</span>) &ndash; Änderungsrate pro Einheit berechnen',
-            desc: 'Die Steigung m = \u0394y / \u0394x (Höhenunterschied geteilt durch Weite) an verschiedenen Steigungsdreiecken untersuchen und mit den Einheiten überprüfen.'
+            descHTML: 'Die Steigung <span class="math-frac-eq"><span class="math-var">m</span>' + Formatters.op('=') + Formatters.fractionHTML('<span class="delta-y-text">&Delta;<span class="math-var">y</span></span>', '<span class="delta-x-text">&Delta;<span class="math-var">x</span></span>') + '</span> (Höhenunterschied geteilt durch Weite) an verschiedenen Steigungsdreiecken untersuchen und mit den Einheiten überprüfen.'
           },
           {
             id: 3,
             tag: 'Etappe 3',
             duration: '15 Min',
             titleHTML: 'Systemgrenzen (<span class="math-var">D</span> &amp; <span class="math-var">W</span>) &ndash; Randbedingungen als Intervalle modellieren',
-            desc: 'Zulässige Minimal- und Maximalwerte festlegen und die Definitionsmenge D sowie die resultierende Wertemenge W in Intervallschreibweise [min ; max] bestimmen.'
+            descHTML: 'Zulässige Minimal- und Maximalwerte festlegen und die Definitionsmenge <span class="math-var">D</span> sowie die resultierende Wertemenge <span class="math-var">W</span> in Intervallschreibweise <span class="math-eq">[min ; max]</span> bestimmen.'
           },
           {
             id: 4,
             tag: 'Abschluss',
             duration: '3 Min',
             titleHTML: 'Arbeitsblatt-Transfer',
-            desc: 'Alle gewonnenen Erkenntnisse zu Startwert, Steigungsdreieck sowie Definitions- und Wertemenge strukturiert auf dem Arbeitsblatt sichern.'
+            descHTML: 'Alle gewonnenen Erkenntnisse zu Startwert, Steigungsdreieck sowie Definitions- und Wertemenge strukturiert auf dem Arbeitsblatt sichern.'
           }
         ],
 
@@ -2595,7 +2805,12 @@
             badge: 'Phase 1',
             title: 'Basiswert-Analyse',
             fadenChipClass: 'var-theme-t0',
-            fadenChipHTML: 'Roter Faden: Variable <strong>t<sub>0</sub></strong> in f(x) = m &middot; x + <strong>t<sub>0</sub></strong> bestimmen',
+            fadenChipHTML:
+              '<span class="phase-faden-kicker">Roter Faden &middot; Zielvariable bestimmen</span>' +
+              '<span class="phase-faden-eq">' +
+                '<span class="math-eq"><span class="math-var">f</span>(<span class="math-var">x</span>) = <span class="math-var">m</span> &middot; <span class="math-var">x</span> +</span>' +
+                '<span class="phase-faden-focus var-theme-t0"><span class="math-var">t</span><sub>0</sub></span>' +
+              '</span>',
             subtitleHTML: 'Ordinatenabschnitt <span class="math-var">t</span><sub>0</sub> als konstanter Anfangswert bei Rechtswert 0',
             summary: 'Verschiebe den Anfangswert auf der vertikalen Achse bei fester Steigung und deute den realen Zustand beim Nullpunkt.',
             formativeFeedback: 'Lies den Schnittpunkt des Graphen mit der vertikalen Achse ab. Welcher physikalische Zustand herrscht bei x = 0?',
@@ -2607,8 +2822,14 @@
             badge: 'Phase 2',
             title: 'Dynamisches Steigungsdreieck',
             fadenChipClass: 'var-theme-m',
-            fadenChipHTML: 'Roter Faden: Variable <strong>m</strong> in f(x) = <strong>m</strong> &middot; x + t<sub>0</sub> bestimmen',
-            subtitleHTML: 'Steigung <span class="math-var">m</span> als Differenzenquotient &Delta;<span class="math-var">y</span> / &Delta;<span class="math-var">x</span>',
+            fadenChipHTML:
+              '<span class="phase-faden-kicker">Roter Faden &middot; Zielvariable bestimmen</span>' +
+              '<span class="phase-faden-eq">' +
+                '<span class="math-eq"><span class="math-var">f</span>(<span class="math-var">x</span>) =</span>' +
+                '<span class="phase-faden-focus var-theme-m"><span class="math-var">m</span></span>' +
+                '<span class="math-eq">&middot; <span class="math-var">x</span> + <span class="math-var">t</span><sub>0</sub></span>' +
+              '</span>',
+            subtitleHTML: 'Steigung <span class="math-var">m</span> als Differenzenquotient ' + Formatters.fractionHTML('<span class="delta-y-text">&Delta;<span class="math-var">y</span></span>', '<span class="delta-x-text">&Delta;<span class="math-var">x</span></span>'),
             summary: 'Ziehe zwei Ankerpunkte entlang des Funktionsgraphen, vergleiche verschiedene Steigungsdreiecke und überprüfe die Einheiten im Bruch.',
             formativeFeedback: 'Berechne stets den Höhenunterschied geteilt durch die Weite. Überprüfe die Einheiten im Bruch.',
             abInstruction: 'Löse auf dem Arbeitsblatt Teilaufgabe 2 (Berechnung zweier Steigungsdreiecke).',
@@ -2619,7 +2840,15 @@
             badge: 'Phase 3',
             title: 'Projektions-Scanner (D & W)',
             fadenChipClass: 'var-theme-x',
-            fadenChipHTML: 'Roter Faden: Fertige Gleichung &rarr; Grenzen <strong>D</strong> &amp; <strong>W</strong> bestimmen',
+            fadenChipHTML:
+              '<span class="phase-faden-kicker">Roter Faden &middot; Systemgrenzen</span>' +
+              '<span class="phase-faden-eq">' +
+                '<span class="math-eq"><span class="math-var">f</span>(<span class="math-var">x</span>) = <span class="math-var">m</span> &middot; <span class="math-var">x</span> + <span class="math-var">t</span><sub>0</sub></span>' +
+                '<span>&rarr;</span>' +
+                '<span class="phase-faden-focus var-theme-x"><span class="math-var">D</span></span>' +
+                '<span>&amp;</span>' +
+                '<span class="phase-faden-focus var-theme-y"><span class="math-var">W</span></span>' +
+              '</span>',
             subtitleHTML: 'Reale Systemgrenzen in Intervallschreibweise modellieren',
             summary: 'Stelle die zulässigen Systemgrenzen auf der Rechtsachse ein und beobachte die orthogonale Schattenprojektion auf beide Koordinatenachsen.',
             formativeFeedback: 'Prüfe, welche Minimal- und Maximalwerte die Größen im regulären Betrieb annehmen dürfen.',
@@ -3359,7 +3588,7 @@
           var handleColor = isExactTarget ? '#34C759' : '#007AFF';
           var haloColor = isExactTarget ? 'rgba(52, 199, 89, 0.22)' : 'rgba(0, 122, 255, 0.20)';
 
-          drawDraggableHandle(ctx, ptX, ptY, 9.5, handleColor, haloColor, 't0');
+          drawDraggableHandle(ctx, ptX, ptY, 9.5, handleColor, haloColor, 't\u2080');
 
           if (!(anim && anim.simActive && anim.phase === 1 && anim.progress >= 0 && anim.progress < 0.42)) {
             var badgeText = 'Sy(0 | ' + Formatters.formatNumber(currentT0) + ')  \u2192  t\u2080 = ' + Formatters.formatNumber(currentT0) + ' ' + scenario.unitY;
@@ -3803,7 +4032,7 @@
               tilesTop,
               tileW,
               tilesH,
-              'Nachladung (+2\u00b7t)',
+              'Nachladung (+2 \u00b7 t)',
               (simActive ? '+' + Formatters.formatNumber(addedY, 1) : '+0') + ' kWh',
               simActive ? '120 kW Dauerleistung' : '0 kW (vor Ladestart)',
               simActive ? '#F0FDF4' : '#F8F9FB',
@@ -3844,7 +4073,7 @@
               tilesTop,
               tileW,
               tilesH,
-              'Traffic-Kosten (+1,5\u00b7x)',
+              'Traffic-Kosten (+1,5 \u00b7 x)',
               (simActive ? '+' + Formatters.formatNumber(addedY, 1) : '+0') + ' \u20AC',
               Formatters.formatNumber(curX, 0) + ' TB Video-Abruf',
               simActive ? '#F5F3FF' : '#F8F9FB',
@@ -4017,8 +4246,8 @@
           }
 
           /* Ankerpunkte P1 und P2 */
-          drawDraggableHandle(ctx, px1, py1, 10, '#007AFF', 'rgba(0, 122, 255, 0.20)', 'P1');
-          drawDraggableHandle(ctx, px2, py2, 10, '#FF9500', 'rgba(255, 149, 0, 0.22)', 'P2');
+          drawDraggableHandle(ctx, px1, py1, 10, '#007AFF', 'rgba(0, 122, 255, 0.20)', 'P\u2081');
+          drawDraggableHandle(ctx, px2, py2, 10, '#FF9500', 'rgba(255, 149, 0, 0.22)', 'P\u2082');
 
           /* Koordinaten-Fahnen */
           drawBadge(
@@ -5135,10 +5364,11 @@
                 '</span>' +
               '</div>' +
               '<div class="scenario-formula-pills">' +
-                '<span class="formula-pill">' + sc.funcEquationHTML + '</span>' +
-                '<span class="formula-pill"><span class="math-var">t</span><sub>0</sub> = ' + Formatters.formatNumber(sc.t0Target) + ' ' + Formatters.escapeHTML(sc.unitY) + '</span>' +
-                '<span class="formula-pill"><span class="math-var">m</span> = ' + Formatters.formatNumber(sc.m) + ' ' + Formatters.escapeHTML(sc.slopeUnit) + '</span>' +
-                '<span class="formula-pill">' + sc.dIntervalHTML + ' &middot; ' + sc.wIntervalHTML + '</span>' +
+                '<span class="formula-pill"><span class="math-eq">' + sc.funcEquationHTML + '</span></span>' +
+                '<span class="formula-pill"><span class="math-eq"><span class="math-var">t</span><sub>0</sub> = ' + Formatters.formatNumber(sc.t0Target) + ' ' + Formatters.escapeHTML(sc.unitY) + '</span></span>' +
+                '<span class="formula-pill"><span class="math-eq"><span class="math-var">m</span> = ' + Formatters.formatNumber(sc.m) + ' ' + Formatters.escapeHTML(sc.slopeUnit) + '</span></span>' +
+                '<span class="formula-pill"><span class="math-eq">' + sc.dIntervalHTML + '</span></span>' +
+                '<span class="formula-pill"><span class="math-eq">' + sc.wIntervalHTML + '</span></span>' +
               '</div>' +
               drawerHTML +
             '</div>'
@@ -5155,16 +5385,56 @@
             );
           }).join('');
 
+          var coloredEqHTML =
+            '<span class="math-eq">' +
+              '<span style="color:#7E22CE;" class="math-var">' + sc.varY + '</span>(<span style="color:#0055D4;" class="math-var">' + sc.varX + '</span>)' +
+              ' = <span style="color:#B45309;">' + Formatters.formatNumber(sc.m) + '</span>' +
+              ' &middot; <span style="color:#0055D4;" class="math-var">' + sc.varX + '</span>' +
+              ' + <span style="color:#15803D;">' + Formatters.formatNumber(sc.t0Target) + '</span>' +
+            '</span>';
+
           return (
             '<section class="scenario-briefing-card">' +
               '<div class="briefing-header-row">' +
                 '<span class="briefing-role-pill">' + sc.icon + ' ' + Formatters.escapeHTML(sc.roleBadge) + '</span>' +
-                '<span style="font-size:0.8rem; font-weight:700; color:var(--ios-text-secondary);">Praxiseinstieg &middot; ' + Formatters.escapeHTML(sc.title) + '</span>' +
+                '<span style="font-size:0.8rem; font-weight:700; color:var(--ios-text-secondary);">Dein gewähltes Praxisszenario &middot; ' + Formatters.escapeHTML(sc.title) + '</span>' +
               '</div>' +
               '<h2 class="card-title" style="margin-bottom:0.35rem;">' + Formatters.escapeHTML(sc.briefingHeadline) + '</h2>' +
               '<p class="briefing-lead">' + Formatters.escapeHTML(sc.introLead) + '</p>' +
               '<p class="briefing-body">' + Formatters.escapeHTML(sc.introDetails) + '</p>' +
               '<div class="briefing-facts-grid">' + factsHTML + '</div>' +
+
+              '<div class="scenario-model-overview">' +
+                '<div class="world-equation-box">' +
+                  '<span class="world-eq-kicker">Funktionsgleichung im Szenario</span>' +
+                  '<div class="world-eq-main">' + coloredEqHTML + '</div>' +
+                  '<div class="world-eq-mapping">' +
+                    '<span>Bauplan: <span class="math-eq"><span style="color:#7E22CE;" class="math-var">f</span>(<span style="color:#0055D4;" class="math-var">x</span>) = <span style="color:#B45309;" class="math-var">m</span> &middot; <span style="color:#0055D4;" class="math-var">x</span> + <span style="color:#15803D;" class="math-var">t</span><sub>0</sub></span></span>' +
+                    '<span class="world-eq-badges">' +
+                      '<span class="eq-mini-badge var-theme-m"><span class="math-eq"><span class="math-var">m</span> = ' + Formatters.formatNumber(sc.m) + '</span></span>' +
+                      '<span class="eq-mini-badge var-theme-t0"><span class="math-eq"><span class="math-var">t</span><sub>0</sub> = ' + Formatters.formatNumber(sc.t0Target) + '</span></span>' +
+                    '</span>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="world-param-list">' +
+                  '<div class="world-param-chip">' +
+                    '<span class="world-param-label">Basiswert (bei <span class="math-eq"><span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + '</span>)</span>' +
+                    '<div class="world-param-value"><span class="math-eq"><span style="color:#15803D;" class="math-var">t</span><sub>0</sub> = ' + Formatters.formatNumber(sc.t0Target) + ' ' + sc.unitY + '</span></div>' +
+                  '</div>' +
+                  '<div class="world-param-chip">' +
+                    '<span class="world-param-label">Änderungsrate</span>' +
+                    '<div class="world-param-value"><span class="math-eq"><span style="color:#B45309;" class="math-var">m</span> = ' + Formatters.formatNumber(sc.m) + ' ' + sc.slopeUnit + '</span></div>' +
+                  '</div>' +
+                  '<div class="world-param-chip">' +
+                    '<span class="world-param-label">Definitionsmenge (<span class="math-var">' + sc.varX + '</span> in ' + sc.unitX + ')</span>' +
+                    '<div class="world-param-value"><span class="math-eq" style="color:#0055D4;">' + sc.dIntervalHTML + '</span></div>' +
+                  '</div>' +
+                  '<div class="world-param-chip">' +
+                    '<span class="world-param-label">Wertemenge (<span class="math-var">' + sc.varY + '</span> in ' + sc.unitY + ')</span>' +
+                    '<div class="world-param-value"><span class="math-eq" style="color:#7E22CE;">' + sc.wIntervalHTML + '</span></div>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
             '</section>'
           );
         }
@@ -5174,11 +5444,16 @@
             return (
               '<div class="merkblatt-banner">' +
                 '<span class="merkblatt-badge">&#10003; ' + Formatters.escapeHTML(AppData.PHASES[0].merkblattTitle) + '</span>' +
-                '<p style="margin:0; font-weight:700; font-size:0.96rem;">Schnittpunkt mit der vertikalen Achse: <span class="math-var">S</span><sub>y</sub>(0 | <span class="math-var">t</span><sub>0</sub>)</p>' +
+                '<div class="merk-formula-box">' +
+                  '<span class="math-term">Schnittpunkt mit der vertikalen Achse:</span>' +
+                  '<span class="math-eq" style="margin-left:0.38em; color:#15803D;"><span class="math-var">S</span><sub><span class="math-var">y</span></sub>(0 | <span class="math-var">t</span><sub>0</sub>)</span>' +
+                  Formatters.op('&rArr;') +
+                  '<span class="math-eq"><span class="math-var">S</span><sub><span class="math-var">y</span></sub>(0 | ' + Formatters.formatNumber(sc.t0Target) + ')</span>' +
+                '</div>' +
                 '<ul class="merk-list">' +
-                  '<li><strong>Mathematische Bedeutung:</strong> Setzt man in <span class="math-var">f</span>(<span class="math-var">x</span>) = <span class="math-var">m</span> &middot; <span class="math-var">x</span> + <span class="math-var">t</span><sub>0</sub> den Rechtswert 0 ein, bleibt der konstante Basiswert <span class="math-var">t</span><sub>0</sub> übrig.</li>' +
+                  '<li><strong>Mathematische Bedeutung:</strong> Setzt man in <span class="math-eq"><span class="math-var">f</span>(<span class="math-var">x</span>) = <span class="math-var">m</span> &middot; <span class="math-var">x</span> + <span class="math-var">t</span><sub>0</sub></span> den Rechtswert 0 ein, bleibt der konstante Basiswert <span class="math-var">t</span><sub>0</sub> übrig.</li>' +
                   '<li><strong>Geometrische Wirkung:</strong> Eine Änderung von <span class="math-var">t</span><sub>0</sub> verschiebt den gesamten Graphen parallel nach oben oder unten &ndash; die Steigung <span class="math-var">m</span> ändert sich dabei nicht.</li>' +
-                  '<li><strong>Dein Szenario (' + Formatters.escapeHTML(sc.title) + '):</strong> Bei <span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + ' gilt <span class="math-var">t</span><sub>0</sub> = ' + Formatters.formatNumber(sc.t0Target) + ' ' + sc.unitY + ' (' + Formatters.escapeHTML(sc.zeroStateMeaning) + ')</li>' +
+                  '<li><strong>Dein Szenario (' + Formatters.escapeHTML(sc.title) + '):</strong> Bei <span class="math-eq"><span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + '</span> gilt <span class="math-eq"><span class="math-var">t</span><sub>0</sub> = ' + Formatters.formatNumber(sc.t0Target) + ' ' + sc.unitY + '</span> (' + Formatters.escapeHTML(sc.zeroStateMeaning) + ')</li>' +
                 '</ul>' +
               '</div>'
             );
@@ -5189,15 +5464,21 @@
             return (
               '<div class="merkblatt-banner">' +
                 '<span class="merkblatt-badge">&#10003; ' + Formatters.escapeHTML(AppData.PHASES[1].merkblattTitle) + '</span>' +
-                '<p style="margin:0; font-weight:700; font-size:0.96rem; display:flex; align-items:center; flex-wrap:wrap; gap:0.25rem;">' +
-                  'Differenzenquotient: <span class="math-var">m</span> = ' +
-                  Formatters.fractionHTML('<span class="delta-y-text">' + sc.varY + '<sub>2</sub> &minus; ' + sc.varY + '<sub>1</sub></span>', '<span class="delta-x-text">' + sc.varX + '<sub>2</sub> &minus; ' + sc.varX + '<sub>1</sub></span>') +
-                  ' = ' +
+                '<div class="merk-formula-box">' +
+                  '<span class="math-term" style="margin-right:0.35em;">Differenzenquotient:</span>' +
+                  '<span class="math-term"><span class="math-var">m</span></span>' +
+                  Formatters.op('=') +
+                  Formatters.fractionHTML(
+                    '<span class="delta-y-text"><span class="math-var">' + sc.varY + '</span><sub>2</sub> &minus; <span class="math-var">' + sc.varY + '</span><sub>1</sub></span>',
+                    '<span class="delta-x-text"><span class="math-var">' + sc.varX + '</span><sub>2</sub> &minus; <span class="math-var">' + sc.varX + '</span><sub>1</sub></span>'
+                  ) +
+                  Formatters.op('=') +
                   Formatters.fractionHTML('<span class="delta-y-text">' + numUnit + '</span>', '<span class="delta-x-text">' + denUnit + '</span>') +
-                  ' = ' + Formatters.formatNumber(sc.m) + ' ' + Formatters.escapeHTML(sc.slopeUnit) +
-                '</p>' +
+                  Formatters.op('=') +
+                  '<span class="math-term" style="color:var(--ios-green-dark);">' + Formatters.formatNumber(sc.m) + ' ' + Formatters.escapeHTML(sc.slopeUnit) + '</span>' +
+                '</div>' +
                 '<ul class="merk-list">' +
-                  '<li><strong>Immer Höhe durch Weite:</strong> Im Zähler steht die vertikale Differenz (<span class="delta-y-text">#FF9500</span>), im Nenner die horizontale Differenz (<span class="delta-x-text">#007AFF</span>).</li>' +
+                  '<li><strong>Immer Höhe durch Weite:</strong> Im Zähler steht die vertikale Differenz (<span class="delta-y-text">orange</span>), im Nenner die horizontale Differenz (<span class="delta-x-text">blau</span>).</li>' +
                   '<li><strong>Dreiecksgröße egal:</strong> Weil eine Gerade überall gleich steil ansteigt, liefern kleine und große Steigungsdreiecke exakt dasselbe Verhältnis <span class="math-var">m</span>.</li>' +
                   '<li><strong>Einheitenprobe schützt vor Fehlern:</strong> Nur Zähler in ' + sc.unitY + ' geteilt durch Nenner in ' + sc.unitX + ' ergibt die gesuchte Änderungsrate in ' + sc.slopeUnit + '.</li>' +
                 '</ul>' +
@@ -5207,11 +5488,17 @@
           return (
             '<div class="merkblatt-banner">' +
               '<span class="merkblatt-badge">&#10003; ' + Formatters.escapeHTML(AppData.PHASES[2].merkblattTitle) + '</span>' +
-              '<p style="margin:0; font-weight:700; font-size:0.96rem;">Abgeschlossene Intervalle im regulären Systembetrieb: ' + sc.dIntervalHTML + ' und ' + sc.wIntervalHTML + '</p>' +
+              '<div class="merk-formula-box">' +
+                '<span class="math-term" style="margin-right:0.42em;">Abgeschlossene Intervalle im Betrieb:</span>' +
+                '<span class="rf-interval-pair">' +
+                  '<span class="rf-interval-chip is-d">' + sc.dIntervalHTML + ' <span class="math-unit">' + sc.unitX + '</span></span>' +
+                  '<span class="rf-interval-chip is-w">' + sc.wIntervalHTML + ' <span class="math-unit">' + sc.unitY + '</span></span>' +
+                '</span>' +
+              '</div>' +
               '<ul class="merk-list">' +
                 '<li><strong>Definitionsmenge <span class="math-var">D</span> (Rechtsachse):</strong> Alle im realen Betrieb zulässigen Eingabewerte <span class="math-var">' + sc.varX + '</span> von ' + Formatters.formatNumber(sc.dMinTarget) + ' ' + sc.unitX + ' bis ' + Formatters.formatNumber(sc.dMaxTarget) + ' ' + sc.unitX + '.</li>' +
                 '<li><strong>Wertemenge <span class="math-var">W</span> (Hochachse):</strong> Alle daraus resultierenden Funktionswerte <span class="math-var">' + sc.varY + '</span> von ' + Formatters.formatNumber(sc.wMinTarget) + ' ' + sc.unitY + ' bis ' + Formatters.formatNumber(sc.wMaxTarget) + ' ' + sc.unitY + '.</li>' +
-                '<li><strong>Eckige Klammern [min ; max]:</strong> Beide Randwerte gehören regulär zum Betriebsbereich dazu (abgeschlossenes Intervall in &#8477;).</li>' +
+                '<li><strong>Eckige Klammern [untere Grenze ; obere Grenze]:</strong> Beide Randwerte gehören regulär zum Betriebsbereich dazu (abgeschlossenes Intervall in &#8477;).</li>' +
               '</ul>' +
             '</div>'
           );
@@ -5253,7 +5540,7 @@
                   '<span class="timeline-duration-pill">&#9201; ' + Formatters.escapeHTML(item.duration) + '</span>' +
                 '</div>' +
                 '<h3 class="timeline-title">' + item.titleHTML + '</h3>' +
-                '<p class="timeline-desc">' + Formatters.escapeHTML(item.desc) + '</p>' +
+                '<p class="timeline-desc">' + item.descHTML + '</p>' +
               '</div>'
             );
           }).join('');
@@ -5282,13 +5569,13 @@
               '<div class="general-formula-stage">' +
                 '<div class="formula-stage-top">' +
                   '<span class="formula-stage-label">Allgemeine Funktionsgleichung &amp; Bedeutung der Variablen</span>' +
-                  '<span class="formula-alt-pill">Koordinatenform: <strong><span class="math-var">y</span> = <span class="math-var">m</span> &middot; <span class="math-var">x</span> + <span class="math-var">t</span><sub>0</sub></strong></span>' +
+                  '<span class="formula-alt-pill">Koordinatenform: <span class="math-eq"><span class="math-var">y</span> = <span class="math-var">m</span> &middot; <span class="math-var">x</span> + <span class="math-var">t</span><sub>0</sub></span></span>' +
                 '</div>' +
 
                 '<div class="hero-equation-row" role="region" aria-label="Allgemeine lineare Funktionsgleichung">' +
                   '<div class="eq-token var-theme-y">' +
                     '<span class="eq-token-sym"><span class="math-var">f</span>(<span class="math-var">x</span>)</span>' +
-                    '<span class="eq-token-tag">Funktionswert (&thinsp;y&thinsp;)</span>' +
+                    '<span class="eq-token-tag">Funktionswert (&thinsp;<span class="math-var" style="text-transform:none;">y</span>&thinsp;)</span>' +
                   '</div>' +
                   '<span class="eq-op">=</span>' +
                   '<div class="eq-token var-theme-m">' +
@@ -5309,7 +5596,7 @@
 
                 '<div class="variable-legend-grid">' +
                   '<div class="var-legend-card card-y">' +
-                    '<span class="var-symbol-pill var-theme-y"><span class="math-var">f</span>(<span class="math-var">x</span>) / <span class="math-var">y</span></span>' +
+                    '<span class="var-symbol-pill var-theme-y"><span class="math-eq"><span class="math-var">y</span> = <span class="math-var">f</span>(<span class="math-var">x</span>)</span></span>' +
                     '<div>' +
                       '<h4 class="var-legend-title">Funktionswert (abhängige Größe)</h4>' +
                       '<p class="var-legend-desc">Wird auf der vertikalen <strong>Hochachse (<span class="math-var">y</span>-Achse)</strong> abgetragen und gibt das berechnete Gesamtergebnis an der Stelle <span class="math-var">x</span> an.</p>' +
@@ -5328,7 +5615,7 @@
                     '<span class="var-symbol-pill var-theme-m"><span class="math-var">m</span></span>' +
                     '<div>' +
                       '<h4 class="var-legend-title">Steigung (konstante Änderungsrate)</h4>' +
-                      '<p class="var-legend-desc">Gibt an, um wie viel sich <span class="math-var">y</span> ändert, wenn <span class="math-var">x</span> um <strong>genau 1 Einheit</strong> wächst (<span class="math-var">m</span> = &Delta;<span class="math-var">y</span> / &Delta;<span class="math-var">x</span>). Steuert die Steilheit der Geraden.</p>' +
+                      '<p class="var-legend-desc">Gibt an, um wie viel sich <span class="math-var">y</span> ändert, wenn <span class="math-var">x</span> um <strong>genau 1 Einheit</strong> wächst (<span class="math-frac-eq"><span class="math-var">m</span>' + Formatters.op('=') + Formatters.fractionHTML('<span class="delta-y-text">&Delta;<span class="math-var">y</span></span>', '<span class="delta-x-text">&Delta;<span class="math-var">x</span></span>') + '</span>). Steuert die Steilheit der Geraden.</p>' +
                     '</div>' +
                   '</div>' +
 
@@ -5336,7 +5623,7 @@
                     '<span class="var-symbol-pill var-theme-t0"><span class="math-var">t</span><sub>0</sub></span>' +
                     '<div>' +
                       '<h4 class="var-legend-title">Anfangswert (<span class="math-var">y</span>-Achsenabschnitt)</h4>' +
-                      '<p class="var-legend-desc">Der feste Startsockel bei <strong><span class="math-var">x</span> = 0</strong>. Dort schneidet die Gerade die vertikale Achse im Punkt <strong><span class="math-var">S</span><sub>y</sub>(0 | <span class="math-var">t</span><sub>0</sub>)</strong>.</p>' +
+                      '<p class="var-legend-desc">Der feste Startsockel bei <span class="math-eq"><span class="math-var">x</span> = 0</span>. Dort schneidet die Gerade die vertikale Achse im Punkt <span class="math-eq"><span class="math-var">S</span><sub><span class="math-var">y</span></sub>(0 | <span class="math-var">t</span><sub>0</sub>)</span>.</p>' +
                     '</div>' +
                   '</div>' +
                 '</div>' +
@@ -5354,8 +5641,8 @@
               '<p class="card-subtitle">Im anschließenden Labor wählt ihr euer Praxisszenario selbst aus und untersucht diese Etappen Schritt für Schritt:</p>' +
               '<div class="ios-timeline">' + stagesHTML + '</div>' +
               '<div style="margin-top:1.15rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem;">' +
-                '<span style="font-size:0.86rem; color:var(--ios-text-secondary);">Im Entdeckungsbereich warten beide Praxisszenarien mit interaktiven Koordinatensystemen auf euch.</span>' +
-                '<button type="button" class="ios-btn ios-btn-primary" id="btn-start-discovery">Zum Entdeckungsbereich &amp; Szenario wählen &rarr;</button>' +
+                '<span style="font-size:0.86rem; color:var(--ios-text-secondary);">Wählt oben euer Praxisszenario aus und startet direkt in euer passendes Entdeckerlabor.</span>' +
+                '<button type="button" class="ios-btn ios-btn-primary" id="btn-start-discovery">Ins Entdeckerlabor starten &rarr;</button>' +
               '</div>' +
             '</section>';
 
@@ -5370,7 +5657,7 @@
         }
 
         /* ====================================================================
-           OBERFLÄCHE 2B: ADVANCE ORGANIZER & 3-PHASEN-ENTSCHEIDUNGSBEREICH
+           OBERFLÄCHE 2B: FOKUSSIERTER SZENARIO-HUB (NUR GEWÄHLTES SZENARIO)
            ==================================================================== */
         function renderDiscoveryHub() {
           var st = StateStore.get();
@@ -5385,6 +5672,12 @@
             var statusBadge = solved
               ? '<span class="solved-check-circle" title="Gelöst">&#10003;</span>'
               : (unlocked ? '' : '<span class="locked-icon-circle" title="Noch gesperrt">&#128274;</span>');
+
+            var scenarioSubHTML = ph.id === 1
+              ? 'Anfangswert <span class="math-var">t</span><sub>0</sub> bei <span class="math-eq"><span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + '</span> bestimmen'
+              : (ph.id === 2
+                ? '<span class="math-frac-eq"><span class="math-term">Steigung <span class="math-var">m</span></span>' + Formatters.op('=') + Formatters.fractionHTML('<span class="delta-y-text">&Delta;<span class="math-var">' + sc.varY + '</span></span>', '<span class="delta-x-text">&Delta;<span class="math-var">' + sc.varX + '</span></span>') + '<span class="math-term" style="margin-left:0.28em;">in ' + sc.slopeUnit + '</span></span>'
+                : 'Systemgrenzen für <span class="math-var">' + sc.varX + '</span> (' + sc.unitX + ') und <span class="math-var">' + sc.varY + '</span> (' + sc.unitY + ')');
 
             var actionButtons = '';
             if (unlocked) {
@@ -5410,7 +5703,7 @@
                   '</div>' +
                   '<h3 class="phase-hub-title">' + Formatters.escapeHTML(ph.title) + '</h3>' +
                   '<div class="phase-faden-pill ' + ph.fadenChipClass + '">' + ph.fadenChipHTML + '</div>' +
-                  '<p class="phase-hub-sub">' + ph.subtitleHTML + '</p>' +
+                  '<p class="phase-hub-sub">' + scenarioSubHTML + '</p>' +
                   '<p class="phase-hub-desc">' + Formatters.escapeHTML(ph.summary) + '</p>' +
                   (solved ? '<p style="margin:0.65rem 0 0; font-size:0.81rem; font-weight:700; color:var(--ios-green-dark);">&#128221; ' + Formatters.escapeHTML(ph.abInstruction) + '</p>' : '') +
                 '</div>' +
@@ -5427,70 +5720,11 @@
           }).join('');
 
           mainEl.innerHTML =
-            '<section class="ios-card">' +
-              '<span class="section-eyebrow eyebrow-blue">Oberfläche 2B &middot; Advance Organizer</span>' +
-              '<h2 class="card-title">Zwei reale Welten &ndash; ein identischer linearer Bauplan</h2>' +
-              '<p class="card-subtitle">Klicke auf eine Kachel, um dein Praxisszenario direkt zu aktivieren und die Struktur <span class="math-var">f</span>(<span class="math-var">x</span>) = <span class="math-var">m</span> &middot; <span class="math-var">x</span> + <span class="math-var">t</span><sub>0</sub> zu vergleichen:</p>' +
-
-              '<div class="worlds-compare-grid">' +
-                /* Linke Kachel: Technik */
-                '<div class="world-tile ' + (st.scenario === 'technik' ? 'is-selected-technik' : '') + '" data-select-world="technik" role="button" tabindex="0">' +
-                  '<div class="world-tile-head">' +
-                    '<span class="world-tag tag-technik">&#9889; Technik &middot; E-Mobilität</span>' +
-                    '<span class="world-active-indicator">' + (st.scenario === 'technik' ? '&#10003; Aktiv gewählt' : 'Klicken zum Wählen') + '</span>' +
-                  '</div>' +
-                  '<div style="font-size:0.88rem; font-weight:700; color:var(--ios-text-primary);">Traktionsbatterie &amp; Schnellladeprozess</div>' +
-                  '<p class="world-tile-story">' + Formatters.escapeHTML(AppData.SCENARIOS.technik.tileTeaser) + '</p>' +
-                  '<div class="world-equation-box">' +
-                    '<div><span style="color:#7E22CE;" class="math-var">E</span>(<span style="color:#0055D4;" class="math-var">t</span>) = <span style="color:#B45309;">2</span> &middot; <span style="color:#0055D4;" class="math-var">t</span> + <span style="color:#15803D;">20</span></div>' +
-                    '<div class="world-eq-mapping">' +
-                      '<span>Bauplan: <span style="color:#7E22CE;">f(x)</span> = <span style="color:#B45309;">m</span> &middot; <span style="color:#0055D4;">x</span> + <span style="color:#15803D;">t<sub>0</sub></span></span>' +
-                      '<span><span style="color:#B45309;">m = 2</span> &middot; <span style="color:#15803D;">t<sub>0</sub> = 20</span></span>' +
-                    '</div>' +
-                  '</div>' +
-                  '<div class="world-param-list">' +
-                    '<div class="world-param-chip"><span>Basiswert (<span class="math-var">t</span> = 0 min)</span><strong><span class="math-var">t</span><sub>0</sub> = 20 kWh</strong></div>' +
-                    '<div class="world-param-chip"><span>Änderungsrate</span><strong><span class="math-var">m</span> = 2 kWh/min</strong></div>' +
-                    '<div class="world-param-chip"><span>Definitionsmenge</span><strong><span class="math-var">D</span> = [0 ; 30]</strong></div>' +
-                    '<div class="world-param-chip"><span>Wertemenge</span><strong><span class="math-var">W</span> = [20 ; 80]</strong></div>' +
-                  '</div>' +
-                '</div>' +
-
-                /* Rechte Kachel: Digital */
-                '<div class="world-tile ' + (st.scenario === 'digital' ? 'is-selected-digital' : '') + '" data-select-world="digital" role="button" tabindex="0">' +
-                  '<div class="world-tile-head">' +
-                    '<span class="world-tag tag-digital">&#9729;&#65039; Digital &middot; Cloud-Streaming</span>' +
-                    '<span class="world-active-indicator">' + (st.scenario === 'digital' ? '&#10003; Aktiv gewählt' : 'Klicken zum Wählen') + '</span>' +
-                  '</div>' +
-                  '<div style="font-size:0.88rem; font-weight:700; color:var(--ios-text-primary);">Datenvolumen &amp; Serverkosten</div>' +
-                  '<p class="world-tile-story">' + Formatters.escapeHTML(AppData.SCENARIOS.digital.tileTeaser) + '</p>' +
-                  '<div class="world-equation-box">' +
-                    '<div><span style="color:#7E22CE;" class="math-var">K</span>(<span style="color:#0055D4;" class="math-var">x</span>) = <span style="color:#B45309;">1,5</span> &middot; <span style="color:#0055D4;" class="math-var">x</span> + <span style="color:#15803D;">40</span></div>' +
-                    '<div class="world-eq-mapping">' +
-                      '<span>Bauplan: <span style="color:#7E22CE;">f(x)</span> = <span style="color:#B45309;">m</span> &middot; <span style="color:#0055D4;">x</span> + <span style="color:#15803D;">t<sub>0</sub></span></span>' +
-                      '<span><span style="color:#B45309;">m = 1,5</span> &middot; <span style="color:#15803D;">t<sub>0</sub> = 40</span></span>' +
-                    '</div>' +
-                  '</div>' +
-                  '<div class="world-param-list">' +
-                    '<div class="world-param-chip"><span>Basiswert (<span class="math-var">x</span> = 0 TB)</span><strong><span class="math-var">t</span><sub>0</sub> = 40 &euro;</strong></div>' +
-                    '<div class="world-param-chip"><span>Änderungsrate</span><strong><span class="math-var">m</span> = 1,5 &euro;/TB</strong></div>' +
-                    '<div class="world-param-chip"><span>Definitionsmenge</span><strong><span class="math-var">D</span> = [0 ; 120]</strong></div>' +
-                    '<div class="world-param-chip"><span>Wertemenge</span><strong><span class="math-var">W</span> = [40 ; 220]</strong></div>' +
-                  '</div>' +
-                '</div>' +
-              '</div>' +
-
-              '<div class="core-message-banner">' +
-                '<span style="font-size:1.25rem;">&#128161;</span>' +
-                '<span>Kernbotschaft: Dieselbe mathematische Struktur steuert reale Systeme in Ingenieurwesen und Digitalwirtschaft.</span>' +
-              '</div>' +
-            '</section>' +
-
             buildScenarioBriefingHTML(sc) +
 
             '<section>' +
               '<div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.2rem;">' +
-                '<h2 class="card-title" style="margin:0;">3 Untersuchungsphasen im Entdeckungslabor</h2>' +
+                '<h2 class="card-title" style="margin:0;">Deine 3 Untersuchungsphasen im Entdeckerlabor</h2>' +
                 '<span style="font-size:0.84rem; color:var(--ios-text-secondary);">Aktives Szenario: <strong>' + Formatters.escapeHTML(sc.title) + '</strong></span>' +
               '</div>' +
               '<div class="phases-grid">' + cardsHTML + '</div>' +
@@ -5502,24 +5736,6 @@
 
         function bindHubActions() {
           var st = StateStore.get();
-          var tiles = mainEl.querySelectorAll('[data-select-world]');
-          Array.prototype.forEach.call(tiles, function (tile) {
-            tile.addEventListener('click', function () {
-              var world = tile.getAttribute('data-select-world');
-              if (world === 'technik' || world === 'digital') {
-                st.scenario = world;
-                StateStore.save();
-                render();
-              }
-            });
-            tile.addEventListener('keydown', function (ev) {
-              if (ev.key === 'Enter' || ev.key === ' ') {
-                ev.preventDefault();
-                tile.click();
-              }
-            });
-          });
-
           var phaseBtns = mainEl.querySelectorAll('[data-open-phase]');
           Array.prototype.forEach.call(phaseBtns, function (btn) {
             btn.addEventListener('click', function () {
@@ -5560,7 +5776,7 @@
 
           return (
             '<div class="workspace-topbar">' +
-              '<button type="button" class="ios-btn ios-btn-secondary" data-back-hub="1">&larr; Zur Übersicht (Advance Organizer)</button>' +
+              '<button type="button" class="ios-btn ios-btn-secondary" data-back-hub="1">&larr; Zur Szenario-Übersicht</button>' +
               '<div class="phase-stepper-pills">' + pills + '</div>' +
             '</div>'
           );
@@ -5611,17 +5827,17 @@
             var exactT0 = Math.abs(sub.p1CurrentT0 - sc.t0Target) < 0.01;
             var t0Done = !!sub.p1TargetLocked;
             var t0Formatted = Formatters.formatNumber(sub.p1CurrentT0);
-            var t0StatusHint = t0Done
-              ? ' &middot; <span style="color:#15803D;">&#10003; fixiert</span>'
+            var t0StatusTag = t0Done
+              ? '<span class="rf-status-tag is-ok">&#10003; fixiert</span>'
               : (exactT0
-                ? ' &middot; <span style="color:#15803D;">Zielwert erreicht</span>'
-                : ' <span style="font-weight:600; font-size:0.92rem; color:var(--ios-text-secondary);">(Ziel im Szenario: ' + sc.t0Target + ' ' + sc.unitY + ')</span>');
+                ? '<span class="rf-status-tag is-ok">&#10003; Zielwert erreicht</span>'
+                : '<span class="rf-status-tag is-hint">Ziel im Szenario: ' + sc.t0Target + ' ' + sc.unitY + '</span>');
 
             return (
               '<div class="roter-faden-head">' +
                 '<span class="roter-faden-eyebrow">&#129525; Roter Faden &middot; Allgemeine lineare Gleichung im Szenario</span>' +
                 '<span class="roter-faden-step-badge badge-t0">' +
-                  (t0Done ? '&#10003; Startwert t<sub>0</sub> bestimmt' : 'Schritt 1 von 3 &middot; Startwert t<sub>0</sub>') +
+                  (t0Done ? '&#10003; Startwert <span class="math-var">t</span><sub>0</sub> bestimmt' : 'Schritt 1 von 3 &middot; Startwert <span class="math-var">t</span><sub>0</sub>') +
                 '</span>' +
               '</div>' +
               '<div class="roter-faden-eq-row" aria-label="Allgemeine lineare Gleichung f(x) = m mal x plus t0">' +
@@ -5640,7 +5856,7 @@
                 '<div class="rf-slot var-theme-x is-muted-var">' +
                   '<span class="rf-slot-status">Beim Start = 0</span>' +
                   '<span class="rf-gen-sym"><span class="math-var">x</span></span>' +
-                  '<span class="rf-slot-role"><span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + '</span>' +
+                  '<span class="rf-slot-role"><span class="math-eq"><span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + '</span></span>' +
                 '</div>' +
                 '<span class="rf-op">+</span>' +
                 '<div class="rf-slot var-theme-t0 is-focus-var">' +
@@ -5653,17 +5869,20 @@
                 '<div class="rf-detail-box">' +
                   '<span class="rf-detail-label">Dein Szenario-Modell</span>' +
                   '<div class="rf-detail-main">' +
-                    sc.funcCallHTML + ' = ' + Formatters.formatNumber(sc.m) + ' &middot; <span class="math-var">' + sc.varX + '</span> + ' +
-                    '<span class="rf-inline-pill var-theme-t0">' + t0Formatted + '</span>' +
+                    '<span class="math-eq">' +
+                      sc.funcCallHTML + ' = ' + Formatters.formatNumber(sc.m) + ' &middot; <span class="math-var">' + sc.varX + '</span> + ' +
+                      '<span class="rf-inline-pill var-theme-t0">' + t0Formatted + '</span>' +
+                    '</span>' +
                   '</div>' +
-                  '<p class="rf-detail-sub">Beim Start (<span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + ') fällt ' + Formatters.formatNumber(sc.m) + ' &middot; 0 weg &ndash; es bleibt direkt <span class="math-var">t</span><sub>0</sub> übrig.</p>' +
+                  '<p class="rf-detail-sub">Beim Start (<span class="math-eq"><span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + '</span>) fällt <span class="math-eq">' + Formatters.formatNumber(sc.m) + ' &middot; 0</span> weg &ndash; es bleibt direkt <span class="math-var">t</span><sub>0</sub> übrig.</p>' +
                 '</div>' +
                 '<div class="rf-detail-box focus-t0">' +
-                  '<span class="rf-detail-label">Gesuchte Größe in Phase 1 &middot; Anfangswert t<sub>0</sub></span>' +
+                  '<span class="rf-detail-label">Gesuchte Größe in Phase 1 &middot; Anfangswert <span class="math-var">t</span><sub>0</sub></span>' +
                   '<div class="rf-detail-main">' +
-                    '<span class="math-var">t</span><sub>0</sub> = ' + t0Formatted + ' ' + sc.unitY + t0StatusHint +
+                    '<span class="math-eq"><span class="math-var">t</span><sub>0</sub> = ' + t0Formatted + ' ' + sc.unitY + '</span>' +
+                    t0StatusTag +
                   '</div>' +
-                  '<p class="rf-detail-sub">Schnittpunkt des Graphen mit der vertikalen Achse bei <span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + '.</p>' +
+                  '<p class="rf-detail-sub">Schnittpunkt des Graphen mit der vertikalen Achse bei <span class="math-eq"><span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + '</span>.</p>' +
                 '</div>' +
               '</div>'
             );
@@ -5681,16 +5900,27 @@
               : '<span class="rf-inline-pill var-theme-m">' + Formatters.formatNumber(sc.m) + '</span>';
 
             var mCalcMainHTML = zeroDx
-              ? '&Delta;<span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + ' &ndash; bitte zwei verschiedene Punkte wählen'
+              ? '<span class="danger-text">&Delta;<span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + ' &ndash; zwei verschiedene Punkte wählen</span>'
               : (swapped
-                ? '&Delta;<span class="math-var">' + sc.varX + '</span> / &Delta;<span class="math-var">' + sc.varY + '</span> = ' + Formatters.formatNumber(dx / dy, 2) + ' ' + sc.inverseSlopeUnit + ' &#10007; (Quotient vertauscht!)'
-                : '<span class="math-var">m</span> = ' + Formatters.formatNumber(dy) + ' ' + sc.unitY + ' / ' + Formatters.formatNumber(dx) + ' ' + sc.unitX + ' = ' + Formatters.formatNumber(sc.m) + ' ' + sc.slopeUnit);
+                ? '<span class="danger-text" style="margin-right:0.25em;">Vertauscht:</span>' +
+                  Formatters.fractionHTML('<span class="delta-x-text">&Delta;<span class="math-var">' + sc.varX + '</span></span>', '<span class="delta-y-text">&Delta;<span class="math-var">' + sc.varY + '</span></span>') +
+                  Formatters.op('=') +
+                  Formatters.fractionHTML('<span class="delta-x-text">' + Formatters.formatNumber(dx) + ' ' + sc.unitX + '</span>', '<span class="delta-y-text">' + Formatters.formatNumber(dy) + ' ' + sc.unitY + '</span>') +
+                  Formatters.op('=') +
+                  '<span class="danger-text">' + Formatters.formatNumber(dx / dy, 2) + ' ' + sc.inverseSlopeUnit + ' &#10007;</span>'
+                : '<span class="math-term"><span class="math-var">m</span></span>' +
+                  Formatters.op('=') +
+                  Formatters.fractionHTML('<span class="delta-y-text">&Delta;<span class="math-var">' + sc.varY + '</span></span>', '<span class="delta-x-text">&Delta;<span class="math-var">' + sc.varX + '</span></span>') +
+                  Formatters.op('=') +
+                  Formatters.fractionHTML('<span class="delta-y-text">' + Formatters.formatNumber(dy) + ' ' + sc.unitY + '</span>', '<span class="delta-x-text">' + Formatters.formatNumber(dx) + ' ' + sc.unitX + '</span>') +
+                  Formatters.op('=') +
+                  '<span class="math-term" style="color:var(--ios-green-dark);">' + Formatters.formatNumber(sc.m) + ' ' + sc.slopeUnit + '</span>');
 
             return (
               '<div class="roter-faden-head">' +
                 '<span class="roter-faden-eyebrow">&#129525; Roter Faden &middot; Allgemeine lineare Gleichung im Szenario</span>' +
                 '<span class="roter-faden-step-badge ' + (swapped || zeroDx ? 'badge-danger' : 'badge-m') + '">' +
-                  (swapped ? '&#9888; Quotient vertauscht!' : (zeroDx ? '&#9888; &Delta;' + sc.varX + ' darf nicht 0 sein' : (mDone ? '&#10003; Steigung m bestimmt' : 'Schritt 2 von 3 &middot; Steigung m'))) +
+                  (swapped ? '&#9888; Quotient vertauscht!' : (zeroDx ? '&#9888; &Delta;<span class="math-var">' + sc.varX + '</span> darf nicht 0 sein' : (mDone ? '&#10003; Steigung <span class="math-var">m</span> bestimmt' : 'Schritt 2 von 3 &middot; Steigung <span class="math-var">m</span>'))) +
                 '</span>' +
               '</div>' +
               '<div class="roter-faden-eq-row" aria-label="Allgemeine lineare Gleichung f(x) = m mal x plus t0">' +
@@ -5701,7 +5931,7 @@
                 '</div>' +
                 '<span class="rf-op">=</span>' +
                 '<div class="rf-slot var-theme-m is-focus-var' + (swapped || zeroDx ? ' is-danger-var' : '') + '">' +
-                  '<span class="rf-slot-status">' + (swapped ? '&#9888; Falschrum' : (zeroDx ? '&#9888; &Delta;' + sc.varX + ' = 0' : (mDone ? '&#10003; Bestimmt' : 'Jetzt gesucht'))) + '</span>' +
+                  '<span class="rf-slot-status">' + (swapped ? '&#9888; Falschrum' : (zeroDx ? '&#9888; &Delta;<span class="math-var">' + sc.varX + '</span> = 0' : (mDone ? '&#10003; Bestimmt' : 'Jetzt gesucht'))) + '</span>' +
                   '<span class="rf-gen-sym"><span class="math-var">m</span></span>' +
                   '<span class="rf-slot-role">Steigung</span>' +
                 '</div>' +
@@ -5715,20 +5945,20 @@
                 '<div class="rf-slot var-theme-t0 is-solved-var">' +
                   '<span class="rf-slot-status">&#10003; Aus Phase 1</span>' +
                   '<span class="rf-gen-sym"><span class="math-var">t</span><sub>0</sub></span>' +
-                  '<span class="rf-slot-role">t<sub>0</sub> = ' + sc.t0Target + ' ' + sc.unitY + '</span>' +
+                  '<span class="rf-slot-role"><span class="math-eq"><span class="math-var">t</span><sub>0</sub> = ' + sc.t0Target + ' ' + sc.unitY + '</span></span>' +
                 '</div>' +
               '</div>' +
               '<div class="roter-faden-detail-grid">' +
                 '<div class="rf-detail-box">' +
                   '<span class="rf-detail-label">Dein Szenario-Modell</span>' +
                   '<div class="rf-detail-main">' +
-                    sc.funcCallHTML + ' = ' + mInlineHTML + ' &middot; <span class="math-var">' + sc.varX + '</span> + <span style="color:#15803D;">' + sc.t0Target + '</span>' +
+                    '<span class="math-eq">' + sc.funcCallHTML + ' = ' + mInlineHTML + ' &middot; <span class="math-var">' + sc.varX + '</span> + <span style="color:#15803D;">' + sc.t0Target + '</span></span>' +
                   '</div>' +
-                  '<p class="rf-detail-sub">Der Startwert <span class="math-var">t</span><sub>0</sub> = ' + sc.t0Target + ' ' + sc.unitY + ' steht bereits aus Phase 1 fest &ndash; jetzt bestimmst du den Faktor <span class="math-var">m</span>.</p>' +
+                  '<p class="rf-detail-sub">Der Startwert <span class="math-eq"><span class="math-var">t</span><sub>0</sub> = ' + sc.t0Target + ' ' + sc.unitY + '</span> steht bereits aus Phase 1 fest &ndash; jetzt bestimmst du den Faktor <span class="math-var">m</span>.</p>' +
                 '</div>' +
                 '<div class="rf-detail-box ' + (swapped || zeroDx ? 'focus-danger' : 'focus-m') + '">' +
-                  '<span class="rf-detail-label">Gesuchte Größe in Phase 2 &middot; Steigung m = &Delta;' + sc.varY + ' / &Delta;' + sc.varX + '</span>' +
-                  '<div class="rf-detail-main">' + mCalcMainHTML + '</div>' +
+                  '<span class="rf-detail-label">Gesuchte Größe in Phase 2 &middot; Steigung <span class="math-var">m</span> = &Delta;<span class="math-var">' + sc.varY + '</span> &thinsp;/&thinsp; &Delta;<span class="math-var">' + sc.varX + '</span></span>' +
+                  '<div class="rf-detail-main rf-frac-row">' + mCalcMainHTML + '</div>' +
                   '<p class="rf-detail-sub">Höhenunterschied geteilt durch Weite zwischen deinen zwei Messpunkten im Steigungsdreieck.</p>' +
                 '</div>' +
               '</div>'
@@ -5747,12 +5977,12 @@
             '<div class="roter-faden-head">' +
               '<span class="roter-faden-eyebrow">&#129525; Roter Faden &middot; Allgemeine lineare Gleichung im Szenario</span>' +
               '<span class="roter-faden-step-badge ' + (hasBreach ? 'badge-danger' : 'badge-dw') + '">' +
-                (hasBreach ? '&#9888; Systemgrenze verletzt!' : (dwDone ? '&#10003; Gleichung + D &amp; W komplett' : 'Schritt 3 von 3 &middot; Mengen D &amp; W')) +
+                (hasBreach ? '&#9888; Systemgrenze verletzt!' : (dwDone ? '&#10003; Gleichung + <span class="math-var">D</span> &amp; <span class="math-var">W</span> komplett' : 'Schritt 3 von 3 &middot; Mengen <span class="math-var">D</span> &amp; <span class="math-var">W</span>')) +
               '</span>' +
             '</div>' +
             '<div class="roter-faden-eq-row" aria-label="Allgemeine lineare Gleichung f(x) = m mal x plus t0">' +
               '<div class="rf-slot var-theme-y is-focus-var' + (hasBreach ? ' is-danger-var' : '') + '">' +
-                '<span class="rf-slot-status">' + (hasBreach ? '&#9888; Grenze W' : (dwDone ? '&#10003; Wertemenge W' : 'Jetzt gesucht: W')) + '</span>' +
+                '<span class="rf-slot-status">' + (hasBreach ? '&#9888; Grenze <span class="math-var">W</span>' : (dwDone ? '&#10003; Wertemenge <span class="math-var">W</span>' : 'Jetzt gesucht: <span class="math-var">W</span>')) + '</span>' +
                 '<span class="rf-gen-sym"><span class="math-var">f</span>(<span class="math-var">x</span>)</span>' +
                 '<span class="rf-slot-role">Werte in <span class="math-var">W</span></span>' +
               '</div>' +
@@ -5760,11 +5990,11 @@
               '<div class="rf-slot var-theme-m is-solved-var">' +
                 '<span class="rf-slot-status">&#10003; Aus Phase 2</span>' +
                 '<span class="rf-gen-sym"><span class="math-var">m</span></span>' +
-                '<span class="rf-slot-role">m = ' + Formatters.formatNumber(sc.m) + ' ' + sc.slopeUnit + '</span>' +
+                '<span class="rf-slot-role"><span class="math-eq"><span class="math-var">m</span> = ' + Formatters.formatNumber(sc.m) + ' ' + sc.slopeUnit + '</span></span>' +
               '</div>' +
               '<span class="rf-op">&middot;</span>' +
               '<div class="rf-slot var-theme-x is-focus-var' + (hasBreach ? ' is-danger-var' : '') + '">' +
-                '<span class="rf-slot-status">' + (hasBreach ? '&#9888; Grenze D' : (dwDone ? '&#10003; Menge D' : 'Jetzt gesucht: D')) + '</span>' +
+                '<span class="rf-slot-status">' + (hasBreach ? '&#9888; Grenze <span class="math-var">D</span>' : (dwDone ? '&#10003; Menge <span class="math-var">D</span>' : 'Jetzt gesucht: <span class="math-var">D</span>')) + '</span>' +
                 '<span class="rf-gen-sym"><span class="math-var">x</span></span>' +
                 '<span class="rf-slot-role">Werte in <span class="math-var">D</span></span>' +
               '</div>' +
@@ -5772,22 +6002,22 @@
               '<div class="rf-slot var-theme-t0 is-solved-var">' +
                 '<span class="rf-slot-status">&#10003; Aus Phase 1</span>' +
                 '<span class="rf-gen-sym"><span class="math-var">t</span><sub>0</sub></span>' +
-                '<span class="rf-slot-role">t<sub>0</sub> = ' + Formatters.formatNumber(sc.t0Target) + ' ' + sc.unitY + '</span>' +
+                '<span class="rf-slot-role"><span class="math-eq"><span class="math-var">t</span><sub>0</sub> = ' + Formatters.formatNumber(sc.t0Target) + ' ' + sc.unitY + '</span></span>' +
               '</div>' +
             '</div>' +
             '<div class="roter-faden-detail-grid">' +
               '<div class="rf-detail-box">' +
                 '<span class="rf-detail-label">Fertige Funktionsgleichung im Szenario</span>' +
                 '<div class="rf-detail-main">' +
-                  sc.funcCallHTML + ' = <span style="color:#B45309;">' + Formatters.formatNumber(sc.m) + '</span> &middot; <span class="math-var">' + sc.varX + '</span> + <span style="color:#15803D;">' + Formatters.formatNumber(sc.t0Target) + '</span>' +
+                  '<span class="math-eq">' + sc.funcCallHTML + ' = <span style="color:#B45309;">' + Formatters.formatNumber(sc.m) + '</span> &middot; <span class="math-var">' + sc.varX + '</span> + <span style="color:#15803D;">' + Formatters.formatNumber(sc.t0Target) + '</span></span>' +
                 '</div>' +
-                '<p class="rf-detail-sub">Steigung <span class="math-var">m</span> = ' + Formatters.formatNumber(sc.m) + ' und Startwert <span class="math-var">t</span><sub>0</sub> = ' + Formatters.formatNumber(sc.t0Target) + ' sind beide fertig eingesetzt.</p>' +
+                '<p class="rf-detail-sub">Steigung <span class="math-eq"><span class="math-var">m</span> = ' + Formatters.formatNumber(sc.m) + '</span> und Startwert <span class="math-eq"><span class="math-var">t</span><sub>0</sub> = ' + Formatters.formatNumber(sc.t0Target) + '</span> sind beide fertig eingesetzt.</p>' +
               '</div>' +
               '<div class="rf-detail-box ' + (hasBreach ? 'focus-danger' : 'focus-dw') + '">' +
-                '<span class="rf-detail-label">Gesuchte Systemgrenzen in Phase 3 &middot; Intervalle D &amp; W</span>' +
-                '<div class="rf-detail-main">' +
-                  '<span class="math-var">D</span> = [' + Formatters.formatNumber(xMin) + ' ; ' + Formatters.formatNumber(xMax) + '] &nbsp;&middot;&nbsp; ' +
-                  '<span class="math-var">W</span> = [' + Formatters.formatNumber(yMin) + ' ; ' + Formatters.formatNumber(yMax) + ']' +
+                '<span class="rf-detail-label">Gesuchte Systemgrenzen in Phase 3 &middot; Intervalle <span class="math-var">D</span> &amp; <span class="math-var">W</span></span>' +
+                '<div class="rf-detail-main rf-interval-pair">' +
+                  '<span class="rf-interval-chip ' + (hasBreach ? 'is-breach' : 'is-d') + '"><span class="math-var">D</span> = [' + Formatters.formatNumber(xMin) + ' ; ' + Formatters.formatNumber(xMax) + '] <span class="math-unit">' + sc.unitX + '</span></span>' +
+                  '<span class="rf-interval-chip ' + (hasBreach ? 'is-breach' : 'is-w') + '"><span class="math-var">W</span> = [' + Formatters.formatNumber(yMin) + ' ; ' + Formatters.formatNumber(yMax) + '] <span class="math-unit">' + sc.unitY + '</span></span>' +
                 '</div>' +
                 '<p class="rf-detail-sub">' +
                   (hasBreach
@@ -5812,16 +6042,16 @@
             buildWorkspaceTopbarHTML(1) +
             buildScenarioStripHTML(sc, true) +
             '<section class="ios-card">' +
-              '<span class="section-eyebrow">Oberfläche 3 &middot; Phase 1: Basiswert-Analyse</span>' +
+              '<span class="section-eyebrow">' + Formatters.escapeHTML(sc.title) + ' &middot; Phase 1: Basiswert-Analyse</span>' +
               '<h2 class="card-title">Ordinatenabschnitt <span class="math-var">t</span><sub>0</sub> als konstanter Anfangswert</h2>' +
-              '<p class="card-subtitle">Ziehe den Punkt direkt auf der vertikalen Achse oder bewege den Schieberegler: Die Steigung <span class="math-var">m</span> = ' + Formatters.formatNumber(sc.m) + ' ' + Formatters.escapeHTML(sc.slopeUnit) + ' bleibt fest verankert, während sich der Anfangswert <span class="math-var">t</span><sub>0</sub> verändert.</p>' +
+              '<p class="card-subtitle">Ziehe den Punkt direkt auf der vertikalen Achse oder bewege den Schieberegler: Die Steigung <span class="math-eq"><span class="math-var">m</span> = ' + Formatters.formatNumber(sc.m) + ' ' + Formatters.escapeHTML(sc.slopeUnit) + '</span> bleibt fest verankert, während sich der Anfangswert <span class="math-var">t</span><sub>0</sub> verändert.</p>' +
 
               '<div class="roter-faden-card" id="roter-faden-p1">' + buildRoterFadenInnerHTML(1, sc, sub) + '</div>' +
 
               '<div class="lab-split-grid">' +
                 '<div class="canvas-stage-box">' +
                   '<div class="canvas-stage-header">' +
-                    '<span>Apple Flat-Grid (#E5E5EA) &middot; Ziehbarer Punkt auf der Ordinatenachse</span>' +
+                    '<span>Ziehbarer Startpunkt auf der Hochachse (<span class="math-var">' + sc.varY + '</span> in ' + sc.unitY + ')</span>' +
                     '<span id="p1-target-chip"></span>' +
                   '</div>' +
                   '<canvas id="canvas-p1" class="interactive-canvas" aria-label="Koordinatensystem zur Basiswert-Analyse"></canvas>' +
@@ -5847,40 +6077,44 @@
 
                   '<div class="slider-block">' +
                     '<div class="slider-label-row">' +
-                      '<label for="slider-p1-t0">Anfangswert <span class="math-var">t</span><sub>0</sub> bei <span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + '</label>' +
+                      '<label for="slider-p1-t0">Anfangswert <span class="math-var">t</span><sub>0</sub> bei <span class="math-eq"><span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + '</span></label>' +
                       '<span class="slider-val-badge" id="p1-slider-val"></span>' +
                     '</div>' +
                     '<input type="range" class="ios-range" id="slider-p1-t0" min="' + sc.t0SliderMin + '" max="' + sc.t0SliderMax + '" step="' + sc.t0SliderStep + '" value="' + sub.p1CurrentT0 + '">' +
                     '<div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--ios-text-secondary);">' +
                       '<span>' + sc.t0SliderMin + ' ' + sc.unitY + '</span>' +
-                      '<span>Ziel Szenario: ' + sc.t0Target + ' ' + sc.unitY + '</span>' +
+                      '<span>Ziel Szenario: <span class="math-eq"><span class="math-var">t</span><sub>0</sub> = ' + sc.t0Target + ' ' + sc.unitY + '</span></span>' +
                       '<span>' + sc.t0SliderMax + ' ' + sc.unitY + '</span>' +
                     '</div>' +
                   '</div>' +
 
                   '<div class="real-state-meter">' +
                     '<div style="display:flex; justify-content:space-between; font-size:0.83rem; font-weight:700;">' +
-                      '<span>Realer Startzustand bei <span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + ':</span>' +
+                      '<span>Realer Startzustand bei <span class="math-eq"><span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + '</span>:</span>' +
                       '<span id="p1-meter-label"></span>' +
                     '</div>' +
                     '<div class="meter-track"><div class="meter-fill" id="p1-meter-fill"></div></div>' +
                   '</div>' +
 
                   '<button type="button" class="ios-btn ' + (sub.p1TargetLocked ? 'ios-btn-success' : 'ios-btn-primary') + '" id="btn-p1-lock">' +
-                    (sub.p1TargetLocked ? '&#10003; Szenario-Startwert <span class="math-var">S</span><sub>y</sub>(0 | ' + sc.t0Target + ') verankert' : 'Szenario-Startwert auf der Achse prüfen &amp; fixieren') +
+                    (sub.p1TargetLocked ? '&#10003; Szenario-Startwert <span class="math-eq"><span class="math-var">S</span><sub><span class="math-var">y</span></sub>(0 | ' + sc.t0Target + ')</span> verankert' : 'Szenario-Startwert auf der Achse prüfen &amp; fixieren') +
                   '</button>' +
 
                   '<div class="feedback-banner feedback-info">' +
                     '<span>&#128269;</span>' +
-                    '<span><strong>Formatives Feedback:</strong> Lies den Schnittpunkt des Graphen mit der vertikalen Achse ab. Welcher physikalische Zustand herrscht bei <span class="math-var">' + sc.varX + '</span> = 0 (Rechtswert <span class="math-var">x</span> = 0)?</span>' +
+                    '<span><strong>Formatives Feedback:</strong> Lies den Schnittpunkt des Graphen mit der vertikalen Achse ab. ' +
+                      (sc.id === 'technik'
+                        ? 'Welcher physikalische Zustand herrscht im Akku bei <span class="math-eq"><span class="math-var">t</span> = 0 min</span>?'
+                        : 'Welcher reale Abrechnungszustand herrscht beim Server bei <span class="math-eq"><span class="math-var">x</span> = 0 TB</span>?') +
+                    '</span>' +
                   '</div>' +
                   '<div id="p1-lock-feedback" class="feedback-banner feedback-hint" hidden></div>' +
                 '</div>' +
               '</div>' +
 
               '<div class="task-card ' + (sub.p1TextOk ? 'is-solved' : '') + '">' +
-                '<h3 style="margin:0 0 0.3rem; font-size:1.02rem;">Sachbedeutung des Schnittpunkts <span class="math-var">S</span><sub>y</sub>(0 | ' + sc.t0Target + ') erklären</h3>' +
-                '<p style="margin:0; font-size:0.9rem; color:var(--ios-text-secondary);">Beschreibe in eigenen Worten: Welcher konkrete Zustand herrscht im gewählten Szenario <strong>' + Formatters.escapeHTML(sc.title) + '</strong> genau beim Nullpunkt (<span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + ')?</p>' +
+                '<h3 style="margin:0 0 0.3rem; font-size:1.02rem;">Sachbedeutung des Schnittpunkts <span class="math-eq"><span class="math-var">S</span><sub><span class="math-var">y</span></sub>(0 | ' + sc.t0Target + ')</span> erklären</h3>' +
+                '<p style="margin:0; font-size:0.9rem; color:var(--ios-text-secondary);">Beschreibe in eigenen Worten: Welcher konkrete Zustand herrscht im gewählten Szenario <strong>' + Formatters.escapeHTML(sc.title) + '</strong> genau beim Nullpunkt (<span class="math-eq"><span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + '</span>)?</p>' +
                 '<textarea id="textarea-p1" class="ios-textarea" placeholder="z. B. Bei ' + sc.varX + ' = 0 ' + sc.unitX + ' beträgt ...">' + Formatters.escapeHTML(sub.p1Text) + '</textarea>' +
                 '<div style="margin-top:0.65rem; display:flex; align-items:center; gap:0.65rem; flex-wrap:wrap;">' +
                   '<button type="button" class="ios-btn ios-btn-primary" id="btn-p1-check-text">Antwort auswerten</button>' +
@@ -5941,15 +6175,15 @@
             if (Math.abs(sub.p1CurrentT0 - sc.t0Target) < 0.01) {
               sub.p1TargetLocked = true;
               btnP1Lock.className = 'ios-btn ios-btn-success';
-              btnP1Lock.innerHTML = '&#10003; Szenario-Startwert <span class="math-var">S</span><sub>y</sub>(0 | ' + sc.t0Target + ') verankert';
+              btnP1Lock.innerHTML = '&#10003; Szenario-Startwert <span class="math-eq"><span class="math-var">S</span><sub><span class="math-var">y</span></sub>(0 | ' + sc.t0Target + ')</span> verankert';
               fb.className = 'feedback-banner feedback-success';
-              fb.textContent = 'Perfekt eingestellt! Der Schnittpunkt Sy(0 | ' + sc.t0Target + ') zeigt den Anfangswert t\u2080 = ' + sc.t0Target + ' ' + sc.unitY + '.';
+              fb.innerHTML = '<span>Perfekt eingestellt! Der Schnittpunkt <span class="math-eq"><span class="math-var">S</span><sub><span class="math-var">y</span></sub>(0 | ' + sc.t0Target + ')</span> zeigt den Anfangswert <span class="math-eq"><span class="math-var">t</span><sub>0</sub> = ' + sc.t0Target + ' ' + sc.unitY + '</span>.</span>';
               fb.hidden = false;
               updatePhase1LiveUI();
               checkPhase1Completion();
             } else {
               fb.className = 'feedback-banner feedback-hint';
-              fb.textContent = 'Aktuell steht der Punkt bei ' + Formatters.formatNumber(sub.p1CurrentT0) + ' ' + sc.unitY + '. Im Szenario „' + sc.title + '“ gilt ' + sc.funcEquationPlain + ' – schiebe den Startwert auf ' + sc.t0Target + ' ' + sc.unitY + '!';
+              fb.innerHTML = '<span>Aktuell steht der Punkt bei <span class="math-eq">' + Formatters.formatNumber(sub.p1CurrentT0) + ' ' + sc.unitY + '</span>. Im Szenario &bdquo;' + Formatters.escapeHTML(sc.title) + '&ldquo; gilt <span class="math-eq">' + sc.funcEquationHTML + '</span> &ndash; schiebe den Startwert auf <span class="math-eq">' + sc.t0Target + ' ' + sc.unitY + '</span>!</span>';
               fb.hidden = false;
               StateStore.save();
             }
@@ -6016,7 +6250,13 @@
 
           var eqEl = document.getElementById('p1-live-equation');
           if (eqEl) {
-            eqEl.innerHTML = sc.funcCallHTML + ' = ' + Formatters.formatNumber(sc.m) + ' &middot; <span class="math-var">' + sc.varX + '</span> + <span style="color:#15803D;">' + Formatters.formatNumber(sub.p1CurrentT0) + '</span>';
+            eqEl.innerHTML =
+              '<span class="math-eq" style="font-size:1.12rem;">' +
+                '<span style="color:#7E22CE;" class="math-var">' + sc.varY + '</span>(<span style="color:#0055D4;" class="math-var">' + sc.varX + '</span>)' +
+                ' = <span style="color:#B45309;">' + Formatters.formatNumber(sc.m) + '</span> &middot; ' +
+                '<span style="color:#0055D4;" class="math-var">' + sc.varX + '</span> + ' +
+                '<span style="color:#15803D;">' + Formatters.formatNumber(sub.p1CurrentT0) + '</span>' +
+              '</span>';
           }
 
           var rfP1 = document.getElementById('roter-faden-p1');
@@ -6057,6 +6297,28 @@
         /* ====================================================================
            OBERFLÄCHE 3 – PHASE 2: DYNAMISCHES STEIGUNGSDREIECK (60 FPS)
            ==================================================================== */
+        function buildTriangleSlotHTML(idx, slot, sc) {
+          if (!slot) {
+            return idx === 1 ? '1. Steigungsdreieck noch offen' : '2. (unterschiedliches) Dreieck offen';
+          }
+          return (
+            '<span class="tri-log-title">&#10003; Dreieck ' + idx + '</span>' +
+            '<div class="tri-log-eq">' +
+              Formatters.fractionHTML(
+                '<span class="delta-y-text">&Delta;<span class="math-var">' + sc.varY + '</span></span>',
+                '<span class="delta-x-text">&Delta;<span class="math-var">' + sc.varX + '</span></span>'
+              ) +
+              Formatters.op('=') +
+              Formatters.fractionHTML(
+                '<span class="delta-y-text">' + slot.dy + '</span>',
+                '<span class="delta-x-text">' + slot.dx + '</span>'
+              ) +
+              Formatters.op('=') +
+              '<span class="math-term" style="color:var(--ios-green-dark);">' + Formatters.formatNumber(sc.m) + ' <span class="math-unit" style="color:var(--ios-green-dark);">' + sc.slopeUnit + '</span></span>' +
+            '</div>'
+          );
+        }
+
         function renderPhase2Workspace() {
           var st = StateStore.get();
           var sc = StateStore.getScenario();
@@ -6070,17 +6332,17 @@
             buildWorkspaceTopbarHTML(2) +
             buildScenarioStripHTML(sc, true) +
             '<section class="ios-card">' +
-              '<span class="section-eyebrow">Oberfläche 3 &middot; Phase 2: Dynamisches Steigungsdreieck</span>' +
+              '<span class="section-eyebrow">' + Formatters.escapeHTML(sc.title) + ' &middot; Phase 2: Dynamisches Steigungsdreieck</span>' +
               '<h2 class="card-title">Steigung <span class="math-var">m</span> als Verhältnis vertikaler und horizontaler Differenzen</h2>' +
-              '<p class="card-subtitle">Ziehe die beiden Ankerpunkte <strong>P<sub>1</sub></strong> und <strong>P<sub>2</sub></strong> direkt auf dem Funktionsgraphen. Beobachte die horizontale Kathete (<span class="delta-x-text">#007AFF</span>), die vertikale Kathete (<span class="delta-y-text">#FF9500</span>) und den Live-Bruch mit 60 FPS.</p>' +
+              '<p class="card-subtitle">Ziehe die beiden Ankerpunkte <strong><span class="math-eq">P<sub>1</sub></span></strong> und <strong><span class="math-eq">P<sub>2</sub></span></strong> direkt auf dem Funktionsgraphen. Beobachte die horizontale Kathete (<span class="delta-x-text">blau</span>), die vertikale Kathete (<span class="delta-y-text">orange</span>) und den Live-Bruch.</p>' +
 
               '<div class="roter-faden-card" id="roter-faden-p2">' + buildRoterFadenInnerHTML(2, sc, sub) + '</div>' +
 
               '<div class="lab-split-grid">' +
                 '<div class="canvas-stage-box">' +
                   '<div class="canvas-stage-header">' +
-                    '<span>Ankerpunkte P<sub>1</sub> &amp; P<sub>2</sub> direkt mit Finger oder Maus ziehen</span>' +
-                    '<span>' + sc.funcEquationHTML + '</span>' +
+                    '<span>Ankerpunkte <span class="math-eq">P<sub>1</sub></span> &amp; <span class="math-eq">P<sub>2</sub></span> direkt mit Finger oder Maus ziehen</span>' +
+                    '<span><span class="math-eq">' + sc.funcEquationHTML + '</span></span>' +
                   '</div>' +
                   '<canvas id="canvas-p2" class="interactive-canvas" aria-label="Koordinatensystem mit beweglichem Steigungsdreieck"></canvas>' +
 
@@ -6088,7 +6350,7 @@
                     '<div class="real-scene-bar">' +
                       '<div class="real-scene-title-group">' +
                         '<span class="real-scene-dot" id="scene-dot-p2"></span>' +
-                        '<span>' + (sc.id === 'technik' ? 'Realitäts-Monitor &middot; Ladesprung P&#8321; &rarr; P&#8322; &amp; 1-Minuten-Takt' : 'Realitäts-Monitor &middot; Kostensprung P&#8321; &rarr; P&#8322; &amp; 1-TB-Takt') + '</span>' +
+                        '<span>' + (sc.id === 'technik' ? 'Realitäts-Monitor &middot; Ladesprung <span class="math-eq">P<sub>1</sub> &rarr; P<sub>2</sub></span> &amp; 1-Minuten-Takt' : 'Realitäts-Monitor &middot; Kostensprung <span class="math-eq">P<sub>1</sub> &rarr; P<sub>2</sub></span> &amp; 1-TB-Takt') + '</span>' +
                       '</div>' +
                       '<button type="button" class="ios-anim-btn" id="btn-anim-p2"></button>' +
                     '</div>' +
@@ -6099,11 +6361,11 @@
                   /* Barrierefreie Feinregler unter dem Canvas */
                   '<div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-top:0.65rem;">' +
                     '<div class="slider-block">' +
-                      '<div class="slider-label-row"><label for="slider-p2-x1">Anker P<sub>1</sub> (<span class="math-var">' + sc.varX + '</span><sub>1</sub>)</label><span class="slider-val-badge" id="p2-x1-badge"></span></div>' +
+                      '<div class="slider-label-row"><label for="slider-p2-x1">Anker <span class="math-eq">P<sub>1</sub></span> (<span class="math-var">' + sc.varX + '</span><sub>1</sub>)</label><span class="slider-val-badge" id="p2-x1-badge"></span></div>' +
                       '<input type="range" class="ios-range" id="slider-p2-x1" min="0" max="' + sc.dMaxTarget + '" step="' + sc.p2DragStepX + '" value="' + sub.p2X1 + '">' +
                     '</div>' +
                     '<div class="slider-block">' +
-                      '<div class="slider-label-row"><label for="slider-p2-x2">Anker P<sub>2</sub> (<span class="math-var">' + sc.varX + '</span><sub>2</sub>)</label><span class="slider-val-badge" id="p2-x2-badge"></span></div>' +
+                      '<div class="slider-label-row"><label for="slider-p2-x2">Anker <span class="math-eq">P<sub>2</sub></span> (<span class="math-var">' + sc.varX + '</span><sub>2</sub>)</label><span class="slider-val-badge" id="p2-x2-badge"></span></div>' +
                       '<input type="range" class="ios-range" id="slider-p2-x2" min="0" max="' + sc.dMaxTarget + '" step="' + sc.p2DragStepX + '" value="' + sub.p2X2 + '">' +
                     '</div>' +
                   '</div>' +
@@ -6121,7 +6383,7 @@
                   '<div class="ios-switch-row ' + (sub.p2SwapQuotient ? 'is-warning-active' : '') + '" id="p2-switch-container">' +
                     '<div>' +
                       '<span class="ios-switch-label-title">Quotient vertauschen (Warnsignal)</span>' +
-                      '<span class="ios-switch-label-sub">Testet die fehlerhafte inverse Steigung &Delta;' + sc.varX + ' / &Delta;' + sc.varY + '</span>' +
+                      '<span class="ios-switch-label-sub">Testet die fehlerhafte inverse Steigung <span class="math-eq">&Delta;<span class="math-var">' + sc.varX + '</span> &thinsp;/&thinsp; &Delta;<span class="math-var">' + sc.varY + '</span></span></span>' +
                     '</div>' +
                     '<label class="ios-switch" aria-label="Quotient vertauschen">' +
                       '<input type="checkbox" id="toggle-p2-swap" ' + (sub.p2SwapQuotient ? 'checked' : '') + '>' +
@@ -6135,12 +6397,8 @@
                       (sub.p2LoggedTriangles.length >= 2 ? '&#10003; 2 Steigungsdreiecke protokolliert (weiteres überschreibt #2)' : 'Aktuelles Steigungsdreieck protokollieren (' + sub.p2LoggedTriangles.length + ' / 2)') +
                     '</button>' +
                     '<div class="triangle-log-grid">' +
-                      '<div class="triangle-log-slot ' + (slot0 ? 'is-filled' : '') + '">' +
-                        (slot0 ? '&#10003; Dreieck 1: &Delta;' + sc.varY + '/' + '&Delta;' + sc.varX + ' = ' + slot0.dy + '/' + slot0.dx + ' = ' + Formatters.formatNumber(sc.m) + ' ' + sc.slopeUnit : '1. Steigungsdreieck noch offen') +
-                      '</div>' +
-                      '<div class="triangle-log-slot ' + (slot1 ? 'is-filled' : '') + '">' +
-                        (slot1 ? '&#10003; Dreieck 2: &Delta;' + sc.varY + '/' + '&Delta;' + sc.varX + ' = ' + slot1.dy + '/' + slot1.dx + ' = ' + Formatters.formatNumber(sc.m) + ' ' + sc.slopeUnit : '2. (unterschiedliches) Dreieck offen') +
-                      '</div>' +
+                      '<div class="triangle-log-slot ' + (slot0 ? 'is-filled' : '') + '">' + buildTriangleSlotHTML(1, slot0, sc) + '</div>' +
+                      '<div class="triangle-log-slot ' + (slot1 ? 'is-filled' : '') + '">' + buildTriangleSlotHTML(2, slot1, sc) + '</div>' +
                     '</div>' +
                     '<div id="p2-log-feedback" class="feedback-banner feedback-hint" hidden style="margin-top:0.55rem;"></div>' +
                   '</div>' +
@@ -6153,7 +6411,7 @@
               '</div>' +
 
               '<div class="task-card ' + (sub.p2TextOk ? 'is-solved' : '') + '">' +
-                '<h3 style="margin:0 0 0.3rem; font-size:1.02rem;">Änderungsrate <span class="math-var">m</span> = ' + Formatters.formatNumber(sc.m) + ' ' + Formatters.escapeHTML(sc.slopeUnit) + ' im Sachkontext deuten</h3>' +
+                '<h3 style="margin:0 0 0.3rem; font-size:1.02rem;">Änderungsrate <span class="math-eq"><span class="math-var">m</span> = ' + Formatters.formatNumber(sc.m) + ' ' + Formatters.escapeHTML(sc.slopeUnit) + '</span> im Sachkontext deuten</h3>' +
                 '<p style="margin:0; font-size:0.9rem; color:var(--ios-text-secondary);">Protokolliere oben <strong>zwei verschiedene Steigungsdreiecke</strong> (bei regulärem Quotienten) und erkläre hier kurz, was die Steigung <span class="math-var">m</span> samt Einheit im Szenario <strong>' + Formatters.escapeHTML(sc.title) + '</strong> aussagt:</p>' +
                 '<textarea id="textarea-p2" class="ios-textarea" placeholder="z. B. Pro 1 ' + sc.unitX + ' steigt ...">' + Formatters.escapeHTML(sub.p2Text) + '</textarea>' +
                 '<div style="margin-top:0.65rem;">' +
@@ -6359,7 +6617,7 @@
           if (Math.abs(dx) < 1e-6) {
             if (eyebrow) eyebrow.textContent = 'Achtung: Beide Ankerpunkte liegen übereinander';
             if (formula) {
-              formula.innerHTML = '<span class="danger-text">&Delta;' + sc.varX + ' = 0 ' + sc.unitX + ' &ndash; Division durch Null ist nicht definiert!</span>';
+              formula.innerHTML = '<span class="danger-text"><span class="math-eq">&Delta;<span class="math-var">' + sc.varX + '</span> = 0 ' + sc.unitX + '</span> &ndash; Division durch Null ist nicht definiert!</span>';
             }
             if (note) note.textContent = 'Ziehe P\u2081 und P\u2082 auseinander, damit eine horizontale Weite entsteht.';
             return;
@@ -6370,14 +6628,16 @@
             if (eyebrow) eyebrow.textContent = '\u26A0 FEHLERHAFTE INVERSE BERECHNUNG (WEITE DURCH HÖHE)';
             if (formula) {
               formula.innerHTML =
-                '<span class="danger-text"><span class="math-var">m</span><sub>falsch</sub></span> = ' +
-                Formatters.fractionHTML('<span class="delta-x-text">&Delta;' + sc.varX + '</span>', '<span class="delta-y-text">&Delta;' + sc.varY + '</span>') +
-                ' = ' +
+                '<span class="math-term danger-text"><span class="math-var">m</span><sub>falsch</sub></span>' +
+                Formatters.op('=') +
+                Formatters.fractionHTML('<span class="delta-x-text">&Delta;<span class="math-var">' + sc.varX + '</span></span>', '<span class="delta-y-text">&Delta;<span class="math-var">' + sc.varY + '</span></span>') +
+                Formatters.op('=') +
                 Formatters.fractionHTML(
-                  '<span class="delta-x-text">' + Formatters.formatNumber(dx) + ' ' + sc.unitX + '</span>',
-                  '<span class="delta-y-text">' + Formatters.formatNumber(dy) + ' ' + sc.unitY + '</span>'
+                  '<span class="delta-x-text">' + Formatters.formatNumber(dx) + ' <span class="math-unit" style="color:inherit; opacity:0.86;">' + sc.unitX + '</span></span>',
+                  '<span class="delta-y-text">' + Formatters.formatNumber(dy) + ' <span class="math-unit" style="color:inherit; opacity:0.86;">' + sc.unitY + '</span></span>'
                 ) +
-                ' = <span class="danger-text">' + Formatters.formatNumber(invVal, 2) + ' ' + sc.inverseSlopeUnit + '</span>';
+                Formatters.op('=') +
+                '<span class="math-term danger-text">' + Formatters.formatNumber(invVal, 2) + ' <span class="math-unit" style="color:var(--ios-red); font-weight:750;">' + sc.inverseSlopeUnit + '</span></span>';
             }
             if (note) {
               note.innerHTML = '<strong class="danger-text">Einheiten-Alarm:</strong> ' + Formatters.escapeHTML(sc.inverseWarningExplain);
@@ -6387,19 +6647,21 @@
             if (eyebrow) eyebrow.textContent = 'Dynamische Bruchwertberechnung (Höhe geteilt durch Weite)';
             if (formula) {
               formula.innerHTML =
-                '<span class="math-var">m</span> = ' +
-                Formatters.fractionHTML('<span class="delta-y-text">&Delta;' + sc.varY + '</span>', '<span class="delta-x-text">&Delta;' + sc.varX + '</span>') +
-                ' = ' +
+                '<span class="math-term"><span class="math-var">m</span></span>' +
+                Formatters.op('=') +
+                Formatters.fractionHTML('<span class="delta-y-text">&Delta;<span class="math-var">' + sc.varY + '</span></span>', '<span class="delta-x-text">&Delta;<span class="math-var">' + sc.varX + '</span></span>') +
+                Formatters.op('=') +
                 Formatters.fractionHTML(
                   '<span class="delta-y-text">' + Formatters.formatNumber(y2) + ' &minus; ' + Formatters.formatNumber(y1) + '</span>',
                   '<span class="delta-x-text">' + Formatters.formatNumber(x2) + ' &minus; ' + Formatters.formatNumber(x1) + '</span>'
                 ) +
-                ' = ' +
+                Formatters.op('=') +
                 Formatters.fractionHTML(
-                  '<span class="delta-y-text">' + Formatters.formatNumber(dy) + ' ' + sc.unitY + '</span>',
-                  '<span class="delta-x-text">' + Formatters.formatNumber(dx) + ' ' + sc.unitX + '</span>'
+                  '<span class="delta-y-text">' + Formatters.formatNumber(dy) + ' <span class="math-unit" style="color:inherit; opacity:0.86;">' + sc.unitY + '</span></span>',
+                  '<span class="delta-x-text">' + Formatters.formatNumber(dx) + ' <span class="math-unit" style="color:inherit; opacity:0.86;">' + sc.unitX + '</span></span>'
                 ) +
-                ' = <strong style="color:var(--ios-green-dark);">' + Formatters.formatNumber(ratioVal) + ' ' + sc.slopeUnit + '</strong>';
+                Formatters.op('=') +
+                '<span class="math-term" style="color:var(--ios-green-dark);">' + Formatters.formatNumber(ratioVal) + ' <span class="math-unit" style="color:var(--ios-green-dark); font-weight:750;">' + sc.slopeUnit + '</span></span>';
             }
             if (note) {
               note.textContent = Formatters.escapeHTML(sc.slopeMeaning);
@@ -6432,9 +6694,9 @@
             buildWorkspaceTopbarHTML(3) +
             buildScenarioStripHTML(sc, true) +
             '<section class="ios-card">' +
-              '<span class="section-eyebrow">Oberfläche 3 &middot; Phase 3: Projektions-Scanner (D &amp; W)</span>' +
+              '<span class="section-eyebrow">' + Formatters.escapeHTML(sc.title) + ' &middot; Phase 3: Projektions-Scanner (<span class="math-var">D</span> &amp; <span class="math-var">W</span>)</span>' +
               '<h2 class="card-title">Systemgrenzen als abgeschlossene Intervalle modellieren</h2>' +
-              '<p class="card-subtitle">Verschiebe die Intervallgriffe <strong>[</strong> und <strong>]</strong> direkt auf der Rechtsachse. Orthogonale Projektionslinien werfen den Schatten des Graphenabschnitts auf beide Koordinatenachsen. Überschreitest du die Systemgrenzen, schlägt der Scanner auf System-Rot (<span class="danger-text">#FF3B30</span>) um.</p>' +
+              '<p class="card-subtitle">Verschiebe die Intervallgriffe <strong>[</strong> und <strong>]</strong> direkt auf der Rechtsachse. Orthogonale Projektionslinien werfen den Schatten des Graphenabschnitts auf beide Koordinatenachsen. Überschreitest du die Systemgrenzen, schlägt der Scanner auf <span class="danger-text">Warn-Rot</span> um.</p>' +
 
               '<div class="roter-faden-card" id="roter-faden-p3">' + buildRoterFadenInnerHTML(3, sc, sub) + '</div>' +
 
@@ -6442,7 +6704,7 @@
                 '<div class="canvas-stage-box">' +
                   '<div class="canvas-stage-header">' +
                     '<span>Orthogonaler Lichtprojektions-Scanner &middot; Griffe [ und ] ziehbar</span>' +
-                    '<span>Regulärer Betrieb: 0 bis ' + sc.dMaxTarget + ' ' + sc.unitX + '</span>' +
+                    '<span>Regulärer Betrieb: <span class="math-eq">0 bis ' + sc.dMaxTarget + ' ' + sc.unitX + '</span></span>' +
                   '</div>' +
                   '<canvas id="canvas-p3" class="interactive-canvas" aria-label="Projektions-Scanner für Definitionsmenge D und Wertemenge W"></canvas>' +
 
@@ -6474,12 +6736,12 @@
                   /* Formale Intervallschreibweise mit eckigen Klammern */
                   '<div class="interval-readout-grid">' +
                     '<div class="interval-box" id="p3-box-d">' +
-                      '<span class="interval-label">Definitionsmenge D (Rechtsachse)</span>' +
+                      '<span class="interval-label">Definitionsmenge <span class="math-var">D</span> (Rechtsachse)</span>' +
                       '<div class="interval-value" id="p3-val-d"></div>' +
                       '<span style="font-size:0.76rem; color:var(--ios-text-secondary);">Einheit: ' + sc.unitX + '</span>' +
                     '</div>' +
                     '<div class="interval-box" id="p3-box-w">' +
-                      '<span class="interval-label">Wertemenge W (Hochachse)</span>' +
+                      '<span class="interval-label">Wertemenge <span class="math-var">W</span> (Hochachse)</span>' +
                       '<div class="interval-value" id="p3-val-w"></div>' +
                       '<span style="font-size:0.76rem; color:var(--ios-text-secondary);">Einheit: ' + sc.unitY + '</span>' +
                     '</div>' +
@@ -6488,7 +6750,7 @@
                   '<div id="p3-breach-alert" class="feedback-banner feedback-danger" hidden></div>' +
 
                   '<button type="button" class="ios-btn ' + (sub.p3BoundsLocked ? 'ios-btn-success' : 'ios-btn-primary') + '" id="btn-p3-lock">' +
-                    (sub.p3BoundsLocked ? '&#10003; Reguläre Systemgrenzen D &amp; W übernommen' : 'Reguläre Systemgrenzen prüfen &amp; übernehmen') +
+                    (sub.p3BoundsLocked ? '&#10003; Reguläre Systemgrenzen <span class="math-var">D</span> &amp; <span class="math-var">W</span> übernommen' : 'Reguläre Systemgrenzen prüfen &amp; übernehmen') +
                   '</button>' +
                   '<div id="p3-lock-feedback" class="feedback-banner feedback-hint" hidden></div>' +
 
@@ -6586,19 +6848,19 @@
             if (exact) {
               sub.p3BoundsLocked = true;
               btnP3Lock.className = 'ios-btn ios-btn-success';
-              btnP3Lock.innerHTML = '&#10003; Reguläre Systemgrenzen D &amp; W übernommen';
+              btnP3Lock.innerHTML = '&#10003; Reguläre Systemgrenzen <span class="math-var">D</span> &amp; <span class="math-var">W</span> übernommen';
               fb.className = 'feedback-banner feedback-success';
-              fb.textContent = 'Exakt eingestellt! Für den regulären Betrieb gilt D = [' + sc.dMinTarget + ' ; ' + sc.dMaxTarget + '] und W = [' + sc.wMinTarget + ' ; ' + sc.wMaxTarget + '].';
+              fb.innerHTML = '<span>Exakt eingestellt! Für den regulären Betrieb gilt <span class="math-eq"><span class="math-var">D</span> = [' + sc.dMinTarget + ' ; ' + sc.dMaxTarget + ']</span> und <span class="math-eq"><span class="math-var">W</span> = [' + sc.wMinTarget + ' ; ' + sc.wMaxTarget + ']</span>.</span>';
               fb.hidden = false;
               updatePhase3LiveUI();
               checkPhase3Completion();
             } else if (sub.p3MinX < sc.dMinTarget || sub.p3MaxX > sc.dMaxTarget) {
               fb.className = 'feedback-banner feedback-danger';
-              fb.textContent = 'Achtung Rot-Bereich: Deine aktuellen Grenzen überschreiten noch den zulässigen Betrieb! Stelle D exakt von ' + sc.dMinTarget + ' bis ' + sc.dMaxTarget + ' ' + sc.unitX + ' ein.';
+              fb.innerHTML = '<span>Achtung Rot-Bereich: Deine aktuellen Grenzen überschreiten noch den zulässigen Betrieb! Stelle <span class="math-var">D</span> exakt von <span class="math-eq">' + sc.dMinTarget + ' bis ' + sc.dMaxTarget + ' ' + sc.unitX + '</span> ein.</span>';
               fb.hidden = false;
             } else {
               fb.className = 'feedback-banner feedback-hint';
-              fb.textContent = 'Du liegst zwar im sicheren Bereich, nutzt aber noch nicht die volle reguläre Kapazität! Ziehe die Griffe auf das vollständige Intervall [0 ; ' + sc.dMaxTarget + '].';
+              fb.innerHTML = '<span>Du liegst zwar im sicheren Bereich, nutzt aber noch nicht die volle reguläre Kapazität! Ziehe die Griffe auf das vollständige Intervall <span class="math-eq">[0 ; ' + sc.dMaxTarget + ']</span>.</span>';
               fb.hidden = false;
             }
           });
@@ -6687,10 +6949,10 @@
           var boxW = document.getElementById('p3-box-w');
 
           if (valD) {
-            valD.innerHTML = '<span class="math-var">D</span> = [' + Formatters.formatNumber(xMin) + ' ; ' + Formatters.formatNumber(xMax) + ']';
+            valD.innerHTML = '<span class="math-eq"><span class="math-var">D</span> = [' + Formatters.formatNumber(xMin) + ' ; ' + Formatters.formatNumber(xMax) + ']</span>';
           }
           if (valW) {
-            valW.innerHTML = '<span class="math-var">W</span> = [' + Formatters.formatNumber(yMin) + ' ; ' + Formatters.formatNumber(yMax) + ']';
+            valW.innerHTML = '<span class="math-eq"><span class="math-var">W</span> = [' + Formatters.formatNumber(yMin) + ' ; ' + Formatters.formatNumber(yMax) + ']</span>';
           }
           if (boxD) {
             boxD.className = 'interval-box ' + (hasBreach ? 'is-breach' : 'is-valid-d');
