@@ -1,0 +1,3123 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>HydroFlow Explorer &middot; Wasserkreislauf, Klimatische Wasserbilanz (KWB) &amp; Speicheränderung (&Delta;S)</title>
+  <meta name="description" content="Interaktive 3-Layer-Lernanwendung zur Wasserbilanz (N + Z = RET + A + ΔS), zur Klimatischen Wasserbilanz (KWB) und zum Ländervergleich (Deutschland, Frankreich, Schweiz, USA, China).">
+  <style>
+    /* ==========================================================================
+       1. APPLE iOS 18 DESIGN SYSTEM & SEMANTISCHE HYDROLOGIE-FARBEN
+       ========================================================================== */
+    :root {
+      --ios-bg-grouped: #F2F2F7;
+      --ios-card-bg: #FFFFFF;
+      --ios-glass-bg: rgba(255, 255, 255, 0.88);
+      --ios-text-primary: #1C1C1E;
+      --ios-text-secondary: #6C6C70;
+      --ios-blue: #007AFF;
+      --ios-blue-tint: rgba(0, 122, 255, 0.12);
+      --ios-blue-dark: #004C99;
+      --ios-green: #34C759;
+      --ios-green-tint: rgba(52, 199, 89, 0.14);
+      --ios-green-dark: #147A32;
+      --ios-orange: #FF9500;
+      --ios-orange-tint: rgba(255, 149, 0, 0.15);
+      --ios-orange-dark: #B34700;
+      --ios-red: #FF3B30;
+      --ios-red-bg: #FFECEB;
+      --ios-yellow-bg: #FFF9E6;
+      --ios-yellow-border: #FFCC00;
+      --ios-slate: #8E8E93;
+      --ios-separator: rgba(60, 60, 67, 0.12);
+      --ios-fill-tertiary: rgba(118, 118, 128, 0.12);
+
+      --ios-radius-xl: 22px;
+      --ios-radius-lg: 16px;
+      --ios-radius-md: 12px;
+      --ios-radius-pill: 9999px;
+      --ios-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+      --ios-shadow-float: 0 12px 34px rgba(0, 122, 255, 0.18);
+      --ios-shadow-segment: 0 3px 8px rgba(0, 0, 0, 0.12), 0 3px 1px rgba(0, 0, 0, 0.04);
+      --ios-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--ios-font);
+      background-color: var(--ios-bg-grouped);
+      color: var(--ios-text-primary);
+      line-height: 1.5;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ==========================================================================
+       2. EXAKTE MATHEMATISCHE TYPOGRAFIE (INDIZES, EXPONENTEN & FORMELZEICHEN)
+       ========================================================================== */
+    sub,
+    sup {
+      font-size: 0.72em;
+      line-height: 0;
+      position: relative;
+      vertical-align: baseline;
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    sub {
+      bottom: -0.24em;
+      margin-left: 0.02em;
+    }
+
+    sup {
+      top: -0.42em;
+      margin-left: 0.02em;
+    }
+
+    .math-inline {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.12em;
+      font-weight: 680;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .math-var {
+      font-style: italic;
+      font-weight: 750;
+    }
+
+    /* Antippbare Fachbegriffe (öffnen das didaktisch reduzierte Erklärfenster) */
+    .term-chip-btn {
+      appearance: none;
+      border: 1px solid rgba(60, 60, 67, 0.22);
+      background: #F8FAFC;
+      color: #334155;
+      font-family: var(--ios-font);
+      font-size: 0.77rem;
+      font-weight: 680;
+      padding: 0.25rem 0.62rem;
+      border-radius: var(--ios-radius-pill);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      margin: 0.16rem 0.18rem 0.16rem 0;
+      transition: all 0.15s ease;
+    }
+
+    .term-chip-btn:hover {
+      background: rgba(0, 122, 255, 0.1);
+      color: var(--ios-blue-dark);
+      border-color: rgba(0, 122, 255, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .inline-term-link {
+      appearance: none;
+      border: none;
+      background: rgba(0, 122, 255, 0.035);
+      color: #2B547E;
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      font-weight: 600;
+      padding: 0.01rem 0.18rem;
+      margin: 0;
+      border-radius: 4px;
+      text-decoration: underline;
+      text-decoration-color: rgba(43, 84, 126, 0.38);
+      text-decoration-style: dotted;
+      text-underline-offset: 3px;
+      cursor: pointer;
+      display: inline;
+      transition: background 0.15s ease, color 0.15s ease, text-decoration-color 0.15s ease;
+    }
+
+    .inline-term-link:hover {
+      background: rgba(0, 122, 255, 0.11);
+      color: var(--ios-blue-dark);
+      text-decoration-color: var(--ios-blue);
+      text-decoration-style: solid;
+    }
+
+    .equation-banner-card {
+      background: #FFFFFF;
+      border: 1.5px solid var(--ios-separator);
+      border-radius: var(--ios-radius-xl);
+      box-shadow: var(--ios-shadow-card);
+      padding: 1.55rem 1.85rem;
+      margin-bottom: 2.1rem;
+      text-align: center;
+    }
+
+    .equation-formula-box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      background: #FFFFFF;
+      border: 1.5px solid rgba(0, 122, 255, 0.24);
+      border-radius: 14px;
+      padding: 0.85rem 1.5rem;
+      font-size: 1.22rem;
+      font-weight: 850;
+      color: var(--ios-text-primary);
+      margin: 0.7rem 0 0.75rem;
+      box-shadow: 0 2px 10px rgba(0, 122, 255, 0.07);
+    }
+
+    .var-bullet-list {
+      margin: 0.65rem 0 0.75rem;
+      padding-left: 1.25rem;
+      font-size: 0.92rem;
+      line-height: 1.72;
+      color: var(--ios-text-primary);
+    }
+
+    .var-bullet-list li {
+      margin-bottom: 0.75rem;
+    }
+
+    .var-bullet-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ==========================================================================
+       3. STICKY HEADER & 3-LAYER-NAVIGATION
+       ========================================================================== */
+    .ios-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 150;
+      background: var(--ios-glass-bg);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--ios-separator);
+      padding: 0.55rem 1.2rem;
+    }
+
+    .topbar-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(145deg, #007AFF 0%, #00C6FF 100%);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      box-shadow: 0 3px 10px rgba(0, 122, 255, 0.25);
+      flex-shrink: 0;
+    }
+
+    .brand-eyebrow {
+      font-size: 0.66rem;
+      font-weight: 750;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ios-blue);
+      display: block;
+    }
+
+    .brand-main {
+      font-size: 0.96rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: var(--ios-text-primary);
+    }
+
+    .ios-segmented {
+      display: inline-flex;
+      background: var(--ios-fill-tertiary);
+      padding: 3px;
+      border-radius: 11px;
+      gap: 2px;
+      flex-wrap: wrap;
+    }
+
+    .seg-btn {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: var(--ios-text-secondary);
+      font-family: var(--ios-font);
+      font-size: 0.8rem;
+      font-weight: 650;
+      padding: 0.38rem 0.82rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.32rem;
+      white-space: nowrap;
+    }
+
+    .seg-btn.is-active {
+      background: var(--ios-card-bg);
+      color: var(--ios-text-primary);
+      box-shadow: var(--ios-shadow-segment);
+      font-weight: 750;
+    }
+
+    .active-country-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.42rem;
+      padding: 0.34rem 0.78rem;
+      border-radius: var(--ios-radius-pill);
+      background: var(--ios-blue-tint);
+      color: var(--ios-blue-dark);
+      font-size: 0.8rem;
+      font-weight: 750;
+      border: 1px solid rgba(0, 122, 255, 0.25);
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       4. LAYER 1: AUSWAHL DER LÄNDER
+       ========================================================================== */
+    .app-shell {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 1rem 1.2rem 2.6rem;
+    }
+
+    .hero-box {
+      text-align: center;
+      max-width: 820px;
+      margin: 0.3rem auto 1.35rem;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ios-blue);
+      background: var(--ios-blue-tint);
+      padding: 0.28rem 0.78rem;
+      border-radius: var(--ios-radius-pill);
+      margin-bottom: 0.55rem;
+    }
+
+    .hero-title {
+      margin: 0 0 0.5rem;
+      font-size: 1.7rem;
+      font-weight: 850;
+      letter-spacing: -0.02em;
+      color: var(--ios-text-primary);
+    }
+
+    .hero-sub {
+      margin: 0;
+      font-size: 0.94rem;
+      color: var(--ios-text-secondary);
+      line-height: 1.52;
+    }
+
+    .country-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .country-card {
+      background: var(--ios-card-bg);
+      border-radius: var(--ios-radius-xl);
+      border: 2px solid transparent;
+      box-shadow: var(--ios-shadow-card);
+      padding: 1.15rem 1.15rem 1.1rem;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: left;
+    }
+
+    .country-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0, 122, 255, 0.45);
+      box-shadow: var(--ios-shadow-float);
+    }
+
+    .country-card.is-selected {
+      border-color: var(--ios-blue);
+      background: linear-gradient(180deg, #FFFFFF 0%, #F4F9FF 100%);
+    }
+
+    .country-flag-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.55rem;
+    }
+
+    .country-flag-badge {
+      font-size: 1.95rem;
+      line-height: 1;
+    }
+
+    .country-climate-tag {
+      font-size: 0.69rem;
+      font-weight: 750;
+      padding: 0.2rem 0.58rem;
+      border-radius: var(--ios-radius-pill);
+      background: var(--ios-fill-tertiary);
+      color: var(--ios-text-secondary);
+    }
+
+    .country-name {
+      margin: 0 0 0.28rem;
+      font-size: 1.18rem;
+      font-weight: 820;
+      color: var(--ios-text-primary);
+    }
+
+    .country-desc {
+      margin: 0 0 0.8rem;
+      font-size: 0.82rem;
+      color: var(--ios-text-secondary);
+      line-height: 1.46;
+    }
+
+    .country-mini-stats {
+      border-top: 1px solid var(--ios-separator);
+      padding-top: 0.6rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.35rem;
+      font-size: 0.73rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .country-stat-label {
+      color: var(--ios-text-secondary);
+      font-weight: 650;
+      font-size: 0.66rem;
+      display: block;
+    }
+
+    .country-stat-val {
+      font-weight: 800;
+      font-size: 0.81rem;
+    }
+
+    .country-cta-bar {
+      margin-top: 0.7rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.79rem;
+      font-weight: 780;
+      color: var(--ios-blue);
+    }
+
+    /* ==========================================================================
+       5. LAYER 2: ERKLÄRUNG DER VARIABLEN & KLIMATISCHE WASSERBILANZ (KWB)
+       ========================================================================== */
+    #screenLayer2 .hero-box {
+      margin: 0.5rem auto 2.1rem;
+    }
+
+    #screenLayer2 .hero-title {
+      margin-bottom: 0.75rem;
+    }
+
+    #screenLayer2 .hero-sub {
+      line-height: 1.68;
+    }
+
+    .variables-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.55rem;
+      margin-bottom: 2.2rem;
+    }
+
+    .var-explain-card {
+      background: var(--ios-card-bg);
+      border-radius: var(--ios-radius-xl);
+      box-shadow: var(--ios-shadow-card);
+      border: 1.5px solid var(--ios-separator);
+      padding: 1.55rem 1.7rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.9rem;
+    }
+
+    .var-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .var-symbol-badge {
+      font-size: 0.95rem;
+      font-weight: 850;
+      padding: 0.36rem 0.85rem;
+      border-radius: 10px;
+    }
+
+    .kwb-didactic-hero {
+      background: linear-gradient(145deg, #F0FDF4 0%, #EFF6FF 100%);
+      border: 2px solid rgba(52, 199, 89, 0.42);
+      border-radius: var(--ios-radius-xl);
+      box-shadow: var(--ios-shadow-card);
+      padding: 1.7rem 1.9rem;
+      margin-bottom: 2.3rem;
+    }
+
+    .understood-cta-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 2.3rem 0 1.2rem;
+    }
+
+    .btn-understood-big {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: linear-gradient(180deg, #1A8CFF 0%, #007AFF 100%);
+      color: #FFFFFF;
+      font-family: var(--ios-font);
+      font-size: 0.98rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      padding: 0.55rem 0.7rem 0.55rem 0.6rem;
+      border-radius: var(--ios-radius-pill);
+      cursor: pointer;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),
+        0 10px 28px -6px rgba(0, 122, 255, 0.38),
+        0 2px 6px rgba(0, 0, 0, 0.06);
+      transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s cubic-bezier(0.22, 1, 0.36, 1), filter 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-understood-big:hover {
+      transform: translateY(-1.5px) scale(1.01);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        0 14px 34px -6px rgba(0, 122, 255, 0.46),
+        0 4px 10px rgba(0, 0, 0, 0.08);
+      filter: brightness(1.03);
+    }
+
+    .btn-understood-big:active {
+      transform: translateY(0) scale(0.98);
+      filter: brightness(0.97);
+    }
+
+    .btn-ios-icon-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-ios-trailing-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.28rem;
+      background: rgba(255, 255, 255, 0.16);
+      padding: 0.32rem 0.68rem;
+      border-radius: var(--ios-radius-pill);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0;
+      transition: background 0.2s ease, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .btn-understood-big:hover .btn-ios-trailing-chip {
+      background: rgba(255, 255, 255, 0.24);
+      transform: translateX(2px);
+    }
+
+    /* ==========================================================================
+       6. LAYER 3: SZENARIEN, DELTA-S-BANNER & SPLIT-LAYOUT (PC/TABLET VS. SMARTPHONE)
+       ========================================================================== */
+    .scenario-header-card {
+      background: var(--ios-card-bg);
+      border-radius: var(--ios-radius-xl);
+      box-shadow: var(--ios-shadow-card);
+      border: 1px solid rgba(60, 60, 67, 0.08);
+      padding: 0.8rem 1.1rem;
+      margin-bottom: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .scenario-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+    }
+
+    .scenario-pills-row {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .scenario-pill-btn {
+      appearance: none;
+      border: 1.5px solid var(--ios-separator);
+      background: #F8F9FB;
+      color: var(--ios-text-primary);
+      font-family: var(--ios-font);
+      font-size: 0.8rem;
+      font-weight: 720;
+      padding: 0.44rem 0.85rem;
+      border-radius: var(--ios-radius-pill);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.16s ease;
+    }
+
+    .scenario-pill-btn:hover {
+      border-color: rgba(0, 122, 255, 0.45);
+      background: var(--ios-blue-tint);
+    }
+
+    .scenario-pill-btn.is-active {
+      background: var(--ios-blue);
+      color: #FFFFFF;
+      border-color: var(--ios-blue);
+      box-shadow: 0 3px 10px rgba(0, 122, 255, 0.24);
+    }
+
+    .delta-s-prompt-box {
+      padding: 0.6rem 0.95rem;
+      border-radius: 13px;
+      background: var(--ios-yellow-bg);
+      border: 1.5px dashed var(--ios-yellow-border);
+      font-size: 0.83rem;
+      font-weight: 700;
+      color: #7A5200;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .delta-s-reveal-box {
+      padding: 0.75rem 1rem;
+      border-radius: 14px;
+      background: #F0F9FF;
+      border: 1.5px solid rgba(0, 122, 255, 0.34);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      transition: all 0.25s ease;
+    }
+
+    .delta-s-reveal-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .delta-s-main-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.38rem;
+      padding: 0.3rem 0.85rem;
+      border-radius: var(--ios-radius-pill);
+      font-size: 0.92rem;
+      font-weight: 850;
+      background: var(--ios-blue);
+      color: #FFFFFF;
+    }
+
+    .desktop-split-layout {
+      display: grid;
+      grid-template-columns: 1.45fr 1fr;
+      gap: 1.1rem;
+      align-items: start;
+    }
+
+    .stage-wrapper-card {
+      background: var(--ios-card-bg);
+      border-radius: var(--ios-radius-xl);
+      box-shadow: var(--ios-shadow-card);
+      border: 1px solid rgba(60, 60, 67, 0.08);
+      padding: 0.85rem 1rem 1rem;
+    }
+
+    .stage-top-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .kwb-pill-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.28rem 0.78rem;
+      border-radius: var(--ios-radius-pill);
+      font-size: 0.78rem;
+      font-weight: 780;
+      background: var(--ios-green-tint);
+      color: var(--ios-green-dark);
+      border: 1px solid rgba(52, 199, 89, 0.38);
+    }
+
+    .kwb-pill-indicator.is-negative {
+      background: var(--ios-red-bg);
+      color: var(--ios-red);
+      border-color: rgba(255, 59, 48, 0.38);
+    }
+
+    .kwb-pill-indicator.is-buffered {
+      background: var(--ios-yellow-bg);
+      color: #854D0E;
+      border-color: var(--ios-yellow-border);
+    }
+
+    .visual-stage-frame {
+      position: relative;
+      width: 100%;
+      border-radius: var(--ios-radius-lg);
+      overflow: hidden;
+      border: 1.5px solid rgba(60, 60, 67, 0.16);
+      background: #DFEEFF;
+    }
+
+    .hydro-svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      user-select: none;
+      position: relative;
+      z-index: 2;
+    }
+
+    .particle-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .station-node {
+      cursor: pointer;
+      transition: filter 0.18s ease;
+    }
+
+    .station-node:hover {
+      filter: drop-shadow(0 4px 10px rgba(0, 122, 255, 0.45));
+    }
+
+    .station-pill-bg {
+      transition: fill 0.18s ease, stroke 0.18s ease, stroke-width 0.18s ease;
+    }
+
+    .station-node.is-active .station-pill-bg {
+      fill: #EFF6FF;
+      stroke: #007AFF;
+      stroke-width: 3px;
+      filter: drop-shadow(0 0 10px rgba(0, 122, 255, 0.55));
+    }
+
+    .station-chips-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.34rem;
+      margin-top: 0.68rem;
+      justify-content: center;
+    }
+
+    .station-chip {
+      appearance: none;
+      border: 1px solid var(--ios-separator);
+      background: #F8F9FB;
+      color: var(--ios-text-primary);
+      font-family: var(--ios-font);
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 0.28rem 0.62rem;
+      border-radius: var(--ios-radius-pill);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .station-chip:hover {
+      border-color: var(--ios-blue);
+      background: var(--ios-blue-tint);
+    }
+
+    .station-chip.is-active {
+      background: var(--ios-blue);
+      color: #FFFFFF;
+      border-color: var(--ios-blue);
+    }
+
+    .info-overlay-backdrop {
+      position: sticky;
+      top: 4.2rem;
+    }
+
+    .info-panel-card {
+      background: var(--ios-card-bg);
+      border-radius: var(--ios-radius-xl);
+      box-shadow: var(--ios-shadow-card);
+      border: 1.5px solid var(--ios-separator);
+      padding: 1.05rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+
+    .info-panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.6rem;
+      padding-bottom: 0.55rem;
+      border-bottom: 1px solid var(--ios-separator);
+    }
+
+    .mobile-close-x-btn {
+      display: none;
+      appearance: none;
+      border: none;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--ios-fill-tertiary);
+      color: var(--ios-text-primary);
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .info-section-box {
+      border-radius: var(--ios-radius-md);
+      padding: 0.65rem 0.8rem;
+      font-size: 0.82rem;
+      line-height: 1.46;
+      background: #F8FAFC;
+      border: 1px solid var(--ios-separator);
+    }
+
+    .info-section-de {
+      background: #F8FAFC;
+      border-color: var(--ios-separator);
+    }
+
+    .info-section-terms {
+      background: var(--ios-yellow-bg);
+      border-color: rgba(255, 204, 0, 0.52);
+    }
+
+    .station-specific-stats {
+      margin-top: 0.5rem;
+      background: #FFFFFF;
+      border: 1px solid var(--ios-separator);
+      border-radius: 10px;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.8rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ==========================================================================
+       7. ZENTRALE POPUP-FENSTER (FÜR LAYER 1, LAYER 2 & FACHBEGRIFF-ERKLÄRFENSTER)
+       ========================================================================== */
+    .center-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 1100;
+      background: rgba(28, 28, 30, 0.46);
+      backdrop-filter: blur(14px) saturate(160%);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.2rem;
+    }
+
+    .center-modal-box {
+      background: var(--ios-card-bg);
+      border-radius: var(--ios-radius-xl);
+      box-shadow: 0 22px 58px rgba(0, 0, 0, 0.28);
+      border: 1.5px solid rgba(255, 255, 255, 0.75);
+      width: 100%;
+      max-width: 480px;
+      padding: 1.4rem 1.5rem;
+      text-align: center;
+      animation: popIn 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.93); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+      margin-top: 1.35rem;
+    }
+
+    .modal-btn-secondary {
+      appearance: none;
+      border: 1px solid rgba(60, 60, 67, 0.12);
+      background: rgba(118, 118, 128, 0.12);
+      color: var(--ios-text-primary);
+      font-family: var(--ios-font);
+      font-size: 0.92rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      padding: 0.72rem 1.15rem;
+      border-radius: var(--ios-radius-pill);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: background 0.18s ease, transform 0.18s ease;
+    }
+
+    .modal-btn-secondary:hover {
+      background: rgba(118, 118, 128, 0.18);
+    }
+
+    .modal-btn-secondary:active {
+      transform: scale(0.98);
+    }
+
+    .modal-btn-primary {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: linear-gradient(180deg, #1A8CFF 0%, #007AFF 100%);
+      color: #FFFFFF;
+      font-family: var(--ios-font);
+      font-size: 0.92rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      padding: 0.72rem 1.25rem;
+      border-radius: var(--ios-radius-pill);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.32),
+        0 6px 18px -4px rgba(0, 122, 255, 0.35);
+      transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.18s ease, filter 0.18s ease;
+    }
+
+    .modal-btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.42),
+        0 10px 22px -4px rgba(0, 122, 255, 0.44);
+      filter: brightness(1.03);
+    }
+
+    .modal-btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .is-hidden {
+      display: none !important;
+    }
+
+    /* ==========================================================================
+       8. SMARTPHONE-MODUS (MAX-WIDTH: 768PX): INFOBEREICH IM VORDERGRUND MIT BLUR
+       ========================================================================== */
+    @media (max-width: 768px) {
+      .desktop-split-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .info-overlay-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 999;
+        background: rgba(28, 28, 30, 0.44);
+        backdrop-filter: blur(14px) saturate(160%);
+        -webkit-backdrop-filter: blur(14px) saturate(160%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.22s ease;
+      }
+
+      .info-overlay-backdrop.is-mobile-open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .info-panel-card {
+        width: 100%;
+        max-width: 500px;
+        max-height: 86vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+        border: 1.5px solid rgba(255, 255, 255, 0.65);
+      }
+
+      .mobile-close-x-btn {
+        display: inline-flex;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- ==========================================================================
+       STICKY HEADER MIT 3-LAYER-NAVIGATION
+       ========================================================================== -->
+  <header class="ios-topbar" role="banner">
+    <div class="topbar-inner">
+      <div class="brand-group">
+        <div class="brand-icon" aria-hidden="true">💧</div>
+        <div>
+          <span class="brand-eyebrow">Hydrologie &middot; 3-Layer-Entdecker-Labor</span>
+          <div class="brand-main">Wasserbilanz, Klimatische Wasserbilanz (KWB) &amp; Speicheränderung (&Delta;<span class="math-var">S</span>)</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:0.65rem;flex-wrap:wrap;">
+        <button type="button" class="active-country-pill" id="headerCountryBadge" onclick="switchLayer(1)" title="Land neu wählen">
+          <span id="headerCountryFlag">🇩🇪</span>
+          <span id="headerCountryName">Deutschland</span>
+          <span style="font-size:0.72rem;opacity:0.8;">&#9998;</span>
+        </button>
+
+        <nav class="ios-segmented" aria-label="3-Layer-Navigation">
+          <button type="button" class="seg-btn is-active" id="navBtnLayer1" onclick="switchLayer(1)">
+            <span>🌍 1. Layer: Länderwahl</span>
+          </button>
+          <button type="button" class="seg-btn" id="navBtnLayer2" onclick="switchLayer(2)">
+            <span>📘 2. Layer: Variablen &amp; KWB</span>
+          </button>
+          <button type="button" class="seg-btn" id="navBtnLayer3" onclick="switchLayer(3)">
+            <span>🌊 3. Layer: Animation &amp; Stationen</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <!-- ==========================================================================
+         1. LAYER: AUSWAHL DER 5 LÄNDER (MIT ZENTRIERTEM BESTÄTIGUNGSFENSTER)
+         ========================================================================== -->
+    <section id="screenLayer1" aria-label="1. Layer: Auswahl der Länder">
+      <div class="hero-box">
+        <div class="hero-eyebrow">🌍 1. Layer &middot; Staat auswählen</div>
+        <h1 class="hero-title">Von welchem Land möchtest du die Wasserbilanz entdecken?</h1>
+        <p class="hero-sub">
+          Wähle zuerst eines der 5 Länder aus. Anschließend lernst du im <strong>2. Layer</strong> die Bedeutung aller Variablen sowie die <strong>Klimatische Wasserbilanz (KWB)</strong> kennen und erkundest im <strong>3. Layer</strong> den Wasserfluss in der interaktiven Animation im direkten Vergleich mit <strong>Deutschland (🇩🇪)</strong>.
+        </p>
+      </div>
+
+      <div class="country-grid" id="countrySelectionGrid"></div>
+    </section>
+
+    <!-- ==========================================================================
+         2. LAYER: ERKLÄRUNG DER VARIABLEN MIT KLIMATISCHER WASSERBILANZ (KWB)
+         ========================================================================== -->
+    <section id="screenLayer2" class="is-hidden" aria-label="2. Layer: Erklärung der Variablen mit Klimatischer Wasserbilanz">
+      <div class="hero-box">
+        <div class="hero-eyebrow" id="layer2Eyebrow">📘 2. Layer &middot; Variablen, Gleichung &amp; Klimatische Wasserbilanz (KWB)</div>
+        <h1 class="hero-title" id="layer2Title">Wasserhaushaltsgleichung &amp; Bedeutung der Variablen</h1>
+        <p class="hero-sub">
+          Hier siehst du die allgemeine <strong>Wasserhaushaltsgleichung</strong> und zu jeder Variablen einen präzisen Stichpunkt. <strong>Tipp:</strong> Klicke direkt im Text auf die dezent unterstrichenen Fachbegriffe, um ein didaktisches Erklärfenster zu öffnen!
+        </p>
+      </div>
+
+      <!-- Zentrale Wasserhaushaltsgleichung -->
+      <div class="equation-banner-card" id="layer2EquationBox"></div>
+
+      <!-- Dynamisch befüllte Karten für N + Z, RET, A (Ao + Au), Delta S -->
+      <div class="variables-grid" id="layer2VariablesGrid"></div>
+
+      <!-- Kurze Erklärung der Klimatischen Wasserbilanz (KWB) & Verbindung zur Gleichung -->
+      <div class="kwb-didactic-hero" id="layer2KwbBox"></div>
+
+      <!-- Button unterhalb: "Ich habe die Bedeutung der Variablen verstanden!" im aktuellen Apple iOS 18 UI-Design -->
+      <div class="understood-cta-wrap">
+        <button type="button" class="btn-understood-big" id="btnUnderstoodVariables" onclick="openLayer2ConfirmModal()">
+          <span class="btn-ios-icon-badge" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4.5 10.5L8.2 14.2L15.8 6.2" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span>Ich habe die Bedeutung der Variablen verstanden</span>
+          <span class="btn-ios-trailing-chip" aria-hidden="true">
+            <span>Weiter</span>
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         3. LAYER: ANIMATIONEN MIT SZENARIEN & ERKLÄRUNGEN ZU DEN STATIONEN
+         ========================================================================== -->
+    <section id="screenLayer3" class="is-hidden" aria-label="3. Layer: Interaktive Wasserfluss-Animation und Stationen">
+      <!-- Szenarien-Leiste & Delta-S-Entdeckungsbanner -->
+      <div class="scenario-header-card">
+        <div class="scenario-top-row">
+          <div>
+            <span style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--ios-blue);" id="layer3SubHeader">
+              🌊 3. Layer &middot; Wetter- und Klimaszenarien
+            </span>
+            <h2 style="margin:0.1rem 0 0;font-size:1.1rem;font-weight:820;" id="layer3MainTitle">
+              Deutschland (🇩🇪) &ndash; Wasserfluss &amp; Stationen im Querschnitt
+            </h2>
+          </div>
+
+          <div class="scenario-pills-row" id="scenarioButtonsRow" role="group" aria-label="Szenarien auswählen">
+            <button type="button" class="scenario-pill-btn" data-scen="year" onclick="selectScenario('year')">
+              <span>📅 Ein Jahr</span>
+            </button>
+            <button type="button" class="scenario-pill-btn" data-scen="spring" onclick="selectScenario('spring')">
+              <span>🌱 Frühling</span>
+            </button>
+            <button type="button" class="scenario-pill-btn" data-scen="summer" onclick="selectScenario('summer')">
+              <span>☀️ Sommer</span>
+            </button>
+            <button type="button" class="scenario-pill-btn" data-scen="autumn" onclick="selectScenario('autumn')">
+              <span>🍂 Herbst</span>
+            </button>
+            <button type="button" class="scenario-pill-btn" data-scen="winter" onclick="selectScenario('winter')">
+              <span>❄️ Winter</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Vor dem ersten Szenario-Klick: Hinweisbanner -->
+        <div id="deltaSPromptBanner" class="delta-s-prompt-box">
+          <span>🔍</span>
+          <span><strong>Entdeckungs-Auftrag:</strong> Klicke oben auf eines der 5 Szenarien (<strong>Ein Jahr, Frühling, Sommer, Herbst oder Winter</strong>)! Erst nach deinem Klick wird die <strong>Speicheränderung (<span class="math-inline">&Delta;<span class="math-var">S</span></span>)</strong> eingeblendet und erklärt, wann <span class="math-inline">&Delta;<span class="math-var">S</span> = 0</span> ist und wann sich die Speicher füllen oder leeren.</span>
+        </div>
+
+        <!-- Nach Klick auf ein Szenario: Aufgedecktes Delta S + didaktische Begründung -->
+        <div id="deltaSRevealBanner" class="delta-s-reveal-box is-hidden">
+          <div class="delta-s-reveal-top">
+            <div style="display:flex;align-items:center;gap:0.55rem;flex-wrap:wrap;">
+              <span style="font-size:0.74rem;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;color:var(--ios-text-secondary);" id="deltaSScenarioLabel">
+                Szenario:
+              </span>
+              <span class="delta-s-main-pill" id="deltaSValuePill">
+                Speicheränderung &Delta;<span class="math-var">S</span> = 0 mm/Jahr
+              </span>
+            </div>
+            <span style="font-size:0.77rem;font-weight:750;color:var(--ios-text-secondary);" id="deltaSSubBreakdown">
+              Bodenspeicher &Delta;<span class="math-var">S</span><sub>Boden</sub>: 0 mm/Jahr &middot; Grundwasserspeicher &Delta;<span class="math-var">S</span><sub>GW</sub>: 0 mm/Jahr
+            </span>
+          </div>
+          <div style="font-size:0.82rem;line-height:1.48;color:var(--ios-text-primary);" id="deltaSDidacticExplanation"></div>
+        </div>
+      </div>
+
+      <!-- SPLIT-LAYOUT: LINKS ANIMATION, RECHTS ERKLÄRUNGEN (Smartphone: Vordergrund-Layer mit Blur + X-Button) -->
+      <div class="desktop-split-layout">
+        <!-- LINKE SPALTE: GROSSE ANIMATION MIT EINGESCHLOSSENEN BESCHRIFTUNGEN -->
+        <div class="stage-wrapper-card">
+          <div class="stage-top-strip">
+            <div class="kwb-pill-indicator" id="stageKwbPill">
+              <span>Klimatische Wasserbilanz (KWB): <strong>positiv</strong></span>
+            </div>
+            <span style="font-size:0.75rem;font-weight:700;color:var(--ios-text-secondary);">
+              👆 Tippe direkt in der Grafik auf eine der <strong>12 Stationen</strong>
+            </span>
+          </div>
+
+          <div class="visual-stage-frame" id="visualStageFrame">
+            <!-- SVG-Querschnitt (alle Schriften zentriert und vollständig in ihren Kästen eingeschlossen) -->
+            <svg class="hydro-svg" id="hydroSvg" viewBox="0 0 940 480" xmlns="http://www.w3.org/2000/svg" aria-label="Interaktiver hydrogeologischer Landschaftsquerschnitt">
+              <defs>
+                <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" id="skyStopTop" stop-color="#CBE4FF" />
+                  <stop offset="60%" id="skyStopMid" stop-color="#E7F3FF" />
+                  <stop offset="100%" id="skyStopBot" stop-color="#F7FBFF" />
+                </linearGradient>
+
+                <linearGradient id="topSoilGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" id="soilStop1" stop-color="#9B7653" />
+                  <stop offset="100%" id="soilStop2" stop-color="#846242" />
+                </linearGradient>
+
+                <linearGradient id="vadoseGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" id="vadoseStop1" stop-color="#B9AA82" />
+                  <stop offset="100%" id="vadoseStop2" stop-color="#9EB89B" />
+                </linearGradient>
+
+                <linearGradient id="aquiferGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#76BCEB" stop-opacity="0.92" />
+                  <stop offset="100%" stop-color="#2B7BB9" stop-opacity="0.97" />
+                </linearGradient>
+
+                <linearGradient id="riverWaterGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#38BDF8" />
+                  <stop offset="100%" stop-color="#0369A1" />
+                </linearGradient>
+
+                <marker id="arrBlue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+                  <path d="M 0 1 L 10 5 L 0 9 z" fill="#007AFF" />
+                </marker>
+                <marker id="arrGreen" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+                  <path d="M 0 1 L 10 5 L 0 9 z" fill="#2E9E5B" />
+                </marker>
+                <marker id="arrCyan" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+                  <path d="M 0 1 L 10 5 L 0 9 z" fill="#0284C7" />
+                </marker>
+                <marker id="arrDarkBlue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+                  <path d="M 0 1 L 10 5 L 0 9 z" fill="#1D4ED8" />
+                </marker>
+              </defs>
+
+              <!-- 1. Himmel -->
+              <rect x="0" y="0" width="940" height="480" fill="url(#skyGrad)" />
+
+              <!-- 2. Sonne & Wolken -->
+              <g id="svgSunGroup" transform="translate(835, 58)">
+                <circle id="svgSunHalo" cx="0" cy="0" r="40" fill="#FDE047" opacity="0.32" />
+                <circle id="svgSunCore" cx="0" cy="0" r="24" fill="#FACC15" />
+              </g>
+
+              <g id="svgCloudGroup" opacity="0.94">
+                <path d="M 155 58 C 155 40, 182 32, 198 44 C 212 27, 246 30, 256 48 C 276 48, 286 64, 272 78 L 160 78 C 144 78, 142 62, 155 58 Z" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+                <path d="M 215 66 C 215 52, 236 46, 250 55 C 262 42, 290 45, 298 59 C 314 59, 320 71, 309 82 L 219 82 C 206 82, 205 70, 215 66 Z" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1.2" />
+              </g>
+
+              <!-- 3. Linke Rand-Legende (vollständig im linken Bereich 0..136 eingeschlossen) -->
+              <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" text-anchor="middle">
+                <rect x="6" y="268" width="124" height="36" rx="7" fill="rgba(255,255,255,0.88)" stroke="#CBD5E1" stroke-width="1" />
+                <text x="68" y="284" font-size="11.5" font-weight="800" fill="#334155">Sickerraum</text>
+                <text x="68" y="298" font-size="9.5" font-weight="650" fill="#64748B">(Ungesättigte Zone)</text>
+
+                <rect x="6" y="366" width="124" height="40" rx="7" fill="rgba(255,255,255,0.88)" stroke="#93C5FD" stroke-width="1" />
+                <text x="68" y="382" font-size="11.5" font-weight="800" fill="#1E3A8A">Grundwasser-</text>
+                <text x="68" y="397" font-size="11.5" font-weight="800" fill="#1E3A8A">raum (Aquifer)</text>
+              </g>
+
+              <!-- 4. Geologischer Körper: Sickerraum, Verdunstungsbeeinflusste Bodenzone, Grundwasserraum -->
+              <path d="M 138 195 L 555 195 Q 685 198 765 348 L 835 348 L 835 426 L 138 426 Z" fill="url(#vadoseGrad)" stroke="#475569" stroke-width="1.8" />
+              <path d="M 138 195 L 555 195 Q 645 198 712 275 L 138 275 Z" fill="url(#topSoilGrad)" opacity="0.92" />
+
+              <!-- Trockenrisse bei Dürre -->
+              <g id="svgDroughtCracks" opacity="0" stroke="#451A03" stroke-width="2" fill="none" stroke-linecap="round">
+                <path d="M 305 195 L 298 214 L 308 229 L 299 244" />
+                <path d="M 392 195 L 400 212 L 391 228 L 401 242" />
+                <path d="M 538 196 L 531 215 L 540 231" />
+              </g>
+
+              <!-- Geröllhorizont -->
+              <g fill="#CBD5E1" stroke="#64748B" stroke-width="1" opacity="0.72">
+                <ellipse cx="295" cy="272" rx="8" ry="4" />
+                <ellipse cx="316" cy="275" rx="6" ry="3.5" />
+                <ellipse cx="370" cy="271" rx="9" ry="4" />
+                <ellipse cx="445" cy="274" rx="8" ry="3.8" />
+                <ellipse cx="472" cy="271" rx="6" ry="3.2" />
+                <ellipse cx="552" cy="278" rx="9" ry="4" />
+                <ellipse cx="585" cy="285" rx="7" ry="3.5" />
+              </g>
+
+              <!-- Dynamischer Grundwasserraum (Aquifer) -->
+              <path id="svgAquiferRect" d="M 138 338 L 795 346 L 795 426 L 138 426 Z" fill="url(#aquiferGrad)" stroke="#1E3A8A" stroke-width="1.6" />
+              <line id="svgGwTableLine" x1="138" y1="338" x2="770" y2="346" stroke="#0284C7" stroke-width="2.4" stroke-dasharray="7 5" />
+
+              <!-- Grundwasserspiegel-Dreieck (∇) -->
+              <g id="svgGwTriangle" transform="translate(744, 345)">
+                <polygon points="0,0 -7,-11 7,-11" fill="#E0F2FE" stroke="#0369A1" stroke-width="1.5" />
+                <line x1="-9" y1="3" x2="9" y2="3" stroke="#0369A1" stroke-width="1.5" />
+                <line x1="-5" y1="6" x2="5" y2="6" stroke="#0369A1" stroke-width="1.5" />
+              </g>
+
+              <!-- Vorfluter (Flussbett & Wasser) -->
+              <path d="M 762 346 Q 798 415 835 346 Z" fill="url(#riverWaterGrad)" />
+              <path d="M 138 195 L 555 195 Q 685 198 762 346 Q 798 415 835 346 L 835 426 L 138 426 Z" fill="none" stroke="#1E293B" stroke-width="2.2" />
+
+              <!-- 5. Vegetation (Laubbaum, Nadelbaum, Strauch & Wurzeln) -->
+              <g id="svgRootsGroup" stroke="#5C4028" stroke-width="1.7" fill="none" opacity="0.78">
+                <path d="M 480 195 C 475 215, 462 230, 452 246" />
+                <path d="M 480 195 C 480 220, 483 238, 478 256" />
+                <path d="M 480 195 C 488 214, 500 229, 508 244" />
+                <path d="M 526 195 C 521 214, 514 231, 510 245" />
+                <path d="M 526 195 C 531 215, 539 230, 545 244" />
+              </g>
+
+              <g id="svgVegetationGroup">
+                <ellipse cx="442" cy="176" rx="22" ry="18" fill="#68B984" stroke="#2E6F40" stroke-width="1.3" />
+                <rect x="475" y="138" width="10" height="57" rx="3" fill="#78350F" />
+                <circle id="treeCrown1" cx="480" cy="108" r="34" fill="#52B788" stroke="#1B4332" stroke-width="1.5" />
+                <circle id="treeCrown2" cx="460" cy="122" r="23" fill="#74C69D" />
+                <circle id="treeCrown3" cx="498" cy="120" r="24" fill="#40916C" />
+                <rect x="522" y="156" width="8" height="39" rx="2" fill="#78350F" />
+                <polygon id="pineCrown" points="526,64 500,164 552,164" fill="#2D6A4F" stroke="#1B4332" stroke-width="1.5" />
+              </g>
+
+              <!-- 6. Prozess-Pfeile (Skalieren mit dem gewählten Szenario) -->
+              <!-- Niederschlag N -->
+              <g id="arrowGroupPrecip">
+                <path d="M 244 26 L 244 92 L 231 92 L 254 124 L 277 92 L 264 92 L 264 26 Z" fill="#60A5FA" stroke="#1D4ED8" stroke-width="1.8" />
+              </g>
+
+              <!-- Beregnung / Fremdzufluss Z -->
+              <g id="arrowGroupIrrigation" stroke="#1E40AF" stroke-width="1.8" fill="#93C5FD">
+                <path d="M 212 170 L 212 184 L 207 184 L 214 193 L 221 184 L 216 184 L 216 170 Z" />
+                <path d="M 235 170 L 235 184 L 230 184 L 237 193 L 244 184 L 239 184 L 239 170 Z" />
+                <path d="M 258 170 L 258 184 L 253 184 L 260 193 L 267 184 L 262 184 L 262 170 Z" />
+                <path d="M 281 170 L 281 184 L 276 184 L 283 193 L 290 184 L 285 184 L 285 170 Z" />
+              </g>
+
+              <!-- Evaporation -->
+              <g id="arrowGroupEvap">
+                <path d="M 366 186 L 366 144 L 356 144 L 372 122 L 388 144 L 378 144 L 378 186 Z" fill="#86EFAC" stroke="#15803D" stroke-width="1.6" />
+              </g>
+
+              <!-- Transpiration -->
+              <g id="arrowGroupTransp">
+                <path d="M 424 102 L 424 54 L 414 54 L 430 32 L 446 54 L 436 54 L 436 102 Z" fill="#86EFAC" stroke="#15803D" stroke-width="1.6" />
+              </g>
+
+              <!-- Interzeptionsverdunstung -->
+              <g id="arrowGroupInterception">
+                <path d="M 556 126 L 556 90 L 548 90 L 561 72 L 574 90 L 566 90 L 566 126 Z" fill="#86EFAC" stroke="#15803D" stroke-width="1.5" />
+              </g>
+
+              <!-- Infiltration & Sickerwasser -->
+              <g id="arrowGroupPercolation">
+                <path d="M 262 197 L 262 242 L 254 242 L 268 261 L 282 242 L 274 242 L 274 197 Z" fill="#60A5FA" stroke="#1E40AF" stroke-width="1.5" />
+                <path d="M 262 266 L 262 310 L 254 310 L 268 329 L 282 310 L 274 310 L 274 266 Z" fill="#60A5FA" stroke="#1E40AF" stroke-width="1.5" />
+                <path d="M 263 332 L 263 356 L 256 356 L 268 370 L 280 356 L 273 356 L 273 332 Z" fill="#3B82F6" stroke="#1E3A8A" stroke-width="1.5" />
+              </g>
+
+              <!-- Kapillarer Aufstieg -->
+              <g id="arrowGroupCapillary">
+                <path d="M 412 325 L 412 232 L 403 232 L 417 210 L 431 232 L 422 232 L 422 325 Z" fill="#67E8F9" stroke="#0E7490" stroke-width="1.5" />
+              </g>
+
+              <!-- Oberflächenabfluss -->
+              <g id="arrowGroupSurfaceRunoff">
+                <path d="M 665 198 L 716 232" stroke="#3B82F6" stroke-width="5" stroke-linecap="round" marker-end="url(#arrBlue)" />
+              </g>
+
+              <!-- Zwischenabfluss (Interflow) -->
+              <g id="arrowGroupInterflow">
+                <path d="M 632 276 L 686 276" stroke="#3B82F6" stroke-width="5" stroke-linecap="round" marker-end="url(#arrBlue)" />
+              </g>
+
+              <!-- Grundwasserabfluss / Basisabfluss -->
+              <g id="arrowGroupBaseflow">
+                <line x1="364" y1="368" x2="396" y2="368" stroke="#1D4ED8" stroke-width="3.2" marker-end="url(#arrDarkBlue)" />
+                <line x1="364" y1="402" x2="396" y2="402" stroke="#1D4ED8" stroke-width="3.2" marker-end="url(#arrDarkBlue)" />
+                <line x1="668" y1="384" x2="725" y2="384" stroke="#1D4ED8" stroke-width="5.2" marker-end="url(#arrDarkBlue)" />
+              </g>
+
+              <!-- ==========================================================================
+                   7. ANKLICKBARE STATIONEN 1 BIS 12 (ALLE SCHRIFTEN ZENTRIERT & EINGESCHLOSSEN)
+                   ========================================================================== -->
+              <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" text-anchor="middle">
+                <!-- Station 1: Niederschlag (N) | Box x=80..226 (Mitte x=153) -->
+                <g class="station-node is-active" data-station="niederschlag" onclick="selectStation('niederschlag')" role="button" tabindex="0">
+                  <rect class="station-pill-bg" x="80" y="42" width="146" height="32" rx="10" fill="#FFFFFF" stroke="#007AFF" stroke-width="2" />
+                  <text x="153" y="62" font-size="11.5" font-weight="800" fill="#0F172A">1 &middot; Niederschlag (N)</text>
+                </g>
+
+                <!-- Station 2: Beregnung / Zufluss (Z) | Box x=138..304 (Mitte x=221) -->
+                <g class="station-node" data-station="zufluss" onclick="selectStation('zufluss')" role="button" tabindex="0">
+                  <rect class="station-pill-bg" x="138" y="138" width="166" height="28" rx="9" fill="#FFFFFF" stroke="#007AFF" stroke-width="1.8" />
+                  <text x="221" y="156" font-size="11" font-weight="800" fill="#0F172A">2 &middot; Beregnung / Zufluss (Z)</text>
+                </g>
+
+                <!-- Station 3: Evaporation (E) | Box x=284..418 (Mitte x=351) -->
+                <g class="station-node" data-station="evaporation" onclick="selectStation('evaporation')" role="button" tabindex="0">
+                  <rect class="station-pill-bg" x="284" y="92" width="134" height="28" rx="9" fill="#FFFFFF" stroke="#15803D" stroke-width="1.8" />
+                  <text x="351" y="110" font-size="11" font-weight="800" fill="#14532D">3 &middot; Evaporation (E)</text>
+                </g>
+
+                <!-- Station 4: Transpiration (T) | Box x=440..582 (Mitte x=511) -->
+                <g class="station-node" data-station="transpiration" onclick="selectStation('transpiration')" role="button" tabindex="0">
+                  <rect class="station-pill-bg" x="440" y="18" width="142" height="28" rx="9" fill="#FFFFFF" stroke="#15803D" stroke-width="1.8" />
+                  <text x="511" y="36" font-size="11" font-weight="800" fill="#14532D">4 &middot; Transpiration (T)</text>
+                </g>
+
+                <!-- Station 5: Interzeptionsverdunstung | Box x=546..678 (Mitte x=612) -->
+                <g class="station-node" data-station="interzeption" onclick="selectStation('interzeption')" role="button" tabindex="0">
+                  <rect class="station-pill-bg" x="546" y="48" width="132" height="38" rx="9" fill="#FFFFFF" stroke="#15803D" stroke-width="1.8" />
+                  <text x="612" y="64" font-size="10.5" font-weight="800" fill="#14532D">5 &middot; Interzeptions-</text>
+                  <text x="612" y="78" font-size="10.5" font-weight="800" fill="#14532D">verdunstung (E<tspan baseline-shift="sub" font-size="8">I</tspan>)</text>
+                </g>
+
+                <!-- Station 6: Verdunstungsbeeinflusste Bodenzone | Box x=142..256 (Mitte x=199) -->
+                <g class="station-node" data-station="bodenzone" onclick="selectStation('bodenzone')" role="button" tabindex="0">
+                  <rect class="station-pill-bg" x="142" y="202" width="114" height="58" rx="9" fill="rgba(255,255,255,0.94)" stroke="#78350F" stroke-width="1.8" />
+                  <text x="199" y="218" font-size="10" font-weight="800" fill="#451A03">6 &middot; Verdunstungs-</text>
+                  <text x="199" y="232" font-size="10" font-weight="800" fill="#451A03">beeinflusste</text>
+                  <text x="199" y="246" font-size="10" font-weight="800" fill="#451A03">Bodenzone (&Delta;S<tspan baseline-shift="sub" font-size="7.5">B</tspan>)</text>
+                </g>
+
+                <!-- Station 7: Infiltration & Sickerwasser | Box x=284..402 (Mitte x=343) -->
+                <g class="station-node" data-station="sickerwasser" onclick="selectStation('sickerwasser')" role="button" tabindex="0">
+                  <rect class="station-pill-bg" x="284" y="216" width="118" height="26" rx="8" fill="rgba(255,255,255,0.94)" stroke="#1D4ED8" stroke-width="1.7" />
+                  <text x="343" y="233" font-size="10.5" font-weight="800" fill="#1E3A8A">7 &middot; Infiltration</text>
+                  <rect class="station-pill-bg" x="284" y="286" width="118" height="26" rx="8" fill="rgba(255,255,255,0.94)" stroke="#1D4ED8" stroke-width="1.7" />
+                  <text x="343" y="303" font-size="10.5" font-weight="800" fill="#1E3A8A">7 &middot; Sickerwasser</text>
+                </g>
+
+                <!-- Station 8: Kapillarer Aufstieg | Box x=430..572 (Mitte x=501) -->
+                <g class="station-node" data-station="kapillar" onclick="selectStation('kapillar')" role="button" tabindex="0">
+                  <rect class="station-pill-bg" x="430" y="290" width="142" height="28" rx="8" fill="rgba(255,255,255,0.94)" stroke="#0E7490" stroke-width="1.7" />
+                  <text x="501" y="308" font-size="10.5" font-weight="800" fill="#155E75">8 &middot; Kapillarer Aufstieg</text>
+                </g>
+
+                <!-- Station 9: Grundwasserneubildung (GWN / Au) | Box x=144..358 (Mitte x=251) -->
+                <g class="station-node" data-station="gwn" onclick="selectStation('gwn')" role="button" tabindex="0">
+                  <rect class="station-pill-bg" x="144" y="376" width="214" height="30" rx="9" fill="rgba(255,255,255,0.95)" stroke="#1E3A8A" stroke-width="1.9" />
+                  <text x="251" y="395" font-size="10.8" font-weight="800" fill="#1E3A8A">9 &middot; Grundwasserneubildung (A<tspan baseline-shift="sub" font-size="8">u</tspan>)</text>
+                </g>
+
+                <!-- Station 10: Grundwasserabfluss & Speicher | Box x=406..660 (Mitte x=533) -->
+                <g class="station-node" data-station="grundwasser" onclick="selectStation('grundwasser')" role="button" tabindex="0">
+                  <rect class="station-pill-bg" x="406" y="362" width="254" height="44" rx="9" fill="rgba(255,255,255,0.95)" stroke="#1E3A8A" stroke-width="1.9" />
+                  <text x="533" y="381" font-size="10.5" font-weight="800" fill="#0F172A">10 &middot; schneller / langsamer</text>
+                  <text x="533" y="397" font-size="10.5" font-weight="800" fill="#1E3A8A">Grundwasserabfluss (&Delta;S<tspan baseline-shift="sub" font-size="8">GW</tspan>)</text>
+                </g>
+
+                <!-- Station 11: Oberflächenabfluss & Zwischenabfluss -->
+                <g class="station-node" data-station="oberflaechenabfluss" onclick="selectStation('oberflaechenabfluss')" role="button" tabindex="0">
+                  <!-- Oberflächenabfluss Box x=580..726 (Mitte x=653) -->
+                  <rect class="station-pill-bg" x="580" y="156" width="146" height="38" rx="9" fill="#FFFFFF" stroke="#0284C7" stroke-width="1.8" />
+                  <text x="653" y="172" font-size="10.5" font-weight="800" fill="#0369A1">11 &middot; Oberflächen-</text>
+                  <text x="653" y="186" font-size="10.5" font-weight="800" fill="#0369A1">abfluss (A<tspan baseline-shift="sub" font-size="8">o</tspan>)</text>
+
+                  <!-- Zwischenabfluss Box x=568..704 (Mitte x=636) -->
+                  <rect class="station-pill-bg" x="568" y="302" width="136" height="26" rx="8" fill="rgba(255,255,255,0.95)" stroke="#0284C7" stroke-width="1.7" />
+                  <text x="636" y="319" font-size="10.2" font-weight="800" fill="#0369A1">11 &middot; Zwischenabfluss</text>
+                </g>
+
+                <!-- Station 12: Abflussbilanz im Vorfluter (integriert am Flussbett) -->
+                <g class="station-node" data-station="abflussbilanz" onclick="selectStation('abflussbilanz')" role="button" tabindex="0" aria-label="Station 12: Abflussbilanz im Vorfluter">
+                  <!-- Box über dem Vorfluter x=726..868 (Mitte x=797) -->
+                  <rect class="station-pill-bg" x="726" y="298" width="142" height="38" rx="9" fill="rgba(255,255,255,0.96)" stroke="#0369A1" stroke-width="1.9" />
+                  <text x="797" y="314" font-size="10.2" font-weight="800" fill="#0F172A">12 &middot; Abflussbilanz</text>
+                  <text x="797" y="328" font-size="10" font-weight="800" fill="#0369A1">im Vorfluter (A)</text>
+
+                  <!-- Rechte Bilanz-Box direkt neben dem Vorfluter x=838..936 (Mitte x=887) -->
+                  <rect class="station-pill-bg" x="838" y="344" width="98" height="68" rx="8" fill="rgba(255,255,255,0.96)" stroke="#0369A1" stroke-width="1.7" />
+                  <text x="887" y="361" font-size="9.8" font-weight="800" fill="#0F172A">Gesamtabfluss A</text>
+                  <text x="887" y="381" font-size="9.4" font-weight="750" fill="#0284C7">Direktabfluss A<tspan baseline-shift="sub" font-size="7.5">o</tspan></text>
+                  <text x="887" y="400" font-size="9.4" font-weight="750" fill="#1E3A8A">Basisabfluss A<tspan baseline-shift="sub" font-size="7.5">u</tspan></text>
+                </g>
+
+                <!-- Untere Prozessklammern (Abflussbildung & Abflusskonzentration) -->
+                <rect x="190" y="438" width="210" height="28" rx="8" fill="rgba(255,255,255,0.9)" stroke="#CBD5E1" stroke-width="1.2" />
+                <text x="295" y="456" font-size="12" font-weight="800" fill="#1E293B">Abflussbildung</text>
+
+                <rect x="545" y="438" width="230" height="28" rx="8" fill="rgba(255,255,255,0.9)" stroke="#CBD5E1" stroke-width="1.2" />
+                <text x="660" y="456" font-size="12" font-weight="800" fill="#1E293B">Abflusskonzentration</text>
+              </g>
+            </svg>
+
+            <!-- 60-FPS Partikel-Canvas für Regen, Verdunstung, Sickerwasser, Kapillaraufstieg & Abfluss -->
+            <canvas class="particle-canvas" id="hydroParticleCanvas"></canvas>
+          </div>
+
+          <!-- Schnellwahl-Leiste der 12 Stationen -->
+          <div class="station-chips-bar" id="stationChipsBar" aria-label="Stationen direkt auswählen"></div>
+        </div>
+
+        <!-- RECHTE SPALTE (PC/TABLET) BZW. VORDERGRUND-MODAL MIT BLUR (SMARTPHONE): STATIONS-ERKLÄRUNGEN -->
+        <div class="info-overlay-backdrop" id="stationInfoBackdrop" onclick="handleBackdropClick(event)">
+          <aside class="info-panel-card" aria-live="polite">
+            <div class="info-panel-header">
+              <div>
+                <div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.25rem;">
+                  <span style="font-size:0.7rem;font-weight:800;padding:0.18rem 0.55rem;border-radius:999px;background:var(--ios-blue-tint);color:var(--ios-blue-dark);" id="stVarBadge">
+                    Zuflüsse (N + Z)
+                  </span>
+                  <span style="font-size:0.7rem;font-weight:750;color:var(--ios-text-secondary);" id="stSubCategory">
+                    Station 1 von 12
+                  </span>
+                </div>
+                <h3 style="margin:0;font-size:1.12rem;font-weight:830;color:var(--ios-text-primary);" id="stTitle">
+                  1. Niederschlag (N)
+                </h3>
+              </div>
+
+              <!-- Smartphone X-Button zum Schließen des Vordergrund-Overlays -->
+              <button type="button" class="mobile-close-x-btn" onclick="closeMobileInfoOverlay()" aria-label="Erklärungsfenster schließen" title="Schließen">
+                ✕
+              </button>
+            </div>
+
+            <!-- 1. Was passiert an dieser Station physikalisch? -->
+            <div class="info-section-box">
+              <strong style="display:block;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--ios-text-secondary);margin-bottom:0.22rem;">
+                🔬 Physikalische Erklärung an dieser Station
+              </strong>
+              <div id="stProcessText"></div>
+            </div>
+
+            <!-- 2. Bedeutung & konkrete Zahlen NUR für die Variable dieser Station -->
+            <div class="info-section-box info-section-de">
+              <strong style="display:block;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--ios-blue-dark);margin-bottom:0.22rem;" id="stCountryHeader">
+                🇩🇪 Bedeutung für Deutschland &amp; Stations-Messwerte
+              </strong>
+              <div id="stGermanyText"></div>
+              <div id="stComparisonText" style="margin-top:0.38rem;padding-top:0.38rem;border-top:1px dashed rgba(0,122,255,0.25);"></div>
+              <!-- Stations-spezifische Zahlenbox (zeigt NUR die zu dieser Station gehörende Variable!) -->
+              <div class="station-specific-stats" id="stStationSpecificNumbers"></div>
+            </div>
+
+            <!-- 3. Was passiert gerade im gewählten Szenario an dieser Station? -->
+            <div class="info-section-box">
+              <strong style="display:block;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--ios-orange-dark);margin-bottom:0.22rem;">
+                ⚡ Auswirkung im gewählten Szenario
+              </strong>
+              <div id="stScenarioEffectText"></div>
+            </div>
+
+            <!-- 4. Wichtige Fachbegriffe dieser Station (durch Antippen über Erklärfenster erklärt!) -->
+            <div class="info-section-box info-section-terms">
+              <strong style="display:block;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em;color:#854D0E;margin-bottom:0.25rem;">
+                📖 Fachbegriffe antippen (öffnet didaktisches Erklärfenster)
+              </strong>
+              <div id="stTermsContainer"></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <!-- Quellen-Fußzeile -->
+      <div style="margin-top:0.95rem;background:var(--ios-card-bg);border-radius:var(--ios-radius-lg);padding:0.7rem 1rem;border:1px solid var(--ios-separator);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;font-size:0.76rem;color:var(--ios-text-secondary);">
+        <div>
+          <strong>Wissenschaftliche Datengrundlage &amp; Grafik-Referenz:</strong>
+          Climate Service Center Germany (GERICS) &ndash; <em>Vergleichendes Lexikon: Grundwasserneubildung</em> sowie DWD, BGR &amp; BAFU.
+        </div>
+        <a href="https://www.climate-service-center.de/products_and_publications/publications/detail/062989/index.php.de" target="_blank" rel="noopener noreferrer" style="color:var(--ios-blue);font-weight:750;text-decoration:none;">
+          🔗 GERICS Lexikon Grundwasserneubildung öffnen &rarr;
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==========================================================================
+       MODAL 1 (LAYER 1): BESTÄTIGUNGSKASTEN IN DER MITTE ("NEU WÄHLEN" ODER "WEITER")
+       ========================================================================== -->
+  <div id="modalCountryConfirm" class="center-modal-backdrop is-hidden" role="dialog" aria-modal="true" aria-labelledby="modalCountryTitle">
+    <div class="center-modal-box">
+      <div style="font-size:2.5rem;line-height:1;margin-bottom:0.4rem;" id="modalCountryFlag">🇩🇪</div>
+      <span style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--ios-blue);background:var(--ios-blue-tint);padding:0.22rem 0.68rem;border-radius:999px;">
+        1. Layer &middot; Auswahl bestätigen
+      </span>
+      <h2 id="modalCountryTitle" style="margin:0.55rem 0 0.35rem;font-size:1.3rem;font-weight:840;">
+        Deutschland ausgewählt
+      </h2>
+      <p id="modalCountrySubtitle" style="margin:0;font-size:0.88rem;color:var(--ios-text-secondary);line-height:1.5;">
+        Möchtest du mit diesem Land zum 2. Layer (Erklärung der Variablen und der Klimatischen Wasserbilanz) weitergehen oder ein anderes Land wählen?
+      </p>
+      <div class="modal-btn-row">
+        <button type="button" class="modal-btn-secondary" onclick="closeCountryConfirmModal()">
+          <span>Neu wählen</span>
+        </button>
+        <button type="button" class="modal-btn-primary" onclick="confirmCountryAndProceedToLayer2()">
+          <span>Weiter</span>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 2 (LAYER 2): BESTÄTIGUNGSKASTEN IN DER MITTE ("ZURÜCK" ODER "WEITER")
+       ========================================================================== -->
+  <div id="modalLayer2Confirm" class="center-modal-backdrop is-hidden" role="dialog" aria-modal="true" aria-labelledby="modalLayer2Title">
+    <div class="center-modal-box">
+      <div style="width:52px;height:52px;margin:0 auto 0.7rem;border-radius:16px;background:linear-gradient(180deg, rgba(0,122,255,0.14) 0%, rgba(0,122,255,0.06) 100%);border:1px solid rgba(0,122,255,0.2);display:flex;align-items:center;justify-content:center;color:var(--ios-blue);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M9 12.5L11.2 14.7L15.5 9.8" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+        </svg>
+      </div>
+      <span style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--ios-blue);background:rgba(0,122,255,0.09);padding:0.24rem 0.72rem;border-radius:999px;">
+        Bereit für Layer 3
+      </span>
+      <h2 id="modalLayer2Title" style="margin:0.6rem 0 0.35rem;font-size:1.25rem;font-weight:750;letter-spacing:-0.015em;">
+        Weiter zur interaktiven Animation?
+      </h2>
+      <p style="margin:0;font-size:0.88rem;color:var(--ios-text-secondary);line-height:1.55;">
+        Möchtest du noch einmal <strong>zurück</strong> zu den Erklärungen auf Layer 2 oder direkt <strong>weiter</strong> zum 3. Layer mit den Szenarien und der Wasserfluss-Animation?
+      </p>
+      <div class="modal-btn-row">
+        <button type="button" class="modal-btn-secondary" onclick="closeLayer2ConfirmModal()">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M10 3.5L5.5 8L10 12.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Zurück</span>
+        </button>
+        <button type="button" class="modal-btn-primary" onclick="proceedFromLayer2ToLayer3()">
+          <span>Weiter</span>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 3: DIDAKTISCH REDUZIERTES ERKLÄRFENSTER FÜR FACHBEGRIFFE
+       ========================================================================== -->
+  <div id="modalTermExplain" class="center-modal-backdrop is-hidden" role="dialog" aria-modal="true" aria-labelledby="modalTermTitle" onclick="handleTermBackdropClick(event)">
+    <div class="center-modal-box" style="text-align:left;max-width:520px;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:0.65rem;margin-bottom:0.6rem;">
+        <div>
+          <span style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--ios-blue);background:var(--ios-blue-tint);padding:0.2rem 0.6rem;border-radius:999px;" id="modalTermCategory">
+            📖 Fachbegriff einfach erklärt
+          </span>
+          <h3 id="modalTermTitle" style="margin:0.45rem 0 0;font-size:1.2rem;font-weight:840;color:var(--ios-text-primary);">
+            Fachbegriff
+          </h3>
+        </div>
+        <button type="button" onclick="closeTermModal()" style="appearance:none;border:none;width:32px;height:32px;border-radius:50%;background:var(--ios-fill-tertiary);font-weight:800;cursor:pointer;font-size:0.95rem;" aria-label="Erklärfenster schließen">
+          ✕
+        </button>
+      </div>
+
+      <div style="background:#F8FAFC;border:1px solid var(--ios-separator);border-radius:12px;padding:0.75rem 0.9rem;font-size:0.86rem;line-height:1.52;color:var(--ios-text-primary);margin-bottom:0.65rem;" id="modalTermSimpleText"></div>
+
+      <div style="background:var(--ios-yellow-bg);border:1px solid rgba(255,204,0,0.55);border-radius:12px;padding:0.7rem 0.9rem;font-size:0.83rem;line-height:1.48;color:#713F12;" id="modalTermAnalogyText"></div>
+
+      <div style="text-align:right;margin-top:0.9rem;">
+        <button type="button" class="modal-btn-primary" onclick="closeTermModal()" style="min-width:120px;padding:0.5rem 1.15rem;font-size:0.84rem;">
+          Verstanden ✓
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- ==========================================================================
+       JAVASCRIPT: DATENBASIS, FACHBEGRIFF-LEXIKON, 3-LAYER-STEUERUNG & 60-FPS-ANIMATION
+       ========================================================================== -->
+  <script>
+    "use strict";
+
+    /* --------------------------------------------------------------------------
+       1. FORMATIERUNGS-HELFER (DEUTSCHES KOMMA, ECHTES MINUSZEICHEN)
+       -------------------------------------------------------------------------- */
+    function fmtNum(val, decimals = 0) {
+      const n = Number(val);
+      if (!Number.isFinite(n)) return "0";
+      const absStr = Math.abs(n).toFixed(decimals).replace(".", ",");
+      if (n < 0) return "\u2212" + absStr;
+      return absStr;
+    }
+
+    function fmtSigned(val, decimals = 0) {
+      const n = Number(val);
+      if (!Number.isFinite(n) || Math.abs(n) < 0.05) return "0";
+      const absStr = Math.abs(n).toFixed(decimals).replace(".", ",");
+      return (n > 0 ? "+" : "\u2212") + absStr;
+    }
+
+    function renderTermChip(termKey, customLabel) {
+      const entry = FACHBEGRIFFE[termKey];
+      const label = customLabel || (entry ? entry.shortLabel : termKey);
+      return `<button type="button" class="term-chip-btn" onclick="openTermModal('${termKey}')">📖 ${label}</button>`;
+    }
+
+    function tLink(termKey, customHtml) {
+      const entry = FACHBEGRIFFE[termKey];
+      const label = customHtml || (entry ? entry.shortLabel : termKey);
+      return `<button type="button" class="inline-term-link" onclick="openTermModal('${termKey}')" title="Fachbegriff antippen für einfache Erklärung">${label}</button>`;
+    }
+
+    function autoLinkTerms(html) {
+      if (!html) return "";
+      const replacements = [
+        { pattern: /<strong>(Gebietsniederschlag\s*\(<span class="math-var">N<\/span>\))<\/strong>/g, key: "niederschlag" },
+        { pattern: /<strong>(Zufluss\s*\(<span class="math-var">Z<\/span>\))<\/strong>/g, key: "fremdzufluss" },
+        { pattern: /<strong>(Beregnung)<\/strong>/g, key: "fremdzufluss" },
+        { pattern: /<strong>(reale(?:n)? Evapotranspiration[^<]*?(?:<span[^>]*>.*?<\/span>[^<]*?)*)<\/strong>/g, key: "ret" },
+        { pattern: /<strong>(potenzielle(?:n)? Evapotranspiration[^<]*?(?:<span[^>]*>.*?<\/span>[^<]*?)*)<\/strong>/g, key: "pet" },
+        { pattern: /<strong>((?:positive |negative )?Klimatische(?:n)? Wasserbilanz[^<]*?(?:<span[^>]*>.*?<\/span>[^<]*?)*)<\/strong>/g, key: "kwb" },
+        { pattern: /<strong>(Evaporation[^<]*?(?:<span[^>]*>.*?<\/span>[^<]*?)*)<\/strong>/g, key: "evaporation" },
+        { pattern: /<strong>(Transpiration[^<]*?(?:<span[^>]*>.*?<\/span>[^<]*?)*)<\/strong>/g, key: "transpiration" },
+        { pattern: /<strong>(Interzeptionsverdunstung[^<]*?(?:<span[^>]*>.*?<\/span>[^<]*?)*)<\/strong>/g, key: "interzeption" },
+        { pattern: /<strong>(Feldkapazität[^<]*?(?:<span[^>]*>.*?<\/span>[^<]*?)*)<\/strong>/g, key: "feldkapazitaet" },
+        { pattern: /<strong>(Infiltration)<\/strong>/g, key: "infiltration" },
+        { pattern: /<strong>(Sickerwasser)<\/strong>/g, key: "sickerwasser" },
+        { pattern: /<strong>(kapillaren Aufstieg)<\/strong>/g, key: "kapillaraufstieg" },
+        { pattern: /<strong>(Grundwasserneubildung[^<]*?(?:<span[^>]*>.*?<\/span>[^<]*?)*)<\/strong>/g, key: "gwn" },
+        { pattern: /<strong>(unterirdischer Abfluss[^<]*?(?:<span[^>]*>.*?<\/span>[^<]*?)*)<\/strong>/g, key: "gwn" },
+        { pattern: /<strong>(Grundwasserraum \(Aquifer\))<\/strong>/g, key: "aquifer" },
+        { pattern: /<strong>(schneller und langsamer Grundwasserabfluss[^<]*?(?:<span[^>]*>.*?<\/span>[^<]*?)*)<\/strong>/g, key: "basisabfluss" },
+        { pattern: /<strong>(unterirdischen Basisabfluss[^<]*?(?:<span[^>]*>.*?<\/span>[^<]*?)*)<\/strong>/g, key: "basisabfluss" },
+        { pattern: /<strong>(oberirdischer Abfluss[^<]*?(?:<span[^>]*>.*?<\/span>[^<]*?)*)<\/strong>/g, key: "direktabfluss" },
+        { pattern: /<strong>(oberirdischen Direktabflusses[^<]*?(?:<span[^>]*>.*?<\/span>[^<]*?)*)<\/strong>/g, key: "direktabfluss" },
+        { pattern: /<strong>(Direktabfluss[^<]*?(?:<span[^>]*>.*?<\/span>[^<]*?)*)<\/strong>/g, key: "direktabfluss" },
+        { pattern: /<strong>(Zwischenabfluss \/ Interflow)<\/strong>/g, key: "interflow" },
+        { pattern: /<strong>(Vorfluter \(Fluss\))<\/strong>/g, key: "vorfluter" },
+        { pattern: /<strong>(Bodenspeicheränderung[^<]*?(?:<span[^>]*>.*?<\/span>[^<]*?)*)<\/strong>/g, key: "deltas" },
+        { pattern: /<strong>(Grundwasserspeicheränderung[^<]*?(?:<span[^>]*>.*?<\/span>[^<]*?)*)<\/strong>/g, key: "deltas" }
+      ];
+      let out = html;
+      for (let i = 0; i < replacements.length; i++) {
+        const r = replacements[i];
+        out = out.replace(r.pattern, function(_, inner) {
+          return tLink(r.key, inner);
+        });
+      }
+      return out;
+    }
+
+    /* --------------------------------------------------------------------------
+       2. DIDAKTISCH REDUZIERTES FACHBEGRIFF-LEXIKON (FÜR DAS POPUP-ERKLÄRFENSTER)
+       -------------------------------------------------------------------------- */
+    const FACHBEGRIFFE = {
+      niederschlag: {
+        shortLabel: "Gebietsniederschlag (N)",
+        category: "Zuflüsse (N + Z)",
+        title: "Gebietsniederschlag (N)",
+        simple: "Der <strong>Gebietsniederschlag (<span class='math-var'>N</span>)</strong> ist das gesamte Wasser, das als Regen, Schnee, Hagel oder Tau aus den Wolken auf ein bestimmtes Gebiet fällt. Er wird in <strong>Millimetern pro Jahr (mm/Jahr)</strong> gemessen: <span class='math-inline'>1 mm</span> Niederschlag entspricht genau <span class='math-inline'>1 Liter</span> Wasser auf einem Quadratmeter Boden (<span class='math-inline'>1 L/m<sup>2</sup></span>).",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Stell dir ein quadratisches Aquarium mit 1 Meter Kantenlänge im Garten vor. Wenn in Deutschland im Jahresmittel 789 mm Regen fallen, steht das Wasser darin am Jahresende fast 80 Zentimeter hoch!"
+      },
+      fremdzufluss: {
+        shortLabel: "Zufluss (Z) & Beregnung",
+        category: "Zuflüsse (N + Z)",
+        title: "Fremdzufluss (Z) & künstliche Beregnung",
+        simple: "Der <strong>Zufluss (<span class='math-var'>Z</span>)</strong> umfasst alles Wasser, das nicht als eigener Regen auf das Gebiet fällt, sondern oberirdisch über große Flüsse aus Nachbarländern (z.&nbsp;B. Rhein aus der Schweiz nach Deutschland) oder künstlich durch landwirtschaftliche <strong>Beregnung</strong> hinzukommt.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Wenn dein Taschengeld der eigene Regen (<span class='math-var'>N</span>) ist, dann ist das Geburtstagsgeld von den Großeltern aus einer anderen Stadt der Fremdzufluss (<span class='math-var'>Z</span>)."
+      },
+      ret: {
+        shortLabel: "Reale Evapotranspiration (RET)",
+        category: "Verdunstung (RET)",
+        title: "Reale Evapotranspiration (RET)",
+        simple: "Die <strong>reale Evapotranspiration (<span class='math-var'>RET</span>)</strong> ist die Wassermenge, die <em>tatsächlich</em> vom Boden, von Blättern, aus Seen und über Pflanzen in die Luft verdunstet. Sie kann niemals größer sein als das Wasser, das im Boden und auf der Oberfläche überhaupt vorhanden ist.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> <span class='math-var'>RET</span> ist das Geld, das du im Sommerurlaub <em>wirklich</em> ausgibst – wenn dein Geldbeutel (der Boden) leer ist, kannst du trotz großer Hitze nichts mehr ausgeben!"
+      },
+      pet: {
+        shortLabel: "Potenzielle Evapotranspiration (PET)",
+        category: "Klimatische Steuergröße",
+        title: "Potenzielle Evapotranspiration (PET)",
+        simple: "Die <strong>potenzielle Evapotranspiration (<span class='math-var'>PET</span>)</strong> beschreibt den maximalen <strong>Atmosphären-Durst</strong>: Also wie viel Wasser bei der aktuellen Sonneneinstrahlung, Lufttemperatur und Windstärke verdunsten <em>könnte</em>, wenn der Boden immer klatschnass wäre.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> <span class='math-var'>PET</span> ist dein riesiger Durst nach dem Schulsport an einem heißen Tag – unabhängig davon, ob deine Trinkflasche voll oder schon leer ist."
+      },
+      kwb: {
+        shortLabel: "Klimatische Wasserbilanz (KWB)",
+        category: "Schlüsselbegriff der Hydrologie",
+        title: "Klimatische Wasserbilanz (KWB = N − PET)",
+        simple: "Die <strong>Klimatische Wasserbilanz (KWB)</strong> zieht den maximalen Atmosphären-Durst (<strong>potenzielle Evapotranspiration <span class='math-var'>PET</span></strong>) vom gefallenen <strong>Niederschlag (<span class='math-var'>N</span>)</strong> ab. Ist sie <strong>positiv (<span class='math-inline'>KWB &gt; 0</span>)</strong>, bleibt Wasser für Sickerwasser und neues Grundwasser übrig. Ist sie <strong>negativ (<span class='math-inline'>KWB &lt; 0</span>)</strong>, will die warme Luft mehr Wasser verdunsten als es regnet – der Boden trocknet aus und es bildet sich kein neues Grundwasser.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Die KWB ist der monatliche Kassensturz zwischen Einnahmen (Regen <span class='math-var'>N</span>) und dem Wunschzettel der Sonne (<span class='math-var'>PET</span>). Im Winter schreibt das Wasserkonto grüne Zahlen (Überschuss), im Hochsommer rote Zahlen (Defizit)."
+      },
+      evaporation: {
+        shortLabel: "Evaporation (E)",
+        category: "Teil der Verdunstung (RET)",
+        title: "Evaporation (unproduktive Verdunstung)",
+        simple: "<strong>Evaporation (<span class='math-var'>E</span>)</strong> ist die rein physikalische Verdunstung von unbelebten Oberflächen – also direkt vom nackten Ackerboden, von feuchtem Asphalt oder von freien Wasserflächen wie Seen und Flüssen durch Sonnenwärme und Wind.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Wenn nach einem Schauer eine Pfütze auf dem Schulhof in der Sonne von ganz allein verschwindet, ist das reine Evaporation."
+      },
+      transpiration: {
+        shortLabel: "Transpiration (T)",
+        category: "Teil der Verdunstung (RET)",
+        title: "Transpiration (produktive Pflanzenverdunstung)",
+        simple: "<strong>Transpiration (<span class='math-var'>T</span>)</strong> ist das biologische „Schwitzen“ der Pflanzen: Bäume, Gräser und Feldfrüchte saugen mit ihren Wurzeln Wasser aus dem Boden und geben es über winzige Spaltöffnungen (Stomata) an den Blättern als Wasserdampf in die Luft ab.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Eine einzige ausgewachsene Buche wirkt an einem sonnigen Sommertag wie eine biologische Wasserpumpe und verdunstet bis zu 400 Liter Wasser am Tag!"
+      },
+      interzeption: {
+        shortLabel: "Interzeptionsverdunstung (EI)",
+        category: "Teil der Verdunstung (RET)",
+        title: "Interzeptionsverdunstung (Kronenfang)",
+        simple: "<strong>Interzeption (<span class='math-var'>E</span><sub>I</sub>)</strong> bedeutet „Abfangen“: Ein Teil des Regens bleibt direkt auf den Blättern, Nadeln und Ästen der Bäume hängen und verdunstet von dort zurück in die Atmosphäre, ohne jemals den Waldboden zu berühren.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Wenn du dich bei leichtem Regen unter eine dichte Fichte stellst, bleibst du fast trocken – das Blätterdach fängt die Tropfen wie ein riesiger Regenschirm ab."
+      },
+      feldkapazitaet: {
+        shortLabel: "Feldkapazität (FK)",
+        category: "Bodenspeicher (ΔSBoden)",
+        title: "Feldkapazität (FK) & nutzbare Feldkapazität (nFK)",
+        simple: "Die <strong>Feldkapazität (<span class='math-var'>FK</span>)</strong> gibt an, wie viel Wasser die Poren des Bodens maximal gegen die Schwerkraft festhalten können. Erst wenn dieser Bodenspeicher zu <strong>100&nbsp;% gefüllt</strong> ist, tropft überschüssiges Wasser nach unten als Sickerwasser Richtung Grundwasser durch.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Halte einen trockenen Küchenschwamm unter den Wasserhahn: Zuerst saugt er jeden Tropfen selbst auf. Erst wenn er komplett vollgesogen ist (Feldkapazität erreicht!), tropft unten genau so viel Wasser heraus, wie du oben nachgießt."
+      },
+      welkepunkt: {
+        shortLabel: "Permanenter Welkepunkt (PWP)",
+        category: "Bodenspeicher (ΔSBoden)",
+        title: "Permanenter Welkepunkt (PWP)",
+        simple: "Sinkt die Bodenfeuchte in einer langen Dürreperiode bis zum <strong>permanenten Welkepunkt (<span class='math-var'>PWP</span>)</strong>, haftet das letzte Restwasser so fest an den feinsten Ton- und Bodenkörnchen, dass selbst kräftige Pflanzenwurzeln es nicht mehr heraussaugen können – die Pflanzen welken.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Selbst wenn du ein Handtuch mit aller Kraft auswringst, fühlt es sich noch leicht klamm an – dieses letzte Restwasser bekommst du durch Drücken nicht mehr heraus."
+      },
+      infiltration: {
+        shortLabel: "Infiltration",
+        category: "Sickerraum",
+        title: "Infiltration (Eindringen in den Boden)",
+        simple: "<strong>Infiltration</strong> ist der Eintritt von Regenwasser durch die Erdoberfläche in die oberen Bodenporen. Ist der Boden jedoch steinhart ausgetrocknet, verschlämmt oder zubetoniert, kann Starkregen nicht schnell genug infiltrieren und schießt oberirdisch weg.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Gießt du langsam Wasser auf lockere Blumenerde, zieht es sofort ein (hohe Infiltration). Gießt du einen ganzen Eimer auf trockene, harte Erde, läuft das Wasser über den Topfrand."
+      },
+      sickerwasser: {
+        shortLabel: "Sickerwasser",
+        category: "Sickerraum",
+        title: "Sickerwasser (Perkolation)",
+        simple: "<strong>Sickerwasser</strong> ist das Wasser, das der Schwerkraft folgend durch die ungesättigte Bodenzone (den Sickerraum) nach unten Richtung Grundwasser wandert. Es entsteht nur dann, wenn die Bodenschicht darüber bereits vollgesättigt ist.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Sickerwasser ist der Fahrstuhl, der Regenwasser von der Erdoberfläche tief hinab in den Grundwasserspeicher transportiert."
+      },
+      kapillaraufstieg: {
+        shortLabel: "Kapillarer Aufstieg",
+        category: "Sickerraum (Trockenheit)",
+        title: "Kapillarer Aufstieg",
+        simple: "Beim <strong>kapillaren Aufstieg</strong> wandert Wasser <em>entgegen der Schwerkraft</em> aus dem Grundwasser nach oben in die trockene Bodenzone. Das passiert bei stark negativer Klimatischer Wasserbilanz im Sommer durch die Oberflächenspannung in haarfeinen Bodenporen (Kapillaren).",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Wenn du die Ecke eines Würfelzuckers oder eines Papiertaschentuchs nur ganz unten in Kaffee hältst, saugt sich die Flüssigkeit von selbst nach oben!"
+      },
+      gwn: {
+        shortLabel: "Grundwasserneubildung (Au / GWN)",
+        category: "Abfluss (Au)",
+        title: "Grundwasserneubildung (GWN) bzw. unterirdischer Abfluss (Au)",
+        simple: "Die <strong>Grundwasserneubildung (<span class='math-var'>GWN</span>)</strong> – in der Wasserbilanz als <strong>unterirdischer Abfluss (<span class='math-var'>A</span><sub>u</sub>)</strong> bezeichnet – ist das Sickerwasser, das tatsächlich die Grundwasseroberfläche erreicht. In Deutschland findet sie fast ausschließlich im <strong>Winterhalbjahr (November bis März)</strong> statt!",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Die Grundwasserneubildung ist die jährliche Einzahlung auf unser wichtigstes Sparkonto für sauberes Trinkwasser."
+      },
+      aquifer: {
+        shortLabel: "Grundwasserleiter (Aquifer)",
+        category: "Grundwasserraum (ΔSGW)",
+        title: "Grundwasserleiter (Aquifer)",
+        simple: "Ein <strong>Grundwasserleiter (Aquifer)</strong> ist eine unterirdische Gesteins-, Kies- oder Sandschicht, deren Hohlräume (Poren oder Klüfte) vollständig mit Grundwasser gefüllt sind. Darin fließt das Grundwasser sehr langsam (oft nur wenige Zentimeter bis Meter pro Tag) zum nächsten Fluss.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Grundwasser ist kein unterirdischer Höhlensee, sondern gleicht einem riesigen Eimer voller Kies und Sand, in dessen Zwischenräumen das Wasser steht und sickert."
+      },
+      basisabfluss: {
+        shortLabel: "Basisabfluss (RB / Au)",
+        category: "Unterirdischer Abfluss (Au)",
+        title: "Basisabfluss (RB) / Grundwasserbürtiger Abfluss (Au)",
+        simple: "Der <strong>Basisabfluss (<span class='math-var'>R</span><sub>B</sub>)</strong> ist das Grundwasser, das aus dem Grundwasserleiter seitlich von unten in Bäche und Flüsse (Vorfluter) austritt. Er sorgt dafür, dass unsere Flüsse auch nach wochenlanger Trockenheit im Sommer nicht austrocknen.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Der Basisabfluss ist das verlässliche Grundgehalt eines Flusses, während Sturzregen nur kurzzeitige Bonus-Spitzen liefert."
+      },
+      direktabfluss: {
+        shortLabel: "Oberirdischer Direktabfluss (Ao / RD)",
+        category: "Oberirdischer Abfluss (Ao)",
+        title: "Oberirdischer Abfluss (Ao) bzw. Direktabfluss (RD)",
+        simple: "Der <strong>oberirdische Abfluss (<span class='math-var'>A</span><sub>o</sub>)</strong> – im Diagramm auch <strong>Direktabfluss (<span class='math-var'>R</span><sub>D</sub>)</strong> genannt – setzt sich aus dem schnellen <strong>Oberflächenabfluss</strong> auf Hängen und dem raschen <strong>Zwischenabfluss (Interflow)</strong> knapp unter der Grasnarbe zusammen. Er erreicht binnen Stunden den Fluss.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Direktabfluss ist die Express-Autobahn des Regenwassers direkt in den Fluss – bei Gewittern lässt er Bäche blitzartig anschwellen."
+      },
+      interflow: {
+        shortLabel: "Zwischenabfluss (Interflow)",
+        category: "Teil von Ao (Direktabfluss)",
+        title: "Zwischenabfluss (Interflow)",
+        simple: "Der <strong>Zwischenabfluss (Interflow)</strong> ist Wasser, das zwar in den lockeren Oberboden einsickert, dann aber auf einer schwer durchlässigen Lehm- oder Gesteinsschicht hangabwärts direkt zum Fluss strömt, ohne bis ins tiefe Grundwasser zu gelangen.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Wie Wasser auf einem schrägen Ziegeldach, das unter einer dünnen Moosschicht direkt in die Regenrinne rutscht."
+      },
+      vorfluter: {
+        shortLabel: "Vorfluter (Fluss / Bach)",
+        category: "Abflusskonzentration",
+        title: "Vorfluter (Sammelgewässer)",
+        simple: "Als <strong>Vorfluter</strong> bezeichnet man in der Hydrologie jeden Bach, Fluss oder Kanal, der am tiefsten Punkt des Tals das gesamte oberirdische (<span class='math-var'>A</span><sub>o</sub>) und unterirdische Wasser (<span class='math-var'>A</span><sub>u</sub>) eines Einzugsgebietes sammelt und Richtung Meer ableitet.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Der Vorfluter ist die Haupt-Sammelstraße am Talboden, in die alle kleinen Seitenwege aus Boden und Grundwasser einmünden."
+      },
+      deltas: {
+        shortLabel: "Speicheränderung (ΔS)",
+        category: "Bilanzgröße (ΔS)",
+        title: "Speicheränderung (ΔS = ΔSBoden + ΔSGW)",
+        simple: "Die <strong>Speicheränderung (&Delta;<span class='math-var'>S</span>)</strong> zeigt, ob sich die Wasservorräte in Bodenfeuchte, Grundwasser, Seen und Gletschern in einem Zeitraum vergrößern (<strong><span class='math-inline'>&Delta;<span class='math-var'>S</span> &gt; 0</span></strong>), verkleinern (<strong><span class='math-inline'>&Delta;<span class='math-var'>S</span> &lt; 0</span></strong>) oder im langjährigen 30-Jahres-Mittel genau ausgleichen (<strong><span class='math-inline'>&Delta;<span class='math-var'>S</span> = 0</span></strong>).",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> &Delta;<span class='math-var'>S</span> ist die Veränderung deines Kontostands am Monatsende: Hast du mehr eingenommen als ausgegeben (+), Erspartes angezapft (\u2212) oder ging alles null auf null auf (0)?"
+      }
+    };
+
+    /* --------------------------------------------------------------------------
+       3. LÄNDER-DATENBANK (DEUTSCHLAND, FRANKREICH, SCHWEIZ, USA, CHINA)
+       -------------------------------------------------------------------------- */
+    const COUNTRIES = {
+      de: {
+        id: "de",
+        name: "Deutschland",
+        flag: "🇩🇪",
+        climateTag: "Gemäßigtes Übergangsklima",
+        peculiarity: "Starkes Wechselspiel der Jahreszeiten: Während das kühle, regenreiche Winterhalbjahr die Grundwasserspeicher zuverlässig auffüllt, zehrt die hohe Verdunstung im Sommer an den Böden. Zudem erhält Deutschland über große Ströme wie Rhein, Elbe und Donau hohe Wasserzuflüsse aus seinen Nachbarländern.",
+        N: 789,
+        Z: 158,
+        RET: 493,
+        PET: 620,
+        KWB: 169,
+        Ao: 294,
+        Au: 160,
+        A: 454,
+        FK: 185,
+        specialNote: "In Deutschland verdunsten rund 62 % des eigenen Niederschlags (RET = 493 mm/Jahr). Etwa 20 % des Regens (Au = 160 mm/Jahr) sickern im Winterhalbjahr als neues Grundwasser in die Tiefe und sichern über 70 % unseres Trinkwassers."
+      },
+      fr: {
+        id: "fr",
+        name: "Frankreich",
+        flag: "🇫🇷",
+        climateTag: "Atlantisch bis Mediterran",
+        peculiarity: "Zweigeteilte Wasserbilanz zwischen feuchtem Atlantikwesten und heißem Mittelmeersüden: Obwohl es im Landesmittel viel regnet, schluckt die intensive Sonneneinstrahlung im Süden große Wassermengen durch Verdunstung, sodass dort im Sommer regelmäßig Trockenheit herrscht.",
+        N: 867,
+        Z: 24,
+        RET: 536,
+        PET: 740,
+        KWB: 127,
+        Ao: 210,
+        Au: 145,
+        A: 355,
+        FK: 175,
+        specialNote: "Obwohl es in Frankreich im Mittel mehr regnet als in Deutschland (867 statt 789 mm/Jahr), schluckt die warme Mittelmeerluft im Süden enorm viel Wasser durch Verdunstung (RET = 536 mm/Jahr). Deshalb fällt die Grundwasserneubildung (Au = 145 mm/Jahr) etwas geringer aus als in Deutschland."
+      },
+      ch: {
+        id: "ch",
+        name: "Schweiz",
+        flag: "🇨🇭",
+        climateTag: "Alpines Wasserschloss Europas",
+        peculiarity: "Extremer Wasserüberschuss im Hochgebirge: An den Alpen stauen sich Regen- und Schneewolken, während in der kühlen Höhenluft nur wenig Wasser verdunstet. Als hochgelegenes Quellgebiet besitzt die Schweiz fast keinen Zufluss von außen, speist aber über Rhein und Rhône halb Westeuropa.",
+        N: 1456,
+        Z: 0,
+        RET: 484,
+        PET: 530,
+        KWB: 926,
+        Ao: 712,
+        Au: 260,
+        A: 972,
+        FK: 140,
+        specialNote: "Die Schweiz besitzt eine extrem hohe positive Klimatische Wasserbilanz (+926 mm/Jahr, fast 5,5-mal so hoch wie Deutschland!). Als hochgelegenes Quellgebiet hat sie fast keinen Fremdzufluss (Z = 0 mm/Jahr), speist aber über Rhein und Rhône ganz Westeuropa."
+      },
+      us: {
+        id: "us",
+        name: "USA",
+        flag: "🇺🇸",
+        climateTag: "Kontinentale Extreme (Ost vs. West)",
+        peculiarity: "Drastischer Ost-West-Gegensatz: Während der Osten wasserreich ist, übersteigt in den riesigen Trocken- und Wüstenregionen des Südwestens und der Great Plains der Verdunstungshunger der heißen Luft den geringen Regen dauerhaft – dort werden Grundwasserspeicher durch Bewässerung stark übernutzt.",
+        N: 715,
+        Z: 18,
+        RET: 492,
+        PET: 890,
+        KWB: -175,
+        Ao: 146,
+        Au: 95,
+        A: 241,
+        FK: 165,
+        specialNote: "Über die gesamten USA gemittelt ist die Klimatische Wasserbilanz negativ (KWB = −175 mm/Jahr, in Deutschland +169 mm/Jahr), weil im Südwesten (Arizona, Kalifornien, High Plains) der Atmosphären-Durst (PET = 890 mm/Jahr) den Regen weit übersteigt. Dort werden Grundwasserspeicher durch Bewässerung stark übernutzt."
+      },
+      cn: {
+        id: "cn",
+        name: "China",
+        flag: "🇨🇳",
+        climateTag: "Monsun-Süden vs. Trocken-Norden",
+        peculiarity: "Ausgeprägte Nord-Süd-Spaltung der Wasserbilanz: Der Süden erlebt im Sommer heftige Monsunregen mit großem Oberflächenabfluss, während die dicht besiedelte Nordchinesische Tiefebene unter chronischer Trockenheit, hoher Verdunstung und stark sinkenden Grundwasserspiegeln leidet.",
+        N: 645,
+        Z: 12,
+        RET: 425,
+        PET: 820,
+        KWB: -175,
+        Ao: 152,
+        Au: 80,
+        A: 232,
+        FK: 160,
+        specialNote: "China erhält im Mittel rund 144 mm/Jahr weniger Niederschlag als Deutschland. Während der Süden unter Monsunregen leidet, herrscht in der Nordchinesischen Tiefebene chronisch negative KWB, sodass die Grundwasserneubildung (Au = 80 mm/Jahr) nur halb so hoch ist wie in Deutschland (160 mm/Jahr)."
+      }
+    };
+
+    /* --------------------------------------------------------------------------
+       4. DIE 5 JAHRES- UND JAHRESZEITEN-SZENARIEN (DELTA S ERST NACH KLICK ENTHÜLLT!)
+       -------------------------------------------------------------------------- */
+    const SCENARIOS = {
+      year: {
+        id: "year",
+        name: "📅 Ein Jahr (Ausgeglichene Jahresbilanz)",
+        isDeltaSZero: true,
+        calcValues: function(c) {
+          return {
+            N: c.N,
+            Z: c.Z,
+            RET: c.RET,
+            PET: c.PET,
+            KWB: c.KWB,
+            Ao: c.Ao,
+            Au: c.Au,
+            A: c.A,
+            dSBoden: 0,
+            dSGW: 0,
+            dS: 0,
+            soilFillPct: 78,
+            capillary: c.KWB < 0 ? 18 : 6,
+            percolation: c.Au
+          };
+        },
+        explainDeltaS: function(c, sim) {
+          return `<strong>Warum ist die Speicheränderung über „Ein Jahr“ im Durchschnitt exakt <span class="math-inline">&Delta;<span class="math-var">S</span> = 0 mm/Jahr</span>?</strong><br>
+          Betrachtet man ein ganzes durchschnittliches Jahr in <strong>${c.name} (${c.flag})</strong>, gleichen sich die Speicher-Aufladung in <strong>Herbst und Winter</strong> und die Speicher-Entleerung in <strong>Frühling und Sommer</strong> gegenseitig aus. Alles Wasser, das über die <strong>Zuflüsse (<span class="math-inline"><span class="math-var">N</span> + <span class="math-var">Z</span> = ${fmtNum(sim.N + sim.Z)} mm/Jahr</span>)</strong> ankommt, verlässt das Gebiet wieder über die <strong>reale Evapotranspiration (<span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(sim.RET)} mm/Jahr</span>)</strong> und den <strong>Gesamtabfluss (<span class="math-inline"><span class="math-var">A</span> = ${fmtNum(sim.A)} mm/Jahr</span>)</strong>.`;
+        }
+      },
+      spring: {
+        id: "spring",
+        name: "🌱 Frühling (Austrieb der Pflanzen & Beginn der Zehrung)",
+        isDeltaSZero: false,
+        calcValues: function(c) {
+          const N = Math.round(c.N * 0.92);
+          const Z = c.Z;
+          const PET = Math.round(c.PET * 1.05);
+          const RET = Math.round(c.RET * 1.08);
+          const KWB = N - PET;
+          const dSBoden = -Math.round(c.FK * 0.14);
+          const dSGW = -Math.round(c.Au * 0.08);
+          const dS = dSBoden + dSGW;
+          const totalOut = Math.max(60, (N + Z) - RET - dS);
+          const Au = Math.max(25, Math.round(c.Au * 0.85));
+          const Ao = Math.max(35, totalOut - Au);
+          return {
+            N, Z, RET, PET, KWB, Ao, Au, A: Ao + Au,
+            dSBoden, dSGW, dS,
+            soilFillPct: 68,
+            capillary: 12,
+            percolation: Math.round(Au * 0.75)
+          };
+        },
+        explainDeltaS: function(c, sim) {
+          return `<strong>Warum wird die Speicheränderung im Frühling leicht negativ (<span class="math-inline">&Delta;<span class="math-var">S</span> = ${fmtSigned(sim.dS)} mm/Jahr &lt; 0</span>)?</strong><br>
+          Im Frühling steigen Sonnenstand und Temperaturen spürbar an, und Bäume sowie Feldfrüchte schlagen aus. Durch die stark wachsende <strong>Transpiration (<span class="math-var">T</span>)</strong> der Pflanzen zieht die <strong>reale Evapotranspiration (<span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(sim.RET)} mm/Jahr</span>)</strong> kräftig an. Die Pflanzenwurzeln zehren nun vom vollen Winter-Bodenspeicher (<span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = ${fmtSigned(sim.dSBoden)} mm/Jahr</span>), sodass weniger <strong>Sickerwasser</strong> im Grundwasser ankommt.`;
+        }
+      },
+      summer: {
+        id: "summer",
+        name: "☀️ Sommer (Starker Atmosphären-Durst & negative KWB)",
+        isDeltaSZero: false,
+        calcValues: function(c) {
+          const N = Math.round(c.N * 0.84);
+          const Z = Math.round(c.Z * 0.90);
+          const PET = Math.round(c.PET * 1.42);
+          const RET = Math.round(c.RET * 1.16);
+          const KWB = N - PET;
+          const dSBoden = -Math.round(c.FK * 0.38);
+          const dSGW = -Math.round(c.Au * 0.45);
+          const dS = dSBoden + dSGW;
+          const rem = Math.max(55, (N + Z) - RET - dS);
+          const Au = Math.max(15, Math.round(c.Au * 0.28));
+          const Ao = Math.max(35, rem - Au);
+          return {
+            N, Z, RET, PET, KWB, Ao, Au, A: Ao + Au,
+            dSBoden, dSGW, dS,
+            soilFillPct: 30,
+            capillary: 38,
+            percolation: 0
+          };
+        },
+        explainDeltaS: function(c, sim) {
+          return `<strong>Warum ist die Speicheränderung im Sommer deutlich negativ (<span class="math-inline">&Delta;<span class="math-var">S</span> = ${fmtSigned(sim.dS)} mm/Jahr &lt; 0</span>)?</strong><br>
+          Im warmen Sommer ist der Atmosphären-Durst (<strong>potenzielle Evapotranspiration <span class="math-inline"><span class="math-var">PET</span> = ${fmtNum(sim.PET)} mm/Jahr</span></strong>) viel höher als der Regen (<span class="math-inline"><span class="math-var">N</span> = ${fmtNum(sim.N)} mm/Jahr</span>): Die <strong>Klimatische Wasserbilanz ist negativ (<span class="math-inline">KWB = ${fmtSigned(sim.KWB)} mm/Jahr</span>)</strong>. Selbst Sommergewitter verdunsten rasch wieder oder fließen oberirdisch ab (<span class="math-var">A</span><sub>o</sub>). Die <strong>Grundwasserneubildung (<span class="math-var">A</span><sub>u</sub>)</strong> pausiert, während trockener Boden über den <strong>kapillaren Aufstieg</strong> und Flüsse über den Basisabfluss am Vorrat zehren.`;
+        }
+      },
+      autumn: {
+        id: "autumn",
+        name: "🍂 Herbst (Abkühlung, Laubfall & Auffüllen des Bodenspeichers)",
+        isDeltaSZero: false,
+        calcValues: function(c) {
+          const N = Math.round(c.N * 1.06);
+          const Z = c.Z;
+          const PET = Math.round(c.PET * 0.62);
+          const RET = Math.round(c.RET * 0.68);
+          const KWB = N - PET;
+          const dSBoden = Math.round(c.FK * 0.28);
+          const dSGW = Math.round(c.Au * 0.14);
+          const dS = dSBoden + dSGW;
+          const totalAvailable = Math.max(60, (N + Z) - RET - dS);
+          const Au = Math.max(30, Math.round(totalAvailable * 0.36));
+          const Ao = Math.max(30, totalAvailable - Au);
+          return {
+            N, Z, RET, PET, KWB, Ao, Au, A: Ao + Au,
+            dSBoden, dSGW, dS,
+            soilFillPct: 84,
+            capillary: 4,
+            percolation: Au + dSGW
+          };
+        },
+        explainDeltaS: function(c, sim) {
+          return `<strong>Warum wird die Speicheränderung im Herbst positiv (<span class="math-inline">&Delta;<span class="math-var">S</span> = ${fmtSigned(sim.dS)} mm/Jahr &gt; 0</span>)?</strong><br>
+          Im Herbst kühlt die Luft ab und die Laubbäume werfen ihre Blätter ab: Der Atmosphären-Durst (<strong>potenzielle Evapotranspiration <span class="math-inline"><span class="math-var">PET</span> = ${fmtNum(sim.PET)} mm/Jahr</span></strong>) sinkt stark, sodass die <strong>Klimatische Wasserbilanz positiv (<span class="math-inline">KWB = ${fmtSigned(sim.KWB)} mm/Jahr</span>)</strong> wird. Die Herbstregen füllen nun zuerst den ausgetrockneten Bodenschwamm wieder Richtung <strong>Feldkapazität (<span class="math-var">FK</span>)</strong> auf (<span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = ${fmtSigned(sim.dSBoden)} mm/Jahr</span>), bevor das erste <strong>Sickerwasser</strong> wieder das Grundwasser erreicht.`;
+        }
+      },
+      winter: {
+        id: "winter",
+        name: "❄️ Winter (Vegetationsruhe & Haupt-Grundwasserneubildung)",
+        isDeltaSZero: false,
+        calcValues: function(c) {
+          const N = Math.round(c.N * 1.14);
+          const Z = c.Z;
+          const PET = Math.round(c.PET * 0.32);
+          const RET = Math.round(c.RET * 0.38);
+          const KWB = N - PET;
+          const dSBoden = Math.round(c.FK * 0.24);
+          const dSGW = Math.round(c.Au * 0.52);
+          const dS = dSBoden + dSGW;
+          const totalAvailable = Math.max(70, (N + Z) - RET - dS);
+          const Au = Math.max(45, Math.round(totalAvailable * 0.48));
+          const Ao = Math.max(40, totalAvailable - Au);
+          return {
+            N, Z, RET, PET, KWB, Ao, Au, A: Ao + Au,
+            dSBoden, dSGW, dS,
+            soilFillPct: 98,
+            capillary: 0,
+            percolation: Au + dSGW
+          };
+        },
+        explainDeltaS: function(c, sim) {
+          return `<strong>Warum erreicht der Speicherzuwachs im Winter sein Maximum (<span class="math-inline">&Delta;<span class="math-var">S</span> = ${fmtSigned(sim.dS)} mm/Jahr &gt; 0</span>)?</strong><br>
+          Im kalten Winterhalbjahr herrscht Vegetationsruhe und die Sonne steht tief: Die <strong>reale Evapotranspiration (<span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(sim.RET)} mm/Jahr</span>)</strong> ist minimal und die <strong>Klimatische Wasserbilanz (<span class="math-inline">KWB = ${fmtSigned(sim.KWB)} mm/Jahr</span>)</strong> stark positiv. Da der Bodenspeicher bereits bis zur <strong>Feldkapazität (<span class="math-var">FK</span>)</strong> gefüllt ist, sickert fast jeder Regentropfen als <strong>Sickerwasser</strong> durch und sorgt für kräftige <strong>Grundwasserneubildung (<span class="math-var">A</span><sub>u</sub>)</strong> (<span class="math-inline">&Delta;<span class="math-var">S</span><sub>GW</sub> = ${fmtSigned(sim.dSGW)} mm/Jahr</span>).`;
+        }
+      }
+    };
+
+    /* --------------------------------------------------------------------------
+       5. DIE 12 ANKLICKBAREN STATIONEN (ZAHLENWERTE NUR FÜR DIE ZUTREFFENDE STATION!)
+       -------------------------------------------------------------------------- */
+    const STATIONS = [
+      {
+        id: "niederschlag",
+        num: 1,
+        shortLabel: "1 · Niederschlag (N)",
+        title: "1. Gebietsniederschlag (N)",
+        badge: "Zuflüsse (N + Z)",
+        subCategory: "Atmosphärischer Hauptzufluss",
+        terms: ["niederschlag", "kwb"],
+        getProcessHtml: function() {
+          return `Der <strong>Gebietsniederschlag (<span class="math-var">N</span>)</strong> ist der wichtigste Motor des Wasserkreislaufs: Wasserdampf kondensiert in kühlen Luftschichten zu Wolken und fällt als Regen oder Schnee auf die Landschaft. Jeder Millimeter Niederschlag (<span class="math-inline">1 mm</span>) bringt exakt <span class="math-inline">1 Liter Wasser pro Quadratmeter</span> Fläche.`;
+        },
+        getCountryHtml: function(c, de) {
+          return `In <strong>Deutschland (🇩🇪)</strong> fallen im 30-jährigen Durchschnitt <strong><span class="math-inline"><span class="math-var">N</span> = ${fmtNum(de.N)} mm/Jahr</span></strong>. Vom feuchten Nordsee-Küstenstreifen und den Alpen (über <span class="math-inline">1500 mm/Jahr</span>) bis zum trockenen Regenschatten des Harzes in Sachsen-Anhalt (unter <span class="math-inline">500 mm/Jahr</span>) ist der Regen stark vom Relief abhängig.`;
+        },
+        getCompareHtml: function(c, de) {
+          if (c.id === "de") {
+            return `Du hast <strong>Deutschland (🇩🇪)</strong> ausgewählt. Beobachte unten den exakten Messwert für den <strong>Gebietsniederschlag (<span class="math-var">N</span>)</strong> an dieser Station!`;
+          }
+          const diff = c.N - de.N;
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} beträgt der durchschnittliche Gebietsniederschlag <strong><span class="math-inline"><span class="math-var">N</span> = ${fmtNum(c.N)} mm/Jahr</span></strong> (das sind <strong><span class="math-inline">${fmtSigned(diff)} mm/Jahr</span></strong> im Vergleich zu Deutschland).`;
+        },
+        getSpecificStatsHtml: function(c, de, sim) {
+          return `<strong>📊 Konkrete Zahlenwerte an Station 1 &ndash; Gebietsniederschlag (<span class="math-var">N</span>):</strong><br>
+          &bull; Durchschnittswert Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">N</span> = ${fmtNum(de.N)} mm/Jahr</span></strong><br>
+          &bull; Durchschnittswert ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">N</span> = ${fmtNum(c.N)} mm/Jahr</span></strong><br>
+          &bull; Aktueller Wert im gewählten Szenario: <strong style="color:var(--ios-blue);"><span class="math-inline"><span class="math-var">N</span> = ${fmtNum(sim.N)} mm/Jahr</span></strong>`;
+        },
+        getScenarioHtml: function(c, sim) {
+          return `Im aktuell gewählten Szenario fallen in ${c.name} <strong><span class="math-inline"><span class="math-var">N</span> = ${fmtNum(sim.N)} mm/Jahr</span></strong> Niederschlag (gegenüber dem 30-Jahres-Durchschnitt von <span class="math-inline">${fmtNum(c.N)} mm/Jahr</span>). Die blauen Regentropfen in der Grafik zeigen dir live die aktuelle Niederschlagsstärke.`;
+        }
+      },
+      {
+        id: "zufluss",
+        num: 2,
+        shortLabel: "2 · Beregnung / Zufluss (Z)",
+        title: "2. Fremdzufluss (Z) & künstliche Beregnung",
+        badge: "Zuflüsse (N + Z)",
+        subCategory: "Ober-/unterirdischer Zufluss & Bewässerung",
+        terms: ["fremdzufluss", "niederschlag"],
+        getProcessHtml: function() {
+          return `Neben dem eigenen Regen erhält ein Land zusätzliches Wasser durch den <strong>Zufluss (<span class="math-var">Z</span>)</strong> aus Nachbarländern (über grenzüberschreitende Flüsse und Grundwasserströme) sowie lokal auf Feldern durch künstliche <strong>Beregnung</strong>. Zusammen mit dem Niederschlag (<span class="math-var">N</span>) bildet <span class="math-var">Z</span> die gesamten <strong>Zuflüsse (<span class="math-inline"><span class="math-var">N</span> + <span class="math-var">Z</span></span>)</strong>.`;
+        },
+        getCountryHtml: function(c, de) {
+          return `Für <strong>Deutschland (🇩🇪)</strong> ist der Fremdzufluss enorm wichtig: Im Jahresmittel strömen umgerechnet <strong><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(de.Z)} mm/Jahr</span></strong> über den Rhein (aus der Schweiz), die Elbe (aus Tschechien), die Oder und die Donau nach Deutschland hinein.`;
+        },
+        getCompareHtml: function(c, de) {
+          if (c.id === "de") {
+            return `Zusammen mit dem Regen (<span class="math-inline">${fmtNum(de.N)} mm/Jahr</span>) stehen Deutschland insgesamt <strong><span class="math-inline"><span class="math-var">N</span> + <span class="math-var">Z</span> = ${fmtNum(de.N + de.Z)} mm/Jahr</span></strong> Gesamtzuflüsse zur Verfügung.`;
+          }
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> Während Deutschland als Transitland <strong><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(de.Z)} mm/Jahr</span></strong> aus Nachbarstaaten empfängt, liegt der Fremdzufluss in ${c.name} bei <strong><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(c.Z)} mm/Jahr</span></strong>.`;
+        },
+        getSpecificStatsHtml: function(c, de, sim) {
+          return `<strong>📊 Konkrete Zahlenwerte an Station 2 &ndash; Zufluss (<span class="math-var">Z</span>) &amp; Gesamtzufluss (<span class="math-var">N</span> + <span class="math-var">Z</span>):</strong><br>
+          &bull; Durchschnittswert Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(de.Z)} mm/Jahr</span></strong> (Gesamtzufluss <span class="math-inline"><span class="math-var">N</span> + <span class="math-var">Z</span> = ${fmtNum(de.N + de.Z)} mm/Jahr</span>)<br>
+          &bull; Durchschnittswert ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(c.Z)} mm/Jahr</span></strong> (Gesamtzufluss <span class="math-inline"><span class="math-var">N</span> + <span class="math-var">Z</span> = ${fmtNum(c.N + c.Z)} mm/Jahr</span>)<br>
+          &bull; Aktueller Szenario-Wert: <strong style="color:var(--ios-blue);"><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(sim.Z)} mm/Jahr</span></strong> (Gesamtzufluss <span class="math-inline"><span class="math-var">N</span> + <span class="math-var">Z</span> = ${fmtNum(sim.N + sim.Z)} mm/Jahr</span>)`;
+        },
+        getScenarioHtml: function(c, sim) {
+          return `Im aktuellen Szenario beträgt der Zufluss <strong><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(sim.Z)} mm/Jahr</span></strong>. In Hitzesommern versuchen Landwirte zwar oft durch künstliche Beregnung nachzuhelfen, doch dieses Wasser wird meist direkt aus dem eigenen Grundwasser gepumpt.`;
+        }
+      },
+      {
+        id: "evaporation",
+        num: 3,
+        shortLabel: "3 · Evaporation (E)",
+        title: "3. Evaporation (Boden- & Wasserflächenverdunstung)",
+        badge: "Verdunstung (RET)",
+        subCategory: "Unproduktive physikalische Verdunstung",
+        terms: ["evaporation", "ret", "pet"],
+        getProcessHtml: function() {
+          return `<strong>Evaporation (<span class="math-var">E</span><sub>Boden</sub> + <span class="math-var">E</span><sub>Wasser</sub>)</strong> ist die direkte physikalische Verdunstung von unbewachsenem Boden, nassem Gestein und freien Wasserflächen (Seen, Flüsse). Sonnenenergie erwärmt die Wassermoleküle an der Oberfläche, bis sie als unsichtbarer Wasserdampf in die Luft aufsteigen.`;
+        },
+        getCountryHtml: function(c, de) {
+          const deEvap = Math.round(de.RET * 0.28);
+          return `In <strong>Deutschland (🇩🇪)</strong> macht die reine Evaporation etwa 28&nbsp;% der gesamten <strong>realen Evapotranspiration (<span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(de.RET)} mm/Jahr</span>)</strong> aus, also rund <strong><span class="math-inline">${fmtNum(deEvap)} mm/Jahr</span></strong> – besonders hoch auf unbedeckten Ackerflächen im Frühjahr und über großen Seen.`;
+        },
+        getCompareHtml: function(c, de) {
+          const cEvap = Math.round(c.RET * 0.28);
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} beträgt die gesamte reale Evapotranspiration im Mittel <strong><span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(c.RET)} mm/Jahr</span></strong> (davon rund <span class="math-inline">${fmtNum(cEvap)} mm/Jahr</span> direkte Boden- und Wasserflächen-Evaporation).`;
+        },
+        getSpecificStatsHtml: function(c, de, sim) {
+          const deEvap = Math.round(de.RET * 0.28);
+          const cEvap = Math.round(c.RET * 0.28);
+          const simEvap = Math.round(sim.RET * 0.28);
+          return `<strong>📊 Konkrete Zahlenwerte an Station 3 &ndash; Evaporation (<span class="math-var">E</span>) als Teil von <span class="math-var">RET</span>:</strong><br>
+          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">E</span> &approx; ${fmtNum(deEvap)} mm/Jahr</span></strong> (Gesamt-Verdunstung <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(de.RET)} mm/Jahr</span>)<br>
+          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">E</span> &approx; ${fmtNum(cEvap)} mm/Jahr</span></strong> (Gesamt-Verdunstung <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(c.RET)} mm/Jahr</span>)<br>
+          &bull; Aktueller Szenario-Wert: <strong style="color:var(--ios-green-dark);"><span class="math-inline"><span class="math-var">E</span> &approx; ${fmtNum(simEvap)} mm/Jahr</span></strong> (Gesamt-<span class="math-var">RET</span> = <span class="math-inline">${fmtNum(sim.RET)} mm/Jahr</span>)`;
+        },
+        getScenarioHtml: function(c, sim) {
+          return `Im gewählten Szenario fordert die Atmosphäre potenziell <strong><span class="math-inline"><span class="math-var">PET</span> = ${fmtNum(sim.PET)} mm/Jahr</span></strong>, tatsächlich verdunsten insgesamt <strong><span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(sim.RET)} mm/Jahr</span></strong>. Die aufsteigenden grünen Dampfpartikel über dem Boden zeigen dir die Intensität der Evaporation.`;
+        }
+      },
+      {
+        id: "transpiration",
+        num: 4,
+        shortLabel: "4 · Transpiration (T)",
+        title: "4. Transpiration der Vegetation (Pflanzenverdunstung)",
+        badge: "Verdunstung (RET)",
+        subCategory: "Biologische Wasserpumpe der Pflanzen",
+        terms: ["transpiration", "ret", "welkepunkt"],
+        getProcessHtml: function() {
+          return `Bei der <strong>Transpiration (<span class="math-var">T</span><sub>Vegetation</sub>)</strong> ziehen Bäume, Sträucher und Gräser mit ihren Wurzeln Wasser aus der Bodenzone und geben es über die Spaltöffnungen der Blätter an die Atmosphäre ab. Sie ist der größte Einzelposten innerhalb der <strong>realen Evapotranspiration (<span class="math-var">RET</span>)</strong>.`;
+        },
+        getCountryHtml: function(c, de) {
+          const deTransp = Math.round(de.RET * 0.54);
+          return `In <strong>Deutschland (🇩🇪)</strong> entfällt mehr als die Hälfte der gesamten realen Evapotranspiration (<span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(de.RET)} mm/Jahr</span>) auf den Wasserdurst der Pflanzen: Rund <strong><span class="math-inline"><span class="math-var">T</span> &approx; ${fmtNum(deTransp)} mm/Jahr</span></strong> werden zwischen April und September durch Wälder und Felder in die Luft gepumpt.`;
+        },
+        getCompareHtml: function(c, de) {
+          const cTransp = Math.round(c.RET * 0.54);
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} liegt der Transpirationsanteil im Jahresmittel bei rund <strong><span class="math-inline"><span class="math-var">T</span> &approx; ${fmtNum(cTransp)} mm/Jahr</span></strong> (von insgesamt <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(c.RET)} mm/Jahr</span>).`;
+        },
+        getSpecificStatsHtml: function(c, de, sim) {
+          const deT = Math.round(de.RET * 0.54);
+          const cT = Math.round(c.RET * 0.54);
+          const simT = Math.round(sim.RET * 0.54);
+          return `<strong>📊 Konkrete Zahlenwerte an Station 4 &ndash; Pflanzentranspiration (<span class="math-var">T</span>) als Teil von <span class="math-var">RET</span>:</strong><br>
+          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">T</span> &approx; ${fmtNum(deT)} mm/Jahr</span></strong> (Gesamt-<span class="math-var">RET</span> = <span class="math-inline">${fmtNum(de.RET)} mm/Jahr</span>)<br>
+          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">T</span> &approx; ${fmtNum(cT)} mm/Jahr</span></strong> (Gesamt-<span class="math-var">RET</span> = <span class="math-inline">${fmtNum(c.RET)} mm/Jahr</span>)<br>
+          &bull; Aktueller Szenario-Wert: <strong style="color:var(--ios-green-dark);"><span class="math-inline"><span class="math-var">T</span> &approx; ${fmtNum(simT)} mm/Jahr</span></strong> (Gesamt-<span class="math-var">RET</span> = <span class="math-inline">${fmtNum(sim.RET)} mm/Jahr</span>)`;
+        },
+        getScenarioHtml: function(c, sim) {
+          return `Im aktuellen Szenario entziehen die Wurzeln dem Boden kräftig Feuchtigkeit, sodass über die gesamte Verdunstung <strong><span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(sim.RET)} mm/Jahr</span></strong> in die Atmosphäre entweichen. Im Winterhalbjahr sinkt die Transpiration der Laubbäume dagegen fast auf null!`;
+        }
+      },
+      {
+        id: "interzeption",
+        num: 5,
+        shortLabel: "5 · Interzeptionsverdunstung",
+        title: "5. Interzeptionsverdunstung (Kronenfang)",
+        badge: "Verdunstung (RET)",
+        subCategory: "Verdunstung direkt von Blättern & Nadeln",
+        terms: ["interzeption", "ret"],
+        getProcessHtml: function() {
+          return `<strong>Interzeptionsverdunstung (<span class="math-var">E</span><sub>I</sub>)</strong> ist der Teil des Niederschlags, der auf Blättern, Nadeln und Zweigen hängen bleibt und direkt von dort wieder in die Luft verdunstet. Dieses Wasser erreicht niemals den Erdboden und steht daher weder den Wurzeln noch dem Grundwasser zur Verfügung!`;
+        },
+        getCountryHtml: function(c, de) {
+          const deInt = Math.round(de.RET * 0.18);
+          return `Da rund ein Drittel der Fläche von <strong>Deutschland (🇩🇪)</strong> bewaldet ist, gehen im Mittel etwa <strong><span class="math-inline"><span class="math-var">E</span><sub>I</sub> &approx; ${fmtNum(deInt)} mm/Jahr</span></strong> (rund 18&nbsp;% von <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(de.RET)} mm/Jahr</span>) direkt in den Baumkronen durch Interzeption verloren – bei ganzjährig benadelten Fichten und Kiefern sogar bis zu 35&nbsp;% des Jahresregens!`;
+        },
+        getCompareHtml: function(c, de) {
+          const cInt = Math.round(c.RET * 0.18);
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} verdunsten im Mittel rund <strong><span class="math-inline"><span class="math-var">E</span><sub>I</sub> &approx; ${fmtNum(cInt)} mm/Jahr</span></strong> direkt von den Oberflächen der Vegetation (Gesamt-<span class="math-var">RET</span>: <span class="math-inline">${fmtNum(c.RET)} mm/Jahr</span>).`;
+        },
+        getSpecificStatsHtml: function(c, de, sim) {
+          const deInt = Math.round(de.RET * 0.18);
+          const cInt = Math.round(c.RET * 0.18);
+          const simInt = Math.round(sim.RET * 0.18);
+          return `<strong>📊 Konkrete Zahlenwerte an Station 5 &ndash; Interzeptionsverdunstung (<span class="math-var">E</span><sub>I</sub>) &amp; Gesamt-<span class="math-var">RET</span>:</strong><br>
+          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">E</span><sub>I</sub> &approx; ${fmtNum(deInt)} mm/Jahr</span></strong> (Gesamte <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(de.RET)} mm/Jahr</span>)<br>
+          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">E</span><sub>I</sub> &approx; ${fmtNum(cInt)} mm/Jahr</span></strong> (Gesamte <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(c.RET)} mm/Jahr</span>)<br>
+          &bull; Aktueller Szenario-Wert: <strong style="color:var(--ios-green-dark);"><span class="math-inline"><span class="math-var">E</span><sub>I</sub> &approx; ${fmtNum(simInt)} mm/Jahr</span></strong> (Gesamte <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(sim.RET)} mm/Jahr</span>)`;
+        },
+        getScenarioHtml: function(c, sim) {
+          return `Gerade bei kurzen Sommerschauern bleibt ein großer Teil des Regens komplett im Blätterdach hängen und verdunstet sofort wieder, ohne dass der trockene Waldboden darunter nass wird.`;
+        }
+      },
+      {
+        id: "bodenzone",
+        num: 6,
+        shortLabel: "6 · Bodenzone (ΔSBoden)",
+        title: "6. Verdunstungsbeeinflusste Bodenzone & Feldkapazität (FK)",
+        badge: "Speicheränderung (ΔSBoden)",
+        subCategory: "Oberer Bodenwasser-Puffer & Wurzelraum",
+        terms: ["feldkapazitaet", "welkepunkt", "deltas"],
+        getProcessHtml: function() {
+          return `Die <strong>verdunstungsbeeinflusste Bodenzone</strong> (Durchwurzelungsraum, ca. 0,5 bis 2 Meter tief) wirkt wie ein Schwamm-Zwischenspeicher. Sie hält Wasser in feinen Poren bis zur <strong>Feldkapazität (<span class="math-var">FK</span>)</strong> gegen die Schwerkraft fest. Erst wenn dieser Schwamm komplett gesättigt ist, lässt er überschüssiges Wasser als Sickerwasser in die Tiefe durch!`;
+        },
+        getCountryHtml: function(c, de) {
+          return `Die Böden in <strong>Deutschland (🇩🇪)</strong> (besonders fruchtbare Löss- und Lehmböden) besitzen eine durchschnittliche nutzbare <strong>Feldkapazität von <span class="math-inline"><span class="math-var">FK</span> = ${fmtNum(de.FK)} mm</span></strong>. Im 30-Jahres-Mittel gleicht sich die <strong>Bodenspeicheränderung (<span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = 0 mm/Jahr</span>)</strong> exakt aus.`;
+        },
+        getCompareHtml: function(c, de) {
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} liegt das mittlere Speichervermögen des Wurzelraums bei <strong><span class="math-inline"><span class="math-var">FK</span> = ${fmtNum(c.FK)} mm</span></strong> (Deutschland: <span class="math-inline">${fmtNum(de.FK)} mm</span>). Gebirgsböden wie in der Schweiz sind dünner und haben daher eine kleinere Feldkapazität (<span class="math-inline">140 mm</span>).`;
+        },
+        getSpecificStatsHtml: function(c, de, sim) {
+          return `<strong>📊 Konkrete Zahlenwerte an Station 6 &ndash; Feldkapazität (<span class="math-var">FK</span>) &amp; Bodenspeicheränderung (&Delta;<span class="math-var">S</span><sub>Boden</sub>):</strong><br>
+          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">FK</span> = ${fmtNum(de.FK)} mm</span></strong> &middot; Langjähriges Mittel: <strong><span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = 0 mm/Jahr</span></strong><br>
+          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">FK</span> = ${fmtNum(c.FK)} mm</span></strong> &middot; Langjähriges Mittel: <strong><span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = 0 mm/Jahr</span></strong><br>
+          &bull; Aktuelles Szenario: <strong style="color:var(--ios-blue);"><span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = ${fmtSigned(sim.dSBoden)} mm/Jahr</span></strong> (Bodenfüllung: <strong>${sim.soilFillPct}&nbsp;%</strong> der <span class="math-var">FK</span>)`;
+        },
+        getScenarioHtml: function(c, sim) {
+          return `Im gewählten Szenario beträgt die Speicheränderung im Boden <strong><span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = ${fmtSigned(sim.dSBoden)} mm/Jahr</span></strong> (aktuelle Bodenfeuchte: <strong>${sim.soilFillPct}&nbsp;%</strong> der Feldkapazität). Beobachte in der Grafik, wie sich die Farbe der Bodenschicht verändert und bei Dürre Trockenrisse entstehen!`;
+        }
+      },
+      {
+        id: "sickerwasser",
+        num: 7,
+        shortLabel: "7 · Infiltration & Sickerwasser",
+        title: "7. Infiltration & Sickerwasser im Sickerraum",
+        badge: "Übergang zum Grundwasser",
+        subCategory: "Ungesättigte Zone (Sickerraum)",
+        terms: ["infiltration", "sickerwasser", "kwb"],
+        getProcessHtml: function() {
+          return `Dringt Regenwasser in den Boden ein (<strong>Infiltration</strong>) und ist die obere Bodenzone bereits bis zur Feldkapazität gefüllt, zieht die Schwerkraft das überschüssige Wasser als <strong>Sickerwasser</strong> senkrecht durch den Sickerraum nach unten Richtung Grundwasserspiegel. Ob Sickerwasser entsteht, entscheidet die <strong>Klimatische Wasserbilanz (<span class="math-inline">KWB = <span class="math-var">N</span> &minus; <span class="math-var">PET</span></span>)</strong>!`;
+        },
+        getCountryHtml: function(c, de) {
+          return `Da <strong>Deutschland (🇩🇪)</strong> im Jahresmittel eine <strong>positive Klimatische Wasserbilanz (<span class="math-inline">KWB = +${fmtNum(de.KWB)} mm/Jahr</span>)</strong> besitzt, entsteht vor allem von November bis März reichlich Sickerwasser (im Mittel rund <strong><span class="math-inline">${fmtNum(de.Au)} mm/Jahr</span></strong>), das bis zum Grundwasser durchsickert.`;
+        },
+        getCompareHtml: function(c, de) {
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} beträgt die durchschnittliche Klimatische Wasserbilanz <strong><span class="math-inline">KWB = ${fmtSigned(c.KWB)} mm/Jahr</span></strong>, woraus im Jahresmittel rund <strong><span class="math-inline">${fmtNum(c.Au)} mm/Jahr</span></strong> Sickerwasser für die Grundwasserneubildung entstehen.`;
+        },
+        getSpecificStatsHtml: function(c, de, sim) {
+          return `<strong>📊 Konkrete Zahlenwerte an Station 7 &ndash; Klimatische Wasserbilanz (KWB) &amp; Sickerwasser:</strong><br>
+          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline">KWB = +${fmtNum(de.KWB)} mm/Jahr</span></strong> &middot; Sickerwasser: <strong><span class="math-inline">${fmtNum(de.Au)} mm/Jahr</span></strong><br>
+          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline">KWB = ${fmtSigned(c.KWB)} mm/Jahr</span></strong> &middot; Sickerwasser: <strong><span class="math-inline">${fmtNum(c.Au)} mm/Jahr</span></strong><br>
+          &bull; Aktuelles Szenario: <strong style="color:var(--ios-blue);"><span class="math-inline">KWB = ${fmtSigned(sim.KWB)} mm/Jahr</span></strong> &middot; Sickerwasserrate: <strong><span class="math-inline">${fmtNum(sim.percolation)} mm/Jahr</span></strong>`;
+        },
+        getScenarioHtml: function(c, sim) {
+          return `Im aktuellen Szenario liegt die Sickerwasserrate bei <strong><span class="math-inline">${fmtNum(sim.percolation)} mm/Jahr</span></strong>. Ist die KWB negativ und der Boden unterhalb der Feldkapazität, siehst du in der Animation, wie die Sickerwassertropfen nach unten versiegen!`;
+        }
+      },
+      {
+        id: "kapillar",
+        num: 8,
+        shortLabel: "8 · Kapillarer Aufstieg",
+        title: "8. Kapillarer Aufstieg (Sog bei Trockenheit)",
+        badge: "Steuerung durch negative KWB",
+        subCategory: "Aufwärtsgerichteter Wasserstrom im Sickerraum",
+        terms: ["kapillaraufstieg", "kwb", "pet"],
+        getProcessHtml: function() {
+          return `Herrscht an der Oberfläche Hitze und Trockenheit (<strong>negative Klimatische Wasserbilanz <span class="math-inline">KWB &lt; 0</span></strong>), kehrt sich die Fließrichtung im Boden um: Durch die Kapillarkraft in haarfeinen Bodenporen wird Wasser aus dem Grundwasserraum <em>entgegen der Schwerkraft nach oben</em> in die trockene Wurzelzone gesaugt!`;
+        },
+        getCountryHtml: function(c, de) {
+          return `In <strong>Deutschland (🇩🇪)</strong> tritt starker kapillarer Aufstieg vor allem in den Sommermonaten Juni bis August in Flussauen, Niederungen und feinkörnigen Lehmböden auf, wenn der Grundwasserspiegel weniger als 2 bis 3 Meter unter der Geländeoberfläche liegt.`;
+        },
+        getCompareHtml: function(c, de) {
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> Je stärker der Atmosphären-Durst (<strong><span class="math-inline"><span class="math-var">PET</span> = ${fmtNum(c.PET)} mm/Jahr</span></strong> in ${c.name} gegenüber <span class="math-inline">${fmtNum(de.PET)} mm/Jahr</span> in Deutschland), desto kräftiger saugt die trockene Deckschicht im Sommer am Grundwasser.`;
+        },
+        getSpecificStatsHtml: function(c, de, sim) {
+          return `<strong>📊 Konkrete Zahlenwerte an Station 8 &ndash; Atmosphären-Durst (<span class="math-var">PET</span>), KWB &amp; Kapillarer Aufstieg:</strong><br>
+          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">PET</span> = ${fmtNum(de.PET)} mm/Jahr</span></strong> &middot; <strong><span class="math-inline">KWB = +${fmtNum(de.KWB)} mm/Jahr</span></strong><br>
+          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">PET</span> = ${fmtNum(c.PET)} mm/Jahr</span></strong> &middot; <strong><span class="math-inline">KWB = ${fmtSigned(c.KWB)} mm/Jahr</span></strong><br>
+          &bull; Aktuelles Szenario: Kapillarer Aufstieg <strong style="color:var(--ios-orange-dark);"><span class="math-inline">${fmtNum(sim.capillary)} mm/Jahr</span></strong> bei <span class="math-inline">KWB = ${fmtSigned(sim.KWB)} mm/Jahr</span>`;
+        },
+        getScenarioHtml: function(c, sim) {
+          return `Im gewählten Szenario beträgt der kapillare Aufstieg <strong><span class="math-inline">${fmtNum(sim.capillary)} mm/Jahr</span></strong>. In der Animation erkennst du ihn an den türkisblauen Bläschen, die beim Szenario „Hitzesommer &amp; Dürre“ entlang des hellblauen Pfeils von unten nach oben steigen!`;
+        }
+      },
+      {
+        id: "gwn",
+        num: 9,
+        shortLabel: "9 · Grundwasserneubildung (Au)",
+        title: "9. Grundwasserneubildung (GWN) bzw. unterirdischer Abfluss (Au)",
+        badge: "Abfluss (Au)",
+        subCategory: "Eintritt in den Grundwasserraum",
+        terms: ["gwn", "kwb", "sickerwasser"],
+        getProcessHtml: function() {
+          return `Erreicht das Sickerwasser die Grundwasseroberfläche, spricht man von <strong>Grundwasserneubildung (<span class="math-var">GWN</span>)</strong>. In der Wasserbilanzgleichung wird dieser langfristige Zustrom, der später unterirdisch den Flüssen zufließt, als <strong>unterirdischer Abfluss (<span class="math-var">A</span><sub>u</sub>)</strong> erfasst.`;
+        },
+        getCountryHtml: function(c, de) {
+          return `In <strong>Deutschland (🇩🇪)</strong> beträgt die mittlere Grundwasserneubildung <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(de.Au)} mm/Jahr</span></strong> (rund 20&nbsp;% des Jahresniederschlags). Sie ist der wichtigste Schatz unserer Wasserwirtschaft, denn über 70&nbsp;% unseres Trinkwassers stammen aus dem Grundwasser!`;
+        },
+        getCompareHtml: function(c, de) {
+          if (c.id === "de") {
+            return `Vergleiche unten, wie stark die Grundwasserneubildung (<span class="math-var">A</span><sub>u</sub>) in Deutschland zwischen feuchtem Winter und trockenem Hitzesommer schwankt!`;
+          }
+          const diff = c.Au - de.Au;
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} liegt die durchschnittliche Grundwasserneubildung bei <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(c.Au)} mm/Jahr</span></strong> (${fmtSigned(diff)} mm/Jahr im Vergleich zu Deutschland mit <span class="math-inline">${fmtNum(de.Au)} mm/Jahr</span>).`;
+        },
+        getSpecificStatsHtml: function(c, de, sim) {
+          return `<strong>📊 Konkrete Zahlenwerte an Station 9 &ndash; Unterirdischer Abfluss / Grundwasserneubildung (<span class="math-var">A</span><sub>u</sub>):</strong><br>
+          &bull; Durchschnittswert Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(de.Au)} mm/Jahr</span></strong><br>
+          &bull; Durchschnittswert ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(c.Au)} mm/Jahr</span></strong><br>
+          &bull; Aktueller Szenario-Wert: <strong style="color:var(--ios-green-dark);"><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(sim.Au)} mm/Jahr</span></strong>`;
+        },
+        getScenarioHtml: function(c, sim) {
+          return `Im aktuell gewählten Szenario liegt die Grundwasserneubildung bei <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(sim.Au)} mm/Jahr</span></strong> (gegenüber <span class="math-inline">${fmtNum(c.Au)} mm/Jahr</span> im 30-Jahres-Mittel).`;
+        }
+      },
+      {
+        id: "grundwasser",
+        num: 10,
+        shortLabel: "10 · Grundwasserabfluss (ΔSGW)",
+        title: "10. Grundwasserraum (Aquifer), Grundwasserabfluss & Speicher (ΔSGW)",
+        badge: "Speicher & Basisabfluss (ΔSGW / RB)",
+        subCategory: "Gesättigte Zone (Aquifer)",
+        terms: ["aquifer", "basisabfluss", "deltas"],
+        getProcessHtml: function() {
+          return `Im <strong>Grundwasserraum (Aquifer)</strong> sind alle Poren zwischen Sand, Kies und Gestein komplett mit Wasser gefüllt. Das Grundwasser strömt als <strong>schneller und langsamer Grundwasserabfluss (Basisabfluss <span class="math-var">R</span><sub>B</sub> bzw. <span class="math-var">A</span><sub>u</sub>)</strong> dem nächsten Fluss zu. Die Bilanz aus Neubildung und Abfluss bestimmt die <strong>Grundwasserspeicheränderung (&Delta;<span class="math-var">S</span><sub>GW</sub>)</strong>.`;
+        },
+        getCountryHtml: function(c, de) {
+          return `In <strong>Deutschland (🇩🇪)</strong> sorgt der konstante Grundwasserabfluss (<strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(de.Au)} mm/Jahr</span></strong>) dafür, dass Flüsse wie Rhein, Main und Elbe auch in regenfreien Sommerwochen weiterfließen. Im 30-Jahres-Mittel ist <strong><span class="math-inline">&Delta;<span class="math-var">S</span><sub>GW</sub> = 0 mm/Jahr</span></strong>.`;
+        },
+        getCompareHtml: function(c, de) {
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} beträgt der langfristige Basisabfluss aus dem Grundwasser im Durchschnitt <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(c.Au)} mm/Jahr</span></strong> (Deutschland: <span class="math-inline">${fmtNum(de.Au)} mm/Jahr</span>).`;
+        },
+        getSpecificStatsHtml: function(c, de, sim) {
+          return `<strong>📊 Konkrete Zahlenwerte an Station 10 &ndash; Grundwasserspeicher (&Delta;<span class="math-var">S</span><sub>GW</sub>) &amp; Basisabfluss (<span class="math-var">A</span><sub>u</sub> / <span class="math-var">R</span><sub>B</sub>):</strong><br>
+          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline">&Delta;<span class="math-var">S</span><sub>GW</sub> = 0 mm/Jahr</span></strong> &middot; Basisabfluss <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(de.Au)} mm/Jahr</span></strong><br>
+          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline">&Delta;<span class="math-var">S</span><sub>GW</sub> = 0 mm/Jahr</span></strong> &middot; Basisabfluss <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(c.Au)} mm/Jahr</span></strong><br>
+          &bull; Aktuelles Szenario: <strong style="color:var(--ios-blue);"><span class="math-inline">&Delta;<span class="math-var">S</span><sub>GW</sub> = ${fmtSigned(sim.dSGW)} mm/Jahr</span></strong> &middot; Basisabfluss: <strong><span class="math-inline">${fmtNum(sim.Au)} mm/Jahr</span></strong>`;
+        },
+        getScenarioHtml: function(c, sim) {
+          return `Im gewählten Szenario verändert sich der Grundwasserspeicher um <strong><span class="math-inline">&Delta;<span class="math-var">S</span><sub>GW</sub> = ${fmtSigned(sim.dSGW)} mm/Jahr</span></strong>. Beobachte die blau gestrichelte Grundwasserlinie und das Spiegeldreieck (∇) in der Grafik: Bei positivem &Delta;<span class="math-var">S</span><sub>GW</sub> steigt der Grundwasserspiegel an, bei Dürre sinkt er ab!`;
+        }
+      },
+      {
+        id: "oberflaechenabfluss",
+        num: 11,
+        shortLabel: "11 · Oberflächenabfluss (Ao)",
+        title: "11. Oberflächenabfluss & Zwischenabfluss (Ao)",
+        badge: "Oberirdischer Abfluss (Ao)",
+        subCategory: "Schneller Direktabfluss (RD) über Hänge & Boden",
+        terms: ["direktabfluss", "interflow", "vorfluter"],
+        getProcessHtml: function() {
+          return `Alles Regenwasser, das nicht verdunstet und nicht tief ins Grundwasser absickert, fließt auf dem schnellen Weg als <strong>oberirdischer Abfluss (<span class="math-var">A</span><sub>o</sub>)</strong> – auch <strong>Direktabfluss (<span class="math-var">R</span><sub>D</sub>)</strong> genannt – über geneigte Hänge (Oberflächenabfluss) und flache Bodenschichten (<strong>Zwischenabfluss / Interflow</strong>) hangabwärts Richtung Fluss.`;
+        },
+        getCountryHtml: function(c, de) {
+          return `In <strong>Deutschland (🇩🇪)</strong> macht der oberirdische Abfluss samt raschem Zwischenabfluss im 30-Jahres-Mittel <strong><span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(de.Ao)} mm/Jahr</span></strong> aus. Durch Flächenversiegelung (Straßen, Dächer) und Starkregen nimmt der schnelle Oberflächenabfluss deutlich zu.`;
+        },
+        getCompareHtml: function(c, de) {
+          if (c.id === "de") {
+            return `In Deutschland fließen im Mittel <span class="math-inline">${fmtNum(de.Ao)} mm/Jahr</span> auf dem schnellen oberirdischen Weg (<span class="math-var">A</span><sub>o</sub>) über Hänge und den Zwischenabfluss in die Flüsse.`;
+          }
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} liegt der mittlere oberirdische Abfluss bei <strong><span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(c.Ao)} mm/Jahr</span></strong> (Deutschland: <span class="math-inline">${fmtNum(de.Ao)} mm/Jahr</span>). Besonders in den steilen Schweizer Alpen ist <span class="math-var">A</span><sub>o</sub> mit <span class="math-inline">712 mm/Jahr</span> extrem hoch!`;
+        },
+        getSpecificStatsHtml: function(c, de, sim) {
+          return `<strong>📊 Konkrete Zahlenwerte an Station 11 &ndash; Oberirdischer Abfluss / Direktabfluss (<span class="math-var">A</span><sub>o</sub> bzw. <span class="math-var">R</span><sub>D</sub>):</strong><br>
+          &bull; Durchschnittswert Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(de.Ao)} mm/Jahr</span></strong><br>
+          &bull; Durchschnittswert ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(c.Ao)} mm/Jahr</span></strong><br>
+          &bull; Aktueller Szenario-Wert: <strong style="color:var(--ios-blue);"><span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(sim.Ao)} mm/Jahr</span></strong>`;
+        },
+        getScenarioHtml: function(c, sim) {
+          return `Im gewählten Szenario beträgt der schnelle oberirdische Abfluss am Hang <strong><span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(sim.Ao)} mm/Jahr</span></strong>. Besonders im Sommer bei Gewitterregen und im nassen Winter strömen die blauen Abflusspartikel rasch den Hang hinab in den Vorfluter!`;
+        }
+      },
+      {
+        id: "abflussbilanz",
+        num: 12,
+        shortLabel: "12 · Abflussbilanz im Vorfluter (A)",
+        title: "12. Abflussbilanz im Vorfluter (A = Ao + Au)",
+        badge: "Gesamtabfluss (A)",
+        subCategory: "Vorfluter bündelt Direktabfluss (Ao) & Basisabfluss (Au)",
+        terms: ["vorfluter", "direktabfluss", "basisabfluss"],
+        getProcessHtml: function() {
+          return `Unten rechts im <strong>Vorfluter (Fluss oder Bach)</strong> läuft das gesamte abfließende Wasser des Einzugsgebiets zusammen: Die <strong>Abflussbilanz im Vorfluter</strong> ergibt den <strong>Gesamtabfluss (<span class="math-var">A</span>)</strong> als Summe aus dem schnellen <strong>oberirdischen Direktabfluss (<span class="math-var">A</span><sub>o</sub>)</strong> vom Hang und dem gleichmäßigen <strong>unterirdischen Basisabfluss (<span class="math-var">A</span><sub>u</sub>)</strong> aus dem Grundwasser (<span class="math-inline"><span class="math-var">A</span> = <span class="math-var">A</span><sub>o</sub> + <span class="math-var">A</span><sub>u</sub></span>).`;
+        },
+        getCountryHtml: function(c, de) {
+          return `In <strong>Deutschland (🇩🇪)</strong> sammeln die Vorfluter (wie Rhein, Elbe, Donau und Weser) im langjährigen Mittel <strong><span class="math-inline"><span class="math-var">A</span> = ${fmtNum(de.A)} mm/Jahr</span></strong> Gesamtabfluss – zusammengesetzt aus <span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(de.Ao)} mm/Jahr</span> Direktabfluss und <span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(de.Au)} mm/Jahr</span> Grundwasser-Basisabfluss.`;
+        },
+        getCompareHtml: function(c, de) {
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} beträgt die durchschnittliche Abflussbilanz im Vorfluter <strong><span class="math-inline"><span class="math-var">A</span> = ${fmtNum(c.A)} mm/Jahr</span></strong> (<span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(c.Ao)} mm/Jahr</span> + <span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(c.Au)} mm/Jahr</span>).`;
+        },
+        getSpecificStatsHtml: function(c, de, sim) {
+          return `<strong>📊 Konkrete Zahlenwerte an Station 12 &ndash; Abflussbilanz im Vorfluter (<span class="math-var">A</span> = <span class="math-var">A</span><sub>o</sub> + <span class="math-var">A</span><sub>u</sub>):</strong><br>
+          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">A</span> = ${fmtNum(de.A)} mm/Jahr</span></strong> (<span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(de.Ao)}</span> + <span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(de.Au)} mm/Jahr</span>)<br>
+          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">A</span> = ${fmtNum(c.A)} mm/Jahr</span></strong> (<span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(c.Ao)}</span> + <span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(c.Au)} mm/Jahr</span>)<br>
+          &bull; Aktuelles Szenario: <strong style="color:var(--ios-blue);"><span class="math-inline"><span class="math-var">A</span> = ${fmtNum(sim.A)} mm/Jahr</span></strong> (<span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(sim.Ao)}</span> + <span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(sim.Au)} mm/Jahr</span>)`;
+        },
+        getScenarioHtml: function(c, sim) {
+          return `Im gewählten Szenario liegt die Abflussbilanz im Vorfluter bei <strong><span class="math-inline"><span class="math-var">A</span> = ${fmtNum(sim.A)} mm/Jahr</span></strong>, bestehend aus <span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(sim.Ao)} mm/Jahr</span> Direktabfluss und <span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(sim.Au)} mm/Jahr</span> Basisabfluss.`;
+        }
+      }
+    ];
+
+    /* --------------------------------------------------------------------------
+       6. GLOBALER APP-ZUSTAND & 3-LAYER-CONTROLLER
+       -------------------------------------------------------------------------- */
+    const state = {
+      currentLayer: 1,
+      selectedCountryId: "de",
+      pendingCountryId: "de",
+      activeScenarioId: "year",
+      hasClickedScenario: false,
+      activeStationId: "niederschlag"
+    };
+
+    function switchLayer(layerNum) {
+      state.currentLayer = layerNum;
+      const s1 = document.getElementById("screenLayer1");
+      const s2 = document.getElementById("screenLayer2");
+      const s3 = document.getElementById("screenLayer3");
+
+      const b1 = document.getElementById("navBtnLayer1");
+      const b2 = document.getElementById("navBtnLayer2");
+      const b3 = document.getElementById("navBtnLayer3");
+
+      s1.classList.toggle("is-hidden", layerNum !== 1);
+      s2.classList.toggle("is-hidden", layerNum !== 2);
+      s3.classList.toggle("is-hidden", layerNum !== 3);
+
+      b1.classList.toggle("is-active", layerNum === 1);
+      b2.classList.toggle("is-active", layerNum === 2);
+      b3.classList.toggle("is-active", layerNum === 3);
+
+      const c = COUNTRIES[state.selectedCountryId];
+      document.getElementById("headerCountryFlag").textContent = c.flag;
+      document.getElementById("headerCountryName").textContent = c.name;
+
+      if (layerNum === 1) {
+        renderCountrySelectionGrid();
+      } else if (layerNum === 2) {
+        renderLayer2Content();
+      } else if (layerNum === 3) {
+        updateLayer3All(false);
+        resizeCanvas();
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    /* --------------------------------------------------------------------------
+       7. LAYER 1: LÄNDERWAHL & MITTLERES BESTÄTIGUNGSFENSTER ("NEU WÄHLEN" / "WEITER")
+       -------------------------------------------------------------------------- */
+    function renderCountrySelectionGrid() {
+      const grid = document.getElementById("countrySelectionGrid");
+      const order = ["de", "fr", "ch", "us", "cn"];
+      grid.innerHTML = order.map(function(cid) {
+        const c = COUNTRIES[cid];
+        const isSel = cid === state.selectedCountryId;
+        return `
+          <button type="button" class="country-card ${isSel ? "is-selected" : ""}" onclick="onCountryCardClick('${cid}')">
+            <div>
+              <div class="country-flag-row">
+                <span class="country-flag-badge">${c.flag}</span>
+                <span class="country-climate-tag">${c.climateTag}</span>
+              </div>
+              <h2 class="country-name">${c.name}</h2>
+              <div style="margin-top:0.55rem;padding-top:0.6rem;border-top:1px solid var(--ios-separator);">
+                <span style="display:block;font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;color:var(--ios-text-secondary);margin-bottom:0.3rem;">
+                  Besonderheit der Wasserbilanz
+                </span>
+                <p class="country-desc" style="margin-bottom:0.4rem;line-height:1.54;">${c.peculiarity}</p>
+              </div>
+            </div>
+            <div class="country-cta-bar" style="border-top:1px solid var(--ios-separator);padding-top:0.65rem;width:100%;">
+              <span>${c.name} auswählen &rarr;</span>
+            </div>
+          </button>
+        `;
+      }).join("");
+    }
+
+    function onCountryCardClick(countryId) {
+      state.pendingCountryId = countryId;
+      state.selectedCountryId = countryId;
+      renderCountrySelectionGrid();
+
+      const c = COUNTRIES[countryId];
+      document.getElementById("modalCountryFlag").textContent = c.flag;
+      document.getElementById("modalCountryTitle").textContent = c.name + " ausgewählt";
+      document.getElementById("modalCountrySubtitle").innerHTML =
+        `Du hast <strong>${c.name} (${c.flag})</strong> gewählt. Möchtest du ein anderes Land <strong>neu wählen</strong> oder <strong>weiter</strong> zum 2. Layer (Erklärung der Variablen &amp; der Klimatischen Wasserbilanz)?`;
+      document.getElementById("modalCountryConfirm").classList.remove("is-hidden");
+    }
+
+    function closeCountryConfirmModal() {
+      document.getElementById("modalCountryConfirm").classList.add("is-hidden");
+    }
+
+    function confirmCountryAndProceedToLayer2() {
+      state.selectedCountryId = state.pendingCountryId;
+      state.hasClickedScenario = false;
+      state.activeScenarioId = "year";
+      closeCountryConfirmModal();
+      switchLayer(2);
+    }
+
+    /* --------------------------------------------------------------------------
+       8. LAYER 2: ERKLÄRUNG DER VARIABLEN & KWB (OHNE ZAHLENWERTE!)
+       -------------------------------------------------------------------------- */
+    function renderLayer2Content() {
+      const c = COUNTRIES[state.selectedCountryId];
+
+      document.getElementById("layer2Eyebrow").innerHTML =
+        `📘 2. Layer &middot; Gleichung, Variablen &amp; Klimatische Wasserbilanz (${c.name} ${c.flag})`;
+      document.getElementById("layer2Title").innerHTML =
+        `Wasserhaushaltsgleichung &amp; Bedeutung der Variablen`;
+
+      // 1. Zentrale Wasserhaushaltsgleichung oben auf Layer 2 (ohne Zahlenwerte)
+      document.getElementById("layer2EquationBox").innerHTML = `
+        <span style="display:inline-block;margin-bottom:0.35rem;font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--ios-blue-dark);">
+          ⚖️ Allgemeine Wasserhaushaltsgleichung (Gesetz der Massenerhaltung)
+        </span>
+        <div>
+          <div class="equation-formula-box" aria-label="Wasserhaushaltsgleichung N plus Z gleich RET plus A plus Delta S">
+            <span style="color:var(--ios-blue-dark);">Zuflüsse (<span class="math-var">N</span> + <span class="math-var">Z</span>)</span>
+            <span>=</span>
+            <span style="color:var(--ios-orange-dark);">Verdunstung (<span class="math-var">RET</span>)</span>
+            <span>+</span>
+            <span style="color:var(--ios-green-dark);">Abfluss (<span class="math-var">A</span>)</span>
+            <span>+</span>
+            <span style="color:#6B21A8;">Speicheränderung (&Delta;<span class="math-var">S</span>)</span>
+          </div>
+        </div>
+        <p style="margin:0.55rem auto 0;max-width:780px;font-size:0.9rem;line-height:1.72;color:var(--ios-text-secondary);">
+          <strong>Grundidee der Gleichung:</strong> Wasser geht im Kreislauf niemals verloren – alles Wasser, das über die ${tLink("niederschlag", "Zuflüsse (<span class='math-var'>N</span> + <span class='math-var'>Z</span>)")} in ein Gebiet gelangt, steigt entweder über die ${tLink("ret", "Verdunstung (<span class='math-var'>RET</span>)")} in die Atmosphäre auf, verlässt das Gebiet über den ${tLink("direktabfluss", "Abfluss (<span class='math-var'>A</span>)")} oder verändert über die ${tLink("deltas", "Speicheränderung (&Delta;<span class='math-var'>S</span>)")} die Vorräte im Untergrund.
+        </p>
+      `;
+
+      // 2. Die 4 Variablen-Karten: Name + Gleichung + 1 präziser Stichpunkt (komplett ohne Zahlen!)
+      const varCards = [
+        {
+          symbol: `<span class="math-var">N</span> + <span class="math-var">Z</span>`,
+          equationTag: `Zuflüsse = <span class="math-var">N</span> + <span class="math-var">Z</span>`,
+          fullName: "Zuflüsse: Gebietsniederschlag (N) + Fremdzufluss (Z)",
+          bgBadge: "var(--ios-blue-tint)",
+          colBadge: "var(--ios-blue-dark)",
+          bulletHtml: `
+            <ul class="var-bullet-list" style="margin-bottom:0;">
+              <li><strong>Vorstellung:</strong> Alle Wasser-Einnahmen einer Landschaft aus dem ${tLink("niederschlag", "Gebietsniederschlag (<span class='math-var'>N</span>)")} (Regen, Schnee, Tau) sowie zusätzlichen ${tLink("fremdzufluss", "Fremdzuflüssen (<span class='math-var'>Z</span>)")} über Flüsse aus Nachbargebieten oder künstliche Beregnung.</li>
+            </ul>
+          `
+        },
+        {
+          symbol: `<span class="math-var">RET</span>`,
+          equationTag: `<span class="math-var">RET</span> = <span class="math-var">E</span> + <span class="math-var">T</span> + <span class="math-var">E</span><sub>I</sub>`,
+          fullName: "Verdunstung: Reale Evapotranspiration (RET)",
+          bgBadge: "var(--ios-orange-tint)",
+          colBadge: "var(--ios-orange-dark)",
+          bulletHtml: `
+            <ul class="var-bullet-list" style="margin-bottom:0;">
+              <li><strong>Vorstellung:</strong> Die Wassermenge, die durch ${tLink("evaporation", "Evaporation (<span class='math-var'>E</span>)")} von Böden und Seen, durch ${tLink("transpiration", "Pflanzentranspiration (<span class='math-var'>T</span>)")} sowie durch ${tLink("interzeption", "Interzeptionsverdunstung (<span class='math-var'>E</span><sub>I</sub>)")} auf Blättern tatsächlich als ${tLink("ret", "reale Evapotranspiration (<span class='math-var'>RET</span>)")} in die Luft aufsteigt.</li>
+            </ul>
+          `
+        },
+        {
+          symbol: `<span class="math-var">A</span>`,
+          equationTag: `<span class="math-var">A</span> = <span class="math-var">A</span><sub>o</sub> + <span class="math-var">A</span><sub>u</sub>`,
+          fullName: "Gesamtabfluss (A): Oberirdisch (Ao) + Unterirdisch (Au)",
+          bgBadge: "var(--ios-green-tint)",
+          colBadge: "var(--ios-green-dark)",
+          bulletHtml: `
+            <ul class="var-bullet-list" style="margin-bottom:0;">
+              <li><strong>Vorstellung:</strong> Alles Wasser, das die Landschaft über den schnellen ${tLink("direktabfluss", "oberirdischen Abfluss (<span class='math-var'>A</span><sub>o</sub>)")} (Oberflächen- und ${tLink("interflow", "Zwischenabfluss")}) sowie über die ${tLink("gwn", "Grundwasserneubildung (<span class='math-var'>A</span><sub>u</sub>)")} als ${tLink("basisabfluss", "Basisabfluss")} im ${tLink("vorfluter", "Vorfluter (Fluss)")} verlässt.</li>
+            </ul>
+          `
+        },
+        {
+          symbol: `&Delta;<span class="math-var">S</span>`,
+          equationTag: `&Delta;<span class="math-var">S</span> = &Delta;<span class="math-var">S</span><sub>Boden</sub> + &Delta;<span class="math-var">S</span><sub>GW</sub>`,
+          fullName: "Speicheränderung (ΔS): Bodenspeicher + Grundwasser",
+          bgBadge: "#F3E8FF",
+          colBadge: "#6B21A8",
+          bulletHtml: `
+            <ul class="var-bullet-list" style="margin-bottom:0;">
+              <li><strong>Vorstellung:</strong> Die Zu- oder Abnahme (${tLink("deltas", "Speicheränderung &Delta;<span class='math-var'>S</span>")}) des gespeicherten Wasservorrats im durchwurzelten Bodenschwamm bis zur ${tLink("feldkapazitaet", "Feldkapazität (<span class='math-var'>FK</span>)")} sowie im tieferen ${tLink("aquifer", "Grundwasserleiter (Aquifer)")}.</li>
+            </ul>
+          `
+        }
+      ];
+
+      document.getElementById("layer2VariablesGrid").innerHTML = varCards.map(function(vc) {
+        return `
+          <article class="var-explain-card">
+            <div>
+              <div class="var-card-head">
+                <span class="var-symbol-badge" style="background:${vc.bgBadge};color:${vc.colBadge};">${vc.symbol}</span>
+                <span style="font-size:0.78rem;font-weight:800;color:var(--ios-text-secondary);background:#F2F2F7;padding:0.26rem 0.65rem;border-radius:8px;">Gleichung: ${vc.equationTag}</span>
+              </div>
+              <h3 style="margin:0.75rem 0 0.55rem;font-size:1.04rem;line-height:1.4;font-weight:820;color:var(--ios-text-primary);">${vc.fullName}</h3>
+              ${vc.bulletHtml}
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      // 3. KWB kurz angesprochen + direkte Verbindung zur Wasserhaushaltsgleichung (ohne Zahlen!)
+      document.getElementById("layer2KwbBox").innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.65rem;margin-bottom:0.85rem;">
+          <span style="font-size:0.75rem;font-weight:850;text-transform:uppercase;letter-spacing:0.05em;color:var(--ios-green-dark);background:#DCFCE7;padding:0.28rem 0.78rem;border-radius:999px;">
+            🌡️ Klimatische Steuergröße &amp; Verbindung zur Gleichung
+          </span>
+          <span style="font-size:0.86rem;font-weight:850;background:#FFFFFF;border:1.5px solid rgba(52,199,89,0.45);padding:0.28rem 0.85rem;border-radius:9px;color:var(--ios-text-primary);">
+            Gleichung: KWB = <span class="math-var">N</span> &minus; <span class="math-var">PET</span>
+          </span>
+        </div>
+        <h2 style="margin:0 0 0.65rem;font-size:1.14rem;font-weight:840;color:var(--ios-text-primary);">
+          Klimatische Wasserbilanz (KWB) &ndash; Verbindung zur Wasserhaushaltsgleichung
+        </h2>
+        <p style="margin:0 0 0.95rem;font-size:0.94rem;line-height:1.7;color:var(--ios-text-primary);background:rgba(255,255,255,0.78);padding:0.75rem 1rem;border-radius:12px;border-left:4px solid var(--ios-green);">
+          <strong>Warum ist die Klimatische Wasserbilanz so wichtig?</strong> Sie wirkt wie der zentrale Klimaschalter einer Landschaft und entscheidet darüber, ob gefallener Regen tatsächlich unsere Trinkwasser- und Grundwasserspeicher auffüllt oder ob Böden, Wälder und Flüsse in Hitzephasen austrocknen.
+        </p>
+        <ul class="var-bullet-list" style="margin-bottom:0;">
+          <li><strong>Kurzvorstellung (<span class="math-inline">KWB = <span class="math-var">N</span> &minus; <span class="math-var">PET</span></span>):</strong> Die ${tLink("kwb", "Klimatische Wasserbilanz (KWB)")} zieht den maximal möglichen „Atmosphären-Durst“ der Luft (${tLink("pet", "potenzielle Evapotranspiration <span class='math-var'>PET</span>")}) vom gefallenen ${tLink("niederschlag", "Gebietsniederschlag (<span class='math-var'>N</span>)")} ab.</li>
+          <li><strong>Bei positiver KWB (Überschuss in der Gleichung):</strong> Fällt mehr Regen als die Luft verdunsten kann, füllt das Wasser in der Wasserhaushaltsgleichung zuerst den Speicher (${tLink("deltas", "positives &Delta;<span class='math-var'>S</span>")}) bis zur ${tLink("feldkapazitaet", "Feldkapazität (<span class='math-var'>FK</span>)")} auf und speist über ${tLink("sickerwasser", "Sickerwasser")} die ${tLink("gwn", "Grundwasserneubildung (<span class='math-var'>A</span><sub>u</sub>)")}.</li>
+          <li><strong>Bei negativer KWB (Defizit in der Gleichung):</strong> Ist der Atmosphären-Durst größer als der Regen, zehrt die ${tLink("ret", "reale Evapotranspiration (<span class='math-var'>RET</span>)")} den Bodenspeicher leer (${tLink("deltas", "negatives &Delta;<span class='math-var'>S</span>")}), die ${tLink("gwn", "Grundwasserneubildung (<span class='math-var'>A</span><sub>u</sub>)")} stoppt und ${tLink("kapillaraufstieg", "kapillarer Aufstieg")} saugt Grundwasser nach oben.</li>
+        </ul>
+      `;
+    }
+
+    function openLayer2ConfirmModal() {
+      document.getElementById("modalLayer2Confirm").classList.remove("is-hidden");
+    }
+
+    function closeLayer2ConfirmModal() {
+      document.getElementById("modalLayer2Confirm").classList.add("is-hidden");
+    }
+
+    function proceedFromLayer2ToLayer3() {
+      closeLayer2ConfirmModal();
+      switchLayer(3);
+    }
+
+    /* --------------------------------------------------------------------------
+       9. MODAL 3: DIDAKTISCHES ERKLÄRFENSTER FÜR FACHBEGRIFFE
+       -------------------------------------------------------------------------- */
+    function openTermModal(termKey) {
+      const entry = FACHBEGRIFFE[termKey];
+      if (!entry) return;
+      document.getElementById("modalTermCategory").textContent = "📖 " + entry.category;
+      document.getElementById("modalTermTitle").innerHTML = entry.title;
+      document.getElementById("modalTermSimpleText").innerHTML = entry.simple;
+      document.getElementById("modalTermAnalogyText").innerHTML = entry.analogy;
+      document.getElementById("modalTermExplain").classList.remove("is-hidden");
+    }
+
+    function closeTermModal() {
+      document.getElementById("modalTermExplain").classList.add("is-hidden");
+    }
+
+    function handleTermBackdropClick(e) {
+      if (e.target && e.target.id === "modalTermExplain") {
+        closeTermModal();
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       10. LAYER 3: SZENARIEN, DELTA-S-AUFDECKUNG & STATIONS-INSPEKTOR
+       -------------------------------------------------------------------------- */
+    function getActiveSimValues() {
+      const c = COUNTRIES[state.selectedCountryId];
+      const scen = SCENARIOS[state.activeScenarioId] || SCENARIOS.year;
+      return scen.calcValues(c);
+    }
+
+    function selectScenario(scenId) {
+      state.activeScenarioId = scenId;
+      state.hasClickedScenario = true;
+      updateLayer3All(false);
+    }
+
+    function selectStation(stationId) {
+      state.activeStationId = stationId;
+      updateLayer3All(true);
+    }
+
+    function closeMobileInfoOverlay() {
+      document.getElementById("stationInfoBackdrop").classList.remove("is-mobile-open");
+    }
+
+    function handleBackdropClick(e) {
+      if (e.target && e.target.id === "stationInfoBackdrop") {
+        closeMobileInfoOverlay();
+      }
+    }
+
+    function renderStationChipsBar() {
+      const bar = document.getElementById("stationChipsBar");
+      bar.innerHTML = STATIONS.map(function(st) {
+        const isAct = st.id === state.activeStationId;
+        return `<button type="button" class="station-chip ${isAct ? "is-active" : ""}" onclick="selectStation('${st.id}')">${st.shortLabel}</button>`;
+      }).join("");
+    }
+
+    function updateLayer3All(openMobileModalIfPhone) {
+      const c = COUNTRIES[state.selectedCountryId];
+      const de = COUNTRIES.de;
+      const scen = SCENARIOS[state.activeScenarioId] || SCENARIOS.year;
+      const sim = scen.calcValues(c);
+
+      document.getElementById("layer3SubHeader").innerHTML =
+        `🌊 3. Layer &middot; Interaktive Wasserfluss-Animation &middot; ${c.name} (${c.flag}) im Vergleich mit Deutschland (🇩🇪)`;
+      document.getElementById("layer3MainTitle").innerHTML =
+        `${c.name} (${c.flag}) &ndash; Wasserfluss &amp; Stationen entdecken`;
+
+      // Szenario-Buttons markieren (ohne Delta S im Button!)
+      document.querySelectorAll(".scenario-pill-btn").forEach(function(btn) {
+        const bScen = btn.getAttribute("data-scen");
+        btn.classList.toggle("is-active", state.hasClickedScenario && bScen === state.activeScenarioId);
+      });
+
+      // Delta S erst einblenden, wenn ein Szenario angeklickt wurde
+      const promptBanner = document.getElementById("deltaSPromptBanner");
+      const revealBanner = document.getElementById("deltaSRevealBanner");
+      if (!state.hasClickedScenario) {
+        promptBanner.classList.remove("is-hidden");
+        revealBanner.classList.add("is-hidden");
+      } else {
+        promptBanner.classList.add("is-hidden");
+        revealBanner.classList.remove("is-hidden");
+
+        document.getElementById("deltaSScenarioLabel").textContent = scen.name;
+        const pill = document.getElementById("deltaSValuePill");
+        pill.innerHTML = `Speicheränderung &Delta;<span class="math-var">S</span> = ${fmtSigned(sim.dS)} mm/Jahr`;
+
+        if (sim.dS === 0) {
+          pill.style.background = "var(--ios-blue)";
+          revealBanner.style.background = "#F0F9FF";
+          revealBanner.style.borderColor = "rgba(0, 122, 255, 0.35)";
+        } else if (sim.dS > 0) {
+          pill.style.background = "var(--ios-green)";
+          revealBanner.style.background = "#F0FDF4";
+          revealBanner.style.borderColor = "rgba(52, 199, 89, 0.45)";
+        } else {
+          pill.style.background = "var(--ios-red)";
+          revealBanner.style.background = "#FEF2F2";
+          revealBanner.style.borderColor = "rgba(255, 59, 48, 0.42)";
+        }
+
+        document.getElementById("deltaSSubBreakdown").innerHTML =
+          `Bodenspeicher &Delta;<span class="math-var">S</span><sub>Boden</sub>: <strong>${fmtSigned(sim.dSBoden)} mm/Jahr</strong> &middot; Grundwasserspeicher &Delta;<span class="math-var">S</span><sub>GW</sub>: <strong>${fmtSigned(sim.dSGW)} mm/Jahr</strong>`;
+        document.getElementById("deltaSDidacticExplanation").innerHTML = autoLinkTerms(scen.explainDeltaS(c, sim));
+      }
+
+      // KWB-Pill über der Grafik aktualisieren
+      const kwbPill = document.getElementById("stageKwbPill");
+      kwbPill.classList.remove("is-negative", "is-buffered");
+      if (sim.KWB >= 0) {
+        kwbPill.innerHTML = `<span>Klimatische Wasserbilanz (KWB = <span class="math-var">N</span> &minus; <span class="math-var">PET</span>): <strong>${fmtSigned(sim.KWB)} mm/Jahr (positiv &rarr; Sickerwasser aktiv)</strong></span>`;
+      } else {
+        kwbPill.classList.add("is-negative");
+        kwbPill.innerHTML = `<span>Klimatische Wasserbilanz (KWB = <span class="math-var">N</span> &minus; <span class="math-var">PET</span>): <strong>${fmtSigned(sim.KWB)} mm/Jahr (negativ &rarr; kapillarer Aufstieg)</strong></span>`;
+      }
+
+      // SVG-Elemente passend zum Szenario animieren
+      updateSvgVisuals(sim);
+
+      // Aktive Station im SVG und in der Chip-Leiste hervorheben
+      document.querySelectorAll(".station-node").forEach(function(node) {
+        node.classList.toggle("is-active", node.getAttribute("data-station") === state.activeStationId);
+      });
+      renderStationChipsBar();
+
+      // Stations-Erklärkarte rechts (bzw. Smartphone-Overlay) aktualisieren
+      const stObj = STATIONS.find(function(s) { return s.id === state.activeStationId; }) || STATIONS[0];
+      document.getElementById("stVarBadge").textContent = stObj.badge;
+      document.getElementById("stSubCategory").textContent = `Station ${stObj.num} von 12 · ${stObj.subCategory}`;
+      document.getElementById("stTitle").textContent = stObj.title;
+      document.getElementById("stProcessText").innerHTML = autoLinkTerms(stObj.getProcessHtml());
+      document.getElementById("stCountryHeader").innerHTML =
+        `🇩🇪 Bedeutung für Deutschland &amp; Vergleich mit ${c.name} (${c.flag})`;
+      document.getElementById("stGermanyText").innerHTML = autoLinkTerms(stObj.getCountryHtml(c, de));
+      document.getElementById("stComparisonText").innerHTML = autoLinkTerms(stObj.getCompareHtml(c, de));
+
+      // WICHTIG: Nur die Zahlenwerte der zu dieser Station gehörenden Variable anzeigen!
+      document.getElementById("stStationSpecificNumbers").innerHTML = stObj.getSpecificStatsHtml(c, de, sim);
+
+      document.getElementById("stScenarioEffectText").innerHTML = autoLinkTerms(stObj.getScenarioHtml(c, sim));
+      document.getElementById("stTermsContainer").innerHTML = stObj.terms.map(function(tk) {
+        return renderTermChip(tk);
+      }).join("");
+
+      if (openMobileModalIfPhone && window.innerWidth <= 768) {
+        document.getElementById("stationInfoBackdrop").classList.add("is-mobile-open");
+      }
+    }
+
+    function updateSvgVisuals(sim) {
+      // Bodenfarbe und Trockenrisse je nach Bodenfüllung
+      const soil1 = document.getElementById("soilStop1");
+      const soil2 = document.getElementById("soilStop2");
+      const cracks = document.getElementById("svgDroughtCracks");
+
+      if (sim.soilFillPct < 35) {
+        soil1.setAttribute("stop-color", "#C69F73");
+        soil2.setAttribute("stop-color", "#AD8356");
+        cracks.setAttribute("opacity", "0.85");
+      } else if (sim.soilFillPct > 88) {
+        soil1.setAttribute("stop-color", "#6E4F32");
+        soil2.setAttribute("stop-color", "#583E26");
+        cracks.setAttribute("opacity", "0");
+      } else {
+        soil1.setAttribute("stop-color", "#9B7653");
+        soil2.setAttribute("stop-color", "#846242");
+        cracks.setAttribute("opacity", "0");
+      }
+
+      // Grundwasserspiegel-Höhe je nach dSGW
+      let gwYLeft = 338;
+      let gwYRight = 346;
+      if (sim.dSGW > 15) {
+        gwYLeft = 324;
+        gwYRight = 334;
+      } else if (sim.dSGW < -15) {
+        gwYLeft = 354;
+        gwYRight = 360;
+      }
+
+      const aqRect = document.getElementById("svgAquiferRect");
+      const gwLine = document.getElementById("svgGwTableLine");
+      const gwTri = document.getElementById("svgGwTriangle");
+
+      aqRect.setAttribute("d", `M 138 ${gwYLeft} L 795 ${gwYRight} L 795 426 L 138 426 Z`);
+      gwLine.setAttribute("y1", String(gwYLeft));
+      gwLine.setAttribute("y2", String(gwYRight));
+      gwTri.setAttribute("transform", `translate(744, ${gwYRight - 1})`);
+
+      // Pfeil-Sichtbarkeiten nach Prozessintensität
+      document.getElementById("arrowGroupCapillary").setAttribute("opacity", sim.capillary > 10 ? "1" : "0.28");
+      document.getElementById("arrowGroupPercolation").setAttribute("opacity", sim.percolation > 20 ? "1" : "0.25");
+    }
+
+    /* --------------------------------------------------------------------------
+       11. RUHIGE PARTIKEL-ANIMATION & SCHWEBENDER VERDUNSTUNGS-NEBEL AUF DEM CANVAS
+       -------------------------------------------------------------------------- */
+    const canvas = document.getElementById("hydroParticleCanvas");
+    const ctx = canvas.getContext("2d");
+    const particles = [];
+
+    function resizeCanvas() {
+      const frame = document.getElementById("visualStageFrame");
+      if (!frame) return;
+      const rect = frame.getBoundingClientRect();
+      if (rect.width < 10 || rect.height < 10) return;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+
+    function initParticles() {
+      particles.length = 0;
+      // 1. Regentropfen (N) - deutlich reduzierte Geschwindigkeit
+      for (let i = 0; i < 38; i++) {
+        particles.push({
+          type: "rain",
+          x: 150 + Math.random() * 540,
+          y: 55 + Math.random() * 135,
+          vy: 0.65 + Math.random() * 0.42
+        });
+      }
+      // 2. Verdunstungs-Nebel (RET) - weiche, leicht nach oben schwebende Nebelschwaden
+      for (let i = 0; i < 28; i++) {
+        particles.push({
+          type: "evap_mist",
+          x: 315 + Math.random() * 275,
+          y: 52 + Math.random() * 136,
+          vy: -(0.14 + Math.random() * 0.14),
+          phase: Math.random() * Math.PI * 2,
+          phaseSpeed: 0.008 + Math.random() * 0.008,
+          radiusX: 20 + Math.random() * 18,
+          radiusY: 10 + Math.random() * 8
+        });
+      }
+      // 3. Sickerwassertropfen im Sickerraum - ruhig nach unten ziehend
+      for (let i = 0; i < 22; i++) {
+        particles.push({
+          type: "perc",
+          x: 175 + Math.random() * 340,
+          y: 205 + Math.random() * 135,
+          vy: 0.16 + Math.random() * 0.14
+        });
+      }
+      // 4. Kapillarer Aufstieg - langsam aufsteigend
+      for (let i = 0; i < 15; i++) {
+        particles.push({
+          type: "cap",
+          x: 398 + Math.random() * 38,
+          y: 215 + Math.random() * 120,
+          vy: -(0.14 + Math.random() * 0.12)
+        });
+      }
+      // 5. Oberflächen- & Zwischenabfluss (Ao) - ruhiges Fließen zum Vorfluter
+      for (let i = 0; i < 20; i++) {
+        particles.push({
+          type: "surface",
+          t: Math.random(),
+          speed: 0.0012 + Math.random() * 0.0011,
+          lane: i % 2
+        });
+      }
+      // 6. Grundwasser-Basisabfluss (Au) - sehr ruhige Grundwasserströmung
+      for (let i = 0; i < 24; i++) {
+        particles.push({
+          type: "gw",
+          x: 155 + Math.random() * 610,
+          y: 355 + Math.random() * 60,
+          vx: 0.13 + Math.random() * 0.12
+        });
+      }
+    }
+
+    function animateParticles() {
+      requestAnimationFrame(animateParticles);
+      if (state.currentLayer !== 3) return;
+      if (!canvas.width || !canvas.height) resizeCanvas();
+
+      const scaleX = canvas.width / 940;
+      const scaleY = canvas.height / 480;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const sim = getActiveSimValues();
+      const rainFactor = Math.min(1.6, Math.max(0.25, sim.N / 780));
+      const evapFactor = Math.min(1.6, Math.max(0.25, sim.RET / 480));
+      const percFactor = sim.percolation <= 5 ? 0 : Math.min(1.6, Math.max(0.25, sim.percolation / 150));
+      const capFactor = sim.capillary <= 8 ? 0.15 : Math.min(1.7, sim.capillary / 22);
+      const aoFactor = Math.min(1.7, Math.max(0.3, sim.Ao / 250));
+      const auFactor = Math.min(1.6, Math.max(0.25, sim.Au / 150));
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+
+        if (p.type === "rain") {
+          p.y += p.vy * rainFactor;
+          if (p.y > 192) {
+            p.y = 58 + Math.random() * 18;
+            p.x = 155 + Math.random() * 535;
+          }
+          ctx.strokeStyle = "rgba(0, 122, 255, 0.72)";
+          ctx.lineWidth = Math.max(1.4, 2.0 * scaleX);
+          ctx.beginPath();
+          ctx.moveTo(p.x * scaleX, p.y * scaleY);
+          ctx.lineTo((p.x - 1.5) * scaleX, (p.y + 9) * scaleY);
+          ctx.stroke();
+        } else if (p.type === "evap_mist") {
+          // Sanft nach oben schwebender Verdunstungs-Nebel über Boden & Baumkronen
+          p.y += p.vy * evapFactor;
+          p.phase += p.phaseSpeed;
+          const swayX = p.x + Math.sin(p.phase) * 9;
+          if (p.y < 34) {
+            p.y = 184 + Math.random() * 10;
+            p.x = 315 + Math.random() * 275;
+          }
+          // Weiches Ein- und Ausblenden je nach Höhe (0 an Boden/Himmel, Maximum in der Mitte)
+          const progress = Math.max(0, Math.min(1, (190 - p.y) / 156));
+          const alpha = Math.sin(progress * Math.PI) * 0.42 * Math.min(1.3, evapFactor);
+
+          const cx = swayX * scaleX;
+          const cy = p.y * scaleY;
+          const rx = p.radiusX * (0.85 + progress * 0.45) * scaleX;
+          const ry = p.radiusY * (0.85 + progress * 0.45) * scaleY;
+
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.scale(1, ry / Math.max(1, rx));
+          const grad = ctx.createRadialGradient(0, 0, rx * 0.1, 0, 0, rx);
+          grad.addColorStop(0, `rgba(236, 253, 245, ${(alpha * 1.15).toFixed(3)})`);
+          grad.addColorStop(0.5, `rgba(134, 239, 172, ${(alpha * 0.75).toFixed(3)})`);
+          grad.addColorStop(1, "rgba(134, 239, 172, 0)");
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(0, 0, rx, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        } else if (p.type === "perc") {
+          if (percFactor <= 0.05) continue;
+          p.y += p.vy * percFactor;
+          if (p.y > 342) {
+            p.y = 200 + Math.random() * 15;
+          }
+          ctx.fillStyle = "rgba(29, 78, 216, 0.78)";
+          ctx.beginPath();
+          ctx.arc(p.x * scaleX, p.y * scaleY, Math.max(2.0, 2.8 * scaleX), 0, Math.PI * 2);
+          ctx.fill();
+        } else if (p.type === "cap") {
+          p.y += p.vy * capFactor;
+          if (p.y < 208) {
+            p.y = 332;
+          }
+          ctx.fillStyle = sim.capillary > 12 ? "rgba(6, 182, 212, 0.88)" : "rgba(6, 182, 212, 0.25)";
+          ctx.beginPath();
+          ctx.arc(p.x * scaleX, p.y * scaleY, Math.max(2.0, 2.8 * scaleX), 0, Math.PI * 2);
+          ctx.fill();
+        } else if (p.type === "surface") {
+          p.t += p.speed * aoFactor;
+          if (p.t > 1) p.t = 0;
+          const sx = 575 + p.t * 205;
+          const sy = (p.lane === 0 ? 196 : 252) + Math.pow(p.t, 1.35) * (p.lane === 0 ? 152 : 96);
+          ctx.fillStyle = "rgba(2, 132, 199, 0.84)";
+          ctx.beginPath();
+          ctx.arc(sx * scaleX, sy * scaleY, Math.max(2.2, 3.1 * scaleX), 0, Math.PI * 2);
+          ctx.fill();
+        } else if (p.type === "gw") {
+          p.x += p.vx * auFactor;
+          if (p.x > 778) {
+            p.x = 148;
+          }
+          ctx.fillStyle = "rgba(30, 58, 138, 0.72)";
+          ctx.beginPath();
+          ctx.arc(p.x * scaleX, p.y * scaleY, Math.max(2.0, 2.8 * scaleX), 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       12. INITIALISIERUNG BEIM START DER ANWENDUNG
+       -------------------------------------------------------------------------- */
+    window.addEventListener("DOMContentLoaded", function() {
+      initParticles();
+      renderCountrySelectionGrid();
+      renderLayer2Content();
+      updateLayer3All(false);
+      requestAnimationFrame(animateParticles);
+    });
+  </script>
+</body>
+</html>
