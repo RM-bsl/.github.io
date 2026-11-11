@@ -21,7 +21,7 @@
       /* Semantische Farbbrücke für Variablen */
       --color-dref: #0D47A1;
       --color-n: #1A73E8;
-      --color-ref: #E65100;
+      --color-ret: #E65100;
       --color-wint: #2E7D32;
       --color-z: #7C3AED;
       --color-ds: #D97706;
@@ -198,7 +198,7 @@
     /* Typografische Farbbrücke */
     .c-dref { color: var(--color-dref); }
     .c-n { color: var(--color-n); }
-    .c-ref { color: var(--color-ref); }
+    .c-ret { color: var(--color-ret); }
     .c-wint { color: var(--color-wint); }
     .c-z { color: var(--color-z); }
     .c-ds { color: var(--color-ds); }
@@ -707,7 +707,7 @@
         
         <div class="hero-formula">
           <span class="c-dref">D<sub>ref</sub></span> = 
-          (<span class="c-n">N</span> &minus; <span class="c-ref">Ref</span>) + 
+          (<span class="c-n">N</span> &minus; <span class="c-ret">RET</span>) + 
           <span class="c-z">Z</span> = 
           <span class="c-wint">W<sub>int</sub></span> + 
           <span class="c-z">Z</span>
@@ -717,7 +717,7 @@
           Semantische Farbbrücke & Speicherdefinitionen:<br>
           <strong class="c-dref">D<sub>ref</sub></strong> = Erneuerbares Wasserdargebot (30-Jahres-Mittel) | 
           <strong class="c-n">N</strong> = Gebietsniederschlag | 
-          <strong class="c-ref">Ref</strong> = Reale Evapotranspiration | 
+          <strong class="c-ret">RET</strong> = Reale Evapotranspiration | 
           <strong class="c-wint">W<sub>int</sub></strong> = Inländische Wasserneubildung | 
           <strong class="c-z">Z</strong> = Zufluss aus Nachbarländern<br>
           <strong class="c-ds">&Delta;S</strong> = <span class="math-term-clickable" onclick="openGlossar('ds')">Änderung des Boden- und Oberflächenspeichers</span> (= 0 im 30-Jahres-Mittel) [DIN Deutsches Institut für Normung, 1992]<br>
@@ -753,7 +753,7 @@
             </p>
           </div>
           <div style="font-size: 0.82rem; font-weight: 600; opacity: 0.85;">
-            Bilanz: N = 60,5 | Ref = 20,0 | Z = 13,0 Mrd. m<sup>3</sup>/a
+            Bilanz: N = 60,5 | RET = 20,0 | Z = 13,0 Mrd. m<sup>3</sup>/a
           </div>
         </div>
 
@@ -765,7 +765,7 @@
             </p>
           </div>
           <div style="font-size: 0.82rem; font-weight: 600; opacity: 0.85;">
-            Bilanz: N = 478,0 | Ref = 303,0 | Z = 36,0 Mrd. m<sup>3</sup>/a
+            Bilanz: N = 478,0 | RET = 303,0 | Z = 36,0 Mrd. m<sup>3</sup>/a
           </div>
         </div>
 
@@ -777,7 +777,7 @@
             </p>
           </div>
           <div style="font-size: 0.82rem; font-weight: 600; opacity: 0.85;">
-            Bilanz: N = 7.030,0 | Ref = 4.228,0 | Z = 160,0 Mrd. m<sup>3</sup>/a
+            Bilanz: N = 7.030,0 | RET = 4.228,0 | Z = 160,0 Mrd. m<sup>3</sup>/a
           </div>
         </div>
 
@@ -789,7 +789,7 @@
             </p>
           </div>
           <div style="font-size: 0.82rem; font-weight: 600; opacity: 0.85;">
-            Bilanz: N = 6.190,0 | Ref = 3.359,0 | Z = 25,0 Mrd. m<sup>3</sup>/a
+            Bilanz: N = 6.190,0 | RET = 3.359,0 | Z = 25,0 Mrd. m<sup>3</sup>/a
           </div>
         </div>
 
@@ -801,7 +801,7 @@
             </p>
           </div>
           <div style="font-size: 0.82rem; font-weight: 600; opacity: 0.85;">
-            Bilanz: N = 7.865,0 | Ref = 3.676,0 | Z = 180,0 Mrd. m<sup>3</sup>/a
+            Bilanz: N = 7.865,0 | RET = 3.676,0 | Z = 180,0 Mrd. m<sup>3</sup>/a
           </div>
         </div>
 
@@ -835,10 +835,10 @@
         <div class="lab-sidebar">
           <div class="live-formula-display">
             <div class="live-formula-vars">
-              <span class="c-dref">D<sub>ref</sub></span> = (<span class="c-n">N</span> &minus; <span class="c-ref">Ref</span>) + <span class="c-z">Z</span> = <span class="c-wint">W<sub>int</sub></span> + <span class="c-z">Z</span>
+              <span class="c-dref">D<sub>ref</sub></span> = (<span class="c-n">N</span> &minus; <span class="c-ret">RET</span>) + <span class="c-z">Z</span> = <span class="c-wint">W<sub>int</sub></span> + <span class="c-z">Z</span>
             </div>
             <div class="live-formula-nums" id="live-formula-values">
-              <span class="c-dref">D<sub>ref</sub></span> = (<span class="c-n">60,5</span> &minus; <span class="c-ref">20,0</span>) + <span class="c-z">13,0</span> = <span class="c-dref">53,5 Mrd. m<sup>3</sup>/a</span>
+              <span class="c-dref">D<sub>ref</sub></span> = (<span class="c-n">60,5</span> &minus; <span class="c-ret">20,0</span>) + <span class="c-z">13,0</span> = <span class="c-dref">53,5 Mrd. m<sup>3</sup>/a</span>
             </div>
           </div>
 
@@ -856,10 +856,10 @@
 
           <div class="slider-group">
             <div class="slider-label">
-              <span class="c-ref">Reale Evapotranspiration Ref:</span>
-              <span id="val-ref" class="c-ref" style="font-weight: 700;">20,0 Mrd. m<sup>3</sup>/a</span>
+              <span class="c-ret">Reale Evapotranspiration RET:</span>
+              <span id="val-ret" class="c-ret" style="font-weight: 700;">20,0 Mrd. m<sup>3</sup>/a</span>
             </div>
-            <input type="range" id="slider-ref" min="5" max="5000" step="5" disabled oninput="updateSimulation()">
+            <input type="range" id="slider-ret" min="5" max="5000" step="5" disabled oninput="updateSimulation()">
           </div>
 
           <div class="slider-group">
@@ -891,8 +891,8 @@
                 <span class="c-z">Zufluss Z</span>
               </div>
               <div class="legend-item">
-                <span class="legend-color" style="background: var(--color-ref);"></span>
-                <span class="c-ref">Verdunstung Ref</span>
+                <span class="legend-color" style="background: var(--color-ret);"></span>
+                <span class="c-ret">Verdunstung RET</span>
               </div>
               <div class="legend-item">
                 <span class="legend-color" style="background: var(--color-dref); border: 1px dashed #FFFFFF;"></span>
@@ -921,16 +921,16 @@
 
           <div class="feature-card">
             <h4>
-              <span class="math-term-clickable c-ref" onclick="openGlossar('ref')">2. Reale Evapotranspiration (Ref)</span>
+              <span class="math-term-clickable c-ret" onclick="openGlossar('ret')">2. Reale Evapotranspiration (RET)</span>
             </h4>
             <div class="param-line">
-              Verdunstungsverlust: <span id="card-ref-val" class="c-ref">20,0 Mrd. m<sup>3</sup>/a</span>
+              Verdunstungsverlust: <span id="card-ret-val" class="c-ret">20,0 Mrd. m<sup>3</sup>/a</span>
             </div>
             <div class="context-box">
               <strong>Bedeutung für die Rohwassergewinnung:</strong><br>
-              Die reale Verdunstung aus Böden, Gewässern und durch Pflanzenatmung entzieht dem Wasserkreislauf Wasser. Steigen sommerliche Temperaturen, klettert Ref; weniger Wasser versickert zu den Brunnenfassungen.<br>
+              Die reale Verdunstung aus Böden, Gewässern und durch Pflanzenatmung entzieht dem Wasserkreislauf Wasser. Steigen sommerliche Temperaturen, klettert RET; weniger Wasser versickert zu den Brunnenfassungen.<br>
               <div class="inst-badge">💻 Modellierung: Bundesanstalt für Gewässerkunde (BfG)</div><br>
-              Da Verdunstung nicht flächendeckend mit einem Zähler ablesbar ist, berechnet die BfG den Ref-Wert mit hydrologischen Simulationsmodellen für jeden Quadratkilometer [Bundesanstalt für Gewässerkunde, 2021].
+              Da Verdunstung nicht flächendeckend mit einem Zähler ablesbar ist, berechnet die BfG den RET-Wert mit hydrologischen Simulationsmodellen für jeden Quadratkilometer [Bundesanstalt für Gewässerkunde, 2021].
             </div>
           </div>
 
@@ -951,7 +951,7 @@
 
           <div class="feature-card">
             <h4>
-              <span class="math-term-clickable c-wint" onclick="openGlossar('wint')">4. Inländische Neubildung (W<sub>int</sub> = N &minus; Ref) & D<sub>ref</sub></span>
+              <span class="math-term-clickable c-wint" onclick="openGlossar('wint')">4. Inländische Neubildung (W<sub>int</sub> = N &minus; RET) & D<sub>ref</sub></span>
             </h4>
             <div class="param-line">
               Inlandsneubildung: <span id="card-wint-val" class="c-wint">40,5 Mrd. m<sup>3</sup>/a</span> | Gesamtdargebot: <span id="card-dref-val" class="c-dref">53,5 Mrd. m<sup>3</sup>/a</span>
@@ -1220,12 +1220,12 @@
 <script>
   // Amtliche 30-Jahres-Mittelwerte (1991–2020) [FAO AQUASTAT; WMO; BfG]
   const PRESETS = {
-    CH: { name: "Schweiz (Wasserschloss Europas)", n: 60.5, ref: 20.0, z: 13.0, pop: 8.9, locked: true },
-    FR: { name: "Frankreich (Gemäßigtes Transitland)", n: 478.0, ref: 303.0, z: 36.0, pop: 68.0, locked: true },
-    US: { name: "USA (Kontinentale Extreme)", n: 7030.0, ref: 4228.0, z: 160.0, pop: 335.0, locked: true },
-    CN: { name: "China (Monsun & Bevölkerungsdruck)", n: 6190.0, ref: 3359.0, z: 25.0, pop: 1410.0, locked: true },
-    RU: { name: "Russland (Sibirische Riesenströme)", n: 7865.0, ref: 3676.0, z: 180.0, pop: 144.0, locked: true },
-    CUSTOM: { name: "Freies Einzugsgebiet (Simulator)", n: 100.0, ref: 60.0, z: 20.0, pop: 10.0, locked: false }
+    CH: { name: "Schweiz (Wasserschloss Europas)", n: 60.5, ret: 20.0, z: 13.0, pop: 8.9, locked: true },
+    FR: { name: "Frankreich (Gemäßigtes Transitland)", n: 478.0, ret: 303.0, z: 36.0, pop: 68.0, locked: true },
+    US: { name: "USA (Kontinentale Extreme)", n: 7030.0, ret: 4228.0, z: 160.0, pop: 335.0, locked: true },
+    CN: { name: "China (Monsun & Bevölkerungsdruck)", n: 6190.0, ret: 3359.0, z: 25.0, pop: 1410.0, locked: true },
+    RU: { name: "Russland (Sibirische Riesenströme)", n: 7865.0, ret: 3676.0, z: 180.0, pop: 144.0, locked: true },
+    CUSTOM: { name: "Freies Einzugsgebiet (Simulator)", n: 100.0, ret: 60.0, z: 20.0, pop: 10.0, locked: false }
   };
 
   let activePresetKey = 'CH';
@@ -1331,7 +1331,7 @@
     const data = PRESETS[key];
     const isLocked = data.locked;
 
-    ['slider-n', 'slider-ref', 'slider-z', 'slider-pop'].forEach(id => {
+    ['slider-n', 'slider-ret', 'slider-z', 'slider-pop'].forEach(id => {
       const el = document.getElementById(id);
       el.disabled = isLocked;
     });
@@ -1350,7 +1350,7 @@
     }
 
     document.getElementById('slider-n').value = data.n;
-    document.getElementById('slider-ref').value = data.ref;
+    document.getElementById('slider-ret').value = data.ret;
     document.getElementById('slider-z').value = data.z;
     document.getElementById('slider-pop').value = data.pop;
 
@@ -1360,26 +1360,26 @@
 
   function updateSimulation() {
     const N = parseFloat(document.getElementById('slider-n').value);
-    const Ref = parseFloat(document.getElementById('slider-ref').value);
+    const RET = parseFloat(document.getElementById('slider-ret').value);
     const Z = parseFloat(document.getElementById('slider-z').value);
     const pop = parseFloat(document.getElementById('slider-pop').value);
 
-    const W_int = Math.max(0, N - Ref);
+    const W_int = Math.max(0, N - RET);
     const D_ref = W_int + Z;
     const d_capita = (D_ref * 1e9) / (pop * 1e6);
 
     const fmt = val => val.toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
     document.getElementById('val-n').innerText = `${fmt(N)} Mrd. m³/a`;
-    document.getElementById('val-ref').innerText = `${fmt(Ref)} Mrd. m³/a`;
+    document.getElementById('val-ret').innerText = `${fmt(RET)} Mrd. m³/a`;
     document.getElementById('val-z').innerText = `${fmt(Z)} Mrd. m³/a`;
     document.getElementById('val-pop').innerText = `${fmt(pop)} Mio. EW`;
 
     document.getElementById('live-formula-values').innerHTML = 
-      `<span class="c-dref">D<sub>ref</sub></span> = (<span class="c-n">${fmt(N)}</span> &minus; <span class="c-ref">${fmt(Ref)}</span>) + <span class="c-z">${fmt(Z)}</span> = <span class="c-dref">${fmt(D_ref)} Mrd. m<sup>3</sup>/a</span>`;
+      `<span class="c-dref">D<sub>ref</sub></span> = (<span class="c-n">${fmt(N)}</span> &minus; <span class="c-ret">${fmt(RET)}</span>) + <span class="c-z">${fmt(Z)}</span> = <span class="c-dref">${fmt(D_ref)} Mrd. m<sup>3</sup>/a</span>`;
 
     document.getElementById('card-n-val').innerHTML = `${fmt(N)} Mrd. m<sup>3</sup>/a`;
-    document.getElementById('card-ref-val').innerHTML = `${fmt(Ref)} Mrd. m<sup>3</sup>/a`;
+    document.getElementById('card-ret-val').innerHTML = `${fmt(RET)} Mrd. m<sup>3</sup>/a`;
     document.getElementById('card-z-val').innerHTML = `${fmt(Z)} Mrd. m<sup>3</sup>/a`;
     document.getElementById('card-wint-val').innerHTML = `${fmt(W_int)} Mrd. m<sup>3</sup>/a`;
     document.getElementById('card-dref-val').innerHTML = `${fmt(D_ref)} Mrd. m<sup>3</sup>/a`;
@@ -1410,10 +1410,10 @@
     const ctx = canvas.getContext('2d');
 
     const N = parseFloat(document.getElementById('slider-n').value);
-    const Ref = parseFloat(document.getElementById('slider-ref').value);
+    const RET = parseFloat(document.getElementById('slider-ret').value);
     const Z = parseFloat(document.getElementById('slider-z').value);
 
-    const W_int = Math.max(0, N - Ref);
+    const W_int = Math.max(0, N - RET);
     const D_ref = W_int + Z;
     const totalGross = N + Z; // Gesamter Wasserzugewinn
 
@@ -1430,7 +1430,7 @@
 
     const baseY = 230;
     const chartHeight = 180;
-    const maxVal = Math.max(totalGross, Ref, 1.0) * 1.18; // Ausreichend Puffer nach oben
+    const maxVal = Math.max(totalGross, RET, 1.0) * 1.18; // Ausreichend Puffer nach oben
 
     const barWidth = Math.min(84, w * 0.23);
     const col1X = w * 0.28 - barWidth / 2;
@@ -1503,27 +1503,27 @@
     ctx.fillText("(N + Z)", col1X + barWidth / 2, baseY + 22);
 
     // ------------------------------------------------------------------
-    // SÄULE 2: Wasser-Abzug (Reale Evapotranspiration Ref)
+    // SÄULE 2: Wasser-Abzug (Reale Evapotranspiration RET)
     // ------------------------------------------------------------------
-    const h_Ref = (Ref / maxVal) * chartHeight;
-    const y_Ref = baseY - h_Ref;
+    const h_RET = (RET / maxVal) * chartHeight;
+    const y_RET = baseY - h_RET;
 
-    // Segment Ref (Orange)
+    // Segment RET (Orange)
     ctx.fillStyle = "#E65100";
-    ctx.fillRect(col2X, y_Ref, barWidth, h_Ref);
+    ctx.fillRect(col2X, y_RET, barWidth, h_RET);
 
     // Rahmen um Säule 2
     ctx.strokeStyle = "#0F172A";
     ctx.lineWidth = 1.5;
-    ctx.strokeRect(col2X, y_Ref, barWidth, h_Ref);
+    ctx.strokeRect(col2X, y_RET, barWidth, h_RET);
 
-    // Beschriftung in Segment Ref
-    if (h_Ref >= 22) {
+    // Beschriftung in Segment RET
+    if (h_RET >= 22) {
       ctx.fillStyle = "#FFFFFF";
       ctx.font = "bold 11px sans-serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(`Ref: ${fmtShort(Ref)}`, col2X + barWidth / 2, y_Ref + h_Ref / 2);
+      ctx.fillText(`RET: ${fmtShort(RET)}`, col2X + barWidth / 2, y_RET + h_RET / 2);
     }
 
     // Wert über Säule 2
@@ -1531,7 +1531,7 @@
     ctx.font = "bold 11px sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "bottom";
-    ctx.fillText(`${fmtShort(Ref)} Mrd.`, col2X + barWidth / 2, y_Ref - 4);
+    ctx.fillText(`${fmtShort(RET)} Mrd.`, col2X + barWidth / 2, y_RET - 4);
 
     // Achsenbeschriftung Säule 2
     ctx.fillStyle = "#1E293B";
@@ -1541,13 +1541,13 @@
     ctx.fillText("2. Abzug", col2X + barWidth / 2, baseY + 6);
     ctx.font = "10px sans-serif";
     ctx.fillStyle = "#64748B";
-    ctx.fillText("(Ref)", col2X + barWidth / 2, baseY + 22);
+    ctx.fillText("(RET)", col2X + barWidth / 2, baseY + 22);
 
     // ------------------------------------------------------------------
     // DIFFERENZ-KLAMMER: Verbleibendes Wasserdargebot D_ref
     // ------------------------------------------------------------------
     const bracketX = w * 0.90;
-    const diffHeight = Math.max(4, ((totalGross - Ref) / maxVal) * chartHeight);
+    const diffHeight = Math.max(4, ((totalGross - RET) / maxVal) * chartHeight);
     const bracketTopY = y_Z;
     const bracketBottomY = bracketTopY + diffHeight;
 
@@ -1786,8 +1786,8 @@
       title: "Gebietsniederschlag (N) & DWD",
       text: "Gesamtes flüssiges und festes Niederschlagsvolumen über dem Staatsgebiet. Der Deutsche Wetterdienst (DWD) erfasst diese Daten über sein bundesweites Netz aus rund 2.000 Messstationen [DWD, 2021]."
     },
-    ref: {
-      title: "Reale Evapotranspiration (Ref) & BfG",
+    ret: {
+      title: "Reale Evapotranspiration (RET) & BfG",
       text: "Summe aus unbeleblicher Boden- und Gewässerverdunstung (Evaporation) sowie pflanzlicher Transpiration. Die Bundesanstalt für Gewässerkunde (BfG) modelliert diesen Wert computergestützt für jeden Quadratkilometer [Bundesanstalt für Gewässerkunde, 2021]."
     },
     z: {
@@ -1796,7 +1796,7 @@
     },
     wint: {
       title: "Inländische Wasserneubildung (Wint)",
-      text: "W_int = N &minus; Ref beziffert die im Inland gebildete Wassermenge, die im Boden versickert (Grundwasserneubildung) oder oberflächlich abfließt. Sie bestimmt das primäre Rohwasserpotenzial für Wasserversorger [DIN Deutsches Institut für Normung, 1992]."
+      text: "W_int = N &minus; RET beziffert die im Inland gebildete Wassermenge, die im Boden versickert (Grundwasserneubildung) oder oberflächlich abfließt. Sie bestimmt das primäre Rohwasserpotenzial für Wasserversorger [DIN Deutsches Institut für Normung, 1992]."
     },
     ds: {
       title: "ΔS (Änderung des Boden- und Oberflächenspeichers)",
