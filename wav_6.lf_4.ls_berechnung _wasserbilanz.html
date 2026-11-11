@@ -167,20 +167,64 @@
     }
 
     .equation-formula-box {
-      display: inline-flex;
+      display: inline-grid;
+      grid-template-columns: repeat(7, auto);
       align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 0.6rem;
+      justify-items: center;
+      column-gap: 0.65rem;
+      row-gap: 0.42rem;
+      max-width: 100%;
       background: #FFFFFF;
       border: 1.5px solid rgba(0, 122, 255, 0.24);
       border-radius: 14px;
-      padding: 0.85rem 1.5rem;
-      font-size: 1.22rem;
+      padding: 0.9rem 1.5rem;
+      font-size: 1.15rem;
       font-weight: 850;
       color: var(--ios-text-primary);
       margin: 0.7rem 0 0.75rem;
       box-shadow: 0 2px 10px rgba(0, 122, 255, 0.07);
+    }
+
+    .eq-name-cell {
+      font-size: 0.98rem;
+      font-weight: 760;
+      line-height: 1.25;
+      white-space: nowrap;
+    }
+
+    .eq-var-cell {
+      font-size: 1.22rem;
+      font-weight: 880;
+      line-height: 1.25;
+      white-space: nowrap;
+    }
+
+    .eq-op-cell {
+      color: var(--ios-text-secondary);
+      font-weight: 800;
+      padding: 0 0.08rem;
+    }
+
+    @media (max-width: 680px) {
+      .equation-banner-card {
+        padding: 1.15rem 0.85rem;
+      }
+
+      .equation-formula-box {
+        column-gap: 0.24rem;
+        row-gap: 0.28rem;
+        padding: 0.65rem 0.65rem;
+        font-size: 0.82rem;
+        overflow-x: auto;
+      }
+
+      .eq-name-cell {
+        font-size: 0.7rem;
+      }
+
+      .eq-var-cell {
+        font-size: 0.84rem;
+      }
     }
 
     .var-bullet-list {
@@ -489,6 +533,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
       gap: 0.65rem;
       margin-bottom: 0.35rem;
     }
@@ -1145,7 +1190,7 @@
 
           <div class="scenario-pills-row" id="scenarioButtonsRow" role="group" aria-label="Szenarien auswählen">
             <button type="button" class="scenario-pill-btn" data-scen="year" onclick="selectScenario('year')">
-              <span>📅 Ein Jahr</span>
+              <span>📅 30-jähriges Mittel</span>
             </button>
             <button type="button" class="scenario-pill-btn" data-scen="spring" onclick="selectScenario('spring')">
               <span>🌱 Frühling</span>
@@ -1165,7 +1210,7 @@
         <!-- Vor dem ersten Szenario-Klick: Hinweisbanner -->
         <div id="deltaSPromptBanner" class="delta-s-prompt-box">
           <span>🔍</span>
-          <span><strong>Entdeckungs-Auftrag:</strong> Klicke oben auf eines der 5 Szenarien (<strong>Ein Jahr, Frühling, Sommer, Herbst oder Winter</strong>)! Erst nach deinem Klick wird die <strong>Speicheränderung (<span class="math-inline">&Delta;<span class="math-var">S</span></span>)</strong> eingeblendet und erklärt, wann <span class="math-inline">&Delta;<span class="math-var">S</span> = 0</span> ist und wann sich die Speicher füllen oder leeren.</span>
+          <span><strong>Entdeckungs-Auftrag:</strong> Klicke oben auf eines der 5 Szenarien (<strong>30-jähriges Mittel, Frühling, Sommer, Herbst oder Winter</strong>)! Erst nach deinem Klick wird die <strong>Speicheränderung (<span class="math-inline">&Delta;<span class="math-var">S</span></span>)</strong> eingeblendet und erklärt, wann <span class="math-inline">&Delta;<span class="math-var">S</span> = 0</span> ist und wann sich Grundwasser (&Delta;<span class="math-var">GW</span>), Boden und Oberflächenspeicher füllen oder leeren.</span>
         </div>
 
         <!-- Nach Klick auf ein Szenario: Aufgedecktes Delta S + didaktische Begründung -->
@@ -1176,11 +1221,11 @@
                 Szenario:
               </span>
               <span class="delta-s-main-pill" id="deltaSValuePill">
-                Speicheränderung &Delta;<span class="math-var">S</span> = 0 mm/Jahr
+                Speicheränderung &Delta;<span class="math-var">S</span> = 0 Mrd. m<sup>3</sup>/a
               </span>
             </div>
             <span style="font-size:0.77rem;font-weight:750;color:var(--ios-text-secondary);" id="deltaSSubBreakdown">
-              Bodenspeicher &Delta;<span class="math-var">S</span><sub>Boden</sub>: 0 mm/Jahr &middot; Grundwasserspeicher &Delta;<span class="math-var">S</span><sub>GW</sub>: 0 mm/Jahr
+              Grundwasser &Delta;<span class="math-var">GW</span>: 0 Mrd. m<sup>3</sup>/a &middot; Boden &Delta;<span class="math-var">S</span><sub>Boden</sub>: 0 Mrd. m<sup>3</sup>/a &middot; Oberfläche &Delta;<span class="math-var">S</span><sub>Oberfläche</sub>: 0 Mrd. m<sup>3</sup>/a
             </span>
           </div>
           <div style="font-size:0.82rem;line-height:1.48;color:var(--ios-text-primary);" id="deltaSDidacticExplanation"></div>
@@ -1450,7 +1495,7 @@
                 <g class="station-node" data-station="grundwasser" onclick="selectStation('grundwasser')" role="button" tabindex="0">
                   <rect class="station-pill-bg" x="406" y="362" width="254" height="44" rx="9" fill="rgba(255,255,255,0.95)" stroke="#1E3A8A" stroke-width="1.9" />
                   <text x="533" y="381" font-size="10.5" font-weight="800" fill="#0F172A">10 &middot; schneller / langsamer</text>
-                  <text x="533" y="397" font-size="10.5" font-weight="800" fill="#1E3A8A">Grundwasserabfluss (&Delta;S<tspan baseline-shift="sub" font-size="8">GW</tspan>)</text>
+                  <text x="533" y="397" font-size="10.5" font-weight="800" fill="#1E3A8A">Grundwasserabfluss (&Delta;GW)</text>
                 </g>
 
                 <!-- Station 11: Oberflächenabfluss & Zwischenabfluss -->
@@ -1674,21 +1719,38 @@
     "use strict";
 
     /* --------------------------------------------------------------------------
-       1. FORMATIERUNGS-HELFER (DEUTSCHES KOMMA, ECHTES MINUSZEICHEN)
+       1. FORMATIERUNGS-HELFER (DEUTSCHES KOMMA, TAUSENDERPUNKT, ECHTES MINUSZEICHEN)
        -------------------------------------------------------------------------- */
-    function fmtNum(val, decimals = 0) {
+    function round1(val) {
+      return Math.round(Number(val) * 10) / 10;
+    }
+
+    function formatGermanNum(absVal, decimals = 1) {
+      const rounded = decimals === 0 ? Math.round(absVal) : round1(absVal);
+      if (Math.abs(rounded) < 0.05) return "0";
+      return rounded.toLocaleString("de-DE", {
+        minimumFractionDigits: Number.isInteger(rounded) ? 0 : decimals,
+        maximumFractionDigits: decimals
+      });
+    }
+
+    function fmtNum(val, decimals = 1) {
       const n = Number(val);
       if (!Number.isFinite(n)) return "0";
-      const absStr = Math.abs(n).toFixed(decimals).replace(".", ",");
-      if (n < 0) return "\u2212" + absStr;
+      const rounded = decimals === 0 ? Math.round(n) : round1(n);
+      if (Math.abs(rounded) < 0.05) return "0";
+      const absStr = formatGermanNum(Math.abs(rounded), decimals);
+      if (rounded < 0) return "\u2212" + absStr;
       return absStr;
     }
 
-    function fmtSigned(val, decimals = 0) {
+    function fmtSigned(val, decimals = 1) {
       const n = Number(val);
-      if (!Number.isFinite(n) || Math.abs(n) < 0.05) return "0";
-      const absStr = Math.abs(n).toFixed(decimals).replace(".", ",");
-      return (n > 0 ? "+" : "\u2212") + absStr;
+      if (!Number.isFinite(n)) return "0";
+      const rounded = decimals === 0 ? Math.round(n) : round1(n);
+      if (Math.abs(rounded) < 0.05) return "0";
+      const absStr = formatGermanNum(Math.abs(rounded), decimals);
+      return (rounded > 0 ? "+" : "\u2212") + absStr;
     }
 
     function renderTermChip(termKey, customLabel) {
@@ -1729,8 +1791,10 @@
         { pattern: /<strong>(Direktabfluss[^<]*?(?:<span[^>]*>.*?<\/span>[^<]*?)*)<\/strong>/g, key: "direktabfluss" },
         { pattern: /<strong>(Zwischenabfluss \/ Interflow)<\/strong>/g, key: "interflow" },
         { pattern: /<strong>(Vorfluter \(Fluss\))<\/strong>/g, key: "vorfluter" },
-        { pattern: /<strong>(Bodenspeicheränderung[^<]*?(?:<span[^>]*>.*?<\/span>[^<]*?)*)<\/strong>/g, key: "deltas" },
-        { pattern: /<strong>(Grundwasserspeicheränderung[^<]*?(?:<span[^>]*>.*?<\/span>[^<]*?)*)<\/strong>/g, key: "deltas" }
+        { pattern: /<strong>(Grundwasser(?:speicher)?änderung[^<]*?(?:<(?:span|sub)[^>]*>.*?<\/(?:span|sub)>[^<]*?)*)<\/strong>/g, key: "deltagw" },
+        { pattern: /<strong>(Bodenspeicheränderung[^<]*?(?:<(?:span|sub)[^>]*>.*?<\/(?:span|sub)>[^<]*?)*)<\/strong>/g, key: "deltasboden" },
+        { pattern: /<strong>(Oberflächenspeicher(?:änderung)?[^<]*?(?:<(?:span|sub)[^>]*>.*?<\/(?:span|sub)>[^<]*?)*)<\/strong>/g, key: "deltasoberflaeche" },
+        { pattern: /<strong>(Speicheränderung[^<]*?(?:<(?:span|sub)[^>]*>.*?<\/(?:span|sub)>[^<]*?)*)<\/strong>/g, key: "deltas" }
       ];
       let out = html;
       for (let i = 0; i < replacements.length; i++) {
@@ -1750,8 +1814,8 @@
         shortLabel: "Gebietsniederschlag (N)",
         category: "Zuflüsse (N + Z)",
         title: "Gebietsniederschlag (N)",
-        simple: "Der <strong>Gebietsniederschlag (<span class='math-var'>N</span>)</strong> ist das gesamte Wasser, das als Regen, Schnee, Hagel oder Tau aus den Wolken auf ein bestimmtes Gebiet fällt. Er wird in <strong>Millimetern pro Jahr (mm/Jahr)</strong> gemessen: <span class='math-inline'>1 mm</span> Niederschlag entspricht genau <span class='math-inline'>1 Liter</span> Wasser auf einem Quadratmeter Boden (<span class='math-inline'>1 L/m<sup>2</sup></span>).",
-        analogy: "💡 <strong>Vorstellungshilfe:</strong> Stell dir ein quadratisches Aquarium mit 1 Meter Kantenlänge im Garten vor. Wenn in Deutschland im Jahresmittel 789 mm Regen fallen, steht das Wasser darin am Jahresende fast 80 Zentimeter hoch!"
+        simple: "Der <strong>Gebietsniederschlag (<span class='math-var'>N</span>)</strong> ist das gesamte Wasservolumen, das als Regen, Schnee, Hagel oder Tau aus den Wolken auf die Fläche eines Gebiets fällt. Er wird als Volumen pro Jahr in <strong>Kubikmetern pro Jahr (m<sup>3</sup>/a)</strong> gemessen &ndash; bei ganzen Ländern wegen der gewaltigen Mengen in <strong>Milliarden Kubikmetern pro Jahr (Mrd. m<sup>3</sup>/a)</strong>.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> <span class='math-inline'>1 m<sup>3</sup></span> Wasser füllt exakt einen Würfel mit <span class='math-inline'>1 m</span> Kantenlänge (<span class='math-inline'>1.000 Liter</span>). Über ganz Deutschland fallen im Jahresmittel rund <span class='math-inline'>282,1 Mrd. m<sup>3</sup>/a</span> Regen &ndash; dieses Volumen könnte den Bodensee fast sechsmal füllen oder einen riesigen Wasserwürfel von rund <span class='math-inline'>6,6 km</span> Kantenlänge bilden!"
       },
       fremdzufluss: {
         shortLabel: "Zufluss (Z) & Beregnung",
@@ -1793,7 +1857,7 @@
         category: "Teil der Verdunstung (RET)",
         title: "Transpiration (produktive Pflanzenverdunstung)",
         simple: "<strong>Transpiration (<span class='math-var'>T</span>)</strong> ist das biologische „Schwitzen“ der Pflanzen: Bäume, Gräser und Feldfrüchte saugen mit ihren Wurzeln Wasser aus dem Boden und geben es über winzige Spaltöffnungen (Stomata) an den Blättern als Wasserdampf in die Luft ab.",
-        analogy: "💡 <strong>Vorstellungshilfe:</strong> Eine einzige ausgewachsene Buche wirkt an einem sonnigen Sommertag wie eine biologische Wasserpumpe und verdunstet bis zu 400 Liter Wasser am Tag!"
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Eine einzige ausgewachsene Buche wirkt an einem sonnigen Sommertag wie eine biologische Wasserpumpe und verdunstet rund <span class='math-inline'>0,4 m<sup>3</sup></span> Wasser am Tag!"
       },
       interzeption: {
         shortLabel: "Interzeptionsverdunstung (EI)",
@@ -1806,8 +1870,8 @@
         shortLabel: "Feldkapazität (FK)",
         category: "Bodenspeicher (ΔSBoden)",
         title: "Feldkapazität (FK) & nutzbare Feldkapazität (nFK)",
-        simple: "Die <strong>Feldkapazität (<span class='math-var'>FK</span>)</strong> gibt an, wie viel Wasser die Poren des Bodens maximal gegen die Schwerkraft festhalten können. Erst wenn dieser Bodenspeicher zu <strong>100&nbsp;% gefüllt</strong> ist, tropft überschüssiges Wasser nach unten als Sickerwasser Richtung Grundwasser durch.",
-        analogy: "💡 <strong>Vorstellungshilfe:</strong> Halte einen trockenen Küchenschwamm unter den Wasserhahn: Zuerst saugt er jeden Tropfen selbst auf. Erst wenn er komplett vollgesogen ist (Feldkapazität erreicht!), tropft unten genau so viel Wasser heraus, wie du oben nachgießt."
+        simple: "Die <strong>Feldkapazität (<span class='math-var'>FK</span>)</strong> gibt an, welches maximale Wasservolumen die Poren des Bodens über das gesamte Gebiet gegen die Schwerkraft festhalten können (gemessen in <strong>m<sup>3</sup></strong> bzw. <strong>Mrd. m<sup>3</sup></strong>). Erst wenn dieser Bodenspeicher zu <strong>100&nbsp;% gefüllt</strong> ist, tropft überschüssiges Wasser nach unten als Sickerwasser Richtung Grundwasser durch.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Halte einen trockenen Küchenschwamm unter den Wasserhahn: Zuerst saugt er jeden Kubikzentimeter selbst auf. Erst wenn sein gesamtes Porenvolumen gesättigt ist (Feldkapazität erreicht!), tropft unten genau so viel Wasser heraus, wie du oben nachgießt."
       },
       welkepunkt: {
         shortLabel: "Permanenter Welkepunkt (PWP)",
@@ -1846,7 +1910,7 @@
       },
       aquifer: {
         shortLabel: "Grundwasserleiter (Aquifer)",
-        category: "Grundwasserraum (ΔSGW)",
+        category: "Grundwasserraum (ΔGW)",
         title: "Grundwasserleiter (Aquifer)",
         simple: "Ein <strong>Grundwasserleiter (Aquifer)</strong> ist eine unterirdische Gesteins-, Kies- oder Sandschicht, deren Hohlräume (Poren oder Klüfte) vollständig mit Grundwasser gefüllt sind. Darin fließt das Grundwasser sehr langsam (oft nur wenige Zentimeter bis Meter pro Tag) zum nächsten Fluss.",
         analogy: "💡 <strong>Vorstellungshilfe:</strong> Grundwasser ist kein unterirdischer Höhlensee, sondern gleicht einem riesigen Eimer voller Kies und Sand, in dessen Zwischenräumen das Wasser steht und sickert."
@@ -1882,14 +1946,35 @@
       deltas: {
         shortLabel: "Speicheränderung (ΔS)",
         category: "Bilanzgröße (ΔS)",
-        title: "Speicheränderung (ΔS = ΔSBoden + ΔSGW)",
-        simple: "Die <strong>Speicheränderung (&Delta;<span class='math-var'>S</span>)</strong> zeigt, ob sich die Wasservorräte in Bodenfeuchte, Grundwasser, Seen und Gletschern in einem Zeitraum vergrößern (<strong><span class='math-inline'>&Delta;<span class='math-var'>S</span> &gt; 0</span></strong>), verkleinern (<strong><span class='math-inline'>&Delta;<span class='math-var'>S</span> &lt; 0</span></strong>) oder im langjährigen 30-Jahres-Mittel genau ausgleichen (<strong><span class='math-inline'>&Delta;<span class='math-var'>S</span> = 0</span></strong>).",
-        analogy: "💡 <strong>Vorstellungshilfe:</strong> &Delta;<span class='math-var'>S</span> ist die Veränderung deines Kontostands am Monatsende: Hast du mehr eingenommen als ausgegeben (+), Erspartes angezapft (\u2212) oder ging alles null auf null auf (0)?"
+        title: "Speicheränderung (ΔS = ΔGW + ΔSBoden + ΔSOberfläche)",
+        simple: "Die <strong>Speicheränderung (&Delta;<span class='math-var'>S</span>)</strong> fasst drei Speicher zusammen: die integrierte <strong>Grundwasserspeicheränderung (&Delta;<span class='math-var'>GW</span>)</strong>, die <strong>Bodenspeicheränderung (&Delta;<span class='math-var'>S</span><sub>Boden</sub>)</strong> und die <strong>Oberflächenspeicheränderung (&Delta;<span class='math-var'>S</span><sub>Oberfläche</sub>)</strong> in Seen, Schnee, Gletschern und Talsperren. Je nach Bilanz wächst der Gesamtvorrat (<strong><span class='math-inline'>&Delta;<span class='math-var'>S</span> &gt; 0</span></strong>), schrumpft er (<strong><span class='math-inline'>&Delta;<span class='math-var'>S</span> &lt; 0</span></strong>) oder gleicht sich im 30-Jahres-Mittel genau aus (<strong><span class='math-inline'>&Delta;<span class='math-var'>S</span> = 0</span></strong>).",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> &Delta;<span class='math-var'>S</span> ist die Summe deiner Rücklagen am Monatsende &ndash; also Festgeld im tiefen Grundwasser (&Delta;<span class='math-var'>GW</span>), Geldbeutel im Boden (&Delta;<span class='math-var'>S</span><sub>Boden</sub>) und Kleingeldkasse an der Oberfläche (&Delta;<span class='math-var'>S</span><sub>Oberfläche</sub>) zusammengerechnet."
+      },
+      deltagw: {
+        shortLabel: "Grundwasseränderung (ΔGW)",
+        category: "Integrierte Variable in ΔS",
+        title: "Grundwasserspeicheränderung (ΔGW)",
+        simple: "Die <strong>Grundwasserspeicheränderung (&Delta;<span class='math-var'>GW</span>)</strong> ist fest in der gesamten <strong>Speicheränderung (&Delta;<span class='math-var'>S</span>)</strong> integriert und zeigt an, ob sich der Grundwasserspiegel im tiefen <strong>Grundwasserleiter (Aquifer)</strong> hebt (<strong><span class='math-inline'>&Delta;<span class='math-var'>GW</span> &gt; 0</span></strong>) oder senkt (<strong><span class='math-inline'>&Delta;<span class='math-var'>GW</span> &lt; 0</span></strong>). Sie hängt direkt vom Verhältnis zwischen <strong>Grundwasserneubildung (<span class='math-var'>A</span><sub>u</sub>)</strong> und dauerhaftem Grundwasserabfluss ab.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> &Delta;<span class='math-var'>GW</span> ist der Füllstand unseres tiefen Trinkwasser-Tresors: Im Winter füllt das Sickerwasser ihn auf (+), im heißen Sommer sinkt der Vorrat leicht ab (\u2212)."
+      },
+      deltasboden: {
+        shortLabel: "Bodenspeicheränderung (ΔSBoden)",
+        category: "Integrierte Variable in ΔS",
+        title: "Bodenspeicheränderung (ΔSBoden)",
+        simple: "Die <strong>Bodenspeicheränderung (&Delta;<span class='math-var'>S</span><sub>Boden</sub>)</strong> bildet die obere Teilkomponente von <span class='math-inline'>&Delta;<span class='math-var'>S</span></span>. Sie gibt an, wie viel Feuchtigkeit der durchwurzelte Bodenschwamm bis maximal zur <strong>Feldkapazität (<span class='math-var'>FK</span>)</strong> zusätzlich einspeichert (+) oder durch Verdunstung der Pflanzen verliert (\u2212).",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Sie zeigt, ob der obere Blumenerde-Schwamm sich bei Herbstregen wieder vollsaugt (+) oder im Frühling und Sommer spürbar austrocknet (\u2212)."
+      },
+      deltasoberflaeche: {
+        shortLabel: "Oberflächenspeicher (ΔSOberfläche)",
+        category: "Integrierte Variable in ΔS",
+        title: "Oberflächenspeicheränderung (ΔSOberfläche)",
+        simple: "Die <strong>Oberflächenspeicheränderung (&Delta;<span class='math-var'>S</span><sub>Oberfläche</sub>)</strong> beschreibt als dritte Teilgröße von <span class='math-inline'>&Delta;<span class='math-var'>S</span></span> alle Zu- oder Abnahmen von sichtbarem Wasser sowie Schnee und Eis an der Landoberfläche &ndash; vor allem in <strong>Seen, Talsperren, Schneedecken und Gletschern</strong>.",
+        analogy: "💡 <strong>Vorstellungshilfe:</strong> Wächst im Winter die Schneedecke auf den Bergen oder füllt sich eine Talsperre, steigt &Delta;<span class='math-var'>S</span><sub>Oberfläche</sub> (+). Schmilzt der Schnee im Frühling oder sinkt im Sommer der Seespiegel, wird der Wert negativ (\u2212)."
       }
     };
 
     /* --------------------------------------------------------------------------
-       3. LÄNDER-DATENBANK (DEUTSCHLAND, FRANKREICH, SCHWEIZ, USA, CHINA)
+       3. LÄNDER-DATENBANK (ALLE VOLUMINA IN MRD. M³/A BZW. MRD. M³ FÜR FK)
        -------------------------------------------------------------------------- */
     const COUNTRIES = {
       de: {
@@ -1897,85 +1982,90 @@
         name: "Deutschland",
         flag: "🇩🇪",
         climateTag: "Gemäßigtes Übergangsklima",
+        areaMioKm2: 0.357588,
         peculiarity: "Starkes Wechselspiel der Jahreszeiten: Während das kühle, regenreiche Winterhalbjahr die Grundwasserspeicher zuverlässig auffüllt, zehrt die hohe Verdunstung im Sommer an den Böden. Zudem erhält Deutschland über große Ströme wie Rhein, Elbe und Donau hohe Wasserzuflüsse aus seinen Nachbarländern.",
-        N: 789,
-        Z: 158,
-        RET: 493,
-        PET: 620,
-        KWB: 169,
-        Ao: 294,
-        Au: 160,
-        A: 454,
-        FK: 185,
-        specialNote: "In Deutschland verdunsten rund 62 % des eigenen Niederschlags (RET = 493 mm/Jahr). Etwa 20 % des Regens (Au = 160 mm/Jahr) sickern im Winterhalbjahr als neues Grundwasser in die Tiefe und sichern über 70 % unseres Trinkwassers."
+        N: 282.1,
+        Z: 56.5,
+        RET: 176.3,
+        PET: 221.7,
+        KWB: 60.4,
+        Ao: 105.1,
+        Au: 57.2,
+        A: 162.3,
+        FK: 66.2,
+        specialNote: "In Deutschland verdunsten rund 62 % des eigenen Niederschlags (RET = 176,3 Mrd. m³/a). Etwa 20 % des Regens (Au = 57,2 Mrd. m³/a) sickern im Winterhalbjahr als neues Grundwasser in die Tiefe und sichern über 70 % unseres Trinkwassers."
       },
       fr: {
         id: "fr",
         name: "Frankreich",
         flag: "🇫🇷",
         climateTag: "Atlantisch bis Mediterran",
+        areaMioKm2: 0.551695,
         peculiarity: "Zweigeteilte Wasserbilanz zwischen feuchtem Atlantikwesten und heißem Mittelmeersüden: Obwohl es im Landesmittel viel regnet, schluckt die intensive Sonneneinstrahlung im Süden große Wassermengen durch Verdunstung, sodass dort im Sommer regelmäßig Trockenheit herrscht.",
-        N: 867,
-        Z: 24,
-        RET: 536,
-        PET: 740,
-        KWB: 127,
-        Ao: 210,
-        Au: 145,
-        A: 355,
-        FK: 175,
-        specialNote: "Obwohl es in Frankreich im Mittel mehr regnet als in Deutschland (867 statt 789 mm/Jahr), schluckt die warme Mittelmeerluft im Süden enorm viel Wasser durch Verdunstung (RET = 536 mm/Jahr). Deshalb fällt die Grundwasserneubildung (Au = 145 mm/Jahr) etwas geringer aus als in Deutschland."
+        N: 478.3,
+        Z: 13.2,
+        RET: 295.7,
+        PET: 408.3,
+        KWB: 70.0,
+        Ao: 115.8,
+        Au: 80.0,
+        A: 195.8,
+        FK: 96.5,
+        specialNote: "Auf Frankreichs größere Landesfläche fallen im Jahr 478,3 Mrd. m³/a Niederschlag, doch die warme Mittelmeerluft im Süden lässt rund 295,7 Mrd. m³/a verdunsten. Die jährliche Grundwasserneubildung beträgt 80,0 Mrd. m³/a."
       },
       ch: {
         id: "ch",
         name: "Schweiz",
         flag: "🇨🇭",
         climateTag: "Alpines Wasserschloss Europas",
+        areaMioKm2: 0.041285,
         peculiarity: "Extremer Wasserüberschuss im Hochgebirge: An den Alpen stauen sich Regen- und Schneewolken, während in der kühlen Höhenluft nur wenig Wasser verdunstet. Als hochgelegenes Quellgebiet besitzt die Schweiz fast keinen Zufluss von außen, speist aber über Rhein und Rhône halb Westeuropa.",
-        N: 1456,
+        N: 60.1,
         Z: 0,
-        RET: 484,
-        PET: 530,
-        KWB: 926,
-        Ao: 712,
-        Au: 260,
-        A: 972,
-        FK: 140,
-        specialNote: "Die Schweiz besitzt eine extrem hohe positive Klimatische Wasserbilanz (+926 mm/Jahr, fast 5,5-mal so hoch wie Deutschland!). Als hochgelegenes Quellgebiet hat sie fast keinen Fremdzufluss (Z = 0 mm/Jahr), speist aber über Rhein und Rhône ganz Westeuropa."
+        RET: 20.0,
+        PET: 21.9,
+        KWB: 38.2,
+        Ao: 29.4,
+        Au: 10.7,
+        A: 40.1,
+        FK: 5.8,
+        specialNote: "Die kleine Schweiz (ca. ein Neuntel der Fläche Deutschlands) erzeugt durch alpine Stauniederschläge eine enorme positive Klimatische Wasserbilanz von +38,2 Mrd. m³/a. Als Quellgebiet hat sie keinen nennenswerten Fremdzufluss (Z = 0 Mrd. m³/a), speist aber über Rhein und Rhône ganz Westeuropa."
       },
       us: {
         id: "us",
         name: "USA",
         flag: "🇺🇸",
         climateTag: "Kontinentale Extreme (Ost vs. West)",
+        areaMioKm2: 9.37261,
         peculiarity: "Drastischer Ost-West-Gegensatz: Während der Osten wasserreich ist, übersteigt in den riesigen Trocken- und Wüstenregionen des Südwestens und der Great Plains der Verdunstungshunger der heißen Luft den geringen Regen dauerhaft – dort werden Grundwasserspeicher durch Bewässerung stark übernutzt.",
-        N: 715,
-        Z: 18,
-        RET: 492,
-        PET: 890,
-        KWB: -175,
-        Ao: 146,
-        Au: 95,
-        A: 241,
-        FK: 165,
-        specialNote: "Über die gesamten USA gemittelt ist die Klimatische Wasserbilanz negativ (KWB = −175 mm/Jahr, in Deutschland +169 mm/Jahr), weil im Südwesten (Arizona, Kalifornien, High Plains) der Atmosphären-Durst (PET = 890 mm/Jahr) den Regen weit übersteigt. Dort werden Grundwasserspeicher durch Bewässerung stark übernutzt."
+        N: 6701.4,
+        Z: 168.7,
+        RET: 4611.3,
+        PET: 8341.6,
+        KWB: -1640.2,
+        Ao: 1368.4,
+        Au: 890.4,
+        A: 2258.8,
+        FK: 1546.5,
+        specialNote: "Aufgrund der gewaltigen Landesfläche empfangen die USA rund 6.701,4 Mrd. m³/a Regen, doch der Atmosphären-Durst ist mit PET = 8.341,6 Mrd. m³/a noch größer (KWB = −1.640,2 Mrd. m³/a). Im Südwesten werden Grundwasserspeicher durch Bewässerung stark übernutzt."
       },
       cn: {
         id: "cn",
         name: "China",
         flag: "🇨🇳",
         climateTag: "Monsun-Süden vs. Trocken-Norden",
+        areaMioKm2: 9.596961,
         peculiarity: "Ausgeprägte Nord-Süd-Spaltung der Wasserbilanz: Der Süden erlebt im Sommer heftige Monsunregen mit großem Oberflächenabfluss, während die dicht besiedelte Nordchinesische Tiefebene unter chronischer Trockenheit, hoher Verdunstung und stark sinkenden Grundwasserspiegeln leidet.",
-        N: 645,
-        Z: 12,
-        RET: 425,
-        PET: 820,
-        KWB: -175,
-        Ao: 152,
-        Au: 80,
-        A: 232,
-        FK: 160,
-        specialNote: "China erhält im Mittel rund 144 mm/Jahr weniger Niederschlag als Deutschland. Während der Süden unter Monsunregen leidet, herrscht in der Nordchinesischen Tiefebene chronisch negative KWB, sodass die Grundwasserneubildung (Au = 80 mm/Jahr) nur halb so hoch ist wie in Deutschland (160 mm/Jahr)."
+        N: 6190.0,
+        Z: 115.2,
+        RET: 4078.7,
+        PET: 7869.5,
+        KWB: -1679.5,
+        Ao: 1458.7,
+        Au: 767.8,
+        A: 2226.5,
+        FK: 1535.5,
+        specialNote: "Auf Chinas enorme Fläche entfallen 6.190,0 Mrd. m³/a Niederschlag. Gemessen an der Größe des Landes fällt die Klimatische Wasserbilanz im Gesamtmittel jedoch stark negativ aus (KWB = −1.679,5 Mrd. m³/a), weshalb der Norden unter sinkenden Grundwasserständen leidet."
       }
     };
 
@@ -1985,9 +2075,10 @@
     const SCENARIOS = {
       year: {
         id: "year",
-        name: "📅 Ein Jahr (Ausgeglichene Jahresbilanz)",
+        name: "📅 30-jähriges Mittel (Ausgeglichene Langzeitbilanz)",
         isDeltaSZero: true,
         calcValues: function(c) {
+          const dS = round1((c.N + c.Z) - (c.RET + c.A)) || 0;
           return {
             N: c.N,
             Z: c.Z,
@@ -1997,17 +2088,18 @@
             Ao: c.Ao,
             Au: c.Au,
             A: c.A,
+            dGW: 0,
             dSBoden: 0,
-            dSGW: 0,
-            dS: 0,
+            dSOberfl: 0,
+            dS,
             soilFillPct: 78,
-            capillary: c.KWB < 0 ? 18 : 6,
+            capillary: round1(c.RET * (c.KWB < 0 ? 0.036 : 0.012)),
             percolation: c.Au
           };
         },
         explainDeltaS: function(c, sim) {
-          return `<strong>Warum ist die Speicheränderung über „Ein Jahr“ im Durchschnitt exakt <span class="math-inline">&Delta;<span class="math-var">S</span> = 0 mm/Jahr</span>?</strong><br>
-          Betrachtet man ein ganzes durchschnittliches Jahr in <strong>${c.name} (${c.flag})</strong>, gleichen sich die Speicher-Aufladung in <strong>Herbst und Winter</strong> und die Speicher-Entleerung in <strong>Frühling und Sommer</strong> gegenseitig aus. Alles Wasser, das über die <strong>Zuflüsse (<span class="math-inline"><span class="math-var">N</span> + <span class="math-var">Z</span> = ${fmtNum(sim.N + sim.Z)} mm/Jahr</span>)</strong> ankommt, verlässt das Gebiet wieder über die <strong>reale Evapotranspiration (<span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(sim.RET)} mm/Jahr</span>)</strong> und den <strong>Gesamtabfluss (<span class="math-inline"><span class="math-var">A</span> = ${fmtNum(sim.A)} mm/Jahr</span>)</strong>.`;
+          return `<strong>Warum ist die Speicheränderung im „30-jährigen Mittel“ exakt <span class="math-inline">&Delta;<span class="math-var">S</span> = 0 Mrd. m<sup>3</sup>/a</span> (mit <span class="math-inline">&Delta;<span class="math-var">GW</span> = 0</span>)?</strong><br>
+          Betrachtet man das langjährige <strong>30-jährige Mittel</strong> in <strong>${c.name} (${c.flag})</strong>, gleichen sich feuchte Jahre und Trockenjahre sowie Speicher-Aufladung in <strong>Herbst und Winter</strong> und Speicher-Entleerung in <strong>Frühling und Sommer</strong> in allen drei Teilgrößen (<strong>Grundwasserspeicheränderung <span class="math-inline">&Delta;<span class="math-var">GW</span></span></strong>, <strong>Bodenspeicheränderung <span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub></span></strong> und <strong>Oberflächenspeicher <span class="math-inline">&Delta;<span class="math-var">S</span><sub>Oberfläche</sub></span></strong>) langfristig aus. Im 30-Jahres-Durchschnitt entspricht der gesamte <strong>Zufluss (<span class="math-inline"><span class="math-var">N</span> + <span class="math-var">Z</span> = ${fmtNum(sim.N + sim.Z)} Mrd. m<sup>3</sup>/a</span>)</strong> exakt der Summe aus <strong>realer Evapotranspiration (<span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(sim.RET)} Mrd. m<sup>3</sup>/a</span>)</strong> und <strong>Gesamtabfluss (<span class="math-inline"><span class="math-var">A</span> = ${fmtNum(sim.A)} Mrd. m<sup>3</sup>/a</span>)</strong>, sodass <span class="math-inline">&Delta;<span class="math-var">S</span> = ${fmtSigned(sim.dS)} Mrd. m<sup>3</sup>/a</span> gilt.`;
         }
       },
       spring: {
@@ -2015,28 +2107,29 @@
         name: "🌱 Frühling (Austrieb der Pflanzen & Beginn der Zehrung)",
         isDeltaSZero: false,
         calcValues: function(c) {
-          const N = Math.round(c.N * 0.92);
-          const Z = c.Z;
-          const PET = Math.round(c.PET * 1.05);
-          const RET = Math.round(c.RET * 1.08);
-          const KWB = N - PET;
-          const dSBoden = -Math.round(c.FK * 0.14);
-          const dSGW = -Math.round(c.Au * 0.08);
-          const dS = dSBoden + dSGW;
-          const totalOut = Math.max(60, (N + Z) - RET - dS);
-          const Au = Math.max(25, Math.round(c.Au * 0.85));
-          const Ao = Math.max(35, totalOut - Au);
+          const N = round1(c.N * 0.92);
+          const Z = round1(c.Z);
+          const PET = round1(c.PET * 1.05);
+          const RET = round1(c.RET * 1.08);
+          const KWB = round1(N - PET);
+          const dGW = round1(-c.Au * 0.08);
+          const dSBoden = round1(-c.FK * 0.14);
+          const dSOberfl = round1(-c.Ao * 0.06);
+          const dS = round1(dGW + dSBoden + dSOberfl);
+          const totalOut = round1((N + Z) - RET - dS);
+          const Au = round1(c.Au * 0.85);
+          const Ao = round1(totalOut - Au);
           return {
-            N, Z, RET, PET, KWB, Ao, Au, A: Ao + Au,
-            dSBoden, dSGW, dS,
+            N, Z, RET, PET, KWB, Ao, Au, A: round1(Ao + Au),
+            dGW, dSBoden, dSOberfl, dS,
             soilFillPct: 68,
-            capillary: 12,
-            percolation: Math.round(Au * 0.75)
+            capillary: round1(c.RET * 0.025),
+            percolation: round1(Au * 0.75)
           };
         },
         explainDeltaS: function(c, sim) {
-          return `<strong>Warum wird die Speicheränderung im Frühling leicht negativ (<span class="math-inline">&Delta;<span class="math-var">S</span> = ${fmtSigned(sim.dS)} mm/Jahr &lt; 0</span>)?</strong><br>
-          Im Frühling steigen Sonnenstand und Temperaturen spürbar an, und Bäume sowie Feldfrüchte schlagen aus. Durch die stark wachsende <strong>Transpiration (<span class="math-var">T</span>)</strong> der Pflanzen zieht die <strong>reale Evapotranspiration (<span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(sim.RET)} mm/Jahr</span>)</strong> kräftig an. Die Pflanzenwurzeln zehren nun vom vollen Winter-Bodenspeicher (<span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = ${fmtSigned(sim.dSBoden)} mm/Jahr</span>), sodass weniger <strong>Sickerwasser</strong> im Grundwasser ankommt.`;
+          return `<strong>Warum wird die Speicheränderung im Frühling leicht negativ (<span class="math-inline">&Delta;<span class="math-var">S</span> = ${fmtSigned(sim.dS)} Mrd. m<sup>3</sup>/a &lt; 0</span>)?</strong><br>
+          Im Frühling steigen Temperaturen und <strong>Transpiration (<span class="math-var">T</span>)</strong> der Pflanzen an, sodass die <strong>reale Evapotranspiration (<span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(sim.RET)} Mrd. m<sup>3</sup>/a</span>)</strong> kräftig wächst. Dadurch zehren Wurzeln am Winter-Bodenwasser (<strong>Bodenspeicheränderung <span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = ${fmtSigned(sim.dSBoden)} Mrd. m<sup>3</sup>/a</span></strong>), die Schneeschmelze baut den <strong>Oberflächenspeicher (<span class="math-inline">&Delta;<span class="math-var">S</span><sub>Oberfläche</sub> = ${fmtSigned(sim.dSOberfl)} Mrd. m<sup>3</sup>/a</span>)</strong> ab und das tiefe Grundwasser verliert leicht (<strong>Grundwasserspeicheränderung <span class="math-inline">&Delta;<span class="math-var">GW</span> = ${fmtSigned(sim.dGW)} Mrd. m<sup>3</sup>/a</span></strong>).`;
         }
       },
       summer: {
@@ -2044,28 +2137,29 @@
         name: "☀️ Sommer (Starker Atmosphären-Durst & negative KWB)",
         isDeltaSZero: false,
         calcValues: function(c) {
-          const N = Math.round(c.N * 0.84);
-          const Z = Math.round(c.Z * 0.90);
-          const PET = Math.round(c.PET * 1.42);
-          const RET = Math.round(c.RET * 1.16);
-          const KWB = N - PET;
-          const dSBoden = -Math.round(c.FK * 0.38);
-          const dSGW = -Math.round(c.Au * 0.45);
-          const dS = dSBoden + dSGW;
-          const rem = Math.max(55, (N + Z) - RET - dS);
-          const Au = Math.max(15, Math.round(c.Au * 0.28));
-          const Ao = Math.max(35, rem - Au);
+          const N = round1(c.N * 0.84);
+          const Z = round1(c.Z * 0.90);
+          const PET = round1(c.PET * 1.42);
+          const RET = round1(c.RET * 1.16);
+          const KWB = round1(N - PET);
+          const dGW = round1(-c.Au * 0.45);
+          const dSBoden = round1(-c.FK * 0.38);
+          const dSOberfl = round1(-c.Ao * 0.08);
+          const dS = round1(dGW + dSBoden + dSOberfl);
+          const rem = round1((N + Z) - RET - dS);
+          const Au = round1(c.Au * 0.28);
+          const Ao = round1(rem - Au);
           return {
-            N, Z, RET, PET, KWB, Ao, Au, A: Ao + Au,
-            dSBoden, dSGW, dS,
+            N, Z, RET, PET, KWB, Ao, Au, A: round1(Ao + Au),
+            dGW, dSBoden, dSOberfl, dS,
             soilFillPct: 30,
-            capillary: 38,
+            capillary: round1(c.RET * 0.08),
             percolation: 0
           };
         },
         explainDeltaS: function(c, sim) {
-          return `<strong>Warum ist die Speicheränderung im Sommer deutlich negativ (<span class="math-inline">&Delta;<span class="math-var">S</span> = ${fmtSigned(sim.dS)} mm/Jahr &lt; 0</span>)?</strong><br>
-          Im warmen Sommer ist der Atmosphären-Durst (<strong>potenzielle Evapotranspiration <span class="math-inline"><span class="math-var">PET</span> = ${fmtNum(sim.PET)} mm/Jahr</span></strong>) viel höher als der Regen (<span class="math-inline"><span class="math-var">N</span> = ${fmtNum(sim.N)} mm/Jahr</span>): Die <strong>Klimatische Wasserbilanz ist negativ (<span class="math-inline">KWB = ${fmtSigned(sim.KWB)} mm/Jahr</span>)</strong>. Selbst Sommergewitter verdunsten rasch wieder oder fließen oberirdisch ab (<span class="math-var">A</span><sub>o</sub>). Die <strong>Grundwasserneubildung (<span class="math-var">A</span><sub>u</sub>)</strong> pausiert, während trockener Boden über den <strong>kapillaren Aufstieg</strong> und Flüsse über den Basisabfluss am Vorrat zehren.`;
+          return `<strong>Warum ist die Speicheränderung im Sommer deutlich negativ (<span class="math-inline">&Delta;<span class="math-var">S</span> = ${fmtSigned(sim.dS)} Mrd. m<sup>3</sup>/a &lt; 0</span>)?</strong><br>
+          Im warmen Sommer fordert der Atmosphären-Durst (<span class="math-inline"><span class="math-var">PET</span> = ${fmtNum(sim.PET)} Mrd. m<sup>3</sup>/a</span>) viel Wasser gegenüber dem Regen (<span class="math-inline"><span class="math-var">N</span> = ${fmtNum(sim.N)} Mrd. m<sup>3</sup>/a</span>; <strong>Klimatische Wasserbilanz <span class="math-inline">KWB = ${fmtSigned(sim.KWB)} Mrd. m<sup>3</sup>/a</span></strong>). Deshalb leeren sich alle drei Speicher: <strong>Grundwasserspeicheränderung <span class="math-inline">&Delta;<span class="math-var">GW</span> = ${fmtSigned(sim.dGW)} Mrd. m<sup>3</sup>/a</span></strong> durch Basisabfluss und <strong>kapillaren Aufstieg</strong>, <strong>Bodenspeicheränderung <span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = ${fmtSigned(sim.dSBoden)} Mrd. m<sup>3</sup>/a</span></strong> sowie <strong>Oberflächenspeicher (<span class="math-inline">&Delta;<span class="math-var">S</span><sub>Oberfläche</sub> = ${fmtSigned(sim.dSOberfl)} Mrd. m<sup>3</sup>/a</span>)</strong> in Seen und Talsperren.`;
         }
       },
       autumn: {
@@ -2073,28 +2167,29 @@
         name: "🍂 Herbst (Abkühlung, Laubfall & Auffüllen des Bodenspeichers)",
         isDeltaSZero: false,
         calcValues: function(c) {
-          const N = Math.round(c.N * 1.06);
-          const Z = c.Z;
-          const PET = Math.round(c.PET * 0.62);
-          const RET = Math.round(c.RET * 0.68);
-          const KWB = N - PET;
-          const dSBoden = Math.round(c.FK * 0.28);
-          const dSGW = Math.round(c.Au * 0.14);
-          const dS = dSBoden + dSGW;
-          const totalAvailable = Math.max(60, (N + Z) - RET - dS);
-          const Au = Math.max(30, Math.round(totalAvailable * 0.36));
-          const Ao = Math.max(30, totalAvailable - Au);
+          const N = round1(c.N * 1.06);
+          const Z = round1(c.Z);
+          const PET = round1(c.PET * 0.62);
+          const RET = round1(c.RET * 0.68);
+          const KWB = round1(N - PET);
+          const dGW = round1(c.Au * 0.14);
+          const dSBoden = round1(c.FK * 0.28);
+          const dSOberfl = round1(c.Ao * 0.05);
+          const dS = round1(dGW + dSBoden + dSOberfl);
+          const totalAvailable = round1((N + Z) - RET - dS);
+          const Au = round1(totalAvailable * 0.36);
+          const Ao = round1(totalAvailable - Au);
           return {
-            N, Z, RET, PET, KWB, Ao, Au, A: Ao + Au,
-            dSBoden, dSGW, dS,
+            N, Z, RET, PET, KWB, Ao, Au, A: round1(Ao + Au),
+            dGW, dSBoden, dSOberfl, dS,
             soilFillPct: 84,
-            capillary: 4,
-            percolation: Au + dSGW
+            capillary: round1(c.RET * 0.008),
+            percolation: round1(Au + dGW)
           };
         },
         explainDeltaS: function(c, sim) {
-          return `<strong>Warum wird die Speicheränderung im Herbst positiv (<span class="math-inline">&Delta;<span class="math-var">S</span> = ${fmtSigned(sim.dS)} mm/Jahr &gt; 0</span>)?</strong><br>
-          Im Herbst kühlt die Luft ab und die Laubbäume werfen ihre Blätter ab: Der Atmosphären-Durst (<strong>potenzielle Evapotranspiration <span class="math-inline"><span class="math-var">PET</span> = ${fmtNum(sim.PET)} mm/Jahr</span></strong>) sinkt stark, sodass die <strong>Klimatische Wasserbilanz positiv (<span class="math-inline">KWB = ${fmtSigned(sim.KWB)} mm/Jahr</span>)</strong> wird. Die Herbstregen füllen nun zuerst den ausgetrockneten Bodenschwamm wieder Richtung <strong>Feldkapazität (<span class="math-var">FK</span>)</strong> auf (<span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = ${fmtSigned(sim.dSBoden)} mm/Jahr</span>), bevor das erste <strong>Sickerwasser</strong> wieder das Grundwasser erreicht.`;
+          return `<strong>Warum wird die Speicheränderung im Herbst positiv (<span class="math-inline">&Delta;<span class="math-var">S</span> = ${fmtSigned(sim.dS)} Mrd. m<sup>3</sup>/a &gt; 0</span>)?</strong><br>
+          Im Herbst sinkt durch Abkühlung und Laubfall der Atmosphären-Durst (<strong>potenzielle Evapotranspiration <span class="math-inline"><span class="math-var">PET</span> = ${fmtNum(sim.PET)} Mrd. m<sup>3</sup>/a</span></strong>), sodass die <strong>Klimatische Wasserbilanz positiv (<span class="math-inline">KWB = ${fmtSigned(sim.KWB)} Mrd. m<sup>3</sup>/a</span>)</strong> wird. Die Herbstregen füllen zuerst den Boden bis zur <strong>Feldkapazität (<span class="math-var">FK</span>)</strong> wieder auf (<strong>Bodenspeicheränderung <span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = ${fmtSigned(sim.dSBoden)} Mrd. m<sup>3</sup>/a</span></strong>), speisen Seen und Talsperren (<strong>Oberflächenspeicher <span class="math-inline">&Delta;<span class="math-var">S</span><sub>Oberfläche</sub> = ${fmtSigned(sim.dSOberfl)} Mrd. m<sup>3</sup>/a</span></strong>) und lassen das Grundwasser ansteigen (<strong>Grundwasserspeicheränderung <span class="math-inline">&Delta;<span class="math-var">GW</span> = ${fmtSigned(sim.dGW)} Mrd. m<sup>3</sup>/a</span></strong>).`;
         }
       },
       winter: {
@@ -2102,28 +2197,29 @@
         name: "❄️ Winter (Vegetationsruhe & Haupt-Grundwasserneubildung)",
         isDeltaSZero: false,
         calcValues: function(c) {
-          const N = Math.round(c.N * 1.14);
-          const Z = c.Z;
-          const PET = Math.round(c.PET * 0.32);
-          const RET = Math.round(c.RET * 0.38);
-          const KWB = N - PET;
-          const dSBoden = Math.round(c.FK * 0.24);
-          const dSGW = Math.round(c.Au * 0.52);
-          const dS = dSBoden + dSGW;
-          const totalAvailable = Math.max(70, (N + Z) - RET - dS);
-          const Au = Math.max(45, Math.round(totalAvailable * 0.48));
-          const Ao = Math.max(40, totalAvailable - Au);
+          const N = round1(c.N * 1.14);
+          const Z = round1(c.Z);
+          const PET = round1(c.PET * 0.32);
+          const RET = round1(c.RET * 0.38);
+          const KWB = round1(N - PET);
+          const dGW = round1(c.Au * 0.39);
+          const dSBoden = round1(c.FK * 0.24);
+          const dSOberfl = round1(c.Ao * 0.09);
+          const dS = round1(dGW + dSBoden + dSOberfl);
+          const totalAvailable = round1((N + Z) - RET - dS);
+          const Au = round1(totalAvailable * 0.48);
+          const Ao = round1(totalAvailable - Au);
           return {
-            N, Z, RET, PET, KWB, Ao, Au, A: Ao + Au,
-            dSBoden, dSGW, dS,
+            N, Z, RET, PET, KWB, Ao, Au, A: round1(Ao + Au),
+            dGW, dSBoden, dSOberfl, dS,
             soilFillPct: 98,
             capillary: 0,
-            percolation: Au + dSGW
+            percolation: round1(Au + dGW)
           };
         },
         explainDeltaS: function(c, sim) {
-          return `<strong>Warum erreicht der Speicherzuwachs im Winter sein Maximum (<span class="math-inline">&Delta;<span class="math-var">S</span> = ${fmtSigned(sim.dS)} mm/Jahr &gt; 0</span>)?</strong><br>
-          Im kalten Winterhalbjahr herrscht Vegetationsruhe und die Sonne steht tief: Die <strong>reale Evapotranspiration (<span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(sim.RET)} mm/Jahr</span>)</strong> ist minimal und die <strong>Klimatische Wasserbilanz (<span class="math-inline">KWB = ${fmtSigned(sim.KWB)} mm/Jahr</span>)</strong> stark positiv. Da der Bodenspeicher bereits bis zur <strong>Feldkapazität (<span class="math-var">FK</span>)</strong> gefüllt ist, sickert fast jeder Regentropfen als <strong>Sickerwasser</strong> durch und sorgt für kräftige <strong>Grundwasserneubildung (<span class="math-var">A</span><sub>u</sub>)</strong> (<span class="math-inline">&Delta;<span class="math-var">S</span><sub>GW</sub> = ${fmtSigned(sim.dSGW)} mm/Jahr</span>).`;
+          return `<strong>Warum erreicht der Speicherzuwachs im Winter sein Maximum (<span class="math-inline">&Delta;<span class="math-var">S</span> = ${fmtSigned(sim.dS)} Mrd. m<sup>3</sup>/a &gt; 0</span>)?</strong><br>
+          Im kalten Winterhalbjahr ist die <strong>reale Evapotranspiration (<span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(sim.RET)} Mrd. m<sup>3</sup>/a</span>)</strong> minimal und die <strong>Klimatische Wasserbilanz (<span class="math-inline">KWB = ${fmtSigned(sim.KWB)} Mrd. m<sup>3</sup>/a</span>)</strong> stark positiv. Da der Boden bis zur <strong>Feldkapazität (<span class="math-var">FK</span>)</strong> gesättigt ist (<strong>Bodenspeicheränderung <span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = ${fmtSigned(sim.dSBoden)} Mrd. m<sup>3</sup>/a</span></strong>), sickert reichlich <strong>Sickerwasser</strong> durch und sorgt für die Haupt-<strong>Grundwasserneubildung (<span class="math-var">A</span><sub>u</sub>)</strong> (<strong>Grundwasserspeicheränderung <span class="math-inline">&Delta;<span class="math-var">GW</span> = ${fmtSigned(sim.dGW)} Mrd. m<sup>3</sup>/a</span></strong>) sowie Schneerücklagen und volle Talsperren (<strong>Oberflächenspeicher <span class="math-inline">&Delta;<span class="math-var">S</span><sub>Oberfläche</sub> = ${fmtSigned(sim.dSOberfl)} Mrd. m<sup>3</sup>/a</span></strong>).`;
         }
       }
     };
@@ -2141,26 +2237,26 @@
         subCategory: "Atmosphärischer Hauptzufluss",
         terms: ["niederschlag", "kwb"],
         getProcessHtml: function() {
-          return `Der <strong>Gebietsniederschlag (<span class="math-var">N</span>)</strong> ist der wichtigste Motor des Wasserkreislaufs: Wasserdampf kondensiert in kühlen Luftschichten zu Wolken und fällt als Regen oder Schnee auf die Landschaft. Jeder Millimeter Niederschlag (<span class="math-inline">1 mm</span>) bringt exakt <span class="math-inline">1 Liter Wasser pro Quadratmeter</span> Fläche.`;
+          return `Der <strong>Gebietsniederschlag (<span class="math-var">N</span>)</strong> ist der wichtigste Motor des Wasserkreislaufs: Wasserdampf kondensiert in kühlen Luftschichten zu Wolken und fällt als Regen oder Schnee auf die Landschaft. Wir messen dieses Wasservolumen in <strong>Kubikmetern pro Jahr (<span class="math-inline">m<sup>3</sup>/a</span>)</strong> beziehungsweise für ganze Länder in <strong>Milliarden Kubikmetern pro Jahr (<span class="math-inline">Mrd. m<sup>3</sup>/a</span>)</strong>.`;
         },
         getCountryHtml: function(c, de) {
-          return `In <strong>Deutschland (🇩🇪)</strong> fallen im 30-jährigen Durchschnitt <strong><span class="math-inline"><span class="math-var">N</span> = ${fmtNum(de.N)} mm/Jahr</span></strong>. Vom feuchten Nordsee-Küstenstreifen und den Alpen (über <span class="math-inline">1500 mm/Jahr</span>) bis zum trockenen Regenschatten des Harzes in Sachsen-Anhalt (unter <span class="math-inline">500 mm/Jahr</span>) ist der Regen stark vom Relief abhängig.`;
+          return `In <strong>Deutschland (🇩🇪)</strong> fallen im 30-jährigen Durchschnitt <strong><span class="math-inline"><span class="math-var">N</span> = ${fmtNum(de.N)} Mrd. m<sup>3</sup>/a</span></strong> über die gesamte Landesfläche. Vom sehr regenreichen Nordsee-Küstenstreifen und den Alpen bis zum deutlich trockeneren Regenschatten des Harzes in Sachsen-Anhalt ist der Regen stark vom Relief abhängig.`;
         },
         getCompareHtml: function(c, de) {
           if (c.id === "de") {
             return `Du hast <strong>Deutschland (🇩🇪)</strong> ausgewählt. Beobachte unten den exakten Messwert für den <strong>Gebietsniederschlag (<span class="math-var">N</span>)</strong> an dieser Station!`;
           }
           const diff = c.N - de.N;
-          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} beträgt der durchschnittliche Gebietsniederschlag <strong><span class="math-inline"><span class="math-var">N</span> = ${fmtNum(c.N)} mm/Jahr</span></strong> (das sind <strong><span class="math-inline">${fmtSigned(diff)} mm/Jahr</span></strong> im Vergleich zu Deutschland).`;
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} beträgt der durchschnittliche Gebietsniederschlag über die gesamte Landesfläche <strong><span class="math-inline"><span class="math-var">N</span> = ${fmtNum(c.N)} Mrd. m<sup>3</sup>/a</span></strong> (das sind <strong><span class="math-inline">${fmtSigned(diff)} Mrd. m<sup>3</sup>/a</span></strong> im Vergleich zu Deutschland – je nach Landesgröße und Klima).`;
         },
         getSpecificStatsHtml: function(c, de, sim) {
           return `<strong>📊 Konkrete Zahlenwerte an Station 1 &ndash; Gebietsniederschlag (<span class="math-var">N</span>):</strong><br>
-          &bull; Durchschnittswert Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">N</span> = ${fmtNum(de.N)} mm/Jahr</span></strong><br>
-          &bull; Durchschnittswert ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">N</span> = ${fmtNum(c.N)} mm/Jahr</span></strong><br>
-          &bull; Aktueller Wert im gewählten Szenario: <strong style="color:var(--ios-blue);"><span class="math-inline"><span class="math-var">N</span> = ${fmtNum(sim.N)} mm/Jahr</span></strong>`;
+          &bull; Durchschnittswert Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">N</span> = ${fmtNum(de.N)} Mrd. m<sup>3</sup>/a</span></strong><br>
+          &bull; Durchschnittswert ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">N</span> = ${fmtNum(c.N)} Mrd. m<sup>3</sup>/a</span></strong><br>
+          &bull; Aktueller Wert im gewählten Szenario: <strong style="color:var(--ios-blue);"><span class="math-inline"><span class="math-var">N</span> = ${fmtNum(sim.N)} Mrd. m<sup>3</sup>/a</span></strong>`;
         },
         getScenarioHtml: function(c, sim) {
-          return `Im aktuell gewählten Szenario fallen in ${c.name} <strong><span class="math-inline"><span class="math-var">N</span> = ${fmtNum(sim.N)} mm/Jahr</span></strong> Niederschlag (gegenüber dem 30-Jahres-Durchschnitt von <span class="math-inline">${fmtNum(c.N)} mm/Jahr</span>). Die blauen Regentropfen in der Grafik zeigen dir live die aktuelle Niederschlagsstärke.`;
+          return `Im aktuell gewählten Szenario fallen in ${c.name} hochgerechnet <strong><span class="math-inline"><span class="math-var">N</span> = ${fmtNum(sim.N)} Mrd. m<sup>3</sup>/a</span></strong> Niederschlag (gegenüber dem 30-Jahres-Durchschnitt von <span class="math-inline">${fmtNum(c.N)} Mrd. m<sup>3</sup>/a</span>). Die blauen Regentropfen in der Grafik zeigen dir live die aktuelle Niederschlagsstärke.`;
         }
       },
       {
@@ -2175,22 +2271,22 @@
           return `Neben dem eigenen Regen erhält ein Land zusätzliches Wasser durch den <strong>Zufluss (<span class="math-var">Z</span>)</strong> aus Nachbarländern (über grenzüberschreitende Flüsse und Grundwasserströme) sowie lokal auf Feldern durch künstliche <strong>Beregnung</strong>. Zusammen mit dem Niederschlag (<span class="math-var">N</span>) bildet <span class="math-var">Z</span> die gesamten <strong>Zuflüsse (<span class="math-inline"><span class="math-var">N</span> + <span class="math-var">Z</span></span>)</strong>.`;
         },
         getCountryHtml: function(c, de) {
-          return `Für <strong>Deutschland (🇩🇪)</strong> ist der Fremdzufluss enorm wichtig: Im Jahresmittel strömen umgerechnet <strong><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(de.Z)} mm/Jahr</span></strong> über den Rhein (aus der Schweiz), die Elbe (aus Tschechien), die Oder und die Donau nach Deutschland hinein.`;
+          return `Für <strong>Deutschland (🇩🇪)</strong> ist der Fremdzufluss enorm wichtig: Im Jahresmittel strömen <strong><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(de.Z)} Mrd. m<sup>3</sup>/a</span></strong> über den Rhein (aus der Schweiz), die Elbe (aus Tschechien), die Oder und die Donau nach Deutschland hinein.`;
         },
         getCompareHtml: function(c, de) {
           if (c.id === "de") {
-            return `Zusammen mit dem Regen (<span class="math-inline">${fmtNum(de.N)} mm/Jahr</span>) stehen Deutschland insgesamt <strong><span class="math-inline"><span class="math-var">N</span> + <span class="math-var">Z</span> = ${fmtNum(de.N + de.Z)} mm/Jahr</span></strong> Gesamtzuflüsse zur Verfügung.`;
+            return `Zusammen mit dem Regen (<span class="math-inline">${fmtNum(de.N)} Mrd. m<sup>3</sup>/a</span>) stehen Deutschland insgesamt <strong><span class="math-inline"><span class="math-var">N</span> + <span class="math-var">Z</span> = ${fmtNum(de.N + de.Z)} Mrd. m<sup>3</sup>/a</span></strong> Gesamtzuflüsse zur Verfügung.`;
           }
-          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> Während Deutschland als Transitland <strong><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(de.Z)} mm/Jahr</span></strong> aus Nachbarstaaten empfängt, liegt der Fremdzufluss in ${c.name} bei <strong><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(c.Z)} mm/Jahr</span></strong>.`;
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> Während Deutschland als Transitland <strong><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(de.Z)} Mrd. m<sup>3</sup>/a</span></strong> aus Nachbarstaaten empfängt, liegt der Fremdzufluss in ${c.name} bei <strong><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(c.Z)} Mrd. m<sup>3</sup>/a</span></strong>.`;
         },
         getSpecificStatsHtml: function(c, de, sim) {
           return `<strong>📊 Konkrete Zahlenwerte an Station 2 &ndash; Zufluss (<span class="math-var">Z</span>) &amp; Gesamtzufluss (<span class="math-var">N</span> + <span class="math-var">Z</span>):</strong><br>
-          &bull; Durchschnittswert Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(de.Z)} mm/Jahr</span></strong> (Gesamtzufluss <span class="math-inline"><span class="math-var">N</span> + <span class="math-var">Z</span> = ${fmtNum(de.N + de.Z)} mm/Jahr</span>)<br>
-          &bull; Durchschnittswert ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(c.Z)} mm/Jahr</span></strong> (Gesamtzufluss <span class="math-inline"><span class="math-var">N</span> + <span class="math-var">Z</span> = ${fmtNum(c.N + c.Z)} mm/Jahr</span>)<br>
-          &bull; Aktueller Szenario-Wert: <strong style="color:var(--ios-blue);"><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(sim.Z)} mm/Jahr</span></strong> (Gesamtzufluss <span class="math-inline"><span class="math-var">N</span> + <span class="math-var">Z</span> = ${fmtNum(sim.N + sim.Z)} mm/Jahr</span>)`;
+          &bull; Durchschnittswert Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(de.Z)} Mrd. m<sup>3</sup>/a</span></strong> (Gesamtzufluss <span class="math-inline"><span class="math-var">N</span> + <span class="math-var">Z</span> = ${fmtNum(de.N + de.Z)} Mrd. m<sup>3</sup>/a</span>)<br>
+          &bull; Durchschnittswert ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(c.Z)} Mrd. m<sup>3</sup>/a</span></strong> (Gesamtzufluss <span class="math-inline"><span class="math-var">N</span> + <span class="math-var">Z</span> = ${fmtNum(c.N + c.Z)} Mrd. m<sup>3</sup>/a</span>)<br>
+          &bull; Aktueller Szenario-Wert: <strong style="color:var(--ios-blue);"><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(sim.Z)} Mrd. m<sup>3</sup>/a</span></strong> (Gesamtzufluss <span class="math-inline"><span class="math-var">N</span> + <span class="math-var">Z</span> = ${fmtNum(sim.N + sim.Z)} Mrd. m<sup>3</sup>/a</span>)`;
         },
         getScenarioHtml: function(c, sim) {
-          return `Im aktuellen Szenario beträgt der Zufluss <strong><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(sim.Z)} mm/Jahr</span></strong>. In Hitzesommern versuchen Landwirte zwar oft durch künstliche Beregnung nachzuhelfen, doch dieses Wasser wird meist direkt aus dem eigenen Grundwasser gepumpt.`;
+          return `Im aktuellen Szenario beträgt der Zufluss hochgerechnet <strong><span class="math-inline"><span class="math-var">Z</span> = ${fmtNum(sim.Z)} Mrd. m<sup>3</sup>/a</span></strong>. In Hitzesommern versuchen Landwirte zwar oft durch künstliche Beregnung nachzuhelfen, doch dieses Wasser wird meist direkt aus dem eigenen Grundwasser gepumpt.`;
         }
       },
       {
@@ -2205,24 +2301,24 @@
           return `<strong>Evaporation (<span class="math-var">E</span><sub>Boden</sub> + <span class="math-var">E</span><sub>Wasser</sub>)</strong> ist die direkte physikalische Verdunstung von unbewachsenem Boden, nassem Gestein und freien Wasserflächen (Seen, Flüsse). Sonnenenergie erwärmt die Wassermoleküle an der Oberfläche, bis sie als unsichtbarer Wasserdampf in die Luft aufsteigen.`;
         },
         getCountryHtml: function(c, de) {
-          const deEvap = Math.round(de.RET * 0.28);
-          return `In <strong>Deutschland (🇩🇪)</strong> macht die reine Evaporation etwa 28&nbsp;% der gesamten <strong>realen Evapotranspiration (<span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(de.RET)} mm/Jahr</span>)</strong> aus, also rund <strong><span class="math-inline">${fmtNum(deEvap)} mm/Jahr</span></strong> – besonders hoch auf unbedeckten Ackerflächen im Frühjahr und über großen Seen.`;
+          const deEvap = round1(de.RET * 0.28);
+          return `In <strong>Deutschland (🇩🇪)</strong> macht die reine Evaporation etwa 28&nbsp;% der gesamten <strong>realen Evapotranspiration (<span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(de.RET)} Mrd. m<sup>3</sup>/a</span>)</strong> aus, also rund <strong><span class="math-inline">${fmtNum(deEvap)} Mrd. m<sup>3</sup>/a</span></strong> – besonders hoch auf unbedeckten Ackerflächen im Frühjahr und über großen Seen.`;
         },
         getCompareHtml: function(c, de) {
-          const cEvap = Math.round(c.RET * 0.28);
-          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} beträgt die gesamte reale Evapotranspiration im Mittel <strong><span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(c.RET)} mm/Jahr</span></strong> (davon rund <span class="math-inline">${fmtNum(cEvap)} mm/Jahr</span> direkte Boden- und Wasserflächen-Evaporation).`;
+          const cEvap = round1(c.RET * 0.28);
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} beträgt die gesamte reale Evapotranspiration im Mittel <strong><span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(c.RET)} Mrd. m<sup>3</sup>/a</span></strong> (davon rund <span class="math-inline">${fmtNum(cEvap)} Mrd. m<sup>3</sup>/a</span> direkte Boden- und Wasserflächen-Evaporation).`;
         },
         getSpecificStatsHtml: function(c, de, sim) {
-          const deEvap = Math.round(de.RET * 0.28);
-          const cEvap = Math.round(c.RET * 0.28);
-          const simEvap = Math.round(sim.RET * 0.28);
+          const deEvap = round1(de.RET * 0.28);
+          const cEvap = round1(c.RET * 0.28);
+          const simEvap = round1(sim.RET * 0.28);
           return `<strong>📊 Konkrete Zahlenwerte an Station 3 &ndash; Evaporation (<span class="math-var">E</span>) als Teil von <span class="math-var">RET</span>:</strong><br>
-          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">E</span> &approx; ${fmtNum(deEvap)} mm/Jahr</span></strong> (Gesamt-Verdunstung <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(de.RET)} mm/Jahr</span>)<br>
-          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">E</span> &approx; ${fmtNum(cEvap)} mm/Jahr</span></strong> (Gesamt-Verdunstung <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(c.RET)} mm/Jahr</span>)<br>
-          &bull; Aktueller Szenario-Wert: <strong style="color:var(--ios-green-dark);"><span class="math-inline"><span class="math-var">E</span> &approx; ${fmtNum(simEvap)} mm/Jahr</span></strong> (Gesamt-<span class="math-var">RET</span> = <span class="math-inline">${fmtNum(sim.RET)} mm/Jahr</span>)`;
+          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">E</span> &approx; ${fmtNum(deEvap)} Mrd. m<sup>3</sup>/a</span></strong> (Gesamt-Verdunstung <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(de.RET)} Mrd. m<sup>3</sup>/a</span>)<br>
+          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">E</span> &approx; ${fmtNum(cEvap)} Mrd. m<sup>3</sup>/a</span></strong> (Gesamt-Verdunstung <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(c.RET)} Mrd. m<sup>3</sup>/a</span>)<br>
+          &bull; Aktueller Szenario-Wert: <strong style="color:var(--ios-green-dark);"><span class="math-inline"><span class="math-var">E</span> &approx; ${fmtNum(simEvap)} Mrd. m<sup>3</sup>/a</span></strong> (Gesamt-<span class="math-var">RET</span> = <span class="math-inline">${fmtNum(sim.RET)} Mrd. m<sup>3</sup>/a</span>)`;
         },
         getScenarioHtml: function(c, sim) {
-          return `Im gewählten Szenario fordert die Atmosphäre potenziell <strong><span class="math-inline"><span class="math-var">PET</span> = ${fmtNum(sim.PET)} mm/Jahr</span></strong>, tatsächlich verdunsten insgesamt <strong><span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(sim.RET)} mm/Jahr</span></strong>. Die aufsteigenden grünen Dampfpartikel über dem Boden zeigen dir die Intensität der Evaporation.`;
+          return `Im gewählten Szenario fordert die Atmosphäre potenziell <strong><span class="math-inline"><span class="math-var">PET</span> = ${fmtNum(sim.PET)} Mrd. m<sup>3</sup>/a</span></strong>, tatsächlich verdunsten insgesamt <strong><span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(sim.RET)} Mrd. m<sup>3</sup>/a</span></strong>. Der aufsteigende Dampfnebel über dem Boden zeigt dir die Intensität der Evaporation.`;
         }
       },
       {
@@ -2237,24 +2333,24 @@
           return `Bei der <strong>Transpiration (<span class="math-var">T</span><sub>Vegetation</sub>)</strong> ziehen Bäume, Sträucher und Gräser mit ihren Wurzeln Wasser aus der Bodenzone und geben es über die Spaltöffnungen der Blätter an die Atmosphäre ab. Sie ist der größte Einzelposten innerhalb der <strong>realen Evapotranspiration (<span class="math-var">RET</span>)</strong>.`;
         },
         getCountryHtml: function(c, de) {
-          const deTransp = Math.round(de.RET * 0.54);
-          return `In <strong>Deutschland (🇩🇪)</strong> entfällt mehr als die Hälfte der gesamten realen Evapotranspiration (<span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(de.RET)} mm/Jahr</span>) auf den Wasserdurst der Pflanzen: Rund <strong><span class="math-inline"><span class="math-var">T</span> &approx; ${fmtNum(deTransp)} mm/Jahr</span></strong> werden zwischen April und September durch Wälder und Felder in die Luft gepumpt.`;
+          const deTransp = round1(de.RET * 0.54);
+          return `In <strong>Deutschland (🇩🇪)</strong> entfällt mehr als die Hälfte der gesamten realen Evapotranspiration (<span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(de.RET)} Mrd. m<sup>3</sup>/a</span>) auf den Wasserdurst der Pflanzen: Rund <strong><span class="math-inline"><span class="math-var">T</span> &approx; ${fmtNum(deTransp)} Mrd. m<sup>3</sup>/a</span></strong> werden zwischen April und September durch Wälder und Felder in die Luft gepumpt.`;
         },
         getCompareHtml: function(c, de) {
-          const cTransp = Math.round(c.RET * 0.54);
-          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} liegt der Transpirationsanteil im Jahresmittel bei rund <strong><span class="math-inline"><span class="math-var">T</span> &approx; ${fmtNum(cTransp)} mm/Jahr</span></strong> (von insgesamt <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(c.RET)} mm/Jahr</span>).`;
+          const cTransp = round1(c.RET * 0.54);
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} liegt der Transpirationsanteil im Jahresmittel bei rund <strong><span class="math-inline"><span class="math-var">T</span> &approx; ${fmtNum(cTransp)} Mrd. m<sup>3</sup>/a</span></strong> (von insgesamt <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(c.RET)} Mrd. m<sup>3</sup>/a</span>).`;
         },
         getSpecificStatsHtml: function(c, de, sim) {
-          const deT = Math.round(de.RET * 0.54);
-          const cT = Math.round(c.RET * 0.54);
-          const simT = Math.round(sim.RET * 0.54);
+          const deT = round1(de.RET * 0.54);
+          const cT = round1(c.RET * 0.54);
+          const simT = round1(sim.RET * 0.54);
           return `<strong>📊 Konkrete Zahlenwerte an Station 4 &ndash; Pflanzentranspiration (<span class="math-var">T</span>) als Teil von <span class="math-var">RET</span>:</strong><br>
-          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">T</span> &approx; ${fmtNum(deT)} mm/Jahr</span></strong> (Gesamt-<span class="math-var">RET</span> = <span class="math-inline">${fmtNum(de.RET)} mm/Jahr</span>)<br>
-          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">T</span> &approx; ${fmtNum(cT)} mm/Jahr</span></strong> (Gesamt-<span class="math-var">RET</span> = <span class="math-inline">${fmtNum(c.RET)} mm/Jahr</span>)<br>
-          &bull; Aktueller Szenario-Wert: <strong style="color:var(--ios-green-dark);"><span class="math-inline"><span class="math-var">T</span> &approx; ${fmtNum(simT)} mm/Jahr</span></strong> (Gesamt-<span class="math-var">RET</span> = <span class="math-inline">${fmtNum(sim.RET)} mm/Jahr</span>)`;
+          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">T</span> &approx; ${fmtNum(deT)} Mrd. m<sup>3</sup>/a</span></strong> (Gesamt-<span class="math-var">RET</span> = <span class="math-inline">${fmtNum(de.RET)} Mrd. m<sup>3</sup>/a</span>)<br>
+          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">T</span> &approx; ${fmtNum(cT)} Mrd. m<sup>3</sup>/a</span></strong> (Gesamt-<span class="math-var">RET</span> = <span class="math-inline">${fmtNum(c.RET)} Mrd. m<sup>3</sup>/a</span>)<br>
+          &bull; Aktueller Szenario-Wert: <strong style="color:var(--ios-green-dark);"><span class="math-inline"><span class="math-var">T</span> &approx; ${fmtNum(simT)} Mrd. m<sup>3</sup>/a</span></strong> (Gesamt-<span class="math-var">RET</span> = <span class="math-inline">${fmtNum(sim.RET)} Mrd. m<sup>3</sup>/a</span>)`;
         },
         getScenarioHtml: function(c, sim) {
-          return `Im aktuellen Szenario entziehen die Wurzeln dem Boden kräftig Feuchtigkeit, sodass über die gesamte Verdunstung <strong><span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(sim.RET)} mm/Jahr</span></strong> in die Atmosphäre entweichen. Im Winterhalbjahr sinkt die Transpiration der Laubbäume dagegen fast auf null!`;
+          return `Im aktuellen Szenario entziehen die Wurzeln dem Boden Feuchtigkeit, sodass über die gesamte Verdunstung hochgerechnet <strong><span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(sim.RET)} Mrd. m<sup>3</sup>/a</span></strong> in die Atmosphäre entweichen. Im Winterhalbjahr sinkt die Transpiration der Laubbäume dagegen fast auf null!`;
         }
       },
       {
@@ -2269,21 +2365,21 @@
           return `<strong>Interzeptionsverdunstung (<span class="math-var">E</span><sub>I</sub>)</strong> ist der Teil des Niederschlags, der auf Blättern, Nadeln und Zweigen hängen bleibt und direkt von dort wieder in die Luft verdunstet. Dieses Wasser erreicht niemals den Erdboden und steht daher weder den Wurzeln noch dem Grundwasser zur Verfügung!`;
         },
         getCountryHtml: function(c, de) {
-          const deInt = Math.round(de.RET * 0.18);
-          return `Da rund ein Drittel der Fläche von <strong>Deutschland (🇩🇪)</strong> bewaldet ist, gehen im Mittel etwa <strong><span class="math-inline"><span class="math-var">E</span><sub>I</sub> &approx; ${fmtNum(deInt)} mm/Jahr</span></strong> (rund 18&nbsp;% von <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(de.RET)} mm/Jahr</span>) direkt in den Baumkronen durch Interzeption verloren – bei ganzjährig benadelten Fichten und Kiefern sogar bis zu 35&nbsp;% des Jahresregens!`;
+          const deInt = round1(de.RET * 0.18);
+          return `Da rund ein Drittel der Fläche von <strong>Deutschland (🇩🇪)</strong> bewaldet ist, gehen im Mittel etwa <strong><span class="math-inline"><span class="math-var">E</span><sub>I</sub> &approx; ${fmtNum(deInt)} Mrd. m<sup>3</sup>/a</span></strong> (rund 18&nbsp;% von <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(de.RET)} Mrd. m<sup>3</sup>/a</span>) direkt in den Baumkronen durch Interzeption verloren – bei ganzjährig benadelten Fichten und Kiefern sogar bis zu 35&nbsp;% des Jahresregens!`;
         },
         getCompareHtml: function(c, de) {
-          const cInt = Math.round(c.RET * 0.18);
-          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} verdunsten im Mittel rund <strong><span class="math-inline"><span class="math-var">E</span><sub>I</sub> &approx; ${fmtNum(cInt)} mm/Jahr</span></strong> direkt von den Oberflächen der Vegetation (Gesamt-<span class="math-var">RET</span>: <span class="math-inline">${fmtNum(c.RET)} mm/Jahr</span>).`;
+          const cInt = round1(c.RET * 0.18);
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} verdunsten im Mittel rund <strong><span class="math-inline"><span class="math-var">E</span><sub>I</sub> &approx; ${fmtNum(cInt)} Mrd. m<sup>3</sup>/a</span></strong> direkt von den Oberflächen der Vegetation (Gesamt-<span class="math-var">RET</span>: <span class="math-inline">${fmtNum(c.RET)} Mrd. m<sup>3</sup>/a</span>).`;
         },
         getSpecificStatsHtml: function(c, de, sim) {
-          const deInt = Math.round(de.RET * 0.18);
-          const cInt = Math.round(c.RET * 0.18);
-          const simInt = Math.round(sim.RET * 0.18);
+          const deInt = round1(de.RET * 0.18);
+          const cInt = round1(c.RET * 0.18);
+          const simInt = round1(sim.RET * 0.18);
           return `<strong>📊 Konkrete Zahlenwerte an Station 5 &ndash; Interzeptionsverdunstung (<span class="math-var">E</span><sub>I</sub>) &amp; Gesamt-<span class="math-var">RET</span>:</strong><br>
-          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">E</span><sub>I</sub> &approx; ${fmtNum(deInt)} mm/Jahr</span></strong> (Gesamte <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(de.RET)} mm/Jahr</span>)<br>
-          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">E</span><sub>I</sub> &approx; ${fmtNum(cInt)} mm/Jahr</span></strong> (Gesamte <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(c.RET)} mm/Jahr</span>)<br>
-          &bull; Aktueller Szenario-Wert: <strong style="color:var(--ios-green-dark);"><span class="math-inline"><span class="math-var">E</span><sub>I</sub> &approx; ${fmtNum(simInt)} mm/Jahr</span></strong> (Gesamte <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(sim.RET)} mm/Jahr</span>)`;
+          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">E</span><sub>I</sub> &approx; ${fmtNum(deInt)} Mrd. m<sup>3</sup>/a</span></strong> (Gesamte <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(de.RET)} Mrd. m<sup>3</sup>/a</span>)<br>
+          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">E</span><sub>I</sub> &approx; ${fmtNum(cInt)} Mrd. m<sup>3</sup>/a</span></strong> (Gesamte <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(c.RET)} Mrd. m<sup>3</sup>/a</span>)<br>
+          &bull; Aktueller Szenario-Wert: <strong style="color:var(--ios-green-dark);"><span class="math-inline"><span class="math-var">E</span><sub>I</sub> &approx; ${fmtNum(simInt)} Mrd. m<sup>3</sup>/a</span></strong> (Gesamte <span class="math-inline"><span class="math-var">RET</span> = ${fmtNum(sim.RET)} Mrd. m<sup>3</sup>/a</span>)`;
         },
         getScenarioHtml: function(c, sim) {
           return `Gerade bei kurzen Sommerschauern bleibt ein großer Teil des Regens komplett im Blätterdach hängen und verdunstet sofort wieder, ohne dass der trockene Waldboden darunter nass wird.`;
@@ -2296,24 +2392,24 @@
         title: "6. Verdunstungsbeeinflusste Bodenzone & Feldkapazität (FK)",
         badge: "Speicheränderung (ΔSBoden)",
         subCategory: "Oberer Bodenwasser-Puffer & Wurzelraum",
-        terms: ["feldkapazitaet", "welkepunkt", "deltas"],
+        terms: ["feldkapazitaet", "welkepunkt", "deltasboden", "deltas"],
         getProcessHtml: function() {
           return `Die <strong>verdunstungsbeeinflusste Bodenzone</strong> (Durchwurzelungsraum, ca. 0,5 bis 2 Meter tief) wirkt wie ein Schwamm-Zwischenspeicher. Sie hält Wasser in feinen Poren bis zur <strong>Feldkapazität (<span class="math-var">FK</span>)</strong> gegen die Schwerkraft fest. Erst wenn dieser Schwamm komplett gesättigt ist, lässt er überschüssiges Wasser als Sickerwasser in die Tiefe durch!`;
         },
         getCountryHtml: function(c, de) {
-          return `Die Böden in <strong>Deutschland (🇩🇪)</strong> (besonders fruchtbare Löss- und Lehmböden) besitzen eine durchschnittliche nutzbare <strong>Feldkapazität von <span class="math-inline"><span class="math-var">FK</span> = ${fmtNum(de.FK)} mm</span></strong>. Im 30-Jahres-Mittel gleicht sich die <strong>Bodenspeicheränderung (<span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = 0 mm/Jahr</span>)</strong> exakt aus.`;
+          return `Die Böden in <strong>Deutschland (🇩🇪)</strong> (besonders fruchtbare Löss- und Lehmböden) besitzen ein durchschnittliches nutzbares Speichervolumen von <strong><span class="math-inline"><span class="math-var">FK</span> = ${fmtNum(de.FK)} Mrd. m<sup>3</sup></span></strong>. Im 30-Jahres-Mittel gleicht sich die <strong>Bodenspeicheränderung (<span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = 0 Mrd. m<sup>3</sup>/a</span>)</strong> exakt aus.`;
         },
         getCompareHtml: function(c, de) {
-          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} liegt das mittlere Speichervermögen des Wurzelraums bei <strong><span class="math-inline"><span class="math-var">FK</span> = ${fmtNum(c.FK)} mm</span></strong> (Deutschland: <span class="math-inline">${fmtNum(de.FK)} mm</span>). Gebirgsböden wie in der Schweiz sind dünner und haben daher eine kleinere Feldkapazität (<span class="math-inline">140 mm</span>).`;
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} liegt das gesamte Speichervermögen des Wurzelraums bei <strong><span class="math-inline"><span class="math-var">FK</span> = ${fmtNum(c.FK)} Mrd. m<sup>3</sup></span></strong> (Deutschland: <span class="math-inline">${fmtNum(de.FK)} Mrd. m<sup>3</sup></span>). Neben der Bodendicke bestimmt vor allem die Landesfläche dieses Gesamtvolumen (z. B. rund <span class="math-inline">${fmtNum(COUNTRIES.ch.FK)} Mrd. m<sup>3</sup></span> in der kleinen, gebirgigen Schweiz).`;
         },
         getSpecificStatsHtml: function(c, de, sim) {
           return `<strong>📊 Konkrete Zahlenwerte an Station 6 &ndash; Feldkapazität (<span class="math-var">FK</span>) &amp; Bodenspeicheränderung (&Delta;<span class="math-var">S</span><sub>Boden</sub>):</strong><br>
-          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">FK</span> = ${fmtNum(de.FK)} mm</span></strong> &middot; Langjähriges Mittel: <strong><span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = 0 mm/Jahr</span></strong><br>
-          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">FK</span> = ${fmtNum(c.FK)} mm</span></strong> &middot; Langjähriges Mittel: <strong><span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = 0 mm/Jahr</span></strong><br>
-          &bull; Aktuelles Szenario: <strong style="color:var(--ios-blue);"><span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = ${fmtSigned(sim.dSBoden)} mm/Jahr</span></strong> (Bodenfüllung: <strong>${sim.soilFillPct}&nbsp;%</strong> der <span class="math-var">FK</span>)`;
+          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">FK</span> = ${fmtNum(de.FK)} Mrd. m<sup>3</sup></span></strong> &middot; Langjähriges Mittel: <strong><span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = 0 Mrd. m<sup>3</sup>/a</span></strong><br>
+          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">FK</span> = ${fmtNum(c.FK)} Mrd. m<sup>3</sup></span></strong> &middot; Langjähriges Mittel: <strong><span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = 0 Mrd. m<sup>3</sup>/a</span></strong><br>
+          &bull; Aktuelles Szenario: <strong style="color:var(--ios-blue);"><span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = ${fmtSigned(sim.dSBoden)} Mrd. m<sup>3</sup>/a</span></strong> (Bodenfüllung: <strong>${sim.soilFillPct}&nbsp;%</strong> der <span class="math-var">FK</span>)`;
         },
         getScenarioHtml: function(c, sim) {
-          return `Im gewählten Szenario beträgt die Speicheränderung im Boden <strong><span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = ${fmtSigned(sim.dSBoden)} mm/Jahr</span></strong> (aktuelle Bodenfeuchte: <strong>${sim.soilFillPct}&nbsp;%</strong> der Feldkapazität). Beobachte in der Grafik, wie sich die Farbe der Bodenschicht verändert und bei Dürre Trockenrisse entstehen!`;
+          return `Im gewählten Szenario beträgt die Speicheränderung im Boden hochgerechnet <strong><span class="math-inline">&Delta;<span class="math-var">S</span><sub>Boden</sub> = ${fmtSigned(sim.dSBoden)} Mrd. m<sup>3</sup>/a</span></strong> (aktuelle Bodenfeuchte: <strong>${sim.soilFillPct}&nbsp;%</strong> der Feldkapazität). Beobachte in der Grafik, wie sich die Farbe der Bodenschicht verändert und bei Dürre Trockenrisse entstehen!`;
         }
       },
       {
@@ -2328,19 +2424,19 @@
           return `Dringt Regenwasser in den Boden ein (<strong>Infiltration</strong>) und ist die obere Bodenzone bereits bis zur Feldkapazität gefüllt, zieht die Schwerkraft das überschüssige Wasser als <strong>Sickerwasser</strong> senkrecht durch den Sickerraum nach unten Richtung Grundwasserspiegel. Ob Sickerwasser entsteht, entscheidet die <strong>Klimatische Wasserbilanz (<span class="math-inline">KWB = <span class="math-var">N</span> &minus; <span class="math-var">PET</span></span>)</strong>!`;
         },
         getCountryHtml: function(c, de) {
-          return `Da <strong>Deutschland (🇩🇪)</strong> im Jahresmittel eine <strong>positive Klimatische Wasserbilanz (<span class="math-inline">KWB = +${fmtNum(de.KWB)} mm/Jahr</span>)</strong> besitzt, entsteht vor allem von November bis März reichlich Sickerwasser (im Mittel rund <strong><span class="math-inline">${fmtNum(de.Au)} mm/Jahr</span></strong>), das bis zum Grundwasser durchsickert.`;
+          return `Da <strong>Deutschland (🇩🇪)</strong> im Jahresmittel eine <strong>positive Klimatische Wasserbilanz (<span class="math-inline">KWB = +${fmtNum(de.KWB)} Mrd. m<sup>3</sup>/a</span>)</strong> besitzt, entsteht vor allem von November bis März reichlich Sickerwasser (im Mittel rund <strong><span class="math-inline">${fmtNum(de.Au)} Mrd. m<sup>3</sup>/a</span></strong>), das bis zum Grundwasser durchsickert.`;
         },
         getCompareHtml: function(c, de) {
-          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} beträgt die durchschnittliche Klimatische Wasserbilanz <strong><span class="math-inline">KWB = ${fmtSigned(c.KWB)} mm/Jahr</span></strong>, woraus im Jahresmittel rund <strong><span class="math-inline">${fmtNum(c.Au)} mm/Jahr</span></strong> Sickerwasser für die Grundwasserneubildung entstehen.`;
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} beträgt die durchschnittliche Klimatische Wasserbilanz <strong><span class="math-inline">KWB = ${fmtSigned(c.KWB)} Mrd. m<sup>3</sup>/a</span></strong>, woraus im Jahresmittel rund <strong><span class="math-inline">${fmtNum(c.Au)} Mrd. m<sup>3</sup>/a</span></strong> Sickerwasser für die Grundwasserneubildung entstehen.`;
         },
         getSpecificStatsHtml: function(c, de, sim) {
           return `<strong>📊 Konkrete Zahlenwerte an Station 7 &ndash; Klimatische Wasserbilanz (KWB) &amp; Sickerwasser:</strong><br>
-          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline">KWB = +${fmtNum(de.KWB)} mm/Jahr</span></strong> &middot; Sickerwasser: <strong><span class="math-inline">${fmtNum(de.Au)} mm/Jahr</span></strong><br>
-          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline">KWB = ${fmtSigned(c.KWB)} mm/Jahr</span></strong> &middot; Sickerwasser: <strong><span class="math-inline">${fmtNum(c.Au)} mm/Jahr</span></strong><br>
-          &bull; Aktuelles Szenario: <strong style="color:var(--ios-blue);"><span class="math-inline">KWB = ${fmtSigned(sim.KWB)} mm/Jahr</span></strong> &middot; Sickerwasserrate: <strong><span class="math-inline">${fmtNum(sim.percolation)} mm/Jahr</span></strong>`;
+          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline">KWB = +${fmtNum(de.KWB)} Mrd. m<sup>3</sup>/a</span></strong> &middot; Sickerwasser: <strong><span class="math-inline">${fmtNum(de.Au)} Mrd. m<sup>3</sup>/a</span></strong><br>
+          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline">KWB = ${fmtSigned(c.KWB)} Mrd. m<sup>3</sup>/a</span></strong> &middot; Sickerwasser: <strong><span class="math-inline">${fmtNum(c.Au)} Mrd. m<sup>3</sup>/a</span></strong><br>
+          &bull; Aktuelles Szenario: <strong style="color:var(--ios-blue);"><span class="math-inline">KWB = ${fmtSigned(sim.KWB)} Mrd. m<sup>3</sup>/a</span></strong> &middot; Sickerwasserrate: <strong><span class="math-inline">${fmtNum(sim.percolation)} Mrd. m<sup>3</sup>/a</span></strong>`;
         },
         getScenarioHtml: function(c, sim) {
-          return `Im aktuellen Szenario liegt die Sickerwasserrate bei <strong><span class="math-inline">${fmtNum(sim.percolation)} mm/Jahr</span></strong>. Ist die KWB negativ und der Boden unterhalb der Feldkapazität, siehst du in der Animation, wie die Sickerwassertropfen nach unten versiegen!`;
+          return `Im aktuellen Szenario liegt die Sickerwasserrate hochgerechnet bei <strong><span class="math-inline">${fmtNum(sim.percolation)} Mrd. m<sup>3</sup>/a</span></strong>. Ist die KWB negativ und der Boden unterhalb der Feldkapazität, siehst du in der Animation, wie die Sickerwassertropfen nach unten versiegen!`;
         }
       },
       {
@@ -2358,16 +2454,16 @@
           return `In <strong>Deutschland (🇩🇪)</strong> tritt starker kapillarer Aufstieg vor allem in den Sommermonaten Juni bis August in Flussauen, Niederungen und feinkörnigen Lehmböden auf, wenn der Grundwasserspiegel weniger als 2 bis 3 Meter unter der Geländeoberfläche liegt.`;
         },
         getCompareHtml: function(c, de) {
-          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> Je stärker der Atmosphären-Durst (<strong><span class="math-inline"><span class="math-var">PET</span> = ${fmtNum(c.PET)} mm/Jahr</span></strong> in ${c.name} gegenüber <span class="math-inline">${fmtNum(de.PET)} mm/Jahr</span> in Deutschland), desto kräftiger saugt die trockene Deckschicht im Sommer am Grundwasser.`;
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> Je stärker der Atmosphären-Durst (<strong><span class="math-inline"><span class="math-var">PET</span> = ${fmtNum(c.PET)} Mrd. m<sup>3</sup>/a</span></strong> in ${c.name} gegenüber <span class="math-inline">${fmtNum(de.PET)} Mrd. m<sup>3</sup>/a</span> in Deutschland), desto kräftiger saugt die trockene Deckschicht im Sommer am Grundwasser.`;
         },
         getSpecificStatsHtml: function(c, de, sim) {
           return `<strong>📊 Konkrete Zahlenwerte an Station 8 &ndash; Atmosphären-Durst (<span class="math-var">PET</span>), KWB &amp; Kapillarer Aufstieg:</strong><br>
-          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">PET</span> = ${fmtNum(de.PET)} mm/Jahr</span></strong> &middot; <strong><span class="math-inline">KWB = +${fmtNum(de.KWB)} mm/Jahr</span></strong><br>
-          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">PET</span> = ${fmtNum(c.PET)} mm/Jahr</span></strong> &middot; <strong><span class="math-inline">KWB = ${fmtSigned(c.KWB)} mm/Jahr</span></strong><br>
-          &bull; Aktuelles Szenario: Kapillarer Aufstieg <strong style="color:var(--ios-orange-dark);"><span class="math-inline">${fmtNum(sim.capillary)} mm/Jahr</span></strong> bei <span class="math-inline">KWB = ${fmtSigned(sim.KWB)} mm/Jahr</span>`;
+          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">PET</span> = ${fmtNum(de.PET)} Mrd. m<sup>3</sup>/a</span></strong> &middot; <strong><span class="math-inline">KWB = +${fmtNum(de.KWB)} Mrd. m<sup>3</sup>/a</span></strong><br>
+          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">PET</span> = ${fmtNum(c.PET)} Mrd. m<sup>3</sup>/a</span></strong> &middot; <strong><span class="math-inline">KWB = ${fmtSigned(c.KWB)} Mrd. m<sup>3</sup>/a</span></strong><br>
+          &bull; Aktuelles Szenario: Kapillarer Aufstieg <strong style="color:var(--ios-orange-dark);"><span class="math-inline">${fmtNum(sim.capillary)} Mrd. m<sup>3</sup>/a</span></strong> bei <span class="math-inline">KWB = ${fmtSigned(sim.KWB)} Mrd. m<sup>3</sup>/a</span>`;
         },
         getScenarioHtml: function(c, sim) {
-          return `Im gewählten Szenario beträgt der kapillare Aufstieg <strong><span class="math-inline">${fmtNum(sim.capillary)} mm/Jahr</span></strong>. In der Animation erkennst du ihn an den türkisblauen Bläschen, die beim Szenario „Hitzesommer &amp; Dürre“ entlang des hellblauen Pfeils von unten nach oben steigen!`;
+          return `Im gewählten Szenario beträgt der kapillare Aufstieg hochgerechnet <strong><span class="math-inline">${fmtNum(sim.capillary)} Mrd. m<sup>3</sup>/a</span></strong>. In der Animation erkennst du ihn an den türkisblauen Bläschen, die beim Szenario „Sommer“ entlang des hellblauen Pfeils von unten nach oben steigen!`;
         }
       },
       {
@@ -2382,50 +2478,50 @@
           return `Erreicht das Sickerwasser die Grundwasseroberfläche, spricht man von <strong>Grundwasserneubildung (<span class="math-var">GWN</span>)</strong>. In der Wasserbilanzgleichung wird dieser langfristige Zustrom, der später unterirdisch den Flüssen zufließt, als <strong>unterirdischer Abfluss (<span class="math-var">A</span><sub>u</sub>)</strong> erfasst.`;
         },
         getCountryHtml: function(c, de) {
-          return `In <strong>Deutschland (🇩🇪)</strong> beträgt die mittlere Grundwasserneubildung <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(de.Au)} mm/Jahr</span></strong> (rund 20&nbsp;% des Jahresniederschlags). Sie ist der wichtigste Schatz unserer Wasserwirtschaft, denn über 70&nbsp;% unseres Trinkwassers stammen aus dem Grundwasser!`;
+          return `In <strong>Deutschland (🇩🇪)</strong> beträgt die mittlere Grundwasserneubildung <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(de.Au)} Mrd. m<sup>3</sup>/a</span></strong> (rund 20&nbsp;% des Jahresniederschlags). Sie ist der wichtigste Schatz unserer Wasserwirtschaft, denn über 70&nbsp;% unseres Trinkwassers stammen aus dem Grundwasser!`;
         },
         getCompareHtml: function(c, de) {
           if (c.id === "de") {
-            return `Vergleiche unten, wie stark die Grundwasserneubildung (<span class="math-var">A</span><sub>u</sub>) in Deutschland zwischen feuchtem Winter und trockenem Hitzesommer schwankt!`;
+            return `Vergleiche unten, wie stark die Grundwasserneubildung (<span class="math-var">A</span><sub>u</sub>) in Deutschland zwischen feuchtem Winter und trockenem Sommer schwankt!`;
           }
           const diff = c.Au - de.Au;
-          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} liegt die durchschnittliche Grundwasserneubildung bei <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(c.Au)} mm/Jahr</span></strong> (${fmtSigned(diff)} mm/Jahr im Vergleich zu Deutschland mit <span class="math-inline">${fmtNum(de.Au)} mm/Jahr</span>).`;
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} liegt die durchschnittliche Grundwasserneubildung über die Landesfläche bei <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(c.Au)} Mrd. m<sup>3</sup>/a</span></strong> (${fmtSigned(diff)} Mrd. m<sup>3</sup>/a im Vergleich zu Deutschland mit <span class="math-inline">${fmtNum(de.Au)} Mrd. m<sup>3</sup>/a</span>).`;
         },
         getSpecificStatsHtml: function(c, de, sim) {
           return `<strong>📊 Konkrete Zahlenwerte an Station 9 &ndash; Unterirdischer Abfluss / Grundwasserneubildung (<span class="math-var">A</span><sub>u</sub>):</strong><br>
-          &bull; Durchschnittswert Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(de.Au)} mm/Jahr</span></strong><br>
-          &bull; Durchschnittswert ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(c.Au)} mm/Jahr</span></strong><br>
-          &bull; Aktueller Szenario-Wert: <strong style="color:var(--ios-green-dark);"><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(sim.Au)} mm/Jahr</span></strong>`;
+          &bull; Durchschnittswert Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(de.Au)} Mrd. m<sup>3</sup>/a</span></strong><br>
+          &bull; Durchschnittswert ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(c.Au)} Mrd. m<sup>3</sup>/a</span></strong><br>
+          &bull; Aktueller Szenario-Wert: <strong style="color:var(--ios-green-dark);"><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(sim.Au)} Mrd. m<sup>3</sup>/a</span></strong>`;
         },
         getScenarioHtml: function(c, sim) {
-          return `Im aktuell gewählten Szenario liegt die Grundwasserneubildung bei <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(sim.Au)} mm/Jahr</span></strong> (gegenüber <span class="math-inline">${fmtNum(c.Au)} mm/Jahr</span> im 30-Jahres-Mittel).`;
+          return `Im aktuell gewählten Szenario liegt die Grundwasserneubildung hochgerechnet bei <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(sim.Au)} Mrd. m<sup>3</sup>/a</span></strong> (gegenüber <span class="math-inline">${fmtNum(c.Au)} Mrd. m<sup>3</sup>/a</span> im 30-Jahres-Mittel).`;
         }
       },
       {
         id: "grundwasser",
         num: 10,
-        shortLabel: "10 · Grundwasserabfluss (ΔSGW)",
-        title: "10. Grundwasserraum (Aquifer), Grundwasserabfluss & Speicher (ΔSGW)",
-        badge: "Speicher & Basisabfluss (ΔSGW / RB)",
+        shortLabel: "10 · Grundwasserabfluss (ΔGW)",
+        title: "10. Grundwasserraum (Aquifer), Grundwasserabfluss & Speicher (ΔGW)",
+        badge: "Speicher & Basisabfluss (ΔGW / RB)",
         subCategory: "Gesättigte Zone (Aquifer)",
-        terms: ["aquifer", "basisabfluss", "deltas"],
+        terms: ["deltagw", "aquifer", "basisabfluss", "deltas"],
         getProcessHtml: function() {
-          return `Im <strong>Grundwasserraum (Aquifer)</strong> sind alle Poren zwischen Sand, Kies und Gestein komplett mit Wasser gefüllt. Das Grundwasser strömt als <strong>schneller und langsamer Grundwasserabfluss (Basisabfluss <span class="math-var">R</span><sub>B</sub> bzw. <span class="math-var">A</span><sub>u</sub>)</strong> dem nächsten Fluss zu. Die Bilanz aus Neubildung und Abfluss bestimmt die <strong>Grundwasserspeicheränderung (&Delta;<span class="math-var">S</span><sub>GW</sub>)</strong>.`;
+          return `Im <strong>Grundwasserraum (Aquifer)</strong> sind alle Poren zwischen Sand, Kies und Gestein komplett mit Wasser gefüllt. Das Grundwasser strömt als <strong>schneller und langsamer Grundwasserabfluss (Basisabfluss <span class="math-var">R</span><sub>B</sub> bzw. <span class="math-var">A</span><sub>u</sub>)</strong> dem nächsten Fluss zu. Die Bilanz aus Neubildung und Abfluss bestimmt die <strong>Grundwasserspeicheränderung (&Delta;<span class="math-var">GW</span>)</strong> als integrierten Bestandteil der gesamten <strong>Speicheränderung (&Delta;<span class="math-var">S</span>)</strong>.`;
         },
         getCountryHtml: function(c, de) {
-          return `In <strong>Deutschland (🇩🇪)</strong> sorgt der konstante Grundwasserabfluss (<strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(de.Au)} mm/Jahr</span></strong>) dafür, dass Flüsse wie Rhein, Main und Elbe auch in regenfreien Sommerwochen weiterfließen. Im 30-Jahres-Mittel ist <strong><span class="math-inline">&Delta;<span class="math-var">S</span><sub>GW</sub> = 0 mm/Jahr</span></strong>.`;
+          return `In <strong>Deutschland (🇩🇪)</strong> sorgt der konstante Grundwasserabfluss (<strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(de.Au)} Mrd. m<sup>3</sup>/a</span></strong>) dafür, dass Flüsse wie Rhein, Main und Elbe auch in regenfreien Sommerwochen weiterfließen. Im 30-Jahres-Mittel ist <strong><span class="math-inline">&Delta;<span class="math-var">GW</span> = 0 Mrd. m<sup>3</sup>/a</span></strong>.`;
         },
         getCompareHtml: function(c, de) {
-          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} beträgt der langfristige Basisabfluss aus dem Grundwasser im Durchschnitt <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(c.Au)} mm/Jahr</span></strong> (Deutschland: <span class="math-inline">${fmtNum(de.Au)} mm/Jahr</span>).`;
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} beträgt der langfristige Basisabfluss aus dem Grundwasser im Durchschnitt <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(c.Au)} Mrd. m<sup>3</sup>/a</span></strong> (Deutschland: <span class="math-inline">${fmtNum(de.Au)} Mrd. m<sup>3</sup>/a</span>).`;
         },
         getSpecificStatsHtml: function(c, de, sim) {
-          return `<strong>📊 Konkrete Zahlenwerte an Station 10 &ndash; Grundwasserspeicher (&Delta;<span class="math-var">S</span><sub>GW</sub>) &amp; Basisabfluss (<span class="math-var">A</span><sub>u</sub> / <span class="math-var">R</span><sub>B</sub>):</strong><br>
-          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline">&Delta;<span class="math-var">S</span><sub>GW</sub> = 0 mm/Jahr</span></strong> &middot; Basisabfluss <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(de.Au)} mm/Jahr</span></strong><br>
-          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline">&Delta;<span class="math-var">S</span><sub>GW</sub> = 0 mm/Jahr</span></strong> &middot; Basisabfluss <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(c.Au)} mm/Jahr</span></strong><br>
-          &bull; Aktuelles Szenario: <strong style="color:var(--ios-blue);"><span class="math-inline">&Delta;<span class="math-var">S</span><sub>GW</sub> = ${fmtSigned(sim.dSGW)} mm/Jahr</span></strong> &middot; Basisabfluss: <strong><span class="math-inline">${fmtNum(sim.Au)} mm/Jahr</span></strong>`;
+          return `<strong>📊 Konkrete Zahlenwerte an Station 10 &ndash; Grundwasserspeicher (&Delta;<span class="math-var">GW</span>) &amp; Basisabfluss (<span class="math-var">A</span><sub>u</sub> / <span class="math-var">R</span><sub>B</sub>):</strong><br>
+          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline">&Delta;<span class="math-var">GW</span> = 0 Mrd. m<sup>3</sup>/a</span></strong> &middot; Basisabfluss <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(de.Au)} Mrd. m<sup>3</sup>/a</span></strong><br>
+          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline">&Delta;<span class="math-var">GW</span> = 0 Mrd. m<sup>3</sup>/a</span></strong> &middot; Basisabfluss <strong><span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(c.Au)} Mrd. m<sup>3</sup>/a</span></strong><br>
+          &bull; Aktuelles Szenario: <strong style="color:var(--ios-blue);"><span class="math-inline">&Delta;<span class="math-var">GW</span> = ${fmtSigned(sim.dGW)} Mrd. m<sup>3</sup>/a</span></strong> &middot; Basisabfluss: <strong><span class="math-inline">${fmtNum(sim.Au)} Mrd. m<sup>3</sup>/a</span></strong>`;
         },
         getScenarioHtml: function(c, sim) {
-          return `Im gewählten Szenario verändert sich der Grundwasserspeicher um <strong><span class="math-inline">&Delta;<span class="math-var">S</span><sub>GW</sub> = ${fmtSigned(sim.dSGW)} mm/Jahr</span></strong>. Beobachte die blau gestrichelte Grundwasserlinie und das Spiegeldreieck (∇) in der Grafik: Bei positivem &Delta;<span class="math-var">S</span><sub>GW</sub> steigt der Grundwasserspiegel an, bei Dürre sinkt er ab!`;
+          return `Im gewählten Szenario verändert sich der Grundwasserspeicher hochgerechnet um <strong><span class="math-inline">&Delta;<span class="math-var">GW</span> = ${fmtSigned(sim.dGW)} Mrd. m<sup>3</sup>/a</span></strong>. Beobachte die blau gestrichelte Grundwasserlinie und das Spiegeldreieck (∇) in der Grafik: Bei positivem &Delta;<span class="math-var">GW</span> steigt der Grundwasserspiegel an, bei Dürre sinkt er ab!`;
         }
       },
       {
@@ -2440,22 +2536,22 @@
           return `Alles Regenwasser, das nicht verdunstet und nicht tief ins Grundwasser absickert, fließt auf dem schnellen Weg als <strong>oberirdischer Abfluss (<span class="math-var">A</span><sub>o</sub>)</strong> – auch <strong>Direktabfluss (<span class="math-var">R</span><sub>D</sub>)</strong> genannt – über geneigte Hänge (Oberflächenabfluss) und flache Bodenschichten (<strong>Zwischenabfluss / Interflow</strong>) hangabwärts Richtung Fluss.`;
         },
         getCountryHtml: function(c, de) {
-          return `In <strong>Deutschland (🇩🇪)</strong> macht der oberirdische Abfluss samt raschem Zwischenabfluss im 30-Jahres-Mittel <strong><span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(de.Ao)} mm/Jahr</span></strong> aus. Durch Flächenversiegelung (Straßen, Dächer) und Starkregen nimmt der schnelle Oberflächenabfluss deutlich zu.`;
+          return `In <strong>Deutschland (🇩🇪)</strong> macht der oberirdische Abfluss samt raschem Zwischenabfluss im 30-Jahres-Mittel <strong><span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(de.Ao)} Mrd. m<sup>3</sup>/a</span></strong> aus. Durch Flächenversiegelung (Straßen, Dächer) und Starkregen nimmt der schnelle Oberflächenabfluss deutlich zu.`;
         },
         getCompareHtml: function(c, de) {
           if (c.id === "de") {
-            return `In Deutschland fließen im Mittel <span class="math-inline">${fmtNum(de.Ao)} mm/Jahr</span> auf dem schnellen oberirdischen Weg (<span class="math-var">A</span><sub>o</sub>) über Hänge und den Zwischenabfluss in die Flüsse.`;
+            return `In Deutschland fließen im Mittel <span class="math-inline">${fmtNum(de.Ao)} Mrd. m<sup>3</sup>/a</span> auf dem schnellen oberirdischen Weg (<span class="math-var">A</span><sub>o</sub>) über Hänge und den Zwischenabfluss in die Flüsse.`;
           }
-          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} liegt der mittlere oberirdische Abfluss bei <strong><span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(c.Ao)} mm/Jahr</span></strong> (Deutschland: <span class="math-inline">${fmtNum(de.Ao)} mm/Jahr</span>). Besonders in den steilen Schweizer Alpen ist <span class="math-var">A</span><sub>o</sub> mit <span class="math-inline">712 mm/Jahr</span> extrem hoch!`;
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} liegt der mittlere oberirdische Abfluss bei <strong><span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(c.Ao)} Mrd. m<sup>3</sup>/a</span></strong> (Deutschland: <span class="math-inline">${fmtNum(de.Ao)} Mrd. m<sup>3</sup>/a</span>). Besonders in den steilen Schweizer Alpen ist <span class="math-var">A</span><sub>o</sub> im Verhältnis zur Landesgröße mit <span class="math-inline">${fmtNum(COUNTRIES.ch.Ao)} Mrd. m<sup>3</sup>/a</span> extrem hoch &ndash; fast die Hälfte des gesamten Schweizer Niederschlags!`;
         },
         getSpecificStatsHtml: function(c, de, sim) {
           return `<strong>📊 Konkrete Zahlenwerte an Station 11 &ndash; Oberirdischer Abfluss / Direktabfluss (<span class="math-var">A</span><sub>o</sub> bzw. <span class="math-var">R</span><sub>D</sub>):</strong><br>
-          &bull; Durchschnittswert Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(de.Ao)} mm/Jahr</span></strong><br>
-          &bull; Durchschnittswert ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(c.Ao)} mm/Jahr</span></strong><br>
-          &bull; Aktueller Szenario-Wert: <strong style="color:var(--ios-blue);"><span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(sim.Ao)} mm/Jahr</span></strong>`;
+          &bull; Durchschnittswert Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(de.Ao)} Mrd. m<sup>3</sup>/a</span></strong><br>
+          &bull; Durchschnittswert ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(c.Ao)} Mrd. m<sup>3</sup>/a</span></strong><br>
+          &bull; Aktueller Szenario-Wert: <strong style="color:var(--ios-blue);"><span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(sim.Ao)} Mrd. m<sup>3</sup>/a</span></strong>`;
         },
         getScenarioHtml: function(c, sim) {
-          return `Im gewählten Szenario beträgt der schnelle oberirdische Abfluss am Hang <strong><span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(sim.Ao)} mm/Jahr</span></strong>. Besonders im Sommer bei Gewitterregen und im nassen Winter strömen die blauen Abflusspartikel rasch den Hang hinab in den Vorfluter!`;
+          return `Im gewählten Szenario beträgt der schnelle oberirdische Abfluss am Hang hochgerechnet <strong><span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(sim.Ao)} Mrd. m<sup>3</sup>/a</span></strong>. Besonders im Sommer bei Gewitterregen und im nassen Winter strömen die blauen Abflusspartikel rasch den Hang hinab in den Vorfluter!`;
         }
       },
       {
@@ -2470,19 +2566,19 @@
           return `Unten rechts im <strong>Vorfluter (Fluss oder Bach)</strong> läuft das gesamte abfließende Wasser des Einzugsgebiets zusammen: Die <strong>Abflussbilanz im Vorfluter</strong> ergibt den <strong>Gesamtabfluss (<span class="math-var">A</span>)</strong> als Summe aus dem schnellen <strong>oberirdischen Direktabfluss (<span class="math-var">A</span><sub>o</sub>)</strong> vom Hang und dem gleichmäßigen <strong>unterirdischen Basisabfluss (<span class="math-var">A</span><sub>u</sub>)</strong> aus dem Grundwasser (<span class="math-inline"><span class="math-var">A</span> = <span class="math-var">A</span><sub>o</sub> + <span class="math-var">A</span><sub>u</sub></span>).`;
         },
         getCountryHtml: function(c, de) {
-          return `In <strong>Deutschland (🇩🇪)</strong> sammeln die Vorfluter (wie Rhein, Elbe, Donau und Weser) im langjährigen Mittel <strong><span class="math-inline"><span class="math-var">A</span> = ${fmtNum(de.A)} mm/Jahr</span></strong> Gesamtabfluss – zusammengesetzt aus <span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(de.Ao)} mm/Jahr</span> Direktabfluss und <span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(de.Au)} mm/Jahr</span> Grundwasser-Basisabfluss.`;
+          return `In <strong>Deutschland (🇩🇪)</strong> sammeln die Vorfluter (wie Rhein, Elbe, Donau und Weser) im langjährigen Mittel <strong><span class="math-inline"><span class="math-var">A</span> = ${fmtNum(de.A)} Mrd. m<sup>3</sup>/a</span></strong> Gesamtabfluss – zusammengesetzt aus <span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(de.Ao)} Mrd. m<sup>3</sup>/a</span> Direktabfluss und <span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(de.Au)} Mrd. m<sup>3</sup>/a</span> Grundwasser-Basisabfluss.`;
         },
         getCompareHtml: function(c, de) {
-          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} beträgt die durchschnittliche Abflussbilanz im Vorfluter <strong><span class="math-inline"><span class="math-var">A</span> = ${fmtNum(c.A)} mm/Jahr</span></strong> (<span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(c.Ao)} mm/Jahr</span> + <span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(c.Au)} mm/Jahr</span>).`;
+          return `<strong>Ländervergleich mit ${c.name} (${c.flag}):</strong> In ${c.name} beträgt die durchschnittliche Abflussbilanz im Vorfluter <strong><span class="math-inline"><span class="math-var">A</span> = ${fmtNum(c.A)} Mrd. m<sup>3</sup>/a</span></strong> (<span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(c.Ao)} Mrd. m<sup>3</sup>/a</span> + <span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(c.Au)} Mrd. m<sup>3</sup>/a</span>).`;
         },
         getSpecificStatsHtml: function(c, de, sim) {
           return `<strong>📊 Konkrete Zahlenwerte an Station 12 &ndash; Abflussbilanz im Vorfluter (<span class="math-var">A</span> = <span class="math-var">A</span><sub>o</sub> + <span class="math-var">A</span><sub>u</sub>):</strong><br>
-          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">A</span> = ${fmtNum(de.A)} mm/Jahr</span></strong> (<span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(de.Ao)}</span> + <span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(de.Au)} mm/Jahr</span>)<br>
-          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">A</span> = ${fmtNum(c.A)} mm/Jahr</span></strong> (<span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(c.Ao)}</span> + <span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(c.Au)} mm/Jahr</span>)<br>
-          &bull; Aktuelles Szenario: <strong style="color:var(--ios-blue);"><span class="math-inline"><span class="math-var">A</span> = ${fmtNum(sim.A)} mm/Jahr</span></strong> (<span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(sim.Ao)}</span> + <span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(sim.Au)} mm/Jahr</span>)`;
+          &bull; Durchschnitt Deutschland (🇩🇪): <strong><span class="math-inline"><span class="math-var">A</span> = ${fmtNum(de.A)} Mrd. m<sup>3</sup>/a</span></strong> (<span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(de.Ao)}</span> + <span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(de.Au)} Mrd. m<sup>3</sup>/a</span>)<br>
+          &bull; Durchschnitt ${c.name} (${c.flag}): <strong><span class="math-inline"><span class="math-var">A</span> = ${fmtNum(c.A)} Mrd. m<sup>3</sup>/a</span></strong> (<span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(c.Ao)}</span> + <span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(c.Au)} Mrd. m<sup>3</sup>/a</span>)<br>
+          &bull; Aktuelles Szenario: <strong style="color:var(--ios-blue);"><span class="math-inline"><span class="math-var">A</span> = ${fmtNum(sim.A)} Mrd. m<sup>3</sup>/a</span></strong> (<span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(sim.Ao)}</span> + <span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(sim.Au)} Mrd. m<sup>3</sup>/a</span>)`;
         },
         getScenarioHtml: function(c, sim) {
-          return `Im gewählten Szenario liegt die Abflussbilanz im Vorfluter bei <strong><span class="math-inline"><span class="math-var">A</span> = ${fmtNum(sim.A)} mm/Jahr</span></strong>, bestehend aus <span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(sim.Ao)} mm/Jahr</span> Direktabfluss und <span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(sim.Au)} mm/Jahr</span> Basisabfluss.`;
+          return `Im gewählten Szenario liegt die Abflussbilanz im Vorfluter hochgerechnet bei <strong><span class="math-inline"><span class="math-var">A</span> = ${fmtNum(sim.A)} Mrd. m<sup>3</sup>/a</span></strong>, bestehend aus <span class="math-inline"><span class="math-var">A</span><sub>o</sub> = ${fmtNum(sim.Ao)} Mrd. m<sup>3</sup>/a</span> Direktabfluss und <span class="math-inline"><span class="math-var">A</span><sub>u</sub> = ${fmtNum(sim.Au)} Mrd. m<sup>3</sup>/a</span> Basisabfluss.`;
         }
       }
     ];
@@ -2606,18 +2702,26 @@
           ⚖️ Allgemeine Wasserhaushaltsgleichung (Gesetz der Massenerhaltung)
         </span>
         <div>
-          <div class="equation-formula-box" aria-label="Wasserhaushaltsgleichung N plus Z gleich RET plus A plus Delta S">
-            <span style="color:var(--ios-blue-dark);">Zuflüsse (<span class="math-var">N</span> + <span class="math-var">Z</span>)</span>
-            <span>=</span>
-            <span style="color:var(--ios-orange-dark);">Verdunstung (<span class="math-var">RET</span>)</span>
-            <span>+</span>
-            <span style="color:var(--ios-green-dark);">Abfluss (<span class="math-var">A</span>)</span>
-            <span>+</span>
-            <span style="color:#6B21A8;">Speicheränderung (&Delta;<span class="math-var">S</span>)</span>
+          <div class="equation-formula-box" aria-label="Wasserhaushaltsgleichung Zuflüsse N plus Z gleich Verdunstung RET plus Abfluss A plus Speicheränderung Delta S">
+            <span class="eq-name-cell" style="color:var(--ios-blue-dark);">Zuflüsse</span>
+            <span class="eq-name-cell eq-op-cell">=</span>
+            <span class="eq-name-cell" style="color:var(--ios-orange-dark);">Verdunstung</span>
+            <span class="eq-name-cell eq-op-cell">+</span>
+            <span class="eq-name-cell" style="color:var(--ios-green-dark);">Abfluss</span>
+            <span class="eq-name-cell eq-op-cell">+</span>
+            <span class="eq-name-cell" style="color:#6B21A8;">Speicheränderung</span>
+
+            <span class="eq-var-cell" style="color:var(--ios-blue-dark);"><span class="math-var">N</span> + <span class="math-var">Z</span></span>
+            <span class="eq-var-cell eq-op-cell">=</span>
+            <span class="eq-var-cell" style="color:var(--ios-orange-dark);"><span class="math-var">RET</span></span>
+            <span class="eq-var-cell eq-op-cell">+</span>
+            <span class="eq-var-cell" style="color:var(--ios-green-dark);"><span class="math-var">A</span></span>
+            <span class="eq-var-cell eq-op-cell">+</span>
+            <span class="eq-var-cell" style="color:#6B21A8;">&Delta;<span class="math-var">S</span></span>
           </div>
         </div>
         <p style="margin:0.55rem auto 0;max-width:780px;font-size:0.9rem;line-height:1.72;color:var(--ios-text-secondary);">
-          <strong>Grundidee der Gleichung:</strong> Wasser geht im Kreislauf niemals verloren – alles Wasser, das über die ${tLink("niederschlag", "Zuflüsse (<span class='math-var'>N</span> + <span class='math-var'>Z</span>)")} in ein Gebiet gelangt, steigt entweder über die ${tLink("ret", "Verdunstung (<span class='math-var'>RET</span>)")} in die Atmosphäre auf, verlässt das Gebiet über den ${tLink("direktabfluss", "Abfluss (<span class='math-var'>A</span>)")} oder verändert über die ${tLink("deltas", "Speicheränderung (&Delta;<span class='math-var'>S</span>)")} die Vorräte im Untergrund.
+          <strong>Grundidee der Gleichung:</strong> Wasser geht im Kreislauf niemals verloren – alles Wasser, das über die ${tLink("niederschlag", "Zuflüsse (<span class='math-var'>N</span> + <span class='math-var'>Z</span>)")} in ein Gebiet gelangt, steigt entweder über die ${tLink("ret", "Verdunstung (<span class='math-var'>RET</span>)")} in die Atmosphäre auf, verlässt das Gebiet über den ${tLink("direktabfluss", "Abfluss (<span class='math-var'>A</span>)")} oder verändert über die ${tLink("deltas", "Speicheränderung (&Delta;<span class='math-var'>S</span>)")} die Vorräte in ${tLink("deltagw", "Grundwasser (&Delta;<span class='math-var'>GW</span>)")}, ${tLink("deltasboden", "Boden (&Delta;<span class='math-var'>S</span><sub>Boden</sub>)")} und ${tLink("deltasoberflaeche", "Oberfläche (&Delta;<span class='math-var'>S</span><sub>Oberfläche</sub>)")}.
         </p>
       `;
 
@@ -2661,13 +2765,13 @@
         },
         {
           symbol: `&Delta;<span class="math-var">S</span>`,
-          equationTag: `&Delta;<span class="math-var">S</span> = &Delta;<span class="math-var">S</span><sub>Boden</sub> + &Delta;<span class="math-var">S</span><sub>GW</sub>`,
-          fullName: "Speicheränderung (ΔS): Bodenspeicher + Grundwasser",
+          equationTag: `&Delta;<span class="math-var">S</span> = &Delta;<span class="math-var">GW</span> + &Delta;<span class="math-var">S</span><sub>Boden</sub> + &Delta;<span class="math-var">S</span><sub>Oberfläche</sub>`,
+          fullName: "Speicheränderung (ΔS): Grundwasser + Boden + Oberfläche",
           bgBadge: "#F3E8FF",
           colBadge: "#6B21A8",
           bulletHtml: `
             <ul class="var-bullet-list" style="margin-bottom:0;">
-              <li><strong>Vorstellung:</strong> Die Zu- oder Abnahme (${tLink("deltas", "Speicheränderung &Delta;<span class='math-var'>S</span>")}) des gespeicherten Wasservorrats im durchwurzelten Bodenschwamm bis zur ${tLink("feldkapazitaet", "Feldkapazität (<span class='math-var'>FK</span>)")} sowie im tieferen ${tLink("aquifer", "Grundwasserleiter (Aquifer)")}.</li>
+              <li><strong>Vorstellung:</strong> Die gesamte ${tLink("deltas", "Speicheränderung (&Delta;<span class='math-var'>S</span>)")} vereint drei Vorräte: die ${tLink("deltagw", "Grundwasserspeicheränderung (&Delta;<span class='math-var'>GW</span>)")} im ${tLink("aquifer", "Aquifer")}, die ${tLink("deltasboden", "Bodenspeicheränderung (&Delta;<span class='math-var'>S</span><sub>Boden</sub>)")} im durchwurzelten Bodenschwamm bis zur ${tLink("feldkapazitaet", "Feldkapazität (<span class='math-var'>FK</span>)")} sowie die ${tLink("deltasoberflaeche", "Oberflächenspeicher (&Delta;<span class='math-var'>S</span><sub>Oberfläche</sub>)")} in Seen, Schnee, Gletschern und Talsperren.</li>
             </ul>
           `
         }
@@ -2706,8 +2810,8 @@
         </p>
         <ul class="var-bullet-list" style="margin-bottom:0;">
           <li><strong>Kurzvorstellung (<span class="math-inline">KWB = <span class="math-var">N</span> &minus; <span class="math-var">PET</span></span>):</strong> Die ${tLink("kwb", "Klimatische Wasserbilanz (KWB)")} zieht den maximal möglichen „Atmosphären-Durst“ der Luft (${tLink("pet", "potenzielle Evapotranspiration <span class='math-var'>PET</span>")}) vom gefallenen ${tLink("niederschlag", "Gebietsniederschlag (<span class='math-var'>N</span>)")} ab.</li>
-          <li><strong>Bei positiver KWB (Überschuss in der Gleichung):</strong> Fällt mehr Regen als die Luft verdunsten kann, füllt das Wasser in der Wasserhaushaltsgleichung zuerst den Speicher (${tLink("deltas", "positives &Delta;<span class='math-var'>S</span>")}) bis zur ${tLink("feldkapazitaet", "Feldkapazität (<span class='math-var'>FK</span>)")} auf und speist über ${tLink("sickerwasser", "Sickerwasser")} die ${tLink("gwn", "Grundwasserneubildung (<span class='math-var'>A</span><sub>u</sub>)")}.</li>
-          <li><strong>Bei negativer KWB (Defizit in der Gleichung):</strong> Ist der Atmosphären-Durst größer als der Regen, zehrt die ${tLink("ret", "reale Evapotranspiration (<span class='math-var'>RET</span>)")} den Bodenspeicher leer (${tLink("deltas", "negatives &Delta;<span class='math-var'>S</span>")}), die ${tLink("gwn", "Grundwasserneubildung (<span class='math-var'>A</span><sub>u</sub>)")} stoppt und ${tLink("kapillaraufstieg", "kapillarer Aufstieg")} saugt Grundwasser nach oben.</li>
+          <li><strong>Bei positiver KWB (Überschuss in der Gleichung):</strong> Fällt mehr Regen als die Luft verdunsten kann, füllt das Wasser in der Wasserhaushaltsgleichung zuerst die Speicher (${tLink("deltas", "positives &Delta;<span class='math-var'>S</span>")} samt ${tLink("deltagw", "&Delta;<span class='math-var'>GW</span>")}) bis zur ${tLink("feldkapazitaet", "Feldkapazität (<span class='math-var'>FK</span>)")} auf und speist über ${tLink("sickerwasser", "Sickerwasser")} die ${tLink("gwn", "Grundwasserneubildung (<span class='math-var'>A</span><sub>u</sub>)")}.</li>
+          <li><strong>Bei negativer KWB (Defizit in der Gleichung):</strong> Ist der Atmosphären-Durst größer als der Regen, zehrt die ${tLink("ret", "reale Evapotranspiration (<span class='math-var'>RET</span>)")} Boden-, Oberflächen- und Grundwasserspeicher leer (${tLink("deltas", "negatives &Delta;<span class='math-var'>S</span>")} und ${tLink("deltagw", "negatives &Delta;<span class='math-var'>GW</span>")}), die ${tLink("gwn", "Grundwasserneubildung (<span class='math-var'>A</span><sub>u</sub>)")} stoppt und ${tLink("kapillaraufstieg", "kapillarer Aufstieg")} saugt Grundwasser nach oben.</li>
         </ul>
       `;
     }
@@ -2815,7 +2919,7 @@
 
         document.getElementById("deltaSScenarioLabel").textContent = scen.name;
         const pill = document.getElementById("deltaSValuePill");
-        pill.innerHTML = `Speicheränderung &Delta;<span class="math-var">S</span> = ${fmtSigned(sim.dS)} mm/Jahr`;
+        pill.innerHTML = `Speicheränderung &Delta;<span class="math-var">S</span> = ${fmtSigned(sim.dS)} Mrd. m<sup>3</sup>/a`;
 
         if (sim.dS === 0) {
           pill.style.background = "var(--ios-blue)";
@@ -2832,7 +2936,7 @@
         }
 
         document.getElementById("deltaSSubBreakdown").innerHTML =
-          `Bodenspeicher &Delta;<span class="math-var">S</span><sub>Boden</sub>: <strong>${fmtSigned(sim.dSBoden)} mm/Jahr</strong> &middot; Grundwasserspeicher &Delta;<span class="math-var">S</span><sub>GW</sub>: <strong>${fmtSigned(sim.dSGW)} mm/Jahr</strong>`;
+          `Grundwasser &Delta;<span class="math-var">GW</span>: <strong>${fmtSigned(sim.dGW)} Mrd. m<sup>3</sup>/a</strong> &middot; Boden &Delta;<span class="math-var">S</span><sub>Boden</sub>: <strong>${fmtSigned(sim.dSBoden)} Mrd. m<sup>3</sup>/a</strong> &middot; Oberfläche &Delta;<span class="math-var">S</span><sub>Oberfläche</sub>: <strong>${fmtSigned(sim.dSOberfl)} Mrd. m<sup>3</sup>/a</strong>`;
         document.getElementById("deltaSDidacticExplanation").innerHTML = autoLinkTerms(scen.explainDeltaS(c, sim));
       }
 
@@ -2840,10 +2944,10 @@
       const kwbPill = document.getElementById("stageKwbPill");
       kwbPill.classList.remove("is-negative", "is-buffered");
       if (sim.KWB >= 0) {
-        kwbPill.innerHTML = `<span>Klimatische Wasserbilanz (KWB = <span class="math-var">N</span> &minus; <span class="math-var">PET</span>): <strong>${fmtSigned(sim.KWB)} mm/Jahr (positiv &rarr; Sickerwasser aktiv)</strong></span>`;
+        kwbPill.innerHTML = `<span>Klimatische Wasserbilanz (KWB = <span class="math-var">N</span> &minus; <span class="math-var">PET</span>): <strong>${fmtSigned(sim.KWB)} Mrd. m<sup>3</sup>/a (positiv &rarr; Sickerwasser aktiv)</strong></span>`;
       } else {
         kwbPill.classList.add("is-negative");
-        kwbPill.innerHTML = `<span>Klimatische Wasserbilanz (KWB = <span class="math-var">N</span> &minus; <span class="math-var">PET</span>): <strong>${fmtSigned(sim.KWB)} mm/Jahr (negativ &rarr; kapillarer Aufstieg)</strong></span>`;
+        kwbPill.innerHTML = `<span>Klimatische Wasserbilanz (KWB = <span class="math-var">N</span> &minus; <span class="math-var">PET</span>): <strong>${fmtSigned(sim.KWB)} Mrd. m<sup>3</sup>/a (negativ &rarr; kapillarer Aufstieg)</strong></span>`;
       }
 
       // SVG-Elemente passend zum Szenario animieren
@@ -2880,6 +2984,8 @@
     }
 
     function updateSvgVisuals(sim) {
+      const c = COUNTRIES[state.selectedCountryId] || COUNTRIES.de;
+
       // Bodenfarbe und Trockenrisse je nach Bodenfüllung
       const soil1 = document.getElementById("soilStop1");
       const soil2 = document.getElementById("soilStop2");
@@ -2899,13 +3005,13 @@
         cracks.setAttribute("opacity", "0");
       }
 
-      // Grundwasserspiegel-Höhe je nach dSGW
+      // Grundwasserspiegel-Höhe je nach relativem dGW
       let gwYLeft = 338;
       let gwYRight = 346;
-      if (sim.dSGW > 15) {
+      if (sim.dGW > c.Au * 0.12) {
         gwYLeft = 324;
         gwYRight = 334;
-      } else if (sim.dSGW < -15) {
+      } else if (sim.dGW < -c.Au * 0.12) {
         gwYLeft = 354;
         gwYRight = 360;
       }
@@ -2919,9 +3025,9 @@
       gwLine.setAttribute("y2", String(gwYRight));
       gwTri.setAttribute("transform", `translate(744, ${gwYRight - 1})`);
 
-      // Pfeil-Sichtbarkeiten nach Prozessintensität
-      document.getElementById("arrowGroupCapillary").setAttribute("opacity", sim.capillary > 10 ? "1" : "0.28");
-      document.getElementById("arrowGroupPercolation").setAttribute("opacity", sim.percolation > 20 ? "1" : "0.25");
+      // Pfeil-Sichtbarkeiten nach Prozessintensität (relativ zu Landesgröße)
+      document.getElementById("arrowGroupCapillary").setAttribute("opacity", sim.capillary > c.RET * 0.035 ? "1" : "0.28");
+      document.getElementById("arrowGroupPercolation").setAttribute("opacity", sim.percolation > c.Au * 0.18 ? "1" : "0.25");
     }
 
     /* --------------------------------------------------------------------------
@@ -3015,12 +3121,14 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const sim = getActiveSimValues();
-      const rainFactor = Math.min(1.6, Math.max(0.25, sim.N / 780));
-      const evapFactor = Math.min(1.6, Math.max(0.25, sim.RET / 480));
-      const percFactor = sim.percolation <= 5 ? 0 : Math.min(1.6, Math.max(0.25, sim.percolation / 150));
-      const capFactor = sim.capillary <= 8 ? 0.15 : Math.min(1.7, sim.capillary / 22);
-      const aoFactor = Math.min(1.7, Math.max(0.3, sim.Ao / 250));
-      const auFactor = Math.min(1.6, Math.max(0.25, sim.Au / 150));
+      const c = COUNTRIES[state.selectedCountryId] || COUNTRIES.de;
+      const area = c.areaMioKm2 || 0.357588;
+      const rainFactor = Math.min(1.6, Math.max(0.25, (sim.N / area) / 780));
+      const evapFactor = Math.min(1.6, Math.max(0.25, (sim.RET / area) / 480));
+      const percFactor = sim.percolation <= c.Au * 0.03 ? 0 : Math.min(1.6, Math.max(0.25, (sim.percolation / area) / 150));
+      const capFactor = sim.capillary <= c.RET * 0.025 ? 0.15 : Math.min(1.7, (sim.capillary / area) / 22);
+      const aoFactor = Math.min(1.7, Math.max(0.3, (sim.Ao / area) / 250));
+      const auFactor = Math.min(1.6, Math.max(0.25, (sim.Au / area) / 150));
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
