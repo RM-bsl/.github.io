@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <title>Wasserdargebot, Wasserbilanz und Wassernutzung in Deutschland – 10-Stufen-Begriffsquiz</title>
+
+  <!-- KaTeX für normgerechte hydrologische Formeln, Indizes, Exponenten, Brüche & Einheiten -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="window.renderMathSafe && window.renderMathSafe(document.body)"></script>
+
+  <style>
+    :root {
+      --ios-bg: #F2F2F7;
+      --ios-card: rgba(255, 255, 255, 0.82);
+      --ios-card-solid: #FFFFFF;
+      --ios-border: rgba(255, 255, 255, 0.72);
+      --ios-hairline: rgba(60, 60, 67, 0.14);
+      --ios-text: #1C1C1E;
+      --ios-text-secondary: #6E6E73;
+      --ios-blue: #007AFF;
+      --ios-blue-soft: rgba(0, 122, 255, 0.12);
+      --ios-green: #34C759;
+      --ios-green-dark: #1E8E3E;
+      --ios-green-soft: rgba(52, 199, 89, 0.14);
+      --ios-red: #FF3B30;
+      --ios-red-soft: rgba(255, 59, 48, 0.13);
+      --ios-orange: #FF9500;
+      --ios-orange-soft: rgba(255, 149, 0, 0.14);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --shadow-glass: 0 12px 36px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+      --shadow-float: 0 10px 28px rgba(0, 122, 255, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background-color: var(--ios-bg);
+      background-image:
+        radial-gradient(at 10% 0%, rgba(0, 122, 255, 0.09) 0px, transparent 50%),
+        radial-gradient(at 90% 10%, rgba(52, 199, 89, 0.08) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(0, 122, 255, 0.06) 0px, transparent 55%);
+      color: var(--ios-text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.54;
+    }
+
+    /* Optimierte KaTeX-Typografie für gestapelte Brüche, tiefgestellte Indizes & Exponenten */
+    .katex {
+      font-size: 1.03em;
+      line-height: 1.3;
+    }
+
+    .katex-display {
+      margin: 0.65em 0;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.68);
+      border: 1px solid rgba(52, 199, 89, 0.26);
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    .option-label .katex .mfrac,
+    .summary-answer .katex .mfrac,
+    .question-text .katex .mfrac {
+      vertical-align: middle;
+    }
+
+    .app-shell {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: max(16px, env(safe-area-inset-top)) 16px max(36px, env(safe-area-inset-bottom)) 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Liquid / Frosted Glass Card */
+    .glass-card {
+      background: var(--ios-card);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border: 1px solid var(--ios-border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-glass);
+      padding: 20px;
+      margin-bottom: 16px;
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+    }
+
+    /* Top Navigation Bar */
+    .top-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px 20px;
+    }
+
+    .top-bar-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .app-kicker {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ios-blue);
+    }
+
+    .app-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 2px 0 0 0;
+      color: var(--ios-text);
+    }
+
+    .pill-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ios-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      background: rgba(118, 118, 128, 0.12);
+      color: var(--ios-text);
+    }
+
+    .ios-pill.blue {
+      background: var(--ios-blue-soft);
+      color: var(--ios-blue);
+    }
+
+    .ios-pill.green {
+      background: var(--ios-green-soft);
+      color: var(--ios-green-dark);
+    }
+
+    /* Segmented 10-Stage Progress Bar */
+    .stage-track {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 5px;
+      margin-top: 2px;
+    }
+
+    .stage-seg {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(118, 118, 128, 0.18);
+      transition: background-color 0.3s ease, transform 0.25s ease;
+    }
+
+    .stage-seg.done {
+      background: var(--ios-green);
+    }
+
+    .stage-seg.active {
+      background: var(--ios-blue);
+      transform: scaleY(1.25);
+    }
+
+    /* Question Card */
+    .term-focus-pill {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ios-blue);
+      background: var(--ios-blue-soft);
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+
+    .level-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ios-text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .question-text {
+      font-size: 18.5px;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      line-height: 1.48;
+      color: var(--ios-text);
+      margin: 0 0 18px 0;
+    }
+
+    /* Joker & Action Row */
+    .toolbar-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-joker {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 149, 0, 0.32);
+      background: var(--ios-orange-soft);
+      color: #B25E00;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.2s ease, background-color 0.2s ease;
+    }
+
+    .btn-joker:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    .btn-joker:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .meta-counter {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ios-text-secondary);
+    }
+
+    /* Answer Options */
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .option-btn {
+      width: 100%;
+      min-height: 56px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      text-align: left;
+      padding: 15px 16px;
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--ios-hairline);
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--ios-text);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.55;
+      cursor: pointer;
+      transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1),
+                  border-color 0.2s ease,
+                  background-color 0.2s ease,
+                  opacity 0.25s ease;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: rgba(0, 122, 255, 0.45);
+      background: #FFFFFF;
+    }
+
+    .option-btn:active:not(:disabled) {
+      transform: scale(0.985);
+    }
+
+    .option-btn:disabled {
+      cursor: default;
+    }
+
+    .option-badge {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: rgba(118, 118, 128, 0.12);
+      color: var(--ios-text);
+      font-size: 13.5px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .option-btn.eliminated {
+      opacity: 0.32;
+      background: rgba(242, 242, 247, 0.6);
+      text-decoration: line-through;
+    }
+
+    .option-btn.correct {
+      border-color: var(--ios-green);
+      background: var(--ios-green-soft);
+      color: #0F5123;
+      font-weight: 600;
+    }
+
+    .option-btn.correct .option-badge {
+      background: var(--ios-green);
+      color: #FFFFFF;
+    }
+
+    .option-btn.wrong {
+      border-color: var(--ios-red);
+      background: var(--ios-red-soft);
+      color: #8E1912;
+      font-weight: 600;
+      animation: iosShake 0.42s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    .option-btn.wrong .option-badge {
+      background: var(--ios-red);
+      color: #FFFFFF;
+    }
+
+    @keyframes iosShake {
+      10%, 90% { transform: translateX(-3px); }
+      20%, 80% { transform: translateX(5px); }
+      30%, 50%, 70% { transform: translateX(-6px); }
+      40%, 60% { transform: translateX(6px); }
+    }
+
+    /* Smooth Expanding Didactic Explanation Drawer */
+    .feedback-drawer {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      margin-top: 0;
+      transition: max-height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                  opacity 0.32s ease,
+                  margin-top 0.32s ease;
+    }
+
+    .feedback-drawer.open {
+      max-height: 760px;
+      opacity: 1;
+      margin-top: 18px;
+    }
+
+    .feedback-inner {
+      background: rgba(52, 199, 89, 0.11);
+      border: 1px solid rgba(52, 199, 89, 0.35);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+    }
+
+    .feedback-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ios-green-dark);
+      margin-bottom: 6px;
+    }
+
+    .feedback-body {
+      font-size: 14.5px;
+      color: var(--ios-text);
+      margin: 0 0 14px 0;
+      line-height: 1.56;
+    }
+
+    /* iOS Primary & Secondary Buttons */
+    .btn-ios-primary {
+      width: 100%;
+      min-height: 50px;
+      border: none;
+      border-radius: var(--radius-md);
+      background: var(--ios-blue);
+      color: #FFFFFF;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      padding: 13px 20px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 6px 18px rgba(0, 122, 255, 0.24);
+      transition: transform 0.15s ease, background-color 0.2s ease;
+    }
+
+    .btn-ios-primary:hover {
+      background: #0066D6;
+    }
+
+    .btn-ios-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-ios-secondary {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--ios-hairline);
+      border-radius: var(--radius-md);
+      background: rgba(118, 118, 128, 0.12);
+      color: var(--ios-text);
+      font-size: 15px;
+      font-weight: 600;
+      padding: 12px 18px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.15s ease, background-color 0.2s ease;
+    }
+
+    .btn-ios-secondary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-ios-danger {
+      width: 100%;
+      min-height: 48px;
+      border: none;
+      border-radius: var(--radius-md);
+      background: var(--ios-red);
+      color: #FFFFFF;
+      font-size: 15.5px;
+      font-weight: 600;
+      padding: 12px 18px;
+      cursor: pointer;
+    }
+
+    /* Intermediate Victory & Final Learning Sheet Views */
+    .hidden {
+      display: none !important;
+    }
+
+    .hero-center {
+      text-align: center;
+      padding: 12px 6px;
+    }
+
+    .hero-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      background: var(--ios-green-soft);
+      color: var(--ios-green-dark);
+      font-size: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .hero-title {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0 0 8px 0;
+    }
+
+    .hero-desc {
+      font-size: 15.5px;
+      color: var(--ios-text-secondary);
+      margin: 0 auto 20px auto;
+      max-width: 520px;
+    }
+
+    /* Learning Sheet (Smartphone PDF Export) */
+    .sheet-header-card {
+      background: var(--ios-card-solid);
+      border-radius: var(--radius-xl);
+      padding: 22px;
+      border: 1px solid var(--ios-hairline);
+      box-shadow: var(--shadow-glass);
+      margin-bottom: 16px;
+    }
+
+    .sheet-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .sheet-meta-box {
+      background: var(--ios-bg);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+
+    .sheet-meta-label {
+      font-size: 11.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--ios-text-secondary);
+      display: block;
+    }
+
+    .sheet-meta-value {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ios-text);
+    }
+
+    .volatile-name-box {
+      margin-top: 12px;
+    }
+
+    .volatile-name-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ios-text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .ios-input {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1.5px solid var(--ios-hairline);
+      background: var(--ios-bg);
+      font-family: inherit;
+      font-size: 16px;
+      color: var(--ios-text);
+      outline: none;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .ios-input:focus {
+      border-color: var(--ios-blue);
+      background: #FFFFFF;
+    }
+
+    .print-only-name {
+      display: none;
+    }
+
+    .summary-item {
+      background: var(--ios-card-solid);
+      border: 1px solid var(--ios-hairline);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .summary-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .summary-badge {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ios-blue);
+      background: var(--ios-blue-soft);
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .summary-q {
+      font-size: 15.5px;
+      font-weight: 700;
+      color: var(--ios-text);
+      margin: 0 0 10px 0;
+      line-height: 1.48;
+    }
+
+    .summary-answer {
+      background: var(--ios-green-soft);
+      border-left: 4px solid var(--ios-green);
+      border-radius: 10px;
+      padding: 11px 13px;
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #0F5123;
+      margin-bottom: 8px;
+      line-height: 1.54;
+    }
+
+    .summary-exp {
+      font-size: 13.5px;
+      color: var(--ios-text-secondary);
+      margin: 0;
+      line-height: 1.54;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.42);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border-radius: 22px;
+      padding: 24px 20px 20px 20px;
+      text-align: center;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18);
+    }
+
+    .modal-icon {
+      font-size: 36px;
+      margin-bottom: 8px;
+    }
+
+    .modal-title {
+      font-size: 19px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+      color: var(--ios-text);
+    }
+
+    .modal-text {
+      font-size: 14.5px;
+      color: var(--ios-text-secondary);
+      margin: 0 0 18px 0;
+      line-height: 1.45;
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    /* Post-Print Privacy Banner & Floating Action Button */
+    .post-print-banner {
+      position: fixed;
+      bottom: max(16px, env(safe-area-inset-bottom));
+      left: 16px;
+      right: 16px;
+      max-width: 688px;
+      margin: 0 auto;
+      background: rgba(28, 28, 30, 0.92);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      color: #FFFFFF;
+      border-radius: 18px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+      z-index: 900;
+    }
+
+    .banner-text {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .banner-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn-banner-reset {
+      min-height: 40px;
+      padding: 8px 14px;
+      border-radius: 11px;
+      border: none;
+      background: var(--ios-blue);
+      color: #FFFFFF;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-banner-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(255, 255, 255, 0.16);
+      color: #FFFFFF;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ios-fab {
+      position: fixed;
+      right: 18px;
+      bottom: max(18px, env(safe-area-inset-bottom));
+      min-height: 48px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: none;
+      background: var(--ios-blue);
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: var(--shadow-float);
+      cursor: pointer;
+      z-index: 850;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Confetti Canvas */
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 950;
+    }
+
+    /* Dedicated Smartphone PDF & DIN-A4 Print Stylesheet */
+    @media print {
+      @page {
+        size: auto;
+        margin: 12mm;
+      }
+
+      html, body {
+        background: #FFFFFF !important;
+        background-image: none !important;
+        color: #000000 !important;
+        font-size: 10.5pt;
+      }
+
+      .no-print,
+      #topBar,
+      #quizView,
+      #stageVictoryView,
+      #permadeathModal,
+      #resetConfirmModal,
+      #postPrintBanner,
+      #resetFab,
+      #confettiCanvas {
+        display: none !important;
+      }
+
+      .app-shell {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      #learningSheetView {
+        display: block !important;
+      }
+
+      .sheet-header-card {
+        box-shadow: none !important;
+        border: 1.5px solid #CBD5E1 !important;
+        border-radius: 12px !important;
+        padding: 14px 16px !important;
+        margin-bottom: 12px !important;
+        break-inside: avoid;
+      }
+
+      .volatile-name-box {
+        display: none !important;
+      }
+
+      .print-only-name.has-value {
+        display: block !important;
+        margin-top: 8px;
+        font-size: 11pt;
+        font-weight: 700;
+        color: #0F172A;
+      }
+
+      .summary-item {
+        box-shadow: none !important;
+        border: 1px solid #CBD5E1 !important;
+        border-radius: 10px !important;
+        padding: 11px 14px !important;
+        margin-bottom: 9px !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+      }
+
+      .summary-answer {
+        background: #ECFDF5 !important;
+        border-left: 3.5px solid #16A34A !important;
+        color: #14532D !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .summary-badge {
+        background: #EFF6FF !important;
+        color: #1D4ED8 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confettiCanvas"></canvas>
+
+  <main class="app-shell">
+    <!-- Top Header & 10-Stage Progress Bar -->
+    <header id="topBar" class="glass-card top-bar">
+      <div class="top-bar-row">
+        <div>
+          <div class="app-kicker">10-Stufen-Begriffsquiz • Umwelttechnologie (BS+1)</div>
+          <h1 class="app-title">Wasserdargebot, Wasserbilanz und Wassernutzung in Deutschland</h1>
+        </div>
+        <div class="pill-group">
+          <span id="runBadge" class="ios-pill blue">Durchlauf 1 von 2</span>
+          <span id="stageBadge" class="ios-pill">Stufe 1 / 10</span>
+        </div>
+      </div>
+      <div id="stageTrack" class="stage-track" aria-label="Fortschritt über 10 Stufen"></div>
+    </header>
+
+    <!-- Active Quiz Card -->
+    <section id="quizView" class="glass-card" aria-live="polite">
+      <div class="toolbar-row">
+        <button id="jokerBtn" type="button" class="btn-joker" onclick="useFiftyFifty()">
+          <span>50:50 Joker</span>
+          <span id="jokerCount">(2 übrig)</span>
+        </button>
+        <span id="attemptStats" class="meta-counter">Versuch 1 • Variante A</span>
+      </div>
+
+      <div id="termFocusBadge" class="term-focus-pill">Begriffsfokus</div>
+      <div id="levelTitle" class="level-label">Stufe 1</div>
+      <h2 id="questionText" class="question-text"></h2>
+
+      <div id="optionsContainer" class="options-list"></div>
+
+      <!-- Smooth Unfolding Didactic Explanation Drawer -->
+      <div id="feedbackDrawer" class="feedback-drawer">
+        <div class="feedback-inner">
+          <div class="feedback-title">
+            <span>✓ Richtig definiert – Fachliche Einordnung</span>
+          </div>
+          <p id="feedbackText" class="feedback-body"></p>
+          <button id="nextBtn" type="button" class="btn-ios-primary" onclick="handleNextStep()">
+            Nächste Frage
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Intermediate Victory Screen (After Run 1, Stage 10) -->
+    <section id="stageVictoryView" class="glass-card hero-center hidden">
+      <div class="hero-icon">🏆</div>
+      <h2 class="hero-title">Etappensieg! Durchlauf 1 gemeistert</h2>
+      <p class="hero-desc">
+        Stufe 1 bis 10 erfolgreich abgeschlossen! Um alle 20 Begriffsdefinitionen für dein interferenzfreies Smartphone-Lernblatt freizuschalten, spiele jetzt Durchlauf 2 mit den 10 ungespielten Parallelfragen.
+      </p>
+      <button type="button" class="btn-ios-primary" onclick="startSecondRun()">
+        Ungespielte Alternativfragen spielen
+      </button>
+    </section>
+
+    <!-- Final Interference-Free Smartphone PDF Learning Sheet (After Run 2, Stage 10) -->
+    <section id="learningSheetView" class="hidden">
+      <div class="sheet-header-card">
+        <div class="app-kicker">Interferenzfreies Begriffs- & Lernblatt • Alle 20 Fragen gemeistert</div>
+        <h2 class="app-title" style="font-size: 21px; margin-top: 4px;">Wasserdargebot, Wasserbilanz und Wassernutzung in Deutschland</h2>
+        <p style="font-size: 13px; color: var(--ios-text-secondary); margin: 4px 0 0 0;">
+          Quelle: Umfassender Fachbericht – Wasserdargebot, Wasserbilanz und Wassernutzung in Deutschland (Referenzperiode 1991–2020, Datenjahr 2022)
+        </p>
+
+        <div class="sheet-meta-grid">
+          <div class="sheet-meta-box">
+            <span class="sheet-meta-label">Datum</span>
+            <span id="sheetDate" class="sheet-meta-value"></span>
+          </div>
+          <div class="sheet-meta-box">
+            <span class="sheet-meta-label">Benötigte Versuche</span>
+            <span id="sheetAttempts" class="sheet-meta-value"></span>
+          </div>
+          <div class="sheet-meta-box">
+            <span class="sheet-meta-label">Genutzte 50:50-Joker</span>
+            <span id="sheetJokersUsed" class="sheet-meta-value"></span>
+          </div>
+        </div>
+
+        <div class="volatile-name-box no-print">
+          <label for="volatileNameInput" class="volatile-name-label">
+            Name für den PDF-Kopf (optional – wird nicht gespeichert)
+          </label>
+          <input
+            id="volatileNameInput"
+            type="text"
+            class="ios-input"
+            placeholder="Vor- und Nachname eingeben..."
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+            oninput="syncVolatileName()"
+          />
+        </div>
+        <div id="printOnlyName" class="print-only-name"></div>
+
+        <div class="no-print" style="margin-top: 16px;">
+          <button type="button" class="btn-ios-primary" onclick="triggerSmartphonePrint()">
+            Als PDF auf Smartphone speichern / Drucken
+          </button>
+        </div>
+      </div>
+
+      <div id="summaryList"></div>
+    </section>
+  </main>
+
+  <!-- Permadeath Modal (Wrong Answer -> Reset to Stage 1) -->
+  <div id="permadeathModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-icon">⚠️</div>
+      <h3 class="modal-title">Leider nicht richtig</h3>
+      <p class="modal-text">
+        Die Lösung bleibt verborgen, damit du den Fachbegriff selbst herleiten kannst. Der aktuelle Durchlauf startet wieder auf Stufe 1 mit frischen Jokern.
+      </p>
+      <div class="modal-actions">
+        <button type="button" class="btn-ios-primary" onclick="restartCurrentRun()">
+          Neustart auf Stufe 1
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Two-Step Privacy Reset Confirmation Modal -->
+  <div id="resetConfirmModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-icon">🔒</div>
+      <h3 id="resetModalTitle" class="modal-title">App zurücksetzen?</h3>
+      <p id="resetModalText" class="modal-text">
+        Schritt 1 von 2: Möchtest du deinen eingegebenen Namen und den gesamten Lernstand für die nächste Person löschen?
+      </p>
+      <div class="modal-actions">
+        <button id="resetModalConfirmBtn" type="button" class="btn-ios-danger" onclick="advanceResetConfirmation()">
+          Weiter zu Schritt 2
+        </button>
+        <button type="button" class="btn-ios-secondary" onclick="closeResetModal()">
+          Abbrechen
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dismissible Post-Print Banner -->
+  <div id="postPrintBanner" class="post-print-banner hidden no-print" role="status">
+    <span class="banner-text">PDF-Export / Druck abgeschlossen!</span>
+    <div class="banner-controls">
+      <button type="button" class="btn-banner-reset" onclick="openResetModal()">
+        Jetzt zurücksetzen
+      </button>
+      <button type="button" class="btn-banner-close" aria-label="Banner schließen" onclick="dismissPostPrintBanner()">
+        ×
+      </button>
+    </div>
+  </div>
+
+  <!-- Discreet Bottom-Right Floating Action Button after Banner Dismiss -->
+  <button id="resetFab" type="button" class="ios-fab hidden no-print" onclick="openResetModal()">
+    ↻ Zurücksetzen
+  </button>
+
+  <script>
+    // Strikte Datengrundlage: Ausschließlich Begriffsdefinitionen aus dem angehängten Fachbericht (keine Rechenaufgaben)
+    const QUESTIONS = [{"level": 1, "variant": "A", "term_focus": "Begriff: Wasserhaushaltsbilanz („Kassenbuch der Natur“)", "level_title": "Stufe 1: Hydrologischer Kreislauf & Wasserhaushaltsbilanz", "question": "Wie definiert die Wasserwirtschaft die Wasserhaushaltsbilanz („Kassenbuch der Natur“), und welche amtliche Grundgleichung stellt Einnahmen und Ausgaben eines Einzugsgebiets korrekt gegenüber?", "options": ["Die Gegenüberstellung aller Wasserzugänge (\\(N, Z\\)) und Wasserabgänge (\\(A, \\text{RET}\\)) inklusive Speicheränderung (\\(\\Delta S\\)) über einen Bilanzzeitraum: \\(N + Z = A + \\text{RET} + \\Delta S\\)", "Die alleinige Messung des Trinkwasserverbrauchs der Haushalte gegenüber den Niederschlägen im Sommer: \\(N + A = Z + \\text{RET} - \\Delta S\\)", "Das Produkt aus Gebietsniederschlag und Verdunstung abzüglich des Flusszuflusses: \\(N - Z = A \\cdot \\text{RET} + \\Delta S\\)", "Die Differenz zwischen Trinkwasserimporten und Abwassereinleitungen in Kläranlagen: \\(A + Z = N + \\text{RET} + \\Delta S\\)"], "correctIndex": 0, "explanation": "<strong>Definition Wasserhaushaltsbilanz:</strong> Sie erfasst sämtliche Wasserströme eines abgegrenzten Einzugsgebiets über einen definierten Zeitraum. Auf der Einnahmenseite stehen Gebietsniederschlag (\\(N\\)) und grenzüberschreitender Zufluss (\\(Z\\)), auf der Ausgabenseite Gesamtabfluss (\\(A\\)), reale Verdunstung (\\(\\text{RET}\\)) und Speicheränderung (\\(\\Delta S\\)) [Fachbericht Wasserdargebot DE, 2022]."}, {"level": 1, "variant": "B", "term_focus": "Begriff: Realer Evapotranspirationsverlust (RET)", "level_title": "Stufe 1: Hydrologischer Kreislauf & Wasserhaushaltsbilanz", "question": "Wie definiert die Hydrologie den Fachbegriff „Realer Evapotranspirationsverlust“ (\\(\\text{RET}\\)), und welche Funktion hat er im Wasserkreislauf?", "options": ["Die tatsächliche Summe aus Evaporation (Verdunstung von Böden/Wasserflächen) und Transpiration (Pflanzenatmung); sie entzieht dem Flüssigkeitskreislauf Wasser durch Phasenübergang in den gasförmigen Zustand.", "Die unterirdische Versickerung von Regenwasser in tiefe Gesteinsschichten; sie füllt den Grundwasserspeicher im Sommerhalbjahr rasch auf.", "Der oberirdische Abfluss von Schmelzwasser in Talsperren; er sichert den Mindestwasserstand großer Flüsse bei Sommerhitze.", "Die technische Kühlwasserverdunstung in thermischen Kraftwerken; sie zählt direkt zur öffentlichen Trinkwasserversorgung."], "correctIndex": 0, "explanation": "<strong>Definition Realer Evapotranspirationsverlust (\\(\\text{RET}\\)):</strong> Er vereint die <em>Evaporation</em> (unbelebte Verdunstung von Böden und Wasserflächen) und die <em>Transpiration</em> (Wasserabgabe über Pflanzenatmung). Durch den Übergang vom flüssigen in den gasförmigen Zustand wird dem lokalen Wasserkreislauf Wasser entzogen – besonders stark bei Sommerhitze [Fachbericht Wasserdargebot DE, 2022]."}, {"level": 2, "variant": "A", "term_focus": "Begriffe: Gebietsniederschlag (N) & Grenzüberschreitender Zufluss (Z)", "level_title": "Stufe 2: Bilanzgrößen – Eintrag, Zufluss & Gesamtabfluss", "question": "Wodurch unterscheiden sich in der amtlichen Wasserbilanz die beiden Einnahmegrößen „Gebietsniederschlag“ (\\(N\\)) und „Grenzüberschreitender Zufluss“ (\\(Z\\))?", "options": ["\\(N\\) ist das gesamte gemessene Niederschlagsvolumen (Regen, Schnee, Hagel) auf der Gebietsfläche; \\(Z\\) ist das Oberflächen- und Grundwasservolumen, das über Landesgrenzen aus Nachbarländern zuströmt.", "\\(N\\) umfasst ausschließlich flüssigen Sommerregen; \\(Z\\) bezeichnet nur das Trinkwasser, das über Rohrleitungen aus dem Ausland zugekauft wird.", "\\(N\\) beschreibt das Wasservolumen in Stauseen; \\(Z\\) steht für den Wasserverlust durch Verdunstung über den Landesgrenzen.", "\\(N\\) erfasst nur den Grundwasserabfluss im Winter; \\(Z\\) bezeichnet die künstliche Feldbewässerung der Landwirtschaft."], "correctIndex": 0, "explanation": "<strong>Definitionen \\(N\\) und \\(Z\\):</strong> Der <em>Gebietsniederschlag (\\(N\\))</em> bildet als Regen, Schnee und Hagel den primären Süßwassereintrag, der die Bodenfeuchte auffüllt und Basis jeglicher Rohwasserneubildung ist. Der <em>grenzüberschreitende Zufluss (\\(Z\\))</em> speist große Ströme (z.&nbsp;B. Rhein und Donau) und sichert Rohwasservorkommen, erzeugt aber Auslandskopplungen [Fachbericht Wasserdargebot DE, 2022]."}, {"level": 2, "variant": "B", "term_focus": "Begriffe: Gesamtabfluss (A), Oberflächenabfluss (A_o) & Basisabfluss (A_u)", "level_title": "Stufe 2: Bilanzgrößen – Eintrag, Zufluss & Gesamtabfluss", "question": "Wie definiert die Hydrologie den „Gesamtabfluss“ (\\(A\\)) und seine beiden Teilkomponenten \\(A_{\\text{o}}\\) und \\(A_{\\text{u}}\\)?", "options": ["Die Gesamtsumme aus schnellem Direkt-/Oberflächenabfluss (\\(A_{\\text{o}}\\), strömt bei Starkregen direkt über das Relief ab) und verzögertem Basis-/Grundwasserabfluss (\\(A_{\\text{u}}\\), tritt nach Untergrundpassage über Quellen oder Gewässersohle in den Vorfluter aus).", "Die Summe aus verdunstetem Bodenwasser (\\(A_{\\text{o}}\\)) und industriellem Kühlwasser (\\(A_{\\text{u}}\\)), das in die Atmosphäre entweicht.", "Ausschließlich das Wasservolumen, das über Regenwasserkanäle aus versiegelten Städten in Kläranlagen geleitet wird.", "Die Differenz zwischen dem Niederschlag im Winterhalbjahr (\\(A_{\\text{o}}\\)) und dem Niederschlag im Sommerhalbjahr (\\(A_{\\text{u}}\\))."], "correctIndex": 0, "explanation": "<strong>Definition Gesamtabfluss (\\(A\\)):</strong> Er setzt sich aus dem schnellen <em>Oberflächenabfluss (\\(A_{\\text{o}}\\))</em> und dem langsamen <em>Basis- bzw. Grundwasserabfluss (\\(A_{\\text{u}}\\))</em> zusammen. Der Gesamtabfluss führt überschüssiges Wasser ober- und unterirdisch aus dem Gebietsrahmen ab und sichert den Mindestwasserstand im Vorfluter (aufnehmendes Fließgewässer) [Fachbericht Wasserdargebot DE, 2022]."}, {"level": 3, "variant": "A", "term_focus": "Begriff: Speicheränderung (ΔS)", "level_title": "Stufe 3: Speicheränderung & Abflussprozesse", "question": "Wie ist die Bilanzgröße „Speicheränderung“ (\\(\\Delta S\\)) definiert, und welche Aufgabe erfüllt sie im hydrologischen Kreislauf?", "options": ["Die Summe aller Volumenänderungen in ungesättigten und gesättigten Speicherzonen (\\(\\Delta S = \\Delta S_{\\text{Boden}} + \\Delta S_{\\text{Oberfläche}} + \\Delta\\text{GW}\\)); sie wirkt als hydrologisches Pufferorgan zwischen Wassereintrag und Wasserabgabe.", "Das dauerhaft in Tiefseegräben gebundene Wasservolumen, das nicht mehr am Wettergeschehen teilnimmt.", "Die jährliche Zunahme der versiegelten Siedlungsfläche in Deutschland, die die Versickerung dauerhaft verhindert.", "Das Speichervolumen privater Regenwasserzisternen, das ausschließlich für die Gartenbewässerung genutzt wird."], "correctIndex": 0, "explanation": "<strong>Definition Speicheränderung (\\(\\Delta S\\)):</strong> Sie erfasst die Vorratsänderungen in Bodenfeuchte (\\(\\Delta S_{\\text{Boden}}\\)), Oberflächengewässern (\\(\\Delta S_{\\text{Oberfläche}}\\)) und Grundwasser (\\(\\Delta\\text{GW}\\)). Als hydrologisches Pufferorgan gleicht sie zeitliche Unterschiede zwischen Niederschlag (\\(N\\)) und Abgabe (\\(\\text{RET}, A\\)) aus; im 30-jährigen Klimamittel gilt \\(\\Delta S \\approx 0\\) [Fachbericht Wasserdargebot DE, 2022]."}, {"level": 3, "variant": "B", "term_focus": "Begriffe: Abflussbildung & Abflusskonzentration", "level_title": "Stufe 3: Speicheränderung & Abflussprozesse", "question": "Wie grenzt die Hydrologie bei der Prozessanalyse des Abflusses die beiden Fachbegriffe „Abflussbildung“ und „Abflusskonzentration“ voneinander ab?", "options": ["Abflussbildung ist das Entstehen eines effektiven Abflussüberschusses nach Bodensättigung oder Überschreiten der Infiltrationskapazität; Abflusskonzentration ist der räumliche und zeitliche Sammelvorgang im Vorfluter.", "Abflussbildung findet nur in Kläranlagen bei der Abwasserreinigung statt; Abflusskonzentration beschreibt die Verdunstung über Seen.", "Abflussbildung meint das Abpumpen von Rohwasser durch Wasserwerke; Abflusskonzentration bezeichnet das Aufbereiten zu Trinkwasser.", "Abflussbildung beschreibt den Grundwasseranstieg im Winter; Abflusskonzentration steht für das Austrocknen der Böden im Sommer."], "correctIndex": 0, "explanation": "<strong>Definitionen Abflussbildung & Abflusskonzentration:</strong> Bei der <em>Abflussbildung</em> entsteht überschüssiges Wasser, weil der Boden gesättigt ist oder der Regen schneller fällt, als der Boden ihn aufnehmen kann (Überschreiten der <em>Infiltrationskapazität</em>). Bei der <em>Abflusskonzentration</em> sammelt sich dieses Wasser zeitlich und räumlich im <em>Vorfluter</em> (aufnehmenden Bach oder Fluss) [Fachbericht Wasserdargebot DE, 2022]."}, {"level": 4, "variant": "A", "term_focus": "Begriff: Langjähriges erneuerbares Wasserdargebot (D_ref)", "level_title": "Stufe 4: Erneuerbares Wasserdargebot & Wasserneubildung", "question": "Wie definiert der Fachbericht das „langjährige erneuerbare Wasserdargebot“ (\\(D_{\\text{ref}}\\)) nach DIN 4049-3 und WMO-Referenz, und welche Bedeutung hat es für Wasserversorger?", "options": ["Es ist die Gesamtmenge an nutzbarem Süßwasser (Grund- und Oberflächenwasser), die einer Region dauerhaft zur Verfügung steht (\\(D_{\\text{ref}} = (N - \\text{RET}) + Z\\)), und bildet die unverrückbare Obergrenze für die langfristig zulässige Rohwasserentnahme.", "Es bezeichnet die maximale Speicherkapazität aller deutschen Trinkwassertalsperren bei Vollstau im Frühjahr.", "Es ist die Wassermenge, die jährlich durch Meerwasserentsalzung an der Nord- und Ostseeküste gewonnen wird.", "Es beschreibt ausschließlich den Niederschlag, der in einem extremen Dürrejahr auf landwirtschaftliche Flächen fällt."], "correctIndex": 0, "explanation": "<strong>Definition Erneuerbares Wasserdargebot (\\(D_{\\text{ref}}\\)):</strong> Gemäß DIN 4049-3 und Weltorganisation für Meteorologie (WMO) beziffert \\(D_{\\text{ref}}\\) das dauerhaft nutzbare Süßwasser einer Region. Langfristig darf nicht mehr <em>Rohwasser</em> (unbehandeltes Wasser aus der Natur) entnommen werden, als sich im Mittel regeneriert, um ökologischen Raubbau zu verhindern [DIN 4049-3 / WMO, 2022]."}, {"level": 4, "variant": "B", "term_focus": "Begriffe: Inländische Wasserneubildung (W_int) & Uferfiltrat", "level_title": "Stufe 4: Erneuerbares Wasserdargebot & Wasserneubildung", "question": "Wie definiert der Fachbericht den Begriff „inländische Wasserneubildung“ (\\(W_{\\text{int}}\\)) im Unterschied zum grenzüberschreitenden Zufluss (\\(Z\\)), der u.&nbsp;a. für Uferfiltratwasserwerke wichtig ist?", "options": ["\\(W_{\\text{int}} = N - \\text{RET}\\) beziffert die Wassermenge, die durch Niederschläge abzüglich der realen Evapotranspiration direkt auf dem eigenen Staatsgebiet versickert oder oberflächlich abfließt; \\(Z\\) strömt dagegen über internationale Flüsse wie Rhein und Donau zu.", "\\(W_{\\text{int}}\\) beschreibt ausschließlich das Wasser aus ausländischen Gletschern; \\(Z\\) bezeichnet den Regen, der im Inland verdunstet.", "\\(W_{\\text{int}}\\) steht für aufbereitetes Abwasser aus Kläranlagen; \\(Z\\) erfasst nur den unterirdischen Abfluss in die Nordsee.", "\\(W_{\\text{int}}\\) ist die Summe aus Verdunstung und Trinkwasserverbrauch; \\(Z\\) bezeichnet die Bodenfeuchte in Wäldern."], "correctIndex": 0, "explanation": "<strong>Definitionen \\(W_{\\text{int}}\\) und Uferfiltrat:</strong> Die <em>inländische Wasserneubildung (\\(W_{\\text{int}} = N - \\text{RET}\\))</em> bildet den Hauptpfeiler des Wasserdargebots. Der ausländische Zufluss (\\(Z\\)) begünstigt zwar <em>Uferfiltratwasserwerke</em> (Brunnenfassungen dicht am Flussufer, die natürlich durch den Untergrund gefiltertes Flusswasser fördern), erzeugt aber eine Abhängigkeit von Oberliegerstaaten [Fachbericht Wasserdargebot DE, 2022]."}, {"level": 5, "variant": "A", "term_focus": "Begriffe: Ungesättigte Bodenzone & Oberflächenspeicher", "level_title": "Stufe 5: Speicherebenen & Transportdynamik", "question": "Welche Wasserkörper umfasst die erste Speicherebene „Ungesättigte Bodenzone & Oberflächenspeicher“ (\\(\\Delta S_{\\text{Boden}}\\) / \\(\\Delta S_{\\text{Oberfläche}}\\)), und wodurch zeichnet sich ihre Reaktionsdynamik aus?", "options": ["Sie umfasst die Bodenfeuchte sowie offene Gewässer und Talsperren; in Stauseen fällt Niederschlag direkt hinein oder strömt über Hänge verzögerungsfrei oberflächlich zu.", "Sie umfasst ausschließlich tief liegende, gespannte Grundwasserleiter unter undurchlässigen Tonschichten, die erst nach Jahrzehnten reagieren.", "Sie beschreibt nur das Eis in Hochgebirgsgletschern, das keinerlei Austausch mit Fließgewässern hat.", "Sie umfasst das Trinkwasserrohrnetz der Städte, das bei Starkregen sofort überläuft."], "correctIndex": 0, "explanation": "<strong>Definition Ungesättigte Bodenzone & Oberflächenspeicher:</strong> Während die ungesättigte Bodenzone Wasser in den Bodenporen (Bodenfeuchte) hält, ist ein Oberflächenspeicher wie ein Stausee ein offenes Becken: Regen fällt direkt hinein oder strömt ohne zeitliche Verzögerung über die angrenzenden Hänge zu [Fachbericht Wasserdargebot DE, 2022]."}, {"level": 5, "variant": "B", "term_focus": "Begriffe: Gesättigte Grundwasserzone (ΔGW), Aquifer & Perkolation", "level_title": "Stufe 5: Speicherebenen & Transportdynamik", "question": "Wie definiert der Fachbericht die „gesättigte Grundwasserzone“ (\\(\\Delta\\text{GW}\\)), und warum reagiert sie deutlich langsamer als ein Oberflächenspeicher?", "options": ["Sie beziffert das Wasservolumen im Aquifer (grundwasserführende Gesteins-/Kiesschicht); Regensickerwasser muss über Wochen und Monate durch meterdicke Sand-, Kies- und Gesteinsschichten perkolieren (durchsickern).", "Sie bezeichnet das Wasser in offenen Baggerseen; dort verhindert die Wasseroberfläche jede Bewegung des Wassers.", "Sie beschreibt die Luftfeuchtigkeit direkt über dem Erdboden, die erst bei Frost ins Erdreich eindringt.", "Sie erfasst nur das Wasser, das in unterirdischen Betonbehältern von Wasserwerken gespeichert wird."], "correctIndex": 0, "explanation": "<strong>Definitionen Gesättigte Grundwasserzone, Aquifer & Perkolation:</strong> Ein <em>Aquifer</em> ist ein unterirdischer Grundwasserleiter aus durchlässigen Sand-, Kies- oder Gesteinsschichten. Weil Sickerwasser diese Matrix langsam <em>perkolieren</em> (durchsickern) muss, bremst der Untergrund den Vertikaltransport stark ab – anders als bei offenen Talsperren [Fachbericht Wasserdargebot DE, 2022]."}, {"level": 6, "variant": "A", "term_focus": "Begriffe: Positive Klimatische Wasserbilanz (KWB) & Feldkapazität", "level_title": "Stufe 6: Klimatische Wasserbilanz (KWB) im Jahresverlauf", "question": "Welche hydrologischen Merkmale definieren eine „positive Klimatische Wasserbilanz“ (KWB) im Winterhalbjahr (\\(\\Delta\\text{GW} > 0\\))?", "options": ["Kühle Temperaturen (z.&nbsp;B. \\(3\\,^{\\circ}\\text{C}\\)), geringe Einstrahlung und ruhende Transpiration unbelaubter Pflanzen führen dazu, dass die Feldkapazität im Oberboden rasch erreicht wird und Niederschlag fast vollständig versickert.", "Hohe Sonneneinstrahlung und voll belaubte Wälder entziehen dem Grundwasserleiter kontinuierlich Wasser über tiefreichende Wurzeln.", "Extreme Hitzeperioden trocknen den Oberboden aus, sodass Gewitterregen vollständig oberflächlich in die Flüsse abfließt.", "Die Wasserwerke pumpen im Winterhalbjahr Flusswasser aktiv in den Untergrund, um den Grundwasserspiegel anzuheben."], "correctIndex": 0, "explanation": "<strong>Definitionen Positive KWB & Feldkapazität:</strong> Im Winterhalbjahr ruht die Pflanzenatmung (Transpiration) und die Verdunstung ist bei kühlen Temperaturen (z.&nbsp;B. \\(3\\,^{\\circ}\\text{C}\\)) minimal. Sobald die <em>Feldkapazität</em> (die maximale Wassermenge, die ein Boden gegen die Schwerkraft festhalten kann) erreicht ist, versickert überschüssiger Regen fast komplett und füllt das Grundwasser auf (\\(\\Delta\\text{GW} > 0\\)) [Fachbericht Wasserdargebot DE, 2022]."}, {"level": 6, "variant": "B", "term_focus": "Begriff: Negative Klimatische Wasserbilanz (KWB)", "level_title": "Stufe 6: Klimatische Wasserbilanz (KWB) im Jahresverlauf", "question": "Wodurch ist eine „negative Klimatische Wasserbilanz“ (KWB) im Sommerhalbjahr (\\(\\Delta\\text{GW} < 0\\)) gekennzeichnet?", "options": ["Hohe Temperaturen und voll belaubte Vegetation erzeugen einen gewaltigen Verdunstungssog; der ausgetrocknete Boden wirkt wie ein Schwamm, Gewitterregen verbleibt in der Bodenzone oder fließt ab und Wasserwerke zehren von Winterreserven.", "Die fehlende Belaubung der Pflanzen verhindert jede Verdunstung, sodass der Grundwasserspiegel im Hochsommer seinen Jahreshöchststand erreicht.", "Dauerregen sättigt alle Böden vollständig, weshalb im Sommerhalbjahr keinerlei Grundwasserentnahme durch Wasserwerke nötig ist.", "Der grenzüberschreitende Zufluss aus den Nachbarländern versiegt im Sommer vollständig und kehrt die Fließrichtung der Ströme um."], "correctIndex": 0, "explanation": "<strong>Definition Negative KWB:</strong> Im Sommerhalbjahr übersteigt der Verdunstungsanspruch von Atmosphäre und voll belaubter Vegetation den Niederschlag. Weil ausgetrocknete Böden Sommerregen festhalten oder bei Starkregen oberflächlich ableiten, findet kaum Grundwasserneubildung statt (\\(\\Delta\\text{GW} < 0\\)) und die Versorgung zehrt von den Winterreserven [Fachbericht Wasserdargebot DE, 2022]."}, {"level": 7, "variant": "A", "term_focus": "Begriff: Anthropogene Wasserentnahme (Abgrenzung)", "level_title": "Stufe 7: Anthropogene Wasserentnahme & Sektoren", "question": "Wie definiert und begrenzt der Fachbericht den Begriff „anthropogene Wasserentnahme“ im Unterschied zu natürlichen Kreislaufprozessen?", "options": ["Sie umfasst ausschließlich die gezielte, direkte Entnahme von Rohwasser aus Grundwasserleitern, Quellfassungen, Stauseen und Fließgewässern durch menschliche Sektoren – nicht jedoch die natürliche Niederschlagsaufnahme durch Pflanzen und Böden.", "Sie erfasst sämtliches Regenwasser, das auf landwirtschaftlichen Äckern und in Wäldern von Pflanzenwurzeln aufgenommen wird.", "Sie bezeichnet ausschließlich den Trinkwasserverbrauch privater Haushalte ohne Industrie, Kraftwerke und Landwirtschaft.", "Sie umfasst nur das Wasservolumen, das über Talsperren zur Hochwasserregulierung in Flüsse abgelassen wird."], "correctIndex": 0, "explanation": "<strong>Definition Anthropogene Wasserentnahme:</strong> Der Begriff <em>anthropogen</em> bedeutet „vom Menschen verursacht“. Hydrologisch zählt hierzu nur die direkte technische Fassung von Rohwasser durch menschliche Sektoren. Regen, den Pflanzen und Böden direkt aufnehmen, wird hingegen als Evapotranspiration (\\(\\text{RET}\\)) bzw. Bodenfeuchteänderung (\\(\\Delta S_{\\text{Boden}}\\)) verbucht [Fachbericht Wasserdargebot DE, 2022]."}, {"level": 7, "variant": "B", "term_focus": "Begriffe: Die vier Hauptsektoren der Wasserverwendung", "level_title": "Stufe 7: Anthropogene Wasserentnahme & Sektoren", "question": "Welche vier Hauptsektoren unterscheidet die amtliche Bestandsaufnahme der anthropogenen Rohwasserentnahme in Deutschland, und welcher Sektor hat das größte Entnahmevolumen?", "options": ["Gewerbe & Bergbau (größter Anteil für Kühlung, Produktion und Brauchwasser), Energieversorgung (Durchlaufkühlung thermischer Kraftwerke), Öffentliche Wasserversorgung (Trinkwasser) und Landwirtschaft (gezielte Feldbewässerung).", "Öffentliche Wasserversorgung (größter Anteil), Schifffahrt, Fischerei und Freizeitwirtschaft.", "Landwirtschaft (größter Anteil für Bewässerung), Forstwirtschaft, Bauwirtschaft und Tourismus.", "Energieversorgung (größter Anteil), Private Gartenbrunnen, Feuerwehrwesen und Straßenreinigung."], "correctIndex": 0, "explanation": "<strong>Definition der vier Entnahmesektoren:</strong> Im Datenjahr 2022 entnahm der Sektor <em>Gewerbe & Bergbau</em> das größte Rohwasservolumen (Kühlung, Produktionsprozesse, Brauchwasser), gefolgt von der <em>Energieversorgung</em> (Durchlaufkühlung thermischer Kraftwerke), der <em>Öffentlichen Wasserversorgung</em> (Trinkwasser für Haushalte und Kleingewerbe) und der <em>Landwirtschaft</em> (Feldbewässerung in Trockenphasen) [Fachbericht Wasserdargebot DE, 2022]."}, {"level": 8, "variant": "A", "term_focus": "Begriff: Falkenmark-Indikator", "level_title": "Stufe 8: Bewertungsindikatoren – Falkenmark & WNI", "question": "Was definiert der internationale „Falkenmark-Indikator“, und wie wird Deutschland anhand der internationalen Ausstattungsgrenze eingeordnet?", "options": ["Er ordnet die rechnerische Pro-Kopf-Wasserverfügbarkeit ein (erneuerbares Wasserdargebot pro Einwohner und Jahr); da Deutschlands Wert über der Ausstattungsgrenze von \\(1.700\\,\\dfrac{\\text{m}^3}{\\text{EW}\\cdot\\text{a}}\\) liegt, gilt es rechnerisch als reichhaltig versorgt.", "Er misst den täglichen Trinkwasserverbrauch pro Haushalt in Litern und stuft Deutschland als akutes Wassermangelgebiet ein.", "Er bewertet ausschließlich die chemische Trinkwasserqualität in öffentlichen Leitungsnetzen nach der Trinkwasserverordnung.", "Er gibt an, wie viele Talsperren pro Million Einwohner für den Hochwasserschutz gebaut werden müssen."], "correctIndex": 0, "explanation": "<strong>Definition Falkenmark-Indikator:</strong> Dieser internationale Kennwert setzt das langjährige erneuerbare Wasserdargebot eines Landes ins Verhältnis zur Einwohnerzahl (\\(\\text{EW}\\)). Weil Deutschland mit über \\(2.090\\,\\dfrac{\\text{m}^3}{\\text{EW}\\cdot\\text{a}}\\) deutlich oberhalb der internationalen Ausstattungsgrenze von \\(1.700\\,\\dfrac{\\text{m}^3}{\\text{EW}\\cdot\\text{a}}\\) liegt, gilt es im Bundesmittel als reichhaltig versorgt [Fachbericht Wasserdargebot DE, 2022]."}, {"level": 8, "variant": "B", "term_focus": "Begriff: Wassernutzungs-Index (WNI) & Schwellenwerte", "level_title": "Stufe 8: Bewertungsindikatoren – Falkenmark & WNI", "question": "Wie ist der „Wassernutzungs-Index“ (\\(\\text{WNI}\\)) definiert, und welche international und europäisch normierten Schwellenwerte gelten für seine Bewertung?", "options": ["Er setzt das anthropogene Rohwasser-Entnahmevolumen ins Verhältnis zum langjährigen erneuerbaren Wasserdargebot (\\(\\text{WNI} = \\dfrac{\\text{Rohwasserentnahme}}{D_{\\text{ref}}} \\times 100\\)); ab \\(\\text{WNI} \\ge 20\\,\\%\\) beginnt Wasserstress, und ab \\(\\text{WNI} > 40\\,\\%\\) liegt eine kritische Wassernutzung vor.", "Er misst den Anteil des Regens, der im Sommer verdunstet; ab \\(\\text{WNI} \\ge 5\\,\\%\\) droht bereits ein bundesweiter Trinkwassernotstand.", "Er beschreibt das Verhältnis von Abwasser zu Trinkwasser in Kläranlagen; kritisch wird es erst ab \\(\\text{WNI} > 95\\,\\%\\).", "Er gibt an, wie viel Prozent des Grundwassers aus dem Ausland stammt; ab \\(\\text{WNI} \\ge 10\\,\\%\\) gilt ein Land als übernutzt."], "correctIndex": 0, "explanation": "<strong>Definition Wassernutzungs-Index (\\(\\text{WNI}\\)):</strong> Der \\(\\text{WNI}\\) dient UBA und Europäischer Umweltagentur (EEA) im Drei-Jahres-Takt als Frühwarninstrument: \\[\\text{WNI} = \\frac{\\text{Rohwasserentnahme}}{D_{\\text{ref}}} \\times 100\\] Ab \\(20\\,\\%\\) steigt der Nutzungsdruck spürbar (beginnender Wasserstress); über \\(40\\,\\%\\) werden Reserven schneller verbraucht, als sie sich regenerieren (kritische Wassernutzung) [UBA & EEA, 2022]."}, {"level": 9, "variant": "A", "term_focus": "Begriffe: Aufgaben von DWD, BfG, Landesämtern & UBA", "level_title": "Stufe 9: Hydrologische Fachbehörden & Methodik-Check", "question": "Welche spezifische Aufgabe übernimmt die Bundesanstalt für Gewässerkunde (BfG) im Zusammenspiel der deutschen Fachbehörden bei der Erfassung der Hydrodaten?", "options": ["Sie modelliert flächendeckend die reale Evapotranspiration (\\(\\text{RET}\\)) mittels hydrologischer Simulationssysteme pro Quadratkilometer.", "Sie betreibt bundesweit rund 2.000 Wetterstationen zur direkten Messung von Niederschlag, Temperatur und Wind.", "Sie überwacht als bayerisches Landesamt ausschließlich die Pegelstände der Donau an der Landesgrenze.", "Sie erlässt als europäische Behörde verbindliche Trinkwasserpreise für kommunale Wasserversorger."], "correctIndex": 0, "explanation": "<strong>Behörden-Definitionen im Umweltmonitoring:</strong> Der <em>DWD</em> misst an ca. 2.000 Stationen Niederschlag (\\(N\\)), die <em>BfG</em> simuliert quadratkilometergenau die reale Evapotranspiration (\\(\\text{RET}\\)), die <em>Landesämter für Umwelt & Wasserwirtschaftsämter</em> (z.&nbsp;B. LfU Bayern) ermitteln an Grenzpegeln den Zufluss (\\(Z\\)), und das <em>UBA</em> führt alle Daten auf Bundesebene zusammen [UBA & BfG, 2022]."}, {"level": 9, "variant": "B", "term_focus": "Begriffe: Flussgebietsbezogene Detailbilanz vs. WMO-Gesamteinzugsgebietsmittel", "level_title": "Stufe 9: Hydrologische Fachbehörden & Methodik-Check", "question": "Warum weist der Fachbericht für den grenzüberschreitenden Zufluss (\\(Z\\)) in Abschnitt 1 einen niedrigeren Wert (\\(56{,}6\\,\\dfrac{\\text{Mrd.}\\,\\text{m}^3}{\\text{a}}\\)) und in Abschnitt 2 für \\(D_{\\text{ref}}\\) einen höheren Wert (\\(69\\,\\dfrac{\\text{Mrd.}\\,\\text{m}^3}{\\text{a}}\\)) aus?", "options": ["Der niedrigere Wert stammt aus rein flussgebietsbezogenen Detailbilanzen, während UBA und BfG für die standardisierte \\(D_{\\text{ref}}\\)-Ermittlung nach WMO-Standard das geglättete Gesamteinzugsgebietsmittel nutzen.", "Der niedrigere Wert gilt ausschließlich für Trockenjahre, während der höhere Wert nur in Hochwasserjahren gemessen wird.", "Der höhere Wert enthält zusätzlich das Meerwasser, das bei Sturmfluten in die Elbmündung gedrückt wird.", "Es handelt sich um einen Übertragungsfehler zwischen den Landesämtern für Umwelt und dem Deutschen Wetterdienst."], "correctIndex": 0, "explanation": "<strong>Methodische Begriffsklärung:</strong> Beide Kennwerte sind fachlich korrekt: Während rein flussgebietsbezogene Detailbilanzen nur den direkten Flusszufluss abbilden, legen UBA und BfG der normierten \\(D_{\\text{ref}}\\)-Berechnung nach WMO-Richtlinie das geglättete Gesamteinzugsgebietsmittel zugrunde [UBA & BfG, 2022]."}, {"level": 10, "variant": "A", "term_focus": "Begriff: „Ökologischer Zins“ einer mehrjährigen Grundwasser-Überziehung", "level_title": "Stufe 10: Ökologischer Transfer & Systembewertung", "question": "Was definiert der Fachbericht bildlich als „ökologischen Zins“, wenn das Grundwasserkonto (\\(\\Delta\\text{GW} < 0\\)) über mehrere aufeinanderfolgende Trockenjahre überzogen wird?", "options": ["Trockenfallende Brunnen, Pumpenabriss durch Kavitation, Sauerstoffeintrag in den Aquifer mit Eisen- und Manganausfällungen, irreversible Bodensetzungen, Verlanden von Feuchtgebieten sowie Absterben tiefwurzelnder Waldbestände.", "Eine automatische Erhöhung der Grundwasserneubildung im Folgejahr, die jedes Defizit ohne ökologische Schäden ausgleicht.", "Eine finanzielle Strafgebühr, die Wasserwerke an die Europäische Umweltagentur überweisen müssen.", "Ein dauerhafter Anstieg der Quellschüttungen und eine Ausbreitung von Feuchtgebieten in den Flussauen."], "correctIndex": 0, "explanation": "<strong>Definition „Ökologischer Zins“:</strong> Bleiben Einzahlungen durch Sickerwasser mehrjährig aus (\\(\\Delta\\text{GW} < 0\\)), sinkt der Grundwasserspiegel ab: Förderpumpen reißen durch <em>Kavitation</em> (Dampfblasenbildung infolge Unterdrucks) ab, Sauerstoff führt im Aquifer zu Eisen- und Manganausfällungen, Böden setzen sich dauerhaft und Feuchtgebiete verlanden unumkehrbar [Fachbericht Wasserdargebot DE, 2022]."}, {"level": 10, "variant": "B", "term_focus": "Begriffe: Sektorale Trends (2013–2022) & Systemgrenzen nationaler Mittelwerte", "level_title": "Stufe 10: Ökologischer Transfer & Systembewertung", "question": "Welche sektoralen Entwicklungstrends (2013–2022) und räumlichen Abhängigkeiten begründen, warum trotz eines günstigen bundesweiten Wassernutzungs-Index (\\(\\text{WNI}\\)) ein kontinuierliches Monitoring notwendig bleibt?", "options": ["Während die Energieversorgung (Kohleausstieg, AKW-Abschaltung) stark sinkt, steigt die Landwirtschaft durch Sommerdürren stark an – zudem erfordern regionale Dürreschwerpunkte und die Abhängigkeit von Oberliegerstaaten bei internationalen Strömen dauerhafte Überwachung.", "Weil der bundesweite Wassernutzungs-Index bereits oberhalb der kritischen Schwelle von \\(40\\,\\%\\) liegt und alle Sektoren ihren Verbrauch verdoppelt haben.", "Weil die öffentliche Trinkwasserversorgung zwischen 2013 und 2022 den stärksten Verbrauchsanstieg aller Sektoren verzeichnete.", "Weil Deutschland keinerlei grenzüberschreitende Flüsse besitzt und ausschließlich auf örtliche Gewitterregen angewiesen ist."], "correctIndex": 0, "explanation": "<strong>Systembewertung & Kausalitätsanalyse:</strong> Obwohl Deutschland im Bundesmittel ressourcenschonend dasteht (fast \\(90\\,\\%\\) des Dargebots verbleiben im Naturkreislauf), zeigen der stark steigende Bewässerungsbedarf der Landwirtschaft bei Sommerdürren, regionale Trockenschwerpunkte sowie die quantitative und qualitative Abhängigkeit vom Zufluss (\\(Z\\)) der Oberliegerstaaten die Notwendigkeit kontinuierlichen Monitorings [Fachbericht Wasserdargebot DE, 2022]."}];
+
+    // Flüchtiger In-Memory-Zustand (Privacy by Design: keinerlei Storage-APIs)
+    let state = {
+      run: 1,
+      currentStage: 1,
+      jokersLeft: 2,
+      totalJokersUsed: 0,
+      totalAttempts: 1,
+      answeredCorrectly: false,
+      run1Variants: {},
+      currentVariant: 'A',
+      eliminatedIndices: [],
+      resetConfirmStep: 0
+    };
+
+    window.renderMathSafe = function(rootEl) {
+      if (typeof window.renderMathInElement === "function" && rootEl) {
+        window.renderMathInElement(rootEl, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "\\[", right: "\\]", display: true },
+            { left: "\\(", right: "\\)", display: false }
+          ],
+          throwOnError: false
+        });
+      }
+    };
+
+    function pickVariantForStage(stage) {
+      if (state.run === 1) {
+        if (!state.run1Variants[stage]) {
+          state.run1Variants[stage] = Math.random() < 0.5 ? "A" : "B";
+        }
+        return state.run1Variants[stage];
+      } else {
+        return state.run1Variants[stage] === "A" ? "B" : "A";
+      }
+    }
+
+    function getQuestionObj(stage, variant) {
+      return QUESTIONS.find(q => q.level === stage && q.variant === variant);
+    }
+
+    function renderStageTrack() {
+      const track = document.getElementById("stageTrack");
+      track.innerHTML = "";
+      for (let i = 1; i <= 10; i++) {
+        const seg = document.createElement("div");
+        seg.className = "stage-seg";
+        if (i < state.currentStage || (i === state.currentStage && state.answeredCorrectly)) {
+          seg.classList.add("done");
+        } else if (i === state.currentStage) {
+          seg.classList.add("active");
+        }
+        track.appendChild(seg);
+      }
+    }
+
+    function renderCurrentQuestion() {
+      state.answeredCorrectly = false;
+      state.eliminatedIndices = [];
+      state.currentVariant = pickVariantForStage(state.currentStage);
+
+      const q = getQuestionObj(state.currentStage, state.currentVariant);
+      const letters = ["A", "B", "C", "D"];
+
+      document.getElementById("runBadge").textContent =
+        state.run === 1 ? "Durchlauf 1 von 2" : "Durchlauf 2 von 2 (Alternativpfad)";
+      document.getElementById("stageBadge").textContent = `Stufe ${state.currentStage} / 10`;
+      document.getElementById("attemptStats").textContent =
+        `Versuch ${state.totalAttempts} • Variante ${state.currentVariant}`;
+
+      const jokerBtn = document.getElementById("jokerBtn");
+      jokerBtn.disabled = state.jokersLeft <= 0;
+      document.getElementById("jokerCount").textContent = `(${state.jokersLeft} übrig)`;
+
+      document.getElementById("termFocusBadge").textContent = q.term_focus;
+      document.getElementById("levelTitle").textContent = q.level_title;
+      const qTextEl = document.getElementById("questionText");
+      qTextEl.innerHTML = q.question;
+
+      const drawer = document.getElementById("feedbackDrawer");
+      drawer.classList.remove("open");
+
+      const container = document.getElementById("optionsContainer");
+      container.innerHTML = "";
+
+      q.options.forEach((optHtml, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option-btn";
+        btn.dataset.index = String(idx);
+        btn.innerHTML = `
+          <span class="option-badge">${letters[idx]}</span>
+          <span class="option-label">${optHtml}</span>
+        `;
+        btn.addEventListener("click", () => handleAnswerSelection(idx, btn));
+        container.appendChild(btn);
+      });
+
+      renderStageTrack();
+      window.renderMathSafe(document.getElementById("quizView"));
+    }
+
+    function useFiftyFifty() {
+      if (state.jokersLeft <= 0 || state.answeredCorrectly) return;
+
+      const q = getQuestionObj(state.currentStage, state.currentVariant);
+      const wrongIndices = [0, 1, 2, 3].filter(
+        i => i !== q.correctIndex && !state.eliminatedIndices.includes(i)
+      );
+
+      for (let i = wrongIndices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [wrongIndices[i], wrongIndices[j]] = [wrongIndices[j], wrongIndices[i]];
+      }
+      const toRemove = wrongIndices.slice(0, 2);
+      state.eliminatedIndices.push(...toRemove);
+      state.jokersLeft -= 1;
+      state.totalJokersUsed += 1;
+
+      const jokerBtn = document.getElementById("jokerBtn");
+      jokerBtn.disabled = state.jokersLeft <= 0;
+      document.getElementById("jokerCount").textContent = `(${state.jokersLeft} übrig)`;
+
+      const buttons = document.querySelectorAll("#optionsContainer .option-btn");
+      buttons.forEach(btn => {
+        const idx = Number(btn.dataset.index);
+        if (toRemove.includes(idx)) {
+          btn.disabled = true;
+          btn.classList.add("eliminated");
+        }
+      });
+    }
+
+    function handleAnswerSelection(selectedIdx, btnEl) {
+      if (state.answeredCorrectly) return;
+
+      const q = getQuestionObj(state.currentStage, state.currentVariant);
+      const allButtons = document.querySelectorAll("#optionsContainer .option-btn");
+
+      if (selectedIdx === q.correctIndex) {
+        state.answeredCorrectly = true;
+        allButtons.forEach(b => (b.disabled = true));
+        document.getElementById("jokerBtn").disabled = true;
+        btnEl.classList.add("correct");
+
+        const feedbackTextEl = document.getElementById("feedbackText");
+        feedbackTextEl.innerHTML = q.explanation;
+
+        const nextBtn = document.getElementById("nextBtn");
+        if (state.currentStage < 10) {
+          nextBtn.textContent = "Nächste Frage";
+        } else if (state.run === 1) {
+          nextBtn.textContent = "Etappensieg anzeigen";
+        } else {
+          nextBtn.textContent = "Begriffs- & Lernblatt öffnen";
+        }
+
+        renderStageTrack();
+        const drawer = document.getElementById("feedbackDrawer");
+        drawer.classList.add("open");
+        window.renderMathSafe(drawer);
+      } else {
+        allButtons.forEach(b => (b.disabled = true));
+        document.getElementById("jokerBtn").disabled = true;
+        btnEl.classList.add("wrong");
+
+        setTimeout(() => {
+          document.getElementById("permadeathModal").classList.remove("hidden");
+        }, 520);
+      }
+    }
+
+    function restartCurrentRun() {
+      document.getElementById("permadeathModal").classList.add("hidden");
+      state.totalAttempts += 1;
+      state.currentStage = 1;
+      state.jokersLeft = 2;
+      if (state.run === 1) {
+        state.run1Variants = {};
+      }
+      renderCurrentQuestion();
+    }
+
+    function handleNextStep() {
+      if (state.currentStage < 10) {
+        state.currentStage += 1;
+        renderCurrentQuestion();
+      } else if (state.run === 1) {
+        document.getElementById("quizView").classList.add("hidden");
+        document.getElementById("stageVictoryView").classList.remove("hidden");
+        launchConfetti();
+      } else {
+        showFinalLearningSheet();
+        launchConfetti();
+      }
+    }
+
+    function startSecondRun() {
+      state.run = 2;
+      state.currentStage = 1;
+      state.jokersLeft = 2;
+      document.getElementById("stageVictoryView").classList.add("hidden");
+      document.getElementById("quizView").classList.remove("hidden");
+      renderCurrentQuestion();
+    }
+
+    function showFinalLearningSheet() {
+      document.getElementById("topBar").classList.add("hidden");
+      document.getElementById("quizView").classList.add("hidden");
+      document.getElementById("stageVictoryView").classList.add("hidden");
+
+      const sheetView = document.getElementById("learningSheetView");
+      sheetView.classList.remove("hidden");
+
+      document.getElementById("sheetDate").textContent = new Date().toLocaleDateString("de-DE");
+      document.getElementById("sheetAttempts").textContent = String(state.totalAttempts);
+      document.getElementById("sheetJokersUsed").textContent = String(state.totalJokersUsed);
+
+      // Interferenzfreie Zusammenfassung: Ausschließlich alle 20 Fragen mit der jeweils richtigen Antwort (ohne Distraktoren)
+      const listEl = document.getElementById("summaryList");
+      listEl.innerHTML = "";
+
+      QUESTIONS.forEach(q => {
+        const correctOptionHtml = q.options[q.correctIndex];
+        const card = document.createElement("article");
+        card.className = "summary-item";
+        card.innerHTML = `
+          <div class="summary-item-header">
+            <span class="summary-badge">Stufe ${q.level}${q.variant} • ${q.term_focus}</span>
+          </div>
+          <h3 class="summary-q">${q.question}</h3>
+          <div class="summary-answer">✓ ${correctOptionHtml}</div>
+          <p class="summary-exp">${q.explanation}</p>
+        `;
+        listEl.appendChild(card);
+      });
+
+      window.renderMathSafe(sheetView);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function syncVolatileName() {
+      const val = document.getElementById("volatileNameInput").value.trim();
+      const printEl = document.getElementById("printOnlyName");
+      if (val.length > 0) {
+        printEl.textContent = `Name: ${val}`;
+        printEl.classList.add("has-value");
+      } else {
+        printEl.textContent = "";
+        printEl.classList.remove("has-value");
+      }
+    }
+
+    function triggerSmartphonePrint() {
+      syncVolatileName();
+      window.renderMathSafe(document.getElementById("learningSheetView"));
+      window.print();
+    }
+
+    window.addEventListener("afterprint", () => {
+      const sheetVisible = !document.getElementById("learningSheetView").classList.contains("hidden");
+      if (sheetVisible) {
+        document.getElementById("resetFab").classList.add("hidden");
+        document.getElementById("postPrintBanner").classList.remove("hidden");
+      }
+    });
+
+    function dismissPostPrintBanner() {
+      document.getElementById("postPrintBanner").classList.add("hidden");
+      document.getElementById("resetFab").classList.remove("hidden");
+    }
+
+    function openResetModal() {
+      state.resetConfirmStep = 1;
+      document.getElementById("resetModalTitle").textContent = "App zurücksetzen?";
+      document.getElementById("resetModalText").textContent =
+        "Schritt 1 von 2: Möchtest du deinen eingegebenen Namen und den gesamten Lernstand für die nächste Person löschen?";
+      document.getElementById("resetModalConfirmBtn").textContent = "Weiter zu Schritt 2";
+      document.getElementById("resetConfirmModal").classList.remove("hidden");
+    }
+
+    function closeResetModal() {
+      state.resetConfirmStep = 0;
+      document.getElementById("resetConfirmModal").classList.add("hidden");
+    }
+
+    function advanceResetConfirmation() {
+      if (state.resetConfirmStep === 1) {
+        state.resetConfirmStep = 2;
+        document.getElementById("resetModalTitle").textContent = "Endgültig bestätigen";
+        document.getElementById("resetModalText").textContent =
+          "Schritt 2 von 2: Name und Fortschritt werden jetzt unwiderruflich geleert und das Quiz startet neu auf Stufe 1.";
+        document.getElementById("resetModalConfirmBtn").textContent = "Jetzt vollständig zurücksetzen";
+      } else {
+        performFullPrivacyReset();
+      }
+    }
+
+    function performFullPrivacyReset() {
+      closeResetModal();
+      document.getElementById("postPrintBanner").classList.add("hidden");
+      document.getElementById("resetFab").classList.add("hidden");
+
+      const nameInput = document.getElementById("volatileNameInput");
+      if (nameInput) nameInput.value = "";
+      syncVolatileName();
+      document.getElementById("summaryList").innerHTML = "";
+
+      state = {
+        run: 1,
+        currentStage: 1,
+        jokersLeft: 2,
+        totalJokersUsed: 0,
+        totalAttempts: 1,
+        answeredCorrectly: false,
+        run1Variants: {},
+        currentVariant: "A",
+        eliminatedIndices: [],
+        resetConfirmStep: 0
+      };
+
+      document.getElementById("learningSheetView").classList.add("hidden");
+      document.getElementById("stageVictoryView").classList.add("hidden");
+      document.getElementById("topBar").classList.remove("hidden");
+      document.getElementById("quizView").classList.remove("hidden");
+      renderCurrentQuestion();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function launchConfetti() {
+      const canvas = document.getElementById("confettiCanvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const colors = ["#007AFF", "#34C759", "#FF9500", "#AF52DE", "#FF2D55", "#5AC8FA"];
+      const particles = Array.from({ length: 110 }, () => ({
+        x: Math.random() * canvas.width,
+        y: -20 - Math.random() * canvas.height * 0.4,
+        w: 7 + Math.random() * 6,
+        h: 4 + Math.random() * 5,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        vx: -2.2 + Math.random() * 4.4,
+        vy: 2.8 + Math.random() * 4.2,
+        rot: Math.random() * Math.PI * 2,
+        vrot: -0.12 + Math.random() * 0.24
+      }));
+
+      let frame = 0;
+      const maxFrames = 170;
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += p.vrot;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = Math.max(0, 1 - frame / maxFrames);
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          ctx.restore();
+        });
+        frame += 1;
+        if (frame < maxFrames) {
+          requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderCurrentQuestion();
+    });
+
+    window.addEventListener("load", () => {
+      window.renderMathSafe(document.body);
+    });
+  </script>
+</body>
+</html>
