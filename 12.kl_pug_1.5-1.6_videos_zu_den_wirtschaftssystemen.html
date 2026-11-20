@@ -473,6 +473,675 @@
       --accent-soft: rgba(36, 138, 61, 0.11);
     }
 
+    /* Header Action Buttons (Sort Layer + Teacher Mode) */
+    .sort-launch-btn {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 15px;
+      border-radius: var(--ios-radius-pill);
+      border: 1px solid var(--ios-separator);
+      background: rgba(118, 118, 128, 0.10);
+      color: var(--ios-text-secondary);
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: not-allowed;
+      transition: transform 0.16s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .sort-launch-btn.is-unlocked {
+      background: var(--ios-blue);
+      border-color: var(--ios-blue);
+      color: #FFFFFF;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 122, 255, 0.26);
+    }
+
+    .sort-launch-btn.is-unlocked:hover {
+      background: #0066D6;
+      transform: translateY(-1px);
+    }
+
+    .sort-launch-btn.is-unlocked:active {
+      transform: scale(0.97);
+    }
+
+    .sort-launch-btn.is-solved {
+      background: var(--ios-green);
+      border-color: var(--ios-green);
+      color: #FFFFFF;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(36, 138, 61, 0.24);
+    }
+
+    .sort-launch-btn.is-solved:hover {
+      background: #1E7433;
+      transform: translateY(-1px);
+    }
+
+    .teacher-btn {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: var(--ios-radius-pill);
+      border: 1px solid var(--ios-separator);
+      background: var(--ios-card-bg);
+      color: var(--ios-text-secondary);
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.16s ease, background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+    }
+
+    .teacher-btn:hover {
+      color: var(--ios-text-primary);
+      border-color: rgba(60, 60, 67, 0.28);
+    }
+
+    .teacher-btn.is-active {
+      background: rgba(88, 86, 214, 0.12);
+      border-color: rgba(88, 86, 214, 0.35);
+      color: #5856D6;
+    }
+
+    .teacher-btn:active {
+      transform: scale(0.96);
+    }
+
+    /* Layer Visibility */
+    .app-layer[hidden] {
+      display: none !important;
+    }
+
+    /* Sorting Game Layer */
+    .sort-layer {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px 28px 52px;
+      animation: layerFadeIn 0.24s ease-out;
+    }
+
+    @keyframes layerFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes boardShake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-7px); }
+      40% { transform: translateX(7px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+    }
+
+    .sort-board.is-shaking {
+      animation: boardShake 0.38s ease;
+    }
+
+    .sort-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .back-btn {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: var(--ios-radius-pill);
+      border: 1px solid var(--ios-separator);
+      background: var(--ios-card-bg);
+      color: var(--ios-blue);
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      transition: transform 0.16s ease, background-color 0.16s ease;
+    }
+
+    .back-btn:hover {
+      background: #F9F9FB;
+    }
+
+    .back-btn:active {
+      transform: scale(0.97);
+    }
+
+    .sort-intro-card {
+      background: var(--ios-card-bg);
+      border-radius: var(--ios-radius-xl);
+      border: 1px solid rgba(60, 60, 67, 0.10);
+      box-shadow: var(--ios-shadow-card);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+
+    .sort-intro-card h2 {
+      margin: 0 0 6px;
+      font-size: clamp(1.2rem, 1.8vw, 1.5rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .sort-intro-card p {
+      margin: 0;
+      font-size: 0.94rem;
+      color: var(--ios-text-secondary);
+    }
+
+    /* Teacher Solution Box inside Sort Layer */
+    .teacher-solution-box {
+      background: #F5F4FF;
+      border: 1px solid rgba(88, 86, 214, 0.28);
+      border-radius: var(--ios-radius-lg);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+    }
+
+    .teacher-solution-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .teacher-solution-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #4644B8;
+      margin: 0;
+    }
+
+    .teacher-fill-btn {
+      appearance: none;
+      border: none;
+      background: #5856D6;
+      color: #FFFFFF;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: var(--ios-radius-pill);
+      cursor: pointer;
+    }
+
+    .teacher-fill-btn:hover {
+      background: #4644B8;
+    }
+
+    .teacher-solution-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      font-size: 0.82rem;
+      color: var(--ios-text-primary);
+    }
+
+    .teacher-solution-item {
+      background: #FFFFFF;
+      border-radius: 10px;
+      padding: 9px 12px;
+      border: 1px solid rgba(88, 86, 214, 0.16);
+    }
+
+    .teacher-solution-item strong {
+      display: block;
+      font-size: 0.78rem;
+      color: #4644B8;
+      margin-bottom: 4px;
+    }
+
+    /* Neutral Feedback Banner */
+    .sort-feedback {
+      border-radius: var(--ios-radius-lg);
+      padding: 14px 18px;
+      margin-bottom: 18px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sort-feedback[hidden] {
+      display: none;
+    }
+
+    .sort-feedback.is-error {
+      background: #FFECEB;
+      border: 1px solid rgba(255, 59, 48, 0.28);
+      color: #C92A20;
+    }
+
+    .sort-feedback.is-success {
+      background: var(--ios-green-tint);
+      border: 1px solid rgba(36, 138, 61, 0.30);
+      color: #1B6D30;
+    }
+
+    /* Draggable & Tappable Chip Tray (strictly neutral, zero hints) */
+    .chip-tray-card {
+      background: var(--ios-card-bg);
+      border-radius: var(--ios-radius-xl);
+      border: 1px solid rgba(60, 60, 67, 0.10);
+      box-shadow: var(--ios-shadow-card);
+      padding: 18px 20px;
+      margin-bottom: 22px;
+    }
+
+    .chip-tray-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--ios-text-tertiary);
+      margin: 0 0 12px;
+    }
+
+    .chip-pool {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      min-height: 48px;
+      padding: 6px;
+      border-radius: var(--ios-radius-md);
+      background: var(--ios-bg-grouped);
+      border: 1.5px dashed rgba(60, 60, 67, 0.16);
+      align-items: center;
+      transition: border-color 0.18s ease, background-color 0.18s ease;
+    }
+
+    .chip-pool.is-drag-over {
+      border-color: var(--ios-blue);
+      background: var(--ios-blue-tint);
+    }
+
+    .chip-pool-empty {
+      font-size: 0.86rem;
+      color: var(--ios-text-tertiary);
+      padding: 6px 10px;
+    }
+
+    .principle-chip {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: var(--ios-radius-md);
+      border: 1.5px solid rgba(60, 60, 67, 0.16);
+      background: #FFFFFF;
+      color: var(--ios-text-primary);
+      font-family: inherit;
+      font-size: 0.94rem;
+      font-weight: 600;
+      cursor: grab;
+      user-select: none;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease, background-color 0.16s ease;
+    }
+
+    .principle-chip:hover {
+      border-color: rgba(0, 122, 255, 0.55);
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .principle-chip:active {
+      cursor: grabbing;
+      transform: scale(0.98);
+    }
+
+    .principle-chip.is-selected {
+      border-color: var(--ios-blue);
+      background: #EEF6FF;
+      color: #0058B8;
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.18);
+    }
+
+    .principle-chip.is-dragging {
+      opacity: 0.45;
+    }
+
+    .chip-grip {
+      color: var(--ios-text-tertiary);
+      font-size: 0.85rem;
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+
+    /* 3 Dimension Cards (Worksheet Mirror) */
+    .dimensions-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .dimension-card {
+      background: var(--ios-card-bg);
+      border-radius: var(--ios-radius-xl);
+      border: 1px solid rgba(60, 60, 67, 0.12);
+      box-shadow: var(--ios-shadow-card);
+      overflow: hidden;
+    }
+
+    .dimension-header {
+      background: #1F3B6D;
+      color: #FFFFFF;
+      padding: 13px 20px;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .dimension-columns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dimension-cell {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-top: 1px solid var(--ios-separator);
+    }
+
+    .dimension-cell + .dimension-cell {
+      border-left: 1px solid var(--ios-separator);
+    }
+
+    .cell-description {
+      padding: 16px 20px;
+      font-size: 0.93rem;
+      line-height: 1.48;
+      color: var(--ios-text-primary);
+      text-align: center;
+      min-height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .drop-zone {
+      background: #F6F7FA;
+      border-top: 1px solid var(--ios-separator);
+      padding: 14px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 112px;
+      cursor: pointer;
+      transition: background-color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .drop-zone:hover {
+      background: #EEF2F8;
+    }
+
+    .drop-zone.is-drag-over,
+    .drop-zone.is-ready-target {
+      background: #E9F3FF;
+      box-shadow: inset 0 0 0 2px var(--ios-blue);
+    }
+
+    .drop-zone.is-solved-slot {
+      background: rgba(52, 199, 89, 0.09);
+      cursor: default;
+    }
+
+    .drop-zone-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--ios-text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .drop-placeholder {
+      padding: 9px 16px;
+      border-radius: var(--ios-radius-md);
+      border: 1.5px dashed rgba(60, 60, 67, 0.24);
+      color: var(--ios-text-tertiary);
+      font-size: 0.84rem;
+      font-weight: 500;
+      pointer-events: none;
+    }
+
+    .placed-chip-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border-radius: var(--ios-radius-md);
+      background: #FFFFFF;
+      border: 1.5px solid rgba(0, 122, 255, 0.40);
+      color: var(--ios-text-primary);
+      font-size: 0.96rem;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      cursor: grab;
+    }
+
+    .placed-chip-wrap.is-selected {
+      border-color: var(--ios-blue);
+      background: #EEF6FF;
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.18);
+    }
+
+    .drop-zone.is-solved-slot .placed-chip-wrap {
+      border-color: rgba(36, 138, 61, 0.45);
+      color: #1B6D30;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .remove-chip-btn {
+      appearance: none;
+      border: none;
+      background: rgba(60, 60, 67, 0.10);
+      color: var(--ios-text-secondary);
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      font-size: 0.9rem;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .remove-chip-btn:hover {
+      background: rgba(255, 59, 48, 0.16);
+      color: #D93829;
+    }
+
+    /* Sort Action Bar */
+    .sort-actions {
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      background: var(--ios-card-bg);
+      border-radius: var(--ios-radius-xl);
+      border: 1px solid rgba(60, 60, 67, 0.10);
+      box-shadow: var(--ios-shadow-card);
+      padding: 16px 20px;
+    }
+
+    .sort-count-note {
+      font-size: 0.88rem;
+      color: var(--ios-text-secondary);
+      font-weight: 500;
+    }
+
+    .sort-action-buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .primary-ios-btn {
+      appearance: none;
+      border: none;
+      background: var(--ios-blue);
+      color: #FFFFFF;
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: var(--ios-radius-pill);
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 122, 255, 0.24);
+      transition: transform 0.16s ease, opacity 0.16s ease, background-color 0.16s ease;
+    }
+
+    .primary-ios-btn:hover:not(:disabled) {
+      background: #0066D6;
+    }
+
+    .primary-ios-btn:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    .primary-ios-btn:disabled {
+      opacity: 0.42;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .secondary-ios-btn {
+      appearance: none;
+      border: 1px solid var(--ios-separator);
+      background: var(--ios-card-bg);
+      color: var(--ios-text-secondary);
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 9px 16px;
+      border-radius: var(--ios-radius-pill);
+      cursor: pointer;
+      transition: transform 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+    }
+
+    .secondary-ios-btn:hover {
+      color: var(--ios-text-primary);
+      border-color: rgba(60, 60, 67, 0.28);
+    }
+
+    .secondary-ios-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* iOS Modal Dialog (Teacher Code & Reset Confirm) */
+    .ios-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0, 0, 0, 0.36);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .ios-modal-backdrop[hidden] {
+      display: none;
+    }
+
+    .ios-modal {
+      width: 100%;
+      max-width: 390px;
+      background: var(--ios-card-bg);
+      border-radius: var(--ios-radius-xl);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+      padding: 22px 24px 20px;
+      animation: layerFadeIn 0.18s ease-out;
+    }
+
+    .ios-modal h3 {
+      margin: 0 0 6px;
+      font-size: 1.12rem;
+      font-weight: 700;
+    }
+
+    .ios-modal p {
+      margin: 0 0 14px;
+      font-size: 0.88rem;
+      color: var(--ios-text-secondary);
+    }
+
+    .ios-input {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: var(--ios-radius-md);
+      border: 1.5px solid rgba(60, 60, 67, 0.20);
+      font-family: inherit;
+      font-size: 1rem;
+      color: var(--ios-text-primary);
+      background: #F9F9FB;
+      outline: none;
+      margin-bottom: 8px;
+    }
+
+    .ios-input:focus {
+      border-color: var(--ios-blue);
+      background: #FFFFFF;
+    }
+
+    .modal-error {
+      font-size: 0.82rem;
+      color: #D93829;
+      font-weight: 600;
+      min-height: 18px;
+      margin-bottom: 10px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .danger-ios-btn {
+      appearance: none;
+      border: none;
+      background: #D93829;
+      color: #FFFFFF;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 9px 16px;
+      border-radius: var(--ios-radius-pill);
+      cursor: pointer;
+    }
+
+    .danger-ios-btn:hover {
+      background: #BC2D20;
+    }
+
     /* Tablet & Mobile Responsive */
     @media (max-width: 1060px) {
       .topic-tile {
@@ -492,11 +1161,15 @@
       .header-inner {
         padding: 16px 20px;
       }
-      .dashboard-main {
+      .dashboard-main,
+      .sort-layer {
         padding: 20px 20px 36px;
       }
       .page-footer {
         padding: 0 20px 28px;
+      }
+      .teacher-solution-grid {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -508,6 +1181,18 @@
       .topic-tile {
         grid-template-columns: 175px minmax(0, 1fr);
         min-height: 224px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .dimension-columns {
+        grid-template-columns: 1fr;
+      }
+      .dimension-cell + .dimension-cell {
+        border-left: none;
+      }
+      .cell-description {
+        min-height: auto;
       }
     }
 
@@ -524,7 +1209,15 @@
       }
       .header-meta {
         width: 100%;
-        justify-content: space-between;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+      .sort-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .sort-action-buttons {
+        justify-content: flex-end;
       }
     }
 
@@ -533,12 +1226,18 @@
       .tile-media img,
       .canva-pill,
       .visited-badge,
-      .reset-btn {
+      .reset-btn,
+      .sort-launch-btn,
+      .principle-chip,
+      .sort-layer,
+      .sort-board.is-shaking {
         transition: none;
+        animation: none;
       }
       .topic-tile:hover,
       .topic-tile:hover .tile-media img,
-      .topic-tile:hover .canva-pill {
+      .topic-tile:hover .canva-pill,
+      .principle-chip:hover {
         transform: none;
       }
     }
@@ -561,16 +1260,102 @@
           <span class="progress-dot" aria-hidden="true"></span>
           <span id="progressText">0 / 6 geöffnet</span>
         </div>
+        <button type="button" class="sort-launch-btn" id="openSortBtn" disabled aria-disabled="true" title="Wird aktiv, sobald alle 6 Kacheln geöffnet wurden und 45 Minuten vergangen sind">
+          <span id="openSortBtnText">🔒 Korrekturhilfe (45:00)</span>
+        </button>
+        <button type="button" class="teacher-btn" id="teacherBtn">Lehrkraft</button>
         <button type="button" class="reset-btn" id="resetBtn" hidden>Zurücksetzen</button>
       </div>
     </div>
   </header>
 
-  <main class="dashboard-main">
+  <main class="dashboard-main app-layer" id="dashboardLayer">
     <section class="dashboard-grid" id="dashboardGrid" aria-label="Übersicht der sechs Wirtschafts- und Staatsmodelle">
       <!-- Kacheln werden per Script aus dem strukturierten Datenmodell gerendert -->
     </section>
   </main>
+
+  <section class="sort-layer app-layer" id="sortLayer" hidden aria-label="Sortierspiel zur Korrekturhilfe">
+    <div class="sort-topbar">
+      <button type="button" class="back-btn" id="backToDashboardBtn">← Zurück zu den Kacheln</button>
+    </div>
+
+    <div class="sort-intro-card">
+      <h2>Korrekturhilfe: Die 6 Prinzipien zuordnen</h2>
+      <p>Ziehe alle sechs Prinzipien in die passende Dimension oder tippe erst ein Prinzip und danach das Ziel-Feld an. Erst wenn alle sechs Felder belegt sind, kannst du überprüfen.</p>
+    </div>
+
+    <div class="teacher-solution-box" id="teacherSolutionBox" hidden>
+      <div class="teacher-solution-header">
+        <p class="teacher-solution-title">Lehrkraft-Ansicht · Musterlösung (nur im Lehrkraft-Modus sichtbar)</p>
+        <button type="button" class="teacher-fill-btn" id="teacherFillBtn">Musterlösung einsetzen</button>
+      </div>
+      <div class="teacher-solution-grid">
+        <div class="teacher-solution-item">
+          <strong>1. Eigentumsordnung</strong>
+          Privat: Kapitalismus · Allgemeinheit: Sozialismus
+        </div>
+        <div class="teacher-solution-item">
+          <strong>2. Koordinationsmechanismus</strong>
+          Flexible Preise: Marktwirtschaft · Mehrjahrespläne: Planwirtschaft
+        </div>
+        <div class="teacher-solution-item">
+          <strong>3. Rolle des Staates</strong>
+          Polizei/Militär/Gerichte: Nachtwächterstaat · Kartellrecht/Ausgleich: Sozial- &amp; Ordnungsstaat
+        </div>
+      </div>
+    </div>
+
+    <div class="sort-feedback" id="sortFeedback" role="status" aria-live="polite" hidden></div>
+
+    <div class="sort-board" id="sortBoard">
+      <div class="chip-tray-card" id="chipTrayCard">
+        <p class="chip-tray-label">Prinzipien (6)</p>
+        <div class="chip-pool" id="chipPool" aria-label="Verfügbare Prinzipien"></div>
+      </div>
+
+      <div class="dimensions-stack" id="dimensionsStack">
+        <!-- 3 Dimensionen werden per Script gerendert -->
+      </div>
+    </div>
+
+    <div class="sort-actions">
+      <span class="sort-count-note" id="sortCountNote">0 von 6 Prinzipien zugeordnet</span>
+      <div class="sort-action-buttons">
+        <button type="button" class="secondary-ios-btn" id="resetSortBtn" hidden>Sortierspiel zurücksetzen</button>
+        <button type="button" class="primary-ios-btn" id="checkSortBtn" disabled>Überprüfen</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lehrkraft-Code Modal -->
+  <div class="ios-modal-backdrop" id="teacherModal" hidden role="dialog" aria-modal="true" aria-labelledby="teacherModalTitle">
+    <div class="ios-modal">
+      <h3 id="teacherModalTitle">Lehrkraft-Modus</h3>
+      <p>Gib den Code ein, um das Sortierspiel sofort freizuschalten und die Musterlösung anzuzeigen.</p>
+      <form id="teacherForm" novalidate>
+        <input type="password" inputmode="numeric" autocomplete="off" class="ios-input" id="teacherCodeInput" placeholder="Code eingeben">
+        <div class="modal-error" id="teacherError" role="alert"></div>
+        <div class="modal-actions">
+          <button type="button" class="secondary-ios-btn" id="teacherCancelBtn">Abbrechen</button>
+          <button type="submit" class="primary-ios-btn">Freischalten</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Reset-Bestätigung Modal -->
+  <div class="ios-modal-backdrop" id="resetModal" hidden role="dialog" aria-modal="true" aria-labelledby="resetModalTitle">
+    <div class="ios-modal">
+      <h3 id="resetModalTitle">Lernstand zurücksetzen?</h3>
+      <p>Möchtest du nur das Sortierspiel neu starten oder den gesamten Lernstand inklusive Timer und geöffneter Kacheln zurücksetzen?</p>
+      <div class="modal-actions">
+        <button type="button" class="secondary-ios-btn" id="resetCancelBtn">Abbrechen</button>
+        <button type="button" class="secondary-ios-btn" id="resetSortOnlyBtn">Nur Sortierspiel</button>
+        <button type="button" class="danger-ios-btn" id="resetAllConfirmBtn">Alles zurücksetzen</button>
+      </div>
+    </div>
+  </div>
 
   <footer class="page-footer">
     <span>Politik und Gesellschaft (12. Klasse) · Alle Links öffnen in einem neuen Tab.</span>
@@ -670,6 +1455,88 @@
         }
       ];
 
+      const STORAGE_START_KEY = 'pug12_wirtschaftsmodelle_started_at_v1';
+      const STORAGE_SORT_KEY = 'pug12_wirtschaftsmodelle_sort_v1';
+      const UNLOCK_DELAY_MS = 45 * 60 * 1000;
+      const TEACHER_CODE = '86';
+
+      const DIMENSIONS = [
+        {
+          id: 'dim-1',
+          title: '1. Dimension: Die Eigentumsordnung (Wem gehören die Produktionsmittel?)',
+          slots: [
+            {
+              id: 'eigentum-privat',
+              description: 'Privatpersonen sowie private Gesellschaften besitzen Produktionsmittel und haften dafür',
+              label: 'Eigentumsordnung',
+              correctId: 'kapitalismus'
+            },
+            {
+              id: 'eigentum-allgemein',
+              description: 'Die Allgemeinheit – vertreten durch den Staat oder Genossenschaften – besitzt die Produktionsmittel',
+              label: 'Eigentumsordnung',
+              correctId: 'sozialismus'
+            }
+          ]
+        },
+        {
+          id: 'dim-2',
+          title: '2. Dimension: Der Koordinationsmechanismus (Wer plant und steuert die Wirtschaft?)',
+          slots: [
+            {
+              id: 'koordination-markt',
+              description: 'Flexible Preise aus Angebot und Nachfrage zeigen Knappheiten an und steuern die Produktion',
+              label: 'Koordinationsmechanismus',
+              correctId: 'marktwirtschaft'
+            },
+            {
+              id: 'koordination-plan',
+              description: 'Eine zentrale staatliche Behörde legt Produktion und Verteilung über verbindliche Mehrjahrespläne im Voraus fest',
+              label: 'Koordinationsmechanismus',
+              correctId: 'planwirtschaft'
+            }
+          ]
+        },
+        {
+          id: 'dim-3',
+          title: '3. Dimension: Die Rolle des Staates als Regelsetzer und Korrektiv',
+          slots: [
+            {
+              id: 'staat-nachtwaechter',
+              description: 'Der Staat beschränkt sich nur auf Polizei, Militär sowie Gerichte',
+              label: 'Korrekturfunktion des Staates',
+              correctId: 'nachtwaechter'
+            },
+            {
+              id: 'staat-sozial',
+              description: 'Der Staat sichert über das Kartellrecht fairen Wettbewerb und gleicht soziale Härten nachträglich durch Steuern, Arbeitsrecht und Sozialversicherungen aus',
+              label: 'Korrekturfunktion des Staates',
+              correctId: 'sozialstaat'
+            }
+          ]
+        }
+      ];
+
+      const ALL_SLOTS = DIMENSIONS.reduce(function (acc, dim) {
+        return acc.concat(dim.slots);
+      }, []);
+
+      const PRINCIPLE_LABELS = {};
+      TOPICS.forEach(function (t) {
+        PRINCIPLE_LABELS[t.id] = t.title;
+      });
+
+      function shuffleArray(list) {
+        const arr = list.slice();
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const tmp = arr[i];
+          arr[i] = arr[j];
+          arr[j] = tmp;
+        }
+        return arr;
+      }
+
       function loadVisited() {
         try {
           const raw = localStorage.getItem(STORAGE_KEY);
@@ -688,23 +1555,617 @@
         }
       }
 
-      const visited = loadVisited();
+      function loadOrInitStartTime() {
+        try {
+          const raw = localStorage.getItem(STORAGE_START_KEY);
+          const parsed = raw ? Number(raw) : NaN;
+          if (Number.isFinite(parsed) && parsed > 0) {
+            return parsed;
+          }
+          const now = Date.now();
+          localStorage.setItem(STORAGE_START_KEY, String(now));
+          return now;
+        } catch (_) {
+          return Date.now();
+        }
+      }
+
+      function saveStartTime(ts) {
+        try {
+          localStorage.setItem(STORAGE_START_KEY, String(ts));
+        } catch (_) {
+          // Ignoriert Speicherfehler
+        }
+      }
+
+      function loadSortState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_SORT_KEY);
+          if (!raw) return { solved: false, placements: {} };
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.solved === true && parsed.placements && typeof parsed.placements === 'object') {
+            return { solved: true, placements: Object.assign({}, parsed.placements) };
+          }
+          return { solved: false, placements: {} };
+        } catch (_) {
+          return { solved: false, placements: {} };
+        }
+      }
+
+      function saveSortState(solved, placementsObj) {
+        try {
+          if (solved) {
+            localStorage.setItem(STORAGE_SORT_KEY, JSON.stringify({
+              solved: true,
+              placements: Object.assign({}, placementsObj)
+            }));
+          } else {
+            localStorage.removeItem(STORAGE_SORT_KEY);
+          }
+        } catch (_) {
+          // Ignoriert Speicherfehler
+        }
+      }
+
+      function formatRemaining(ms) {
+        const totalSec = Math.max(0, Math.ceil(ms / 1000));
+        const min = Math.floor(totalSec / 60);
+        const sec = totalSec % 60;
+        return String(min).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+      }
+
+      let visited = loadVisited();
+      let startedAt = loadOrInitStartTime();
+      let savedSort = loadSortState();
+      let sortSolved = savedSort.solved;
+      let placements = Object.assign({}, savedSort.placements);
+      let chipOrder = shuffleArray(TOPICS.map(function (t) { return t.id; }));
+      let selectedPrincipleId = null;
+      let draggedPrincipleId = null;
+      let activeLayer = 'dashboard';
+      let teacherMode = false;
+
+      const dashboardLayer = document.getElementById('dashboardLayer');
+      const sortLayer = document.getElementById('sortLayer');
       const gridEl = document.getElementById('dashboardGrid');
       const progressPill = document.getElementById('progressPill');
       const progressText = document.getElementById('progressText');
+      const openSortBtn = document.getElementById('openSortBtn');
+      const openSortBtnText = document.getElementById('openSortBtnText');
+      const teacherBtn = document.getElementById('teacherBtn');
       const resetBtn = document.getElementById('resetBtn');
+      const backToDashboardBtn = document.getElementById('backToDashboardBtn');
+      const teacherSolutionBox = document.getElementById('teacherSolutionBox');
+      const teacherFillBtn = document.getElementById('teacherFillBtn');
+      const sortFeedback = document.getElementById('sortFeedback');
+      const sortBoard = document.getElementById('sortBoard');
+      const chipTrayCard = document.getElementById('chipTrayCard');
+      const chipPool = document.getElementById('chipPool');
+      const dimensionsStack = document.getElementById('dimensionsStack');
+      const sortCountNote = document.getElementById('sortCountNote');
+      const checkSortBtn = document.getElementById('checkSortBtn');
+      const resetSortBtn = document.getElementById('resetSortBtn');
+
+      const teacherModal = document.getElementById('teacherModal');
+      const teacherForm = document.getElementById('teacherForm');
+      const teacherCodeInput = document.getElementById('teacherCodeInput');
+      const teacherError = document.getElementById('teacherError');
+      const teacherCancelBtn = document.getElementById('teacherCancelBtn');
+
+      const resetModal = document.getElementById('resetModal');
+      const resetCancelBtn = document.getElementById('resetCancelBtn');
+      const resetSortOnlyBtn = document.getElementById('resetSortOnlyBtn');
+      const resetAllConfirmBtn = document.getElementById('resetAllConfirmBtn');
+
+      function getRemainingMs() {
+        return Math.max(0, UNLOCK_DELAY_MS - (Date.now() - startedAt));
+      }
+
+      function isSortUnlocked() {
+        if (teacherMode) return true;
+        if (sortSolved) return true;
+        return visited.size === TOPICS.length && getRemainingMs() === 0;
+      }
+
+      function setLayer(layerName) {
+        activeLayer = layerName;
+        const showSort = layerName === 'sort';
+        dashboardLayer.hidden = showSort;
+        sortLayer.hidden = !showSort;
+        if (showSort) {
+          renderSortBoard();
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function updateUnlockButtonUI() {
+        const unlocked = isSortUnlocked();
+        const remainingMs = getRemainingMs();
+        const allClicked = visited.size === TOPICS.length;
+
+        openSortBtn.disabled = !unlocked;
+        openSortBtn.setAttribute('aria-disabled', String(!unlocked));
+        openSortBtn.classList.toggle('is-unlocked', unlocked && !sortSolved);
+        openSortBtn.classList.toggle('is-solved', unlocked && sortSolved);
+
+        if (teacherMode) {
+          openSortBtnText.textContent = activeLayer === 'sort'
+            ? 'Korrekturhilfe aktiv'
+            : 'Korrekturhilfe öffnen →';
+          openSortBtn.title = 'Im Lehrkraft-Modus sofort verfügbar';
+          return;
+        }
+
+        if (sortSolved) {
+          openSortBtnText.textContent = '✓ Korrekturhilfe (gelöst)';
+          openSortBtn.title = 'Gespeichertes Ergebnis anzeigen';
+          return;
+        }
+
+        if (unlocked) {
+          openSortBtnText.textContent = activeLayer === 'sort'
+            ? 'Korrekturhilfe aktiv'
+            : 'Korrekturhilfe starten →';
+          openSortBtn.title = 'Sortierspiel öffnen';
+          return;
+        }
+
+        if (!allClicked && remainingMs > 0) {
+          openSortBtnText.textContent = '🔒 Korrekturhilfe (' + visited.size + '/6 · ' + formatRemaining(remainingMs) + ')';
+          openSortBtn.title = 'Öffne alle 6 Kacheln und warte insgesamt 45 Minuten ab App-Start';
+        } else if (allClicked && remainingMs > 0) {
+          openSortBtnText.textContent = '🔒 Korrekturhilfe (frei in ' + formatRemaining(remainingMs) + ')';
+          openSortBtn.title = 'Wird nach 45 Minuten automatisch freigeschaltet';
+        } else {
+          openSortBtnText.textContent = '🔒 Korrekturhilfe (noch ' + (TOPICS.length - visited.size) + ' Kacheln)';
+          openSortBtn.title = 'Öffne zuerst alle 6 Kacheln';
+        }
+      }
 
       function updateProgressUI() {
         const count = visited.size;
         const total = TOPICS.length;
         progressText.textContent = count + ' / ' + total + ' geöffnet';
         progressPill.classList.toggle('all-done', count === total);
-        resetBtn.hidden = count === 0;
+        resetBtn.hidden = count === 0 && !sortSolved;
 
         document.querySelectorAll('.topic-tile').forEach(function (tile) {
           tile.classList.toggle('is-visited', visited.has(tile.dataset.topicId));
         });
+
+        teacherBtn.classList.toggle('is-active', teacherMode);
+        teacherBtn.textContent = teacherMode ? 'Lehrkraft aktiv' : 'Lehrkraft';
+        teacherSolutionBox.hidden = !teacherMode;
+
+        updateUnlockButtonUI();
       }
+
+      function showSortFeedback(type, message) {
+        if (!message) {
+          sortFeedback.hidden = true;
+          sortFeedback.textContent = '';
+          sortFeedback.className = 'sort-feedback';
+          return;
+        }
+        sortFeedback.hidden = false;
+        sortFeedback.className = 'sort-feedback ' + (type === 'success' ? 'is-success' : 'is-error');
+        sortFeedback.textContent = message;
+      }
+
+      function getSlotOfPrinciple(principleId) {
+        for (let i = 0; i < ALL_SLOTS.length; i++) {
+          const sid = ALL_SLOTS[i].id;
+          if (placements[sid] === principleId) {
+            return sid;
+          }
+        }
+        return null;
+      }
+
+      function placePrincipleInSlot(principleId, targetSlotId) {
+        if (sortSolved || !principleId) return;
+        const previousSlotId = getSlotOfPrinciple(principleId);
+        const existingInTarget = placements[targetSlotId] || null;
+
+        if (previousSlotId === targetSlotId) {
+          selectedPrincipleId = null;
+          renderSortBoard();
+          return;
+        }
+
+        if (previousSlotId) {
+          if (existingInTarget) {
+            placements[previousSlotId] = existingInTarget;
+          } else {
+            delete placements[previousSlotId];
+          }
+        }
+
+        placements[targetSlotId] = principleId;
+        selectedPrincipleId = null;
+        showSortFeedback(null, '');
+        renderSortBoard();
+      }
+
+      function removePrincipleFromSlot(slotId) {
+        if (sortSolved) return;
+        if (placements[slotId]) {
+          delete placements[slotId];
+          selectedPrincipleId = null;
+          showSortFeedback(null, '');
+          renderSortBoard();
+        }
+      }
+
+      function resetSortingGame(clearFeedback) {
+        sortSolved = false;
+        placements = {};
+        selectedPrincipleId = null;
+        draggedPrincipleId = null;
+        chipOrder = shuffleArray(TOPICS.map(function (t) { return t.id; }));
+        if (!teacherMode) {
+          saveSortState(false, {});
+        }
+        if (clearFeedback) {
+          showSortFeedback(null, '');
+        }
+        renderSortBoard();
+        updateProgressUI();
+      }
+
+      function renderSortBoard() {
+        const placedIds = new Set(Object.values(placements));
+        const unplacedIds = chipOrder.filter(function (id) { return !placedIds.has(id); });
+        const placedCount = placedIds.size;
+
+        chipTrayCard.hidden = sortSolved;
+        chipPool.innerHTML = '';
+
+        if (!sortSolved) {
+          if (unplacedIds.length === 0) {
+            const emptyNote = document.createElement('span');
+            emptyNote.className = 'chip-pool-empty';
+            emptyNote.textContent = 'Alle sechs Prinzipien wurden zugeordnet.';
+            chipPool.appendChild(emptyNote);
+          } else {
+            unplacedIds.forEach(function (principleId) {
+              const chip = document.createElement('button');
+              chip.type = 'button';
+              chip.className = 'principle-chip' + (selectedPrincipleId === principleId ? ' is-selected' : '');
+              chip.draggable = true;
+              chip.dataset.principleId = principleId;
+              chip.innerHTML = '<span class="chip-grip" aria-hidden="true">⋮⋮</span><span>' + PRINCIPLE_LABELS[principleId] + '</span>';
+
+              chip.addEventListener('click', function () {
+                selectedPrincipleId = (selectedPrincipleId === principleId) ? null : principleId;
+                renderSortBoard();
+              });
+
+              chip.addEventListener('dragstart', function (e) {
+                draggedPrincipleId = principleId;
+                chip.classList.add('is-dragging');
+                if (e.dataTransfer) {
+                  e.dataTransfer.effectAllowed = 'move';
+                  e.dataTransfer.setData('text/plain', principleId);
+                }
+              });
+
+              chip.addEventListener('dragend', function () {
+                draggedPrincipleId = null;
+                chip.classList.remove('is-dragging');
+              });
+
+              chipPool.appendChild(chip);
+            });
+          }
+        }
+
+        dimensionsStack.innerHTML = '';
+        DIMENSIONS.forEach(function (dim) {
+          const card = document.createElement('div');
+          card.className = 'dimension-card';
+
+          const header = document.createElement('div');
+          header.className = 'dimension-header';
+          header.textContent = dim.title;
+          card.appendChild(header);
+
+          const cols = document.createElement('div');
+          cols.className = 'dimension-columns';
+
+          dim.slots.forEach(function (slot) {
+            const cell = document.createElement('div');
+            cell.className = 'dimension-cell';
+
+            const desc = document.createElement('div');
+            desc.className = 'cell-description';
+            desc.textContent = slot.description;
+            cell.appendChild(desc);
+
+            const zone = document.createElement('div');
+            zone.className = 'drop-zone';
+            zone.dataset.slotId = slot.id;
+            if (sortSolved) {
+              zone.classList.add('is-solved-slot');
+            } else if (selectedPrincipleId) {
+              zone.classList.add('is-ready-target');
+            }
+
+            const label = document.createElement('div');
+            label.className = 'drop-zone-label';
+            label.textContent = slot.label;
+            zone.appendChild(label);
+
+            const placedId = placements[slot.id];
+            if (placedId) {
+              const placedWrap = document.createElement('div');
+              placedWrap.className = 'placed-chip-wrap' + (selectedPrincipleId === placedId ? ' is-selected' : '');
+              placedWrap.draggable = !sortSolved;
+
+              const textSpan = document.createElement('span');
+              textSpan.textContent = PRINCIPLE_LABELS[placedId];
+              placedWrap.appendChild(textSpan);
+
+              if (!sortSolved) {
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'remove-chip-btn';
+                removeBtn.setAttribute('aria-label', PRINCIPLE_LABELS[placedId] + ' entfernen');
+                removeBtn.textContent = '×';
+                removeBtn.addEventListener('click', function (e) {
+                  e.stopPropagation();
+                  removePrincipleFromSlot(slot.id);
+                });
+                placedWrap.appendChild(removeBtn);
+
+                placedWrap.addEventListener('dragstart', function (e) {
+                  draggedPrincipleId = placedId;
+                  if (e.dataTransfer) {
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/plain', placedId);
+                  }
+                });
+
+                placedWrap.addEventListener('dragend', function () {
+                  draggedPrincipleId = null;
+                });
+
+                placedWrap.addEventListener('click', function (e) {
+                  e.stopPropagation();
+                  if (selectedPrincipleId && selectedPrincipleId !== placedId) {
+                    placePrincipleInSlot(selectedPrincipleId, slot.id);
+                  } else {
+                    selectedPrincipleId = (selectedPrincipleId === placedId) ? null : placedId;
+                    renderSortBoard();
+                  }
+                });
+              }
+
+              zone.appendChild(placedWrap);
+            } else {
+              const ph = document.createElement('div');
+              ph.className = 'drop-placeholder';
+              ph.textContent = selectedPrincipleId ? 'Hier ablegen' : 'Prinzip hier ablegen';
+              zone.appendChild(ph);
+            }
+
+            if (!sortSolved) {
+              zone.addEventListener('click', function () {
+                if (selectedPrincipleId) {
+                  placePrincipleInSlot(selectedPrincipleId, slot.id);
+                }
+              });
+
+              zone.addEventListener('dragover', function (e) {
+                e.preventDefault();
+                zone.classList.add('is-drag-over');
+              });
+
+              zone.addEventListener('dragleave', function () {
+                zone.classList.remove('is-drag-over');
+              });
+
+              zone.addEventListener('drop', function (e) {
+                e.preventDefault();
+                zone.classList.remove('is-drag-over');
+                const pid = (e.dataTransfer && e.dataTransfer.getData('text/plain')) || draggedPrincipleId;
+                if (pid && PRINCIPLE_LABELS[pid]) {
+                  placePrincipleInSlot(pid, slot.id);
+                }
+              });
+            }
+
+            cell.appendChild(zone);
+            cols.appendChild(cell);
+          });
+
+          card.appendChild(cols);
+          dimensionsStack.appendChild(card);
+        });
+
+        if (sortSolved) {
+          sortCountNote.textContent = 'Alle 6 Prinzipien richtig zugeordnet · Ergebnis gespeichert';
+          checkSortBtn.hidden = true;
+          resetSortBtn.hidden = false;
+          showSortFeedback('success', 'Alle sechs Prinzipien sind richtig zugeordnet. Dein Ergebnis bleibt gespeichert, bis du es zurücksetzt.');
+        } else {
+          sortCountNote.textContent = placedCount + ' von 6 Prinzipien zugeordnet';
+          checkSortBtn.hidden = false;
+          checkSortBtn.disabled = placedCount !== ALL_SLOTS.length;
+          resetSortBtn.hidden = placedCount === 0;
+        }
+      }
+
+      chipPool.addEventListener('dragover', function (e) {
+        if (sortSolved) return;
+        e.preventDefault();
+        chipPool.classList.add('is-drag-over');
+      });
+
+      chipPool.addEventListener('dragleave', function () {
+        chipPool.classList.remove('is-drag-over');
+      });
+
+      chipPool.addEventListener('drop', function (e) {
+        if (sortSolved) return;
+        e.preventDefault();
+        chipPool.classList.remove('is-drag-over');
+        const pid = (e.dataTransfer && e.dataTransfer.getData('text/plain')) || draggedPrincipleId;
+        if (pid) {
+          const fromSlot = getSlotOfPrinciple(pid);
+          if (fromSlot) {
+            removePrincipleFromSlot(fromSlot);
+          }
+        }
+      });
+
+      checkSortBtn.addEventListener('click', function () {
+        if (sortSolved) return;
+        if (Object.keys(placements).length !== ALL_SLOTS.length) return;
+
+        const allCorrect = ALL_SLOTS.every(function (slot) {
+          return placements[slot.id] === slot.correctId;
+        });
+
+        if (allCorrect) {
+          sortSolved = true;
+          if (!teacherMode) {
+            saveSortState(true, placements);
+          }
+          renderSortBoard();
+          updateProgressUI();
+        } else {
+          sortBoard.classList.remove('is-shaking');
+          void sortBoard.offsetWidth;
+          sortBoard.classList.add('is-shaking');
+
+          placements = {};
+          selectedPrincipleId = null;
+          chipOrder = shuffleArray(TOPICS.map(function (t) { return t.id; }));
+          showSortFeedback('error', 'Mindestens eine Zuordnung war nicht richtig. Das Sortierspiel startet von vorne.');
+          renderSortBoard();
+        }
+      });
+
+      resetSortBtn.addEventListener('click', function () {
+        resetSortingGame(true);
+      });
+
+      teacherFillBtn.addEventListener('click', function () {
+        if (!teacherMode) return;
+        placements = {};
+        ALL_SLOTS.forEach(function (slot) {
+          placements[slot.id] = slot.correctId;
+        });
+        sortSolved = false;
+        selectedPrincipleId = null;
+        showSortFeedback(null, '');
+        renderSortBoard();
+      });
+
+      openSortBtn.addEventListener('click', function () {
+        if (!isSortUnlocked()) return;
+        if (activeLayer === 'sort') {
+          setLayer('dashboard');
+        } else {
+          setLayer('sort');
+        }
+        updateUnlockButtonUI();
+      });
+
+      backToDashboardBtn.addEventListener('click', function () {
+        setLayer('dashboard');
+        updateUnlockButtonUI();
+      });
+
+      function openTeacherModal() {
+        teacherError.textContent = '';
+        teacherCodeInput.value = '';
+        teacherModal.hidden = false;
+        setTimeout(function () { teacherCodeInput.focus(); }, 20);
+      }
+
+      function closeTeacherModal() {
+        teacherModal.hidden = true;
+      }
+
+      teacherBtn.addEventListener('click', function () {
+        if (teacherMode) {
+          teacherMode = false;
+          const restored = loadSortState();
+          sortSolved = restored.solved;
+          placements = Object.assign({}, restored.placements);
+          selectedPrincipleId = null;
+          showSortFeedback(null, '');
+          if (activeLayer === 'sort' && !isSortUnlocked()) {
+            setLayer('dashboard');
+          } else if (activeLayer === 'sort') {
+            renderSortBoard();
+          }
+          updateProgressUI();
+        } else {
+          openTeacherModal();
+        }
+      });
+
+      teacherCancelBtn.addEventListener('click', closeTeacherModal);
+      teacherModal.addEventListener('click', function (e) {
+        if (e.target === teacherModal) closeTeacherModal();
+      });
+
+      teacherForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (teacherCodeInput.value.trim() === TEACHER_CODE) {
+          teacherMode = true;
+          closeTeacherModal();
+          updateProgressUI();
+          if (activeLayer === 'sort') {
+            renderSortBoard();
+          }
+        } else {
+          teacherError.textContent = 'Falscher Code. Bitte erneut versuchen.';
+          teacherCodeInput.select();
+        }
+      });
+
+      function closeResetModal() {
+        resetModal.hidden = true;
+      }
+
+      resetBtn.addEventListener('click', function () {
+        resetSortOnlyBtn.hidden = !sortSolved && Object.keys(placements).length === 0;
+        resetModal.hidden = false;
+      });
+
+      resetCancelBtn.addEventListener('click', closeResetModal);
+      resetModal.addEventListener('click', function (e) {
+        if (e.target === resetModal) closeResetModal();
+      });
+
+      resetSortOnlyBtn.addEventListener('click', function () {
+        resetSortingGame(true);
+        closeResetModal();
+      });
+
+      resetAllConfirmBtn.addEventListener('click', function () {
+        visited.clear();
+        saveVisited(visited);
+        startedAt = Date.now();
+        saveStartTime(startedAt);
+        resetSortingGame(true);
+        if (!teacherMode && activeLayer === 'sort') {
+          setLayer('dashboard');
+        }
+        updateProgressUI();
+        closeResetModal();
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          if (!teacherModal.hidden) closeTeacherModal();
+          if (!resetModal.hidden) closeResetModal();
+        }
+      });
 
       function createTile(topic) {
         const article = document.createElement('article');
@@ -825,10 +2286,18 @@
         gridEl.appendChild(createTile(topic));
       });
 
-      resetBtn.addEventListener('click', function () {
-        visited.clear();
-        saveVisited(visited);
-        updateProgressUI();
+      setInterval(function () {
+        if (!document.hidden && !isSortUnlocked()) {
+          updateUnlockButtonUI();
+        } else if (!document.hidden && !teacherMode && !sortSolved && openSortBtn.disabled && isSortUnlocked()) {
+          updateUnlockButtonUI();
+        }
+      }, 1000);
+
+      document.addEventListener('visibilitychange', function () {
+        if (!document.hidden) {
+          updateUnlockButtonUI();
+        }
       });
 
       updateProgressUI();
