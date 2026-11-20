@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Interaktive Lern-App: Soziale Marktwirtschaft &amp; DDR-Planwirtschaft</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* Subtiles Lernpapier-Punktraster im Hintergrund */
+    .dot-grid-light {
+      background-color: #f8fafc;
+      background-image: radial-gradient(#cbd5e1 1.15px, transparent 1.15px);
+      background-size: 24px 24px;
+    }
+    .dark .dot-grid-light {
+      background-color: #0b1120;
+      background-image: radial-gradient(#1e293b 1.25px, transparent 1.25px);
+      background-size: 24px 24px;
+    }
+
+    /* Active Recall (Selbsttest-Modus) Blur-Effekt */
+    .recall-blur {
+      filter: blur(5px);
+      opacity: 0.42;
+      user-select: none;
+      transition: filter 0.25s ease, opacity 0.25s ease;
+    }
+
+    /* Benutzerdefinierte Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.45);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 116, 139, 0.7);
+    }
+  </style>
+</head>
+<body class="font-sans antialiased text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-950 h-screen flex flex-col overflow-hidden selection:bg-indigo-600 selection:text-white">
+
+  <!-- ==================== TOP NAVIGATION & THEMEN-UMSCHALTER ==================== -->
+  <header class="z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 px-3 sm:px-5 py-2.5 shadow-sm">
+    <div class="max-w-6xl mx-auto flex flex-col gap-2.5">
+
+      <!-- Zeile 1: Themen-Tabs (Wechsel zwischen beiden Lernapps) + Gesamtfortschritt + Werkzeuge -->
+      <div class="flex flex-wrap items-center justify-between gap-2.5">
+
+        <!-- Themen-Umschalter (Segmented Control) -->
+        <div
+          role="tablist"
+          aria-label="Wirtschaftssystem auswählen"
+          class="inline-flex p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 max-w-full overflow-x-auto"
+        >
+          <button
+            id="tab-smw"
+            role="tab"
+            aria-selected="true"
+            data-topic-tab="smw"
+            class="flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-indigo-600 text-white shadow-sm"
+          >
+            <span class="w-2 h-2 rounded-full bg-white shrink-0"></span>
+            <span>Soziale Marktwirtschaft</span>
+            <span id="badge-count-smw" class="px-1.5 py-0.5 rounded-md text-[10px] font-extrabold bg-white/20 text-white">
+              0/26
+            </span>
+          </button>
+
+          <button
+            id="tab-ddr"
+            role="tab"
+            aria-selected="false"
+            data-topic-tab="ddr"
+            class="flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+          >
+            <span class="w-2 h-2 rounded-full bg-rose-500 shrink-0"></span>
+            <span>Zentralverwaltungswirtschaft (DDR)</span>
+            <span id="badge-count-ddr" class="px-1.5 py-0.5 rounded-md text-[10px] font-extrabold bg-slate-200/80 dark:bg-slate-700 text-slate-700 dark:text-slate-200">
+              0/28
+            </span>
+          </button>
+        </div>
+
+        <!-- Rechte Werkzeugleiste: Suche, Selbsttest, Lern-Tour, Dark Mode -->
+        <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+
+          <!-- Schnellsuche -->
+          <div class="relative">
+            <svg class="w-4 h-4 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+            </svg>
+            <input
+              id="search-input"
+              type="text"
+              placeholder="Begriff suchen..."
+              class="pl-8 pr-7 py-1.5 text-xs rounded-xl bg-slate-100 dark:bg-slate-800 border border-transparent focus:border-indigo-400 focus:bg-white dark:focus:bg-slate-900 outline-none w-36 sm:w-48 md:w-52 transition"
+            />
+            <button id="clear-search-btn" class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" title="Suche löschen">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Selbsttest / Active Recall Schalter -->
+          <button
+            id="toggle-recall-btn"
+            class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-amber-50 dark:hover:bg-amber-950/40 text-slate-700 dark:text-slate-200 transition shadow-xs"
+            title="Erklärungen abdecken, um dein Wissen aktiv abzufragen"
+          >
+            <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            <span id="recall-btn-label">Selbsttest</span>
+          </button>
+
+          <!-- Geführte Lern-Tour starten -->
+          <button
+            id="start-tour-btn"
+            class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition"
+            title="Alle Lernkarten dieses Themas der Reihe nach mit Merkhilfen durchgehen"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="hidden sm:inline">Lern-Tour</span>
+          </button>
+
+          <!-- Dark Mode Toggle -->
+          <button
+            id="theme-toggle-btn"
+            class="p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+            title="Hell-/Dunkelmodus wechseln"
+            aria-label="Designmodus wechseln"
+          >
+            <svg class="w-4 h-4 hidden dark:block text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <svg class="w-4 h-4 block dark:hidden text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Zeile 2: Fortschrittsbalken für aktives Thema & Gesamtfortschritt -->
+      <div class="flex items-center justify-between gap-3 pt-1 border-t border-slate-100 dark:border-slate-800/80 text-[11px]">
+        <div class="flex items-center gap-2.5 flex-1 min-w-0">
+          <span id="active-topic-short" class="font-semibold text-slate-700 dark:text-slate-200 truncate">
+            Thema 1: Soziale Marktwirtschaft
+          </span>
+          <div class="w-28 sm:w-44 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden shrink-0">
+            <div id="progress-bar" class="h-full bg-emerald-500 rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+          <span id="progress-text" class="font-semibold text-slate-600 dark:text-slate-300 shrink-0">0 / 26 gelernt</span>
+        </div>
+        <div class="hidden sm:flex items-center gap-1.5 text-slate-500 dark:text-slate-400 shrink-0">
+          <span>Gesamtfortschritt beide Themen:</span>
+          <span id="total-progress-text" class="font-bold text-emerald-600 dark:text-emerald-400">0 / 54</span>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ==================== HAUPTBEREICH: LERNKARTEN-ÜBERSICHT ==================== -->
+  <main id="main-scroll-area" class="relative flex-1 overflow-y-auto dot-grid-light px-3 sm:px-6 py-6">
+    <div class="max-w-6xl mx-auto space-y-6 pb-32">
+
+      <!-- Dynamische Themen-Kopfkarte -->
+      <div id="topic-hero-banner" class="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 rounded-2xl p-5 sm:p-6 text-white shadow-lg transition-all duration-300">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <span id="hero-badge" class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 backdrop-blur-xs mb-2">
+              Kompakt-Lernzettel · Modul 12.1.6
+            </span>
+            <h1 id="hero-title" class="font-display text-xl sm:text-2xl font-extrabold">
+              Soziale Marktwirtschaft im Überblick
+            </h1>
+            <p id="hero-description" class="text-white/90 text-xs sm:text-sm mt-1 max-w-2xl leading-relaxed">
+              Alle 6 Themenbereiche übersichtlich sortiert. Hake Punkte ab, die du schon sicher beherrschst, nutze den Selbsttest zum Abfragen oder klicke eine Karte an, um Merkhilfen &amp; Prüfungstipps anzuzeigen.
+            </p>
+          </div>
+
+          <!-- Zweistufiger Fortschritt-Zurücksetzen-Button (ohne Browser-confirm) -->
+          <div class="flex items-center gap-2 self-start md:self-end shrink-0">
+            <button
+              id="reset-progress-btn"
+              class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white/15 hover:bg-white/25 border border-white/25 text-white transition"
+              title="Lernfortschritt für das aktuelle Thema zurücksetzen"
+            >
+              Thema zurücksetzen
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kapitel-Filter-Leiste -->
+      <div id="section-filter-bar" class="flex items-center gap-2 flex-wrap"></div>
+
+      <!-- Dynamischer Container für alle Kapitel & Lernkarten -->
+      <div id="study-list-container" class="space-y-8"></div>
+
+    </div>
+  </main>
+
+  <!-- ==================== SCHWEBENDE LERNKARTEN-SCHUBLADE (MERKHILFE & KLAUSURWISSEN) ==================== -->
+  <div
+    id="detail-drawer"
+    class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[94%] max-w-xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl transition-all duration-300 translate-y-[130%] opacity-0 pointer-events-none"
+  >
+    <div class="p-4 sm:p-5">
+      <!-- Oberer Bereich: Kapitel & Untergruppe -->
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <span id="drawer-section-badge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold">
+            Kapitel
+          </span>
+          <span id="drawer-group-badge" class="hidden inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+            Untergruppe
+          </span>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+          <span id="drawer-counter" class="text-xs font-medium text-slate-400">1 / 26</span>
+          <button id="close-drawer-btn" class="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition" aria-label="Schließen">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Kernbegriff & Erklärung -->
+      <h2 id="drawer-title" class="font-display font-bold text-base sm:text-lg text-slate-900 dark:text-white leading-snug">
+        Begriff
+      </h2>
+      <p id="drawer-desc" class="text-sm text-slate-700 dark:text-slate-200 mt-1 leading-relaxed">
+        Beschreibung
+      </p>
+
+      <!-- Merkhilfe & Prüfungstipp Box -->
+      <div class="mt-3 p-3 rounded-xl bg-amber-50/90 dark:bg-amber-950/35 border border-amber-200/80 dark:border-amber-800/60">
+        <div class="flex items-start gap-2">
+          <span class="text-amber-500 mt-0.5 shrink-0">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z" />
+            </svg>
+          </span>
+          <div>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300 block">
+              Merkhilfe &amp; Klausurwissen
+            </span>
+            <p id="drawer-tip" class="text-xs text-amber-950/90 dark:text-amber-100/90 mt-0.5 leading-relaxed">
+              Tipp
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fußzeile: Gelernt-Button & Vor/Zurück-Navigation -->
+      <div class="mt-3.5 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+        <button
+          id="drawer-learned-btn"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+          <span id="drawer-learned-label">Als gelernt markieren</span>
+        </button>
+
+        <div class="flex items-center gap-1.5">
+          <button id="drawer-prev-btn" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition">
+            ← Zurück
+          </button>
+          <button id="drawer-next-btn" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white transition">
+            Weiter →
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * =========================================================================
+     * GEMEINSAME DATENBASIS FÜR BEIDE KARTEN-LERNAPPS
+     * 1) Soziale Marktwirtschaft (Modul 12.1.6 · 26 Lernkarten)
+     * 2) Zentralverwaltungswirtschaft in der DDR (28 Lernkarten)
+     * =========================================================================
+     */
+    const TOPICS = {
+      smw: {
+        id: 'smw',
+        shortTitle: 'Thema 1: Soziale Marktwirtschaft (BRD)',
+        badge: 'Kompakt-Lernzettel · Modul 12.1.6',
+        title: 'Soziale Marktwirtschaft im Überblick',
+        description:
+          'Alle 6 Themenbereiche übersichtlich sortiert. Hake Punkte ab, die du schon sicher beherrschst, nutze den Selbsttest zum Abfragen oder klicke eine Karte an, um Merkhilfen & Prüfungstipps anzuzeigen.',
+        searchPlaceholder: 'Art. 14, 1948, Erhard, Wohngeld...',
+        heroGradient: 'from-indigo-600 via-blue-600 to-cyan-600',
+        primaryBtnClass: 'bg-indigo-600 hover:bg-indigo-700 text-white',
+        tabActiveClass: 'bg-indigo-600 text-white shadow-sm',
+        storageKey: 'smw_mindmap_learned_v1',
+        showSectionHeaders: false, // Jede Section entspricht direkt einer der 6 Themenkarten
+        sections: [
+          {
+            id: 'smw-s1',
+            number: '1',
+            title: 'Modulziel und Grundwerte',
+            subtitle: 'Verfassungsrechtliches Fundament',
+            theme: {
+              badgeBg: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300',
+              headerBg: 'from-indigo-600 to-indigo-700',
+              border: 'border-indigo-400 dark:border-indigo-600',
+              ring: 'ring-indigo-400',
+              softBg: 'bg-indigo-50/70 dark:bg-indigo-950/30',
+              pillActive: 'bg-indigo-600 text-white border-indigo-600',
+            },
+            groups: [
+              {
+                id: 'smw-g1',
+                title: 'Modulziel und Grundwerte',
+                subtitle: 'Verfassungsrechtliches Fundament',
+                icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />`,
+                items: [
+                  {
+                    id: 'b1-1',
+                    title: 'Wirtschaftssystem',
+                    detail: 'Wohlstand und politische Stabilität in der Bundesrepublik',
+                    tags: ['Zielsetzung'],
+                    tip: 'Wirtschaftlicher Erfolg und demokratische Stabilität bedingen sich gegenseitig: Eine stabile Wirtschaft schützt die Demokratie vor Extremismus.',
+                  },
+                  {
+                    id: 'b1-2',
+                    title: 'Verfassungskonformität',
+                    detail: 'Entsprechung zum Wertekanon des Grundgesetzes',
+                    tags: ['Grundgesetz'],
+                    tip: 'Das Grundgesetz schreibt kein konkretes Wirtschaftssystem starr vor, setzt aber durch Grundrechte (Freiheit + Sozialstaatsprinzip) klare Leitplanken.',
+                  },
+                  {
+                    id: 'b1-3',
+                    title: 'Individuelle Freiheit',
+                    detail: 'Art. 2 GG und Art. 12 GG',
+                    tags: ['Art. 2 GG', 'Art. 12 GG'],
+                    tip: 'Eselsbrücke: Art. 2 GG = Allgemeine Handlungsfreiheit (Vertrags- & Konsumfreiheit); Art. 12 GG = Berufsfreiheit (freie Wahl von Beruf & Arbeitsplatz).',
+                  },
+                  {
+                    id: 'b1-4',
+                    title: 'Schutz des Eigentums',
+                    detail: 'Art. 14 GG',
+                    tags: ['Art. 14 GG'],
+                    tip: 'Garantiert Privateigentum an Produktionsmitteln (wichtiger Unterschied zur Zentralverwaltungswirtschaft!), bindet es aber ans Gemeinwohl.',
+                  },
+                  {
+                    id: 'b1-5',
+                    title: 'Verfassungswert',
+                    detail: 'Verantwortung gegenüber anderen (Art. 131 BV)',
+                    tags: ['Art. 131 BV'],
+                    tip: 'Art. 131 der Bayerischen Verfassung (BV) definiert die obersten Bildungsziele – darunter Verantwortungsgefühl und Aufgeschlossenheit gegenüber Mitmenschen.',
+                  },
+                  {
+                    id: 'b1-6',
+                    title: 'Soziale Werte',
+                    detail: 'Wohlstand, Maß, Klugheit, Mut',
+                    tags: ['Wertekanon'],
+                    tip: 'Diese vier Leitwerte verbinden wirtschaftliche Vernunft (Maß, Klugheit, Mut zum Unternehmertum) mit dem gesellschaftlichen Ziel (Wohlstand für alle).',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            id: 'smw-s2',
+            number: '2',
+            title: 'Historischer Hintergrund und Entstehung',
+            subtitle: 'Vom 19. Jahrhundert zum Wirtschaftswunder 1948',
+            theme: {
+              badgeBg: 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300',
+              headerBg: 'from-amber-500 to-orange-600',
+              border: 'border-amber-400 dark:border-amber-600',
+              ring: 'ring-amber-400',
+              softBg: 'bg-amber-50/70 dark:bg-amber-950/30',
+              pillActive: 'bg-amber-600 text-white border-amber-600',
+            },
+            groups: [
+              {
+                id: 'smw-g2',
+                title: 'Historischer Hintergrund und Entstehung',
+                subtitle: 'Vom 19. Jahrhundert zum Wirtschaftswunder 1948',
+                icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />`,
+                items: [
+                  {
+                    id: 'b2-1',
+                    title: 'Freie Marktwirtschaft',
+                    detail: 'Situation in Deutschland/England im 19. Jahrhundert und in den USA',
+                    tags: ['19. Jh.', 'Laissez-faire'],
+                    tip: 'Im 19. Jh. (Industrialisierung) herrschte ungezügelter Kapitalismus („Nachtwächterstaat“): Hohes Wachstum, aber extreme Armut und fehlender Arbeitsschutz.',
+                  },
+                  {
+                    id: 'b2-2',
+                    title: 'Staatliche Rahmengesetzgebung',
+                    detail: 'Notwendigkeit als Reaktion auf wirtschaftliche Risiken',
+                    tags: ['Ordnungsrahmen'],
+                    tip: 'Aus Krisen (z. B. Weltwirtschaftskrise 1929) lernte man: Ohne staatliche Spielregeln zerstört sich der Markt durch Monopole und soziale Verelendung selbst.',
+                  },
+                  {
+                    id: 'b2-3',
+                    title: 'Geburtsstunde 1948',
+                    detail: 'Währungsreform (Einführung Deutsche Mark, 20. Juni 1948)',
+                    tags: ['20. Juni 1948', 'D-Mark'],
+                    tip: 'Datum für die Klausur merken! Die wertlose Reichsmark wurde durch die stabile D-Mark ersetzt – das Vertrauen in Geld kehrte sofort zurück.',
+                  },
+                  {
+                    id: 'b2-4',
+                    title: 'Leitsätzegesetz',
+                    detail: 'Preisfreigabe durch Leonhard Miksch (24. Juni 1948)',
+                    tags: ['24. Juni 1948', 'Leonhard Miksch'],
+                    tip: 'Nur 4 Tage nach der Währungsreform wurden staatliche Preisstopps und Bezugsscheine abgeschafft: Angebot und Nachfrage durften wieder den Preis bilden.',
+                  },
+                  {
+                    id: 'b2-5',
+                    title: 'Effekt der Reformen',
+                    detail: 'Schaufenster füllten sich, Ende der Zwangswirtschaft',
+                    tags: ['Wirtschaftswunder'],
+                    tip: 'Über Nacht verschwand der Schwarzmarkt: Produzenten hatten wieder Anreize, Waren für die neue D-Mark zu freien Preisen anzubieten.',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            id: 'smw-s3',
+            number: '3',
+            title: 'Kennzeichen und Werte',
+            subtitle: 'Freiheit & soziale Sicherheit verbinden',
+            theme: {
+              badgeBg: 'bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-300',
+              headerBg: 'from-teal-600 to-emerald-600',
+              border: 'border-teal-400 dark:border-teal-600',
+              ring: 'ring-teal-400',
+              softBg: 'bg-teal-50/70 dark:bg-teal-950/30',
+              pillActive: 'bg-teal-600 text-white border-teal-600',
+            },
+            groups: [
+              {
+                id: 'smw-g3',
+                title: 'Kennzeichen und Werte',
+                subtitle: 'Freiheit & soziale Sicherheit verbinden',
+                icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />`,
+                items: [
+                  {
+                    id: 'b3-1',
+                    title: 'Freiheitlicher und sozialer Grundsatz',
+                    detail: 'Art. 14 GG (Garantie und Verpflichtung von Eigentum)',
+                    tags: ['Art. 14 Abs. 2 GG'],
+                    tip: 'Berühmter Satz aus Art. 14 Abs. 2 GG: „Eigentum verpflichtet. Sein Gebrauch soll zugleich dem Wohle der Allgemeinheit dienen.“',
+                  },
+                  {
+                    id: 'b3-2',
+                    title: 'Marktwirtschaftlicher Wettbewerb',
+                    detail: 'Aufrechterhaltung bei gleichzeitiger Sicherung sozialer Mindeststandards',
+                    tags: ['Leitidee'],
+                    tip: 'Die Kernformel der Sozialen Marktwirtschaft: Leistung und Wettbewerb fördern, aber niemanden ins Bodenlose fallen lassen.',
+                  },
+                  {
+                    id: 'b3-3',
+                    title: 'Staatliche Eingriffe',
+                    detail: 'Regelungen im sozialen und wirtschaftlichen Bereich',
+                    tags: ['Ordnungspolitik'],
+                    tip: 'Der Staat greift gezielt ein – z. B. durch Arbeitsrecht, Mindestlohn, Kartellverbot, Umweltschutz und Sozialgesetze.',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            id: 'smw-s4',
+            number: '4',
+            title: 'Wirtschaftspolitische Prinzipien',
+            subtitle: 'Spielregeln für einen funktionierenden Markt',
+            theme: {
+              badgeBg: 'bg-violet-100 text-violet-800 dark:bg-violet-950 dark:text-violet-300',
+              headerBg: 'from-violet-600 to-purple-700',
+              border: 'border-violet-400 dark:border-violet-600',
+              ring: 'ring-violet-400',
+              softBg: 'bg-violet-50/70 dark:bg-violet-950/30',
+              pillActive: 'bg-violet-600 text-white border-violet-600',
+            },
+            groups: [
+              {
+                id: 'smw-g4',
+                title: 'Wirtschaftspolitische Prinzipien',
+                subtitle: 'Spielregeln für einen funktionierenden Markt',
+                icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />`,
+                items: [
+                  {
+                    id: 'b4-1',
+                    title: 'Wettbewerbsordnung',
+                    detail: 'Faire Bedingungen und Entmachtung von Monopolen',
+                    tags: ['Kartellamt', 'GWB'],
+                    tip: 'Wettbewerb ist der Motor für Innovation und faire Preise. Das Bundeskartellamt verhindert Preisabsprachen und marktbeherrschende Monopole.',
+                  },
+                  {
+                    id: 'b4-2',
+                    title: 'Primat der Währungspolitik',
+                    detail: 'Sicherung der Geldwertstabilität',
+                    tags: ['EZB', 'Inflationsschutz'],
+                    tip: '„Primat“ heißt Vorrang: Ohne stabiles Geld (niedrige Inflation) funktionieren weder Preissignale noch private Altersvorsorge.',
+                  },
+                  {
+                    id: 'b4-3',
+                    title: 'Haftungsprinzip',
+                    detail: 'Risikogerechtes Verhalten der Marktteilnehmer',
+                    tags: ['Eigenverantwortung'],
+                    tip: 'Merksatz: „Wer den Nutzen (Gewinn) hat, muss auch den Schaden (Verlust) tragen.“ Das verhindert leichtsinnige Spekulationen auf Kosten der Allgemeinheit.',
+                  },
+                  {
+                    id: 'b4-4',
+                    title: 'Marktkonformität',
+                    detail: 'Soziale Maßnahmen ohne Störung des Marktes',
+                    tags: ['Preismechanismus'],
+                    tip: 'Klassisches Prüfungsbeispiel: Wohngeld ist marktkonform (Mietpreis bildet sich frei), ein starrer Mietendeckel ist nicht marktkonform (stört Angebot & Nachfrage).',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            id: 'smw-s5',
+            number: '5',
+            title: 'Sozialer Ausgleich',
+            subtitle: 'Gerechtigkeit, Absicherung & Chancengleichheit',
+            theme: {
+              badgeBg: 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300',
+              headerBg: 'from-rose-600 to-pink-600',
+              border: 'border-rose-400 dark:border-rose-600',
+              ring: 'ring-rose-400',
+              softBg: 'bg-rose-50/70 dark:bg-rose-950/30',
+              pillActive: 'bg-rose-600 text-white border-rose-600',
+            },
+            groups: [
+              {
+                id: 'smw-g5',
+                title: 'Sozialer Ausgleich',
+                subtitle: 'Gerechtigkeit, Absicherung & Chancengleichheit',
+                icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />`,
+                items: [
+                  {
+                    id: 'b5-1',
+                    title: 'Korrektur des Marktergebnisses',
+                    detail: 'Zur Erreichung sozialer Standards',
+                    tags: ['Sekundärverteilung'],
+                    tip: 'Der Markt belohnt nur wirtschaftliche Leistung (Primärverteilung). Der Staat korrigiert dieses Ergebnis nachträglich (Sekundärverteilung) für sozialen Frieden.',
+                  },
+                  {
+                    id: 'b5-2',
+                    title: 'Sozialversicherung',
+                    detail: 'Absicherung gegen Risiken (Krankheit, Arbeitslosigkeit, Alter)',
+                    tags: ['5 Säulen', 'Solidarprinzip'],
+                    tip: 'Die 5 Säulen merken: Kranken-, Renten-, Arbeitslosen-, Pflege- und Unfallversicherung schützen vor den großen Lebensrisiken.',
+                  },
+                  {
+                    id: 'b5-3',
+                    title: 'Steuersystem',
+                    detail: 'Umverteilung der primären Einkommensverteilung',
+                    tags: ['Steuerprogression'],
+                    tip: 'Durch progressive Einkommensteuer (höherer Steuersatz bei höherem Einkommen) werden Sozialleistungen wie Bürgergeld, Kindergeld oder BAföG finanziert.',
+                  },
+                  {
+                    id: 'b5-4',
+                    title: 'Chancengleichheit',
+                    detail: 'Verbesserung von Startbedingungen und Bildung',
+                    tags: ['Bildung', 'BAföG'],
+                    tip: 'Kostenfreie Schulen/Hochschulen und BAföG sorgen dafür, dass Aufstieg nicht vom Geldbeutel der Eltern abhängt.',
+                  },
+                  {
+                    id: 'b5-5',
+                    title: 'Äquivalenzprinzip',
+                    detail: 'Einkommensproportionalität von Beitrag und Leistung',
+                    tags: ['Rente & ALG I'],
+                    tip: 'Wichtiger Unterschied in Klausuren: Beim Äquivalenzprinzip (z. B. Rente, Arbeitslosengeld I) erhält man höhere Leistungen, wenn man zuvor höhere Beiträge gezahlt hat.',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            id: 'smw-s6',
+            number: '6',
+            title: 'Zentrale Persönlichkeiten',
+            subtitle: 'Vordenker und politische Umsetzer',
+            theme: {
+              badgeBg: 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300',
+              headerBg: 'from-sky-600 to-blue-600',
+              border: 'border-sky-400 dark:border-sky-600',
+              ring: 'ring-sky-400',
+              softBg: 'bg-sky-50/70 dark:bg-sky-950/30',
+              pillActive: 'bg-sky-600 text-white border-sky-600',
+            },
+            groups: [
+              {
+                id: 'smw-g6',
+                title: 'Zentrale Persönlichkeiten',
+                subtitle: 'Vordenker und politische Umsetzer',
+                icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />`,
+                items: [
+                  {
+                    id: 'b6-1',
+                    title: 'Ludwig Erhard',
+                    detail: 'Wirtschaftsminister, Bundeskanzler und Vater des Wirtschaftswunders',
+                    tags: ['Politik', '„Wohlstand für alle“'],
+                    tip: 'Politische Umsetzung: Setzte 1948 die Wirtschaftsreformen durch und prägte den berühmten Buchtitel „Wohlstand für alle“ (1957).',
+                  },
+                  {
+                    id: 'b6-2',
+                    title: 'Alfred Müller-Armack',
+                    detail: 'Prägung des Begriffs Soziale Marktwirtschaft und Staatssekretär',
+                    tags: ['Begriffsprägung', '1946'],
+                    tip: 'Namensgeber: Erfand 1946 den Begriff „Soziale Marktwirtschaft“ als Synthese aus wirtschaftlicher Freiheit und sozialem Ausgleich; arbeitete eng mit Erhard zusammen.',
+                  },
+                  {
+                    id: 'b6-3',
+                    title: 'Walter Eucken',
+                    detail: 'Begründer des Ordoliberalismus und der Freiburger Schule',
+                    tags: ['Ordoliberalismus'],
+                    tip: 'Theoretisches Fundament: Forderte einen „starken Staat“, der die Spielregeln (Ordnungspolitik) festlegt, aber nicht selbst wie ein Unternehmer mitspielt.',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+
+      ddr: {
+        id: 'ddr',
+        shortTitle: 'Thema 2: Zentralverwaltungswirtschaft (DDR)',
+        badge: 'Kompakt-Lernzettel · Geschichte & Wirtschaft',
+        title: 'Zentralverwaltungswirtschaft in der DDR',
+        description:
+          'Alle 3 Hauptbereiche und 10 Teilaspekte im Überblick. Hake Punkte ab, die du schon beherrschst, nutze den Selbsttest zum Abfragen oder klicke auf einen Begriff für Merkhilfen & Prüfungstipps.',
+        searchPlaceholder: 'SPK, LPG, U61000, Valuta...',
+        heroGradient: 'from-rose-700 via-red-600 to-amber-600',
+        primaryBtnClass: 'bg-rose-600 hover:bg-rose-700 text-white',
+        tabActiveClass: 'bg-rose-600 text-white shadow-sm',
+        storageKey: 'zvw_ddr_lernzettel_v1',
+        showSectionHeaders: true, // Zeigt die 3 großen Kapitelüberschriften mit ihren 10 Themenkarten
+        sections: [
+          {
+            id: 'p1',
+            number: '1',
+            title: 'Merkmale und Funktionsweise',
+            subtitle: 'Wie die sozialistische Planwirtschaft aufgebaut war und gesteuert wurde',
+            theme: {
+              badgeBg: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300',
+              headerBg: 'from-indigo-600 to-blue-700',
+              border: 'border-indigo-400 dark:border-indigo-500',
+              ring: 'ring-indigo-400',
+              softBg: 'bg-indigo-50/70 dark:bg-indigo-950/25',
+              pillActive: 'bg-indigo-600 text-white border-indigo-600',
+            },
+            groups: [
+              {
+                id: 'g1-1',
+                title: 'Staatliches Eigentum',
+                icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />`,
+                items: [
+                  {
+                    id: 'i-1',
+                    title: 'Volkseigentum an Produktionsmitteln',
+                    detail: 'Fabriken, Bodenschätze, Banken und Großbetriebe gehörten dem Staat (VEB = Volkseigene Betriebe).',
+                    tags: ['VEB', 'Kollektiv'],
+                    tip: 'In der DDR hieß Staatseigentum offiziell „Volkseigentum“. Dadurch hatte die SED-Führung die direkte Verfügungsgewalt über die gesamte Industrie.',
+                  },
+                  {
+                    id: 'i-2',
+                    title: 'Genossenschaftseigentum (z.B. LPG)',
+                    detail: 'Zusammenschluss von Bauern in Landwirtschaftlichen Produktionsgenossenschaften (LPG) statt Einzelhöfen.',
+                    tags: ['LPG', 'Landwirtschaft'],
+                    tip: 'Abkürzung merken: LPG = Landwirtschaftliche Produktionsgenossenschaft. Bauern brachten Land, Vieh und Maschinen (oft unter Druck) ein.',
+                  },
+                  {
+                    id: 'i-3',
+                    title: 'Ausschluss privaten Unternehmertums',
+                    detail: 'Kaum private Betriebe; Verstaatlichungswellen (z. B. 1972) drängten Privatinitiative fast vollständig zurück.',
+                    tags: ['Verstaatlichung'],
+                    tip: 'Nur sehr kleine Handwerks- oder Dienstleistungsbetriebe blieben übrig. Ohne Privateigentum fehlten persönliches Gewinnstreben und Eigeninitiative.',
+                  },
+                ],
+              },
+              {
+                id: 'g1-2',
+                title: 'Zentrale Planung',
+                icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />`,
+                items: [
+                  {
+                    id: 'i-4',
+                    title: 'Staatliche Plankommission (SPK)',
+                    detail: 'Zentrale Regierungsbehörde, die Fünfjahres- und Jahrespläne für die gesamte Volkswirtschaft erstellte.',
+                    tags: ['SPK', 'Fünfjahresplan'],
+                    tip: 'Die SPK war das „Gehirn“ der DDR-Wirtschaft: Sie legte fest, was, wie viel, wann und für wen produziert werden musste.',
+                  },
+                  {
+                    id: 'i-5',
+                    title: 'Gesamtwirtschaftliche Bilanzierung',
+                    detail: 'Staatliche Gegenüberstellung von verfügbaren Rohstoffen/Arbeitskräften (Aufkommen) und Bedarf (Verwendung).',
+                    tags: ['Bilanzierung'],
+                    tip: 'Stell dir eine riesige Excel-Tabelle für ein ganzes Land vor: Jede Schraube und jede Tonne Stahl wurde zentral zugeteilt.',
+                  },
+                  {
+                    id: 'i-6',
+                    title: 'Vorgabe von Plankennziffern',
+                    detail: 'Verbindliche Produktionsziele („Soll“) für jeden Betrieb – z. B. Menge, Gewicht oder Bruttoproduktion.',
+                    tags: ['Soll-Vorgaben'],
+                    tip: 'Die Planerfüllung war Gesetz! Wurde das „Soll“ übererfüllt, gab es Prämien – unabhängig davon, ob die Produkte wirklich gebraucht wurden.',
+                  },
+                ],
+              },
+              {
+                id: 'g1-3',
+                title: 'Staatliche Preis- und Lohnfestsetzung',
+                icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />`,
+                items: [
+                  {
+                    id: 'i-7',
+                    title: 'Administrativ festgelegte Festpreise',
+                    detail: 'Preise und Löhne wurden nicht durch Angebot und Nachfrage gebildet, sondern von Behörden politisch bestimmt.',
+                    tags: ['Festpreise'],
+                    tip: 'Ein Brötchen kostete Jahrzehnte lang 5 Pfennig – egal wie teuer Mehl und Strom in der Herstellung tatsächlich waren.',
+                  },
+                  {
+                    id: 'i-8',
+                    title: 'Subventionierung von Grundbedarf und Mieten',
+                    detail: 'Grundnahrungsmittel, Mieten, Energie und Nahverkehr wurden extrem billig gehalten („Einheit von Wirtschafts- und Sozialpolitik“).',
+                    tags: ['Subventionen', 'Sozialpolitik'],
+                    tip: 'Das sicherte zwar soziale Grundbedürfnisse, verschlang aber riesige Teile des Staatshaushalts und führte zu Verschwendung (z. B. Brot als Tierfutter).',
+                  },
+                  {
+                    id: 'i-9',
+                    title: 'Fehlen freier Preissignale',
+                    detail: 'Preise zeigten nicht mehr an, ob ein Gut knapp oder im Überfluss vorhanden war.',
+                    tags: ['Fehlsteuerung'],
+                    tip: 'Klausur-Schlüsselbegriff: In der Marktwirtschaft steuern Preise die Knappheit. Ohne echte Preise produziert der Plan am Bedarf vorbei!',
+                  },
+                ],
+              },
+              {
+                id: 'g1-4',
+                title: 'Außenhandelsmonopol',
+                icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />`,
+                items: [
+                  {
+                    id: 'i-10',
+                    title: 'Staatliche Regulierung von Export und Import',
+                    detail: 'Nur staatliche Außenhandelsbetriebe durften Geschäfte mit dem Ausland abschließen; Einbindung in den RGW (Ostblock).',
+                    tags: ['Monopol', 'RGW'],
+                    tip: 'Kein DDR-Betrieb konnte einfach selbst Maschinen im Westen bestellen – alles lief über staatliche Genehmigungen und Devisenzuteilungen.',
+                  },
+                  {
+                    id: 'i-11',
+                    title: 'Nicht-konvertible Binnenwährung (Mark der DDR)',
+                    detail: 'Die DDR-Mark durfte nicht frei gegen westliche Währungen (wie D-Mark oder US-Dollar) getauscht werden.',
+                    tags: ['Binnenwährung', 'Devisen'],
+                    tip: '„Nicht-konvertibel“ bedeutet: Im Ausland war die DDR-Mark wertlos. Für West-Importe brauchte die DDR zwingend „harte Devisen“ (D-Mark/Dollar).',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            id: 'p2',
+            number: '2',
+            title: 'Systemversagen und Ursachen',
+            subtitle: 'Warum die Planwirtschaft an ihren eigenen Konstruktionsfehlern scheiterte',
+            theme: {
+              badgeBg: 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300',
+              headerBg: 'from-rose-600 to-red-700',
+              border: 'border-rose-400 dark:border-rose-500',
+              ring: 'ring-rose-400',
+              softBg: 'bg-rose-50/70 dark:bg-rose-950/25',
+              pillActive: 'bg-rose-600 text-white border-rose-600',
+            },
+            groups: [
+              {
+                id: 'g2-1',
+                title: 'Informationsdefizite',
+                icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />`,
+                items: [
+                  {
+                    id: 'i-12',
+                    title: 'Fehlende Marktsignale und Knappheitsindikatoren',
+                    detail: 'Ohne freie Preise und Wettbewerb wusste niemand genau, welche Waren die Bürger wirklich wünschten.',
+                    tags: ['Mangelwirtschaft'],
+                    tip: 'Folge: „Bückware“ und lange Warteschlangen bei gefragten Gütern (z. B. Autos, Südfrüchte), während Ladenhüter auf Halde lagen.',
+                  },
+                  {
+                    id: 'i-13',
+                    title: 'Unzureichendes Wissen zentraler Planungsbehörden',
+                    detail: 'Eine zentrale Behörde kann Millionen täglicher Konsum- und Produktionsentscheidungen nicht vollständig überblicken.',
+                    tags: ['Komplexitätsproblem'],
+                    tip: 'Ökonom Friedrich August von Hayek nannte das die „Anmaßung von Wissen“: Dezentrale Märkte verarbeiten Informationen viel schneller als jede Planbehörde.',
+                  },
+                ],
+              },
+              {
+                id: 'g2-2',
+                title: 'Politik der weichen Pläne',
+                icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />`,
+                items: [
+                  {
+                    id: 'i-14',
+                    title: 'Überhöhte Bedarfsanmeldungen durch Betriebe',
+                    detail: 'Betriebe meldeten absichtlich zu hohe Bedarfe an Rohstoffen, Maschinen und Arbeitskräften an, um Engpässe abzufedern.',
+                    tags: ['Horten', 'Weiche Pläne'],
+                    tip: 'Logik der Betriebsleiter: „Lieber zu viel Material anfordern und horten, falls der Zulieferer nächstes Monat wieder nicht liefert!“',
+                  },
+                  {
+                    id: 'i-15',
+                    title: 'Verschleierung von Leistungsreserven',
+                    detail: 'Betriebe verheimlichten ihre echte Leistungsfähigkeit, damit die Planvorgaben im nächsten Jahr nicht erhöht wurden.',
+                    tags: ['Fehlanreiz'],
+                    tip: 'Wer zu gut arbeitete, wurde mit einem höheren „Soll“ bestraft – deshalb bremsten Betriebe oft absichtlich („weiche Pläne“).',
+                  },
+                  {
+                    id: 'i-16',
+                    title: 'Hoher Material- und Energieverbrauch',
+                    detail: 'Durch Horten, fehlendes Kostenbewusstsein und „Tonnenideologie“ wurden Ressourcen massiv verschwendet.',
+                    tags: ['Ressourcenverschwendung'],
+                    tip: 'Klassisches Beispiel „Tonnenideologie“: Wurde der Plan in Tonnen gemessen, bauten Betriebe möglichst schwere statt sparsame Maschinen.',
+                  },
+                ],
+              },
+              {
+                id: 'g2-3',
+                title: 'Wirtschaftliche Ineffizienz',
+                icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />`,
+                items: [
+                  {
+                    id: 'i-17',
+                    title: 'Geringe Arbeitsproduktivität gegenüber Westdeutschland',
+                    detail: 'Die Wirtschaftsleistung pro Arbeitsstunde lag Ende der 1980er-Jahre nur bei etwa 30–40 % des westdeutschen Niveaus.',
+                    tags: ['Produktivitätslücke'],
+                    tip: 'Versteckte Arbeitslosigkeit in Betrieben, veraltete Technik und fehlende Leistungsanreize bremsten die Produktivität massiv.',
+                  },
+                  {
+                    id: 'i-18',
+                    title: 'Mangelnde Innovationskraft und Quantitätsorientierung',
+                    detail: 'Fokus auf reine Stückzahlen (Quantität) statt Qualität und Neuentwicklungen; Umstellungen gefährdeten die Planerfüllung.',
+                    tags: ['Innovationsstau'],
+                    tip: 'Neue Technik hätte erst einmal die laufende Produktion gestoppt – also baute man jahrzehntelang fast unveränderte Modelle (z. B. Trabant).',
+                  },
+                  {
+                    id: 'i-19',
+                    title: 'Verschleiß des industriellen Kapitalstocks',
+                    detail: 'Maschinen, Fabriken, Schienen und Wohnungen verfielen, weil Geld für Ersatzinvestitionen fehlte.',
+                    tags: ['Substanzverzehr'],
+                    tip: 'Die DDR „lebte von der Substanz“: Statt Gewinne in moderne Maschinen zu investieren, flossen Mittel in Konsumsubventionen.',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            id: 'p3',
+            number: '3',
+            title: 'Konkrete Beispiele und Problemfelder',
+            subtitle: 'Historische Belastungen, Schuldenfalle und das Prestigeprojekt Mikroelektronik',
+            theme: {
+              badgeBg: 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300',
+              headerBg: 'from-amber-600 to-orange-600',
+              border: 'border-amber-400 dark:border-amber-500',
+              ring: 'ring-amber-400',
+              softBg: 'bg-amber-50/70 dark:bg-amber-950/25',
+              pillActive: 'bg-amber-600 text-white border-amber-600',
+            },
+            groups: [
+              {
+                id: 'g3-1',
+                title: 'Ungünstige Startbedingungen',
+                icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />`,
+                items: [
+                  {
+                    id: 'i-20',
+                    title: 'Kriegszerstörungen und Demontagen',
+                    detail: 'Nach 1945 demontierte die sowjetische Besatzungsmacht ganze Fabriken und Eisenbahngleise in der SBZ/DDR.',
+                    tags: ['Nachkriegszeit', 'Demontage'],
+                    tip: 'Während Westdeutschland Marshallplan-Hilfen erhielt, verlor Ostdeutschland rund ein Drittel seiner Industriekapazität durch Demontagen.',
+                  },
+                  {
+                    id: 'i-21',
+                    title: 'Reparationsleistungen an die Sowjetunion',
+                    detail: 'Die DDR musste bis 1953 hohe Wiedergutmachungen aus der laufenden Produktion an die UdSSR liefern.',
+                    tags: ['Reparationen'],
+                    tip: 'Wichtiger Vergleichspunkt in Klausuren: Die Startbedingungen der DDR waren deutlich schlechter als die der Bundesrepublik.',
+                  },
+                  {
+                    id: 'i-22',
+                    title: 'Abschnitt von westdeutschen Wirtschaftsräumen',
+                    detail: 'Traditionelle Lieferketten (z. B. Steinkohle und Stahl aus dem Ruhrgebiet) wurden durch die Teilung gekappt.',
+                    tags: ['Deutsche Teilung'],
+                    tip: 'Mitteldeutschland war vor 1945 stark auf Verarbeitungsindustrie spezialisiert und musste nun mühsam eigene Grundstoffindustrie aufbauen.',
+                  },
+                ],
+              },
+              {
+                id: 'g3-2',
+                title: 'Rohstoff- und Devisendilemma',
+                icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />`,
+                items: [
+                  {
+                    id: 'i-23',
+                    title: 'Rohstoffarmut und Ölpreisschocks',
+                    detail: 'Kaum eigene Rohstoffe außer Braunkohle und Kali; die Ölkrisen (1973/1979) trafen die DDR durch teurere Sowjet-Lieferungen hart.',
+                    tags: ['Ölkrise', 'Braunkohle'],
+                    tip: 'Als die UdSSR ihre günstigen Erdöllieferungen kürzte, geriet die DDR in akute Devisennot.',
+                  },
+                  {
+                    id: 'i-24',
+                    title: 'Massive Kohleförderung auf Kosten von Anlagen',
+                    detail: 'Um Devisen zu sparen, setzte die DDR extrem auf heimische Braunkohle – mit massiven Umweltschäden und Anlagenverschleiß.',
+                    tags: ['Raubbau', 'Umweltschäden'],
+                    tip: 'Ganze Dörfer wurden abgebaggert und Kraftwerke auf Verschleiß gefahren, um Erdölimporte zu ersetzen.',
+                  },
+                  {
+                    id: 'i-25',
+                    title: 'Steigende Westverschuldung (Valutamark)',
+                    detail: 'Immer höhere Kredite im westlichen Ausland (gerechnet in der Verrechnungseinheit Valutamark) brachten die DDR 1989 an den Rand der Zahlungsunfähigkeit.',
+                    tags: ['Valutamark', 'Schuldenkrise'],
+                    tip: 'Begriff merken: „Valutamark“ war die interne DDR-Recheneinheit für harte Westwährungen (1 Valutamark ≈ 1 D-Mark).',
+                  },
+                ],
+              },
+              {
+                id: 'g3-3',
+                title: 'Planungsproblematik Mikroelektronik',
+                icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />`,
+                items: [
+                  {
+                    id: 'i-26',
+                    title: 'Zentrum Mikroelektronik Dresden (ZMD)',
+                    detail: 'Prestigeprojekt der SED zur Entwicklung eigener Computerchips, da westliche Hochtechnologie durch Embargos (CoCom) blockiert war.',
+                    tags: ['ZMD Dresden', 'Hightech'],
+                    tip: 'Die DDR wollte den technologischen Anschluss an den Westen erzwingen – trotz fehlender internationaler Arbeitsteilung.',
+                  },
+                  {
+                    id: 'i-27',
+                    title: 'Extrem hohe Inlandsherstellungskosten',
+                    detail: 'Milliardeninvestitionen für Forschung und Produktion führten zu unwirtschaftlich hohen Stückkosten.',
+                    tags: ['Fehlallokation'],
+                    tip: 'Das Geld, das in die Chip-Entwicklung floss, fehlte an allen Ecken und Enden bei der Sanierung normaler Fabriken.',
+                  },
+                  {
+                    id: 'i-28',
+                    title: 'Subventionierung des U61000 (Herstellung 500 DM, Weltmarkt 5 DM)',
+                    detail: 'Der 1-Megabit-Speicherchip U61000 kostete in der DDR rund 500 Mark/DM in der Herstellung, während vergleichbare Chips auf dem Weltmarkt ca. 5 DM kosteten.',
+                    tags: ['U61000', 'Paradebeispiel'],
+                    tip: 'DAS Top-Beispiel für Klausuren! Das Verhältnis 500 DM zu 5 DM beweist eindrucksvoll die fehlende Wettbewerbsfähigkeit und Ressourcenverschwendung.',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    };
+
+    /**
+     * =========================================================================
+     * ANWENDUNGSZUSTAND (STATE) & HILFSFUNKTIONEN
+     * =========================================================================
+     */
+    const state = {
+      activeTopicKey: 'smw', // 'smw' | 'ddr'
+      learnedByTopic: {
+        smw: new Set(),
+        ddr: new Set(),
+      },
+      revealedInRecall: new Set(),
+      recallMode: false,
+      searchQuery: '',
+      activeSectionFilter: 'all',
+      activeItemId: null,
+      confirmReset: false,
+    };
+
+    let resetConfirmTimer = null;
+
+    // Hilfsfunktion: Alle Lernkarten eines Themas als flache Liste liefern
+    function getTopicItems(topicKey) {
+      const topic = TOPICS[topicKey];
+      const list = [];
+      topic.sections.forEach((section) => {
+        section.groups.forEach((group) => {
+          group.items.forEach((item) => {
+            list.push({ ...item, group, section });
+          });
+        });
+      });
+      return list;
+    }
+
+    // Gespeicherten Lernfortschritt für beide Themen laden
+    function loadSavedProgress() {
+      Object.keys(TOPICS).forEach((key) => {
+        try {
+          const saved = localStorage.getItem(TOPICS[key].storageKey);
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed)) {
+              parsed.forEach((id) => state.learnedByTopic[key].add(id));
+            }
+          }
+        } catch (e) {
+          // Ignorieren, falls localStorage im iFrame eingeschränkt ist
+        }
+      });
+    }
+
+    function saveTopicProgress(topicKey) {
+      try {
+        localStorage.setItem(
+          TOPICS[topicKey].storageKey,
+          JSON.stringify([...state.learnedByTopic[topicKey]])
+        );
+      } catch (e) {
+        // Ignorieren
+      }
+    }
+
+    function matchesSearch(item, group, section) {
+      const q = state.searchQuery.trim().toLowerCase();
+      if (!q) return true;
+      return (
+        item.title.toLowerCase().includes(q) ||
+        item.detail.toLowerCase().includes(q) ||
+        item.tags.some((t) => t.toLowerCase().includes(q)) ||
+        group.title.toLowerCase().includes(q) ||
+        section.title.toLowerCase().includes(q)
+      );
+    }
+
+    /**
+     * =========================================================================
+     * THEMENWECHSEL (SWITCH ZWISCHEN SOZIALER MARKTWIRTSCHAFT & DDR)
+     * =========================================================================
+     */
+    function switchTopic(topicKey) {
+      if (!TOPICS[topicKey] || state.activeTopicKey === topicKey) return;
+
+      state.activeTopicKey = topicKey;
+      state.activeSectionFilter = 'all';
+      state.revealedInRecall.clear();
+      resetConfirmState();
+
+      // Geöffnete Detail-Schublade schließen, damit keine Karten-IDs kollidieren
+      closeDetailDrawer();
+
+      // Scrollposition sanft nach oben setzen
+      const scrollArea = document.getElementById('main-scroll-area');
+      if (scrollArea) scrollArea.scrollTop = 0;
+
+      updateTopicUI();
+      updateProgressUI();
+      renderSectionFilters();
+      renderStudyList();
+    }
+
+    function updateTopicUI() {
+      const topic = TOPICS[state.activeTopicKey];
+
+      // Tab-Styling aktualisieren
+      document.querySelectorAll('[data-topic-tab]').forEach((tabBtn) => {
+        const key = tabBtn.getAttribute('data-topic-tab');
+        const isSelected = key === state.activeTopicKey;
+        const badge = document.getElementById(`badge-count-${key}`);
+
+        tabBtn.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+        if (isSelected) {
+          tabBtn.className = `flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${TOPICS[key].tabActiveClass}`;
+          if (badge) {
+            badge.className = 'px-1.5 py-0.5 rounded-md text-[10px] font-extrabold bg-white/20 text-white';
+          }
+        } else {
+          tabBtn.className =
+            'flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white';
+          if (badge) {
+            badge.className =
+              'px-1.5 py-0.5 rounded-md text-[10px] font-extrabold bg-slate-200/80 dark:bg-slate-700 text-slate-700 dark:text-slate-200';
+          }
+        }
+      });
+
+      // Suchfeld-Platzhalter & Lern-Tour-Button Farbe anpassen
+      document.getElementById('search-input').placeholder = topic.searchPlaceholder;
+      document.getElementById('start-tour-btn').className =
+        `flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold shadow-sm transition ${topic.primaryBtnClass}`;
+      document.getElementById('drawer-next-btn').className =
+        `px-3 py-1.5 rounded-xl text-xs font-semibold transition ${topic.primaryBtnClass}`;
+
+      // Hero-Banner aktualisieren
+      const heroBanner = document.getElementById('topic-hero-banner');
+      heroBanner.className = `bg-gradient-to-r ${topic.heroGradient} rounded-2xl p-5 sm:p-6 text-white shadow-lg transition-all duration-300`;
+      document.getElementById('hero-badge').textContent = topic.badge;
+      document.getElementById('hero-title').textContent = topic.title;
+      document.getElementById('hero-description').textContent = topic.description;
+      document.getElementById('active-topic-short').textContent = topic.shortTitle;
+    }
+
+    /**
+     * =========================================================================
+     * GELERNT-STATUS & FORTSCHRITTSANZEIGEN
+     * =========================================================================
+     */
+    function toggleLearned(itemId) {
+      const key = state.activeTopicKey;
+      const set = state.learnedByTopic[key];
+      if (set.has(itemId)) {
+        set.delete(itemId);
+      } else {
+        set.add(itemId);
+      }
+      saveTopicProgress(key);
+      updateProgressUI();
+      renderSectionFilters();
+      renderStudyList();
+      if (state.activeItemId === itemId) {
+        updateDrawerLearnedButton(itemId);
+      }
+    }
+
+    function updateProgressUI() {
+      const smwTotal = getTopicItems('smw').length;
+      const ddrTotal = getTopicItems('ddr').length;
+      const smwLearned = state.learnedByTopic.smw.size;
+      const ddrLearned = state.learnedByTopic.ddr.size;
+
+      // Tab-Badges aktualisieren
+      document.getElementById('badge-count-smw').textContent = `${smwLearned}/${smwTotal}`;
+      document.getElementById('badge-count-ddr').textContent = `${ddrLearned}/${ddrTotal}`;
+
+      // Aktives Thema Fortschrittsbalken
+      const activeTotal = state.activeTopicKey === 'smw' ? smwTotal : ddrTotal;
+      const activeLearned = state.activeTopicKey === 'smw' ? smwLearned : ddrLearned;
+      const pct = Math.round((activeLearned / activeTotal) * 100);
+
+      document.getElementById('progress-bar').style.width = `${pct}%`;
+      document.getElementById('progress-text').textContent = `${activeLearned} / ${activeTotal} gelernt`;
+      document.getElementById('total-progress-text').textContent = `${smwLearned + ddrLearned} / ${smwTotal + ddrTotal}`;
+    }
+
+    /**
+     * =========================================================================
+     * DETAIL-SCHUBLADE (MERKHILFE & KLAUSURWISSEN)
+     * =========================================================================
+     */
+    const drawerEl = document.getElementById('detail-drawer');
+
+    function openDetailDrawer(itemId) {
+      const items = getTopicItems(state.activeTopicKey);
+      const idx = items.findIndex((i) => i.id === itemId);
+      if (idx === -1) return;
+
+      const entry = items[idx];
+      state.activeItemId = itemId;
+
+      const sectionBadge = document.getElementById('drawer-section-badge');
+      sectionBadge.className = `inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold ${entry.section.theme.badgeBg}`;
+      sectionBadge.textContent = `${entry.section.number}. ${entry.section.title}`;
+
+      const groupBadge = document.getElementById('drawer-group-badge');
+      if (entry.group.title !== entry.section.title) {
+        groupBadge.textContent = entry.group.title;
+        groupBadge.classList.remove('hidden');
+      } else {
+        groupBadge.classList.add('hidden');
+      }
+
+      document.getElementById('drawer-counter').textContent = `${idx + 1} / ${items.length}`;
+      document.getElementById('drawer-title').textContent = entry.title;
+      document.getElementById('drawer-desc').textContent = entry.detail;
+      document.getElementById('drawer-tip').textContent = entry.tip;
+
+      updateDrawerLearnedButton(itemId);
+
+      drawerEl.classList.remove('translate-y-[130%]', 'opacity-0', 'pointer-events-none');
+      drawerEl.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+
+      renderStudyList();
+
+      const activeCard = document.querySelector(`[data-list-item="${itemId}"]`);
+      if (activeCard) {
+        activeCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    function closeDetailDrawer() {
+      state.activeItemId = null;
+      drawerEl.classList.add('translate-y-[130%]', 'opacity-0', 'pointer-events-none');
+      drawerEl.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+      renderStudyList();
+    }
+
+    function updateDrawerLearnedButton(itemId) {
+      const isLearned = state.learnedByTopic[state.activeTopicKey].has(itemId);
+      const btn = document.getElementById('drawer-learned-btn');
+      const label = document.getElementById('drawer-learned-label');
+
+      if (isLearned) {
+        btn.className =
+          'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border border-emerald-500 bg-emerald-500 text-white transition';
+        label.textContent = 'Gelernt ✓';
+      } else {
+        btn.className =
+          'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-emerald-400 text-slate-700 dark:text-slate-200 transition';
+        label.textContent = 'Als gelernt markieren';
+      }
+    }
+
+    /**
+     * =========================================================================
+     * KAPITEL-FILTER & LERNKARTEN RENDERN
+     * =========================================================================
+     */
+    function renderSectionFilters() {
+      const bar = document.getElementById('section-filter-bar');
+      const topic = TOPICS[state.activeTopicKey];
+      const learnedSet = state.learnedByTopic[state.activeTopicKey];
+      const allItems = getTopicItems(state.activeTopicKey);
+
+      const pills = [
+        {
+          id: 'all',
+          label: `Alle Kapitel (${learnedSet.size}/${allItems.length})`,
+          activeClass: 'bg-slate-900 text-white border-slate-900 dark:bg-white dark:text-slate-900 dark:border-white',
+        },
+        ...topic.sections.map((sec) => {
+          const itemsInSec = sec.groups.flatMap((g) => g.items);
+          const learnedInSec = itemsInSec.filter((i) => learnedSet.has(i.id)).length;
+          return {
+            id: sec.id,
+            label: `${sec.number}. ${sec.title} (${learnedInSec}/${itemsInSec.length})`,
+            activeClass: sec.theme.pillActive,
+          };
+        }),
+      ];
+
+      bar.innerHTML = pills
+        .map((pill) => {
+          const isActive = state.activeSectionFilter === pill.id;
+          return `
+            <button
+              data-filter-section="${pill.id}"
+              class="px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
+                isActive
+                  ? `${pill.activeClass} shadow-sm`
+                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+              }"
+            >
+              ${pill.label}
+            </button>
+          `;
+        })
+        .join('');
+
+      bar.querySelectorAll('[data-filter-section]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          state.activeSectionFilter = btn.getAttribute('data-filter-section');
+          renderSectionFilters();
+          renderStudyList();
+        });
+      });
+    }
+
+    function buildGroupCardElement(group, section, learnedSet) {
+      const groupLearnedCount = group.items.filter((i) => learnedSet.has(i.id)).length;
+      const card = document.createElement('article');
+      card.className =
+        'rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col';
+
+      const itemsHtml = group.filteredItems
+        .map((item) => {
+          const isLearned = learnedSet.has(item.id);
+          const isActive = state.activeItemId === item.id;
+          const isBlurred = state.recallMode && !state.revealedInRecall.has(item.id);
+
+          return `
+            <div
+              data-list-item="${item.id}"
+              class="p-3 rounded-xl border ${
+                isActive
+                  ? `border-2 ${section.theme.border} ring-4 ${section.theme.ring}/20 shadow-md`
+                  : 'border-slate-100 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+              } ${section.theme.softBg} transition cursor-pointer"
+            >
+              <div class="flex items-start gap-2.5">
+                <button
+                  data-list-check="${item.id}"
+                  class="mt-0.5 w-4 h-4 rounded-md border flex items-center justify-center shrink-0 transition ${
+                    isLearned
+                      ? 'bg-emerald-500 border-emerald-500 text-white'
+                      : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800'
+                  }"
+                  title="Als gelernt abhaken"
+                >
+                  ${
+                    isLearned
+                      ? `<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`
+                      : ''
+                  }
+                </button>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-start justify-between gap-2 flex-wrap">
+                    <span class="font-display font-bold text-xs sm:text-sm text-slate-900 dark:text-white leading-snug">
+                      ${item.title}
+                    </span>
+                    <div class="flex gap-1 flex-wrap shrink-0">
+                      ${item.tags
+                        .map(
+                          (t) =>
+                            `<span class="px-1.5 py-0.5 rounded-md text-[10px] font-semibold ${section.theme.badgeBg}">${t}</span>`
+                        )
+                        .join('')}
+                    </div>
+                  </div>
+                  <p class="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed ${
+                    isBlurred ? 'recall-blur' : ''
+                  }">
+                    ${item.detail}
+                  </p>
+                </div>
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+
+      card.innerHTML = `
+        <div class="bg-gradient-to-r ${section.theme.headerBg} px-4 py-3 text-white flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24">
+                ${group.icon}
+              </svg>
+            </div>
+            <div class="min-w-0">
+              <h2 class="font-display font-bold text-xs sm:text-sm leading-tight truncate">${group.title}</h2>
+              ${group.subtitle ? `<p class="text-[11px] text-white/80 truncate">${group.subtitle}</p>` : ''}
+            </div>
+          </div>
+          <span class="text-xs font-bold bg-white/20 px-2 py-0.5 rounded-full shrink-0">
+            ${groupLearnedCount}/${group.items.length}
+          </span>
+        </div>
+        <div class="p-3.5 space-y-2.5 flex-1">
+          ${itemsHtml}
+        </div>
+      `;
+
+      // Checkbox-Click (Abhaken)
+      card.querySelectorAll('[data-list-check]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleLearned(btn.getAttribute('data-list-check'));
+        });
+      });
+
+      // Karten-Click (Aufdecken im Selbsttest & Merkhilfe öffnen)
+      card.querySelectorAll('[data-list-item]').forEach((el) => {
+        el.addEventListener('click', () => {
+          const id = el.getAttribute('data-list-item');
+          if (state.recallMode && !state.revealedInRecall.has(id)) {
+            state.revealedInRecall.add(id);
+            renderStudyList();
+          }
+          openDetailDrawer(id);
+        });
+      });
+
+      return card;
+    }
+
+    function renderStudyList() {
+      const container = document.getElementById('study-list-container');
+      container.innerHTML = '';
+
+      const topic = TOPICS[state.activeTopicKey];
+      const learnedSet = state.learnedByTopic[state.activeTopicKey];
+      let visibleSections = 0;
+
+      // Wenn showSectionHeaders false ist (Soziale Marktwirtschaft: 6 Themenkarten direkt im 2-Spalten-Grid)
+      if (!topic.showSectionHeaders) {
+        const grid = document.createElement('div');
+        grid.className = 'grid grid-cols-1 md:grid-cols-2 gap-5';
+
+        topic.sections.forEach((section) => {
+          if (state.activeSectionFilter !== 'all' && state.activeSectionFilter !== section.id) {
+            return;
+          }
+
+          section.groups.forEach((group) => {
+            const filteredItems = group.items.filter((item) => matchesSearch(item, group, section));
+            if (filteredItems.length === 0) return;
+
+            visibleSections++;
+            const card = buildGroupCardElement({ ...group, filteredItems }, section, learnedSet);
+            grid.appendChild(card);
+          });
+        });
+
+        if (visibleSections > 0) {
+          container.appendChild(grid);
+        }
+      } else {
+        // Wenn showSectionHeaders true ist (DDR: 3 Hauptkapitel mit jeweils eigenem 2-Spalten-Grid)
+        topic.sections.forEach((section) => {
+          if (state.activeSectionFilter !== 'all' && state.activeSectionFilter !== section.id) {
+            return;
+          }
+
+          const visibleGroups = section.groups
+            .map((group) => ({
+              ...group,
+              filteredItems: group.items.filter((item) => matchesSearch(item, group, section)),
+            }))
+            .filter((g) => g.filteredItems.length > 0);
+
+          if (visibleGroups.length === 0) return;
+          visibleSections++;
+
+          const sectionEl = document.createElement('section');
+          sectionEl.className = 'space-y-4';
+          sectionEl.innerHTML = `
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 px-1">
+              <div class="flex items-center gap-2.5">
+                <span class="w-7 h-7 rounded-lg bg-gradient-to-br ${section.theme.headerBg} text-white font-display font-extrabold text-xs flex items-center justify-center shadow-xs shrink-0">
+                  ${section.number}
+                </span>
+                <div>
+                  <h2 class="font-display font-bold text-base sm:text-lg text-slate-900 dark:text-white leading-tight">
+                    ${section.title}
+                  </h2>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">${section.subtitle}</p>
+                </div>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" data-groups-grid></div>
+          `;
+
+          const grid = sectionEl.querySelector('[data-groups-grid]');
+          visibleGroups.forEach((group) => {
+            grid.appendChild(buildGroupCardElement(group, section, learnedSet));
+          });
+
+          container.appendChild(sectionEl);
+        });
+      }
+
+      if (visibleSections === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 px-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+            <p class="font-display font-bold text-sm text-slate-800 dark:text-slate-100">Keine passenden Lerninhalte in diesem Thema gefunden</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Versuche einen anderen Suchbegriff oder wechsle oben zwischen <strong>Soziale Marktwirtschaft</strong> und <strong>Zentralverwaltungswirtschaft (DDR)</strong>.</p>
+          </div>
+        `;
+      }
+    }
+
+    /**
+     * =========================================================================
+     * STEUERUNGS-BUTTONS & TASTATUR-SHORTCUTS
+     * =========================================================================
+     */
+    // Themen-Umschalter Klick-Events
+    document.querySelectorAll('[data-topic-tab]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        switchTopic(btn.getAttribute('data-topic-tab'));
+      });
+    });
+
+    // Selbsttest-Modus (Active Recall)
+    document.getElementById('toggle-recall-btn').addEventListener('click', () => {
+      state.recallMode = !state.recallMode;
+      state.revealedInRecall.clear();
+
+      const btn = document.getElementById('toggle-recall-btn');
+      const label = document.getElementById('recall-btn-label');
+
+      if (state.recallMode) {
+        btn.className =
+          'flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold border border-amber-400 bg-amber-500 text-white shadow-sm transition';
+        label.textContent = 'Selbsttest aktiv';
+      } else {
+        btn.className =
+          'flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-amber-50 dark:hover:bg-amber-950/40 text-slate-700 dark:text-slate-200 transition shadow-xs';
+        label.textContent = 'Selbsttest';
+      }
+
+      renderStudyList();
+    });
+
+    // Lern-Tour starten (für das aktuell ausgewählte Thema)
+    document.getElementById('start-tour-btn').addEventListener('click', () => {
+      const items = getTopicItems(state.activeTopicKey);
+      const learnedSet = state.learnedByTopic[state.activeTopicKey];
+      const nextUnlearned = items.find((i) => !learnedSet.has(i.id)) || items[0];
+      if (nextUnlearned) {
+        openDetailDrawer(nextUnlearned.id);
+      }
+    });
+
+    // Zweistufiges Zurücksetzen ohne Browser-Dialog (kein confirm())
+    const resetBtn = document.getElementById('reset-progress-btn');
+
+    function resetConfirmState() {
+      state.confirmReset = false;
+      if (resetConfirmTimer) {
+        clearTimeout(resetConfirmTimer);
+        resetConfirmTimer = null;
+      }
+      resetBtn.textContent = 'Thema zurücksetzen';
+      resetBtn.className =
+        'px-3 py-1.5 rounded-xl text-xs font-semibold bg-white/15 hover:bg-white/25 border border-white/25 text-white transition';
+    }
+
+    resetBtn.addEventListener('click', () => {
+      if (!state.confirmReset) {
+        state.confirmReset = true;
+        resetBtn.textContent = 'Wirklich löschen? (Klicken)';
+        resetBtn.className =
+          'px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-400 hover:bg-amber-300 border border-amber-300 text-slate-950 shadow-sm transition';
+        resetConfirmTimer = setTimeout(resetConfirmState, 4000);
+        return;
+      }
+
+      const key = state.activeTopicKey;
+      state.learnedByTopic[key].clear();
+      saveTopicProgress(key);
+      resetConfirmState();
+      updateProgressUI();
+      renderSectionFilters();
+      renderStudyList();
+      if (state.activeItemId) {
+        updateDrawerLearnedButton(state.activeItemId);
+      }
+    });
+
+    // Detailkarte Navigation
+    document.getElementById('close-drawer-btn').addEventListener('click', closeDetailDrawer);
+
+    document.getElementById('drawer-learned-btn').addEventListener('click', () => {
+      if (state.activeItemId) {
+        toggleLearned(state.activeItemId);
+      }
+    });
+
+    document.getElementById('drawer-prev-btn').addEventListener('click', () => {
+      const items = getTopicItems(state.activeTopicKey);
+      const idx = items.findIndex((i) => i.id === state.activeItemId);
+      const prevIdx = (idx - 1 + items.length) % items.length;
+      openDetailDrawer(items[prevIdx].id);
+    });
+
+    document.getElementById('drawer-next-btn').addEventListener('click', () => {
+      const items = getTopicItems(state.activeTopicKey);
+      const idx = items.findIndex((i) => i.id === state.activeItemId);
+      const nextIdx = (idx + 1) % items.length;
+      openDetailDrawer(items[nextIdx].id);
+    });
+
+    // Tastatursteuerung
+    window.addEventListener('keydown', (e) => {
+      if (document.activeElement === document.getElementById('search-input')) return;
+      if (e.key === 'Escape' && state.activeItemId) {
+        closeDetailDrawer();
+      } else if (e.key === 'ArrowRight' && state.activeItemId) {
+        document.getElementById('drawer-next-btn').click();
+      } else if (e.key === 'ArrowLeft' && state.activeItemId) {
+        document.getElementById('drawer-prev-btn').click();
+      }
+    });
+
+    // Suchfeld
+    const searchInput = document.getElementById('search-input');
+    const clearSearchBtn = document.getElementById('clear-search-btn');
+
+    searchInput.addEventListener('input', (e) => {
+      state.searchQuery = e.target.value;
+      clearSearchBtn.classList.toggle('hidden', !state.searchQuery.trim());
+      renderStudyList();
+    });
+
+    clearSearchBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      state.searchQuery = '';
+      clearSearchBtn.classList.add('hidden');
+      renderStudyList();
+    });
+
+    // Hell-/Dunkelmodus umschalten
+    document.getElementById('theme-toggle-btn').addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+    });
+
+    // Initialisierung
+    window.addEventListener('load', () => {
+      loadSavedProgress();
+      updateTopicUI();
+      updateProgressUI();
+      renderSectionFilters();
+      renderStudyList();
+    });
+  </script>
+</body>
+</html>
