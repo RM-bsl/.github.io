@@ -15,8 +15,8 @@
       --ios-surface-subtle: #F7F8FA;
       --ios-glass-bg: rgba(255, 255, 255, 0.88);
       --ios-text-primary: #1C1C1E;
-      --ios-text-secondary: #58585E;
-      --ios-text-tertiary: #7A7A82;
+      --ios-text-secondary: #48484F;
+      --ios-text-tertiary: #63636A;
       --ios-blue: #007AFF;
       --ios-blue-dark: #005BBF;
       --ios-blue-tint: rgba(0, 122, 255, 0.11);
@@ -26,14 +26,14 @@
       --ios-yellow-border: #F5B800;
       --ios-red: #D92D20;
       --ios-red-bg: #FFECEB;
-      --ios-separator: rgba(60, 60, 67, 0.13);
+      --ios-separator: rgba(60, 60, 67, 0.14);
 
       /* Radien, Schatten, Typografie */
-      --ios-radius-xl: 20px;
-      --ios-radius-lg: 15px;
+      --ios-radius-xl: 22px;
+      --ios-radius-lg: 16px;
       --ios-radius-md: 12px;
       --ios-radius-pill: 9999px;
-      --ios-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+      --ios-shadow-card: 0 6px 24px rgba(15, 23, 42, 0.055), 0 1px 3px rgba(15, 23, 42, 0.04);
       --ios-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
@@ -51,8 +51,9 @@
       font-family: var(--ios-font);
       background-color: var(--ios-bg-grouped);
       color: var(--ios-text-primary);
-      line-height: 1.5;
+      line-height: 1.56;
       -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
 
     /* Header */
@@ -67,9 +68,9 @@
     }
 
     .header-inner {
-      max-width: 860px;
+      max-width: 920px;
       margin: 0 auto;
-      padding: 13px 18px;
+      padding: 14px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -82,6 +83,447 @@
       align-items: center;
       gap: 11px;
       min-width: 0;
+      background: transparent;
+      border: none;
+      padding: 0;
+      text-align: left;
+      font-family: inherit;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .brand:hover {
+      opacity: 0.85;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Layer 1: Startseite mit zwei großen Kacheln */
+    .layer-view {
+      display: none;
+      flex-direction: column;
+      gap: 22px;
+      animation: fadeSlide 0.22s ease forwards;
+    }
+
+    .layer-view.is-active {
+      display: flex;
+    }
+
+    .home-hero {
+      text-align: center;
+      padding: 12px 6px 4px;
+    }
+
+    .home-kicker {
+      display: inline-block;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ios-blue);
+      background: var(--ios-blue-tint);
+      padding: 4px 12px;
+      border-radius: var(--ios-radius-pill);
+      margin-bottom: 10px;
+    }
+
+    .home-hero h2 {
+      margin: 0 0 8px;
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.18;
+    }
+
+    .home-hero p {
+      margin: 0 auto;
+      max-width: 58ch;
+      font-size: 0.96rem;
+      color: var(--ios-text-secondary);
+    }
+
+    .portal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .portal-tile {
+      appearance: none;
+      border: 1.5px solid rgba(0, 0, 0, 0.05);
+      background: var(--ios-card-bg);
+      border-radius: 24px;
+      padding: 26px 24px;
+      text-align: left;
+      font-family: inherit;
+      color: var(--ios-text-primary);
+      cursor: pointer;
+      box-shadow: var(--ios-shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: transform 0.16s ease, opacity 0.16s ease;
+    }
+
+    .portal-tile:hover {
+      transform: translateY(-2px);
+      border-color: rgba(0, 122, 255, 0.34);
+    }
+
+    .portal-tile:active {
+      transform: scale(0.985);
+    }
+
+    .portal-tile:focus-visible {
+      outline: 3px solid rgba(0, 122, 255, 0.45);
+      outline-offset: 2px;
+    }
+
+    .portal-tile.is-primary {
+      background: linear-gradient(155deg, #FFFFFF 0%, #F2F7FF 100%);
+      border-color: rgba(0, 122, 255, 0.22);
+    }
+
+    .portal-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .portal-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      background: var(--ios-blue-tint);
+      color: var(--ios-blue);
+    }
+
+    .portal-tile.is-primary .portal-icon {
+      background: linear-gradient(145deg, #007AFF, #5856D6);
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(0, 122, 255, 0.24);
+    }
+
+    .portal-tag {
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ios-text-secondary);
+      background: var(--ios-surface-subtle);
+      padding: 4px 10px;
+      border-radius: var(--ios-radius-pill);
+    }
+
+    .portal-tile h3 {
+      margin: 0;
+      font-size: 1.24rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .portal-tile p {
+      margin: 0;
+      font-size: 0.92rem;
+      color: var(--ios-text-secondary);
+      flex: 1;
+    }
+
+    .portal-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--ios-blue);
+      padding-top: 6px;
+    }
+
+    /* Layer 1a: Bearbeitungsanweisung */
+    .guide-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      margin: 16px 0 20px;
+    }
+
+    .guide-step-item {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 13px;
+      align-items: start;
+      background: var(--ios-surface-subtle);
+      border: 1px solid var(--ios-separator);
+      border-radius: var(--ios-radius-lg);
+      padding: 13px 15px;
+    }
+
+    .guide-step-num {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--ios-blue-tint);
+      color: var(--ios-blue-dark);
+      font-weight: 800;
+      font-size: 0.95rem;
+      display: grid;
+      place-items: center;
+    }
+
+    .guide-step-item h4 {
+      margin: 0 0 3px;
+      font-size: 0.96rem;
+    }
+
+    .guide-step-item p {
+      margin: 0;
+      font-size: 0.88rem;
+      color: var(--ios-text-secondary);
+    }
+
+    .guide-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* Konkretes Alltagsbeispiel direkt im Schieberegler-Balken */
+    .live-example-box {
+      background: rgba(0, 122, 255, 0.065);
+      border: 1px solid rgba(0, 122, 255, 0.18);
+      border-radius: var(--ios-radius-md);
+      padding: 11px 14px;
+      font-size: 0.87rem;
+      line-height: 1.52;
+      color: var(--ios-text-primary);
+    }
+
+    .slider-bar.is-confirmed-view .live-example-box {
+      background: var(--ios-card-bg);
+      border-color: rgba(36, 138, 61, 0.24);
+    }
+
+    .live-example-box strong {
+      color: var(--ios-blue-dark);
+    }
+
+    .slider-bar.is-confirmed-view .live-example-box strong {
+      color: var(--ios-green);
+    }
+
+    /* Feinjustierung nach einzelnen Lebensbereichen (2-Spalten Apple-Tiles) */
+    .sector-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 12px;
+      border-top: 1px solid var(--ios-separator);
+    }
+
+    .sector-panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 0.81rem;
+      color: var(--ios-text-secondary);
+    }
+
+    .sector-panel-head strong {
+      color: var(--ios-text-primary);
+      font-size: 0.84rem;
+    }
+
+    .sector-custom-badge {
+      font-size: 0.73rem;
+      font-weight: 700;
+      color: var(--ios-blue-dark);
+      background: var(--ios-blue-tint);
+      padding: 3px 10px;
+      border-radius: var(--ios-radius-pill);
+    }
+
+    .sector-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+    }
+
+    .sector-box {
+      border: 1px solid var(--ios-separator);
+      background: var(--ios-surface-subtle);
+      border-radius: 12px;
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+      transition: border-color 0.14s ease, transform 0.14s ease;
+    }
+
+    .sector-box:hover {
+      border-color: rgba(0, 122, 255, 0.38);
+    }
+
+    .sector-box.is-info-open {
+      border-color: var(--ios-yellow-border);
+      box-shadow: 0 0 0 2px rgba(245, 184, 0, 0.24);
+    }
+
+    .slider-bar.is-confirmed-view .sector-box {
+      background: var(--ios-card-bg);
+    }
+
+    .sector-toggle {
+      appearance: none;
+      border: none;
+      background: transparent;
+      flex: 1;
+      min-width: 0;
+      padding: 10px 12px;
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 6px;
+      transition: opacity 0.12s ease;
+    }
+
+    .sector-toggle:hover:not(:disabled) {
+      opacity: 0.86;
+    }
+
+    .sector-toggle:disabled {
+      cursor: default;
+    }
+
+    .sector-chip-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--ios-text-primary);
+      line-height: 1.25;
+    }
+
+    .sector-chip-bottom {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .sector-chip-state {
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: var(--ios-radius-pill);
+      line-height: 1.2;
+    }
+
+    .sector-dots {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      margin-left: auto;
+    }
+
+    .sector-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(60, 60, 67, 0.18);
+    }
+
+    .sector-box.is-lvl-0 .sector-dot.is-on { background: #007AFF; }
+    .sector-box.is-lvl-1 .sector-dot.is-on { background: #0F8AA8; }
+    .sector-box.is-lvl-2 .sector-dot.is-on { background: #7C3AED; }
+    .sector-box.is-lvl-3 .sector-dot.is-on { background: #4F46E5; }
+
+    .sector-box.is-lvl-0 .sector-chip-state {
+      background: rgba(0, 122, 255, 0.13);
+      color: #004A99;
+    }
+
+    .sector-box.is-lvl-1 .sector-chip-state {
+      background: rgba(15, 138, 168, 0.14);
+      color: #0B667D;
+    }
+
+    .sector-box.is-lvl-2 .sector-chip-state {
+      background: rgba(124, 58, 237, 0.13);
+      color: #5B21B6;
+    }
+
+    .sector-box.is-lvl-3 .sector-chip-state {
+      background: rgba(79, 70, 229, 0.16);
+      color: #35339A;
+    }
+
+    .sector-info-btn {
+      appearance: none;
+      border: none;
+      border-left: 1px solid var(--ios-separator);
+      background: rgba(255, 255, 255, 0.65);
+      width: 42px;
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      transition: transform 0.12s ease, opacity 0.12s ease;
+    }
+
+    .sector-info-btn:hover {
+      background: var(--ios-yellow-bg);
+    }
+
+    .sector-info-btn:active {
+      transform: scale(0.92);
+    }
+
+    .sector-box.is-info-open .sector-info-btn {
+      background: var(--ios-yellow-bg);
+    }
+
+    .sector-info-pop {
+      background: var(--ios-yellow-bg);
+      border: 1px solid var(--ios-yellow-border);
+      border-radius: var(--ios-radius-md);
+      padding: 12px 14px;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: #4A3500;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      animation: fadeSlide 0.16s ease forwards;
+    }
+
+    .sector-info-close {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: #7A5800;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0 4px;
+      line-height: 1.1;
     }
 
     .brand-icon {
@@ -111,9 +553,9 @@
 
     /* Progress Bar in Header */
     .progress-strip {
-      max-width: 860px;
+      max-width: 920px;
       margin: 0 auto;
-      padding: 0 18px 11px;
+      padding: 0 20px 12px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -207,32 +649,33 @@
 
     /* Focused Single-Column Container */
     .app-container {
-      max-width: 860px;
+      max-width: 920px;
       margin: 0 auto;
-      padding: 22px 18px 64px;
+      padding: 24px 20px 68px;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 26px;
     }
 
     .intro-card {
       background: var(--ios-card-bg);
       border-radius: var(--ios-radius-xl);
-      padding: 18px 22px;
+      padding: 20px 24px;
       box-shadow: var(--ios-shadow-card);
+      border: 1px solid rgba(28, 28, 30, 0.06);
       text-align: center;
     }
 
     .intro-card h2 {
       margin: 0 0 6px;
-      font-size: 1.2rem;
+      font-size: 1.24rem;
       letter-spacing: -0.02em;
     }
 
     .intro-card p {
       margin: 0 auto;
-      max-width: 64ch;
-      font-size: 0.93rem;
+      max-width: 66ch;
+      font-size: 0.94rem;
       color: var(--ios-text-secondary);
     }
 
@@ -267,11 +710,34 @@
       background: var(--ios-bar-bg);
       border-radius: var(--ios-radius-lg);
       padding: 16px 20px;
-      display: flex;
+      display: grid;
+      grid-template-columns: 38px 1fr auto;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      border: 1px solid rgba(0, 0, 0, 0.05);
+      gap: 14px;
+      border: 1px solid rgba(28, 28, 30, 0.06);
+    }
+
+    .dim-num-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.85);
+      color: var(--ios-blue-dark);
+      font-weight: 800;
+      font-size: 0.98rem;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    .dimension-section.is-confirmed .dim-num-badge {
+      background: var(--ios-green);
+      color: #fff;
+    }
+
+    .dimension-section.is-special .dim-num-badge {
+      background: #D97706;
+      color: #fff;
     }
 
     .dimension-section.is-active .dim-title-bar {
@@ -285,13 +751,13 @@
     }
 
     .dim-title-center {
-      flex: 1;
-      text-align: center;
+      min-width: 0;
+      text-align: left;
     }
 
     .dim-title-center h3 {
       margin: 0;
-      font-size: 1.06rem;
+      font-size: 1.08rem;
       font-weight: 700;
       letter-spacing: -0.015em;
     }
@@ -426,22 +892,24 @@
     }
 
     .einordnung-pill {
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       font-weight: 700;
       font-variant-numeric: tabular-nums;
       color: var(--ios-blue-dark);
       background: var(--ios-blue-tint);
-      padding: 4px 12px;
+      padding: 5px 13px;
       border-radius: var(--ios-radius-pill);
+      line-height: 1.32;
+      max-width: 100%;
     }
 
     .slider-poles-mini {
       display: flex;
       justify-content: space-between;
-      font-size: 0.78rem;
+      font-size: 0.79rem;
       font-weight: 600;
       color: var(--ios-text-secondary);
-      gap: 10px;
+      gap: 12px;
     }
 
     input[type="range"].ios-range {
@@ -1401,13 +1869,19 @@
       }
     }
 
+    @media (max-width: 780px) {
+      .explain-grid, .live-bullets, .phase-mini-grid { grid-template-columns: 1fr; }
+    }
+
     @media (max-width: 680px) {
-      .app-container { padding: 14px 12px 48px; }
-      .ios-card { padding: 16px; }
-      .explain-grid, .live-bullets, .pros-cons-grid, .phase-mini-grid, .gg-entry-inputs { grid-template-columns: 1fr; }
+      .app-container { padding: 14px 12px 48px; gap: 18px; }
+      .ios-card, .slider-bar, .explain-bar { padding: 16px; }
+      .portal-grid, .sector-grid, .pros-cons-grid { grid-template-columns: 1fr; }
       .pole-choices { gap: 12px; }
       .pole-pill { width: 100%; min-width: 0; }
-      .dim-title-bar { flex-direction: column; text-align: center; }
+      .dim-title-bar { grid-template-columns: 34px 1fr; }
+      .dim-status-badge { grid-column: 1 / -1; justify-self: start; }
+      .slider-poles-mini span:nth-child(2) { display: none; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1420,10 +1894,11 @@
 
     @media print {
       body { background: #fff; color: #000; font-size: 10.5pt; }
-      .ios-header, .intro-card, .pole-hint, .snap-ticks, .confirm-row, .locked-banner,
-      .sim-dropdown-toolbar, .gg-action-bar, .gg-workbench-actions, .sol-actions, .ios-toast, .modal-backdrop, .no-print {
+      .ios-header, #layerHome, #layerGuide, .intro-card, .pole-hint, .snap-ticks, .confirm-row, .locked-banner,
+      .sim-dropdown-toolbar, .gg-action-bar, .sol-actions, .ios-toast, .modal-backdrop, .no-print {
         display: none !important;
       }
+      #layerGenerator { display: flex !important; }
       .print-only {
         display: block;
         border-bottom: 2px solid #1C1C1E;
@@ -1445,7 +1920,7 @@
 <body>
   <header class="ios-header">
     <div class="header-inner">
-      <div class="brand">
+      <button type="button" class="brand" id="btnGoHome" title="Zur Startseite">
         <div class="brand-icon" aria-hidden="true">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="4" y1="6" x2="20" y2="6"></line>
@@ -1460,11 +1935,15 @@
           <h1 class="brand-title">Baukastensystem der Wirtschaftsordnungen</h1>
           <p class="brand-sub">PuG · 12. Klasse Berufsschule · Schritt für Schritt</p>
         </div>
+      </button>
+      <div class="header-actions">
+        <button type="button" class="ios-btn" id="btnBackHome" style="display:none;">&larr; Startseite</button>
+        <button type="button" class="ios-btn" id="btnOpenGuideTop" style="display:none;">Anleitung</button>
+        <button type="button" class="ios-btn" id="btnReset" style="display:none;">Neu starten</button>
       </div>
-      <button type="button" class="ios-btn" id="btnReset">Neu starten</button>
     </div>
 
-    <div class="progress-strip" aria-label="Fortschritt">
+    <div class="progress-strip" id="progressStrip" style="display:none;" aria-label="Fortschritt">
       <span class="step-chip is-active" id="chipStep1">1. Eigentum</span>
       <span class="step-arrow" aria-hidden="true">&rarr;</span>
       <span class="step-chip" id="chipStep2">2. Steuerung</span>
@@ -1481,17 +1960,126 @@
       <p style="margin:0; font-size:9.5pt; color:#444;" id="printMetaLine">PuG 12. Klasse</p>
     </section>
 
-    <section class="intro-card">
-      <h2>Entwirf Schritt für Schritt deine eigene Wirtschaftsordnung</h2>
-      <p>Wähle in jeder Dimension zuerst per Klick eine Richtung aus, stelle danach mit dem Schieberegler die genaue Ausprägung ein und bestätige deine Wahl. Mit jedem Schritt wird dein System konkreter – erst ganz am Schluss folgen reale Staaten-Beispiele, Bewertung und der Grundgesetz-Check.</p>
+    <!-- ======================================================
+         LAYER 1: STARTSEITE MIT ZWEI GROSSEN KACHELN
+         ====================================================== -->
+    <section class="layer-view is-active" id="layerHome" aria-labelledby="homeHeading">
+      <div class="home-hero">
+        <span class="home-kicker">Startbereich · Politik &amp; Gesellschaft</span>
+        <h2 id="homeHeading">Wie möchtest du starten?</h2>
+        <p>Wähle zuerst die kurze Schritt-für-Schritt-Anleitung oder öffne direkt den Generator, um deine eigene Wirtschaftsordnung zusammenzubauen.</p>
+      </div>
+
+      <div class="portal-grid">
+        <button type="button" class="portal-tile" id="tileGuide">
+          <div class="portal-top">
+            <div class="portal-icon" aria-hidden="true">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 11l3 3L22 4"></path>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+            </div>
+            <span class="portal-tag">Bereich 1</span>
+          </div>
+          <h3>Bearbeitungsanweisung</h3>
+          <p>Eine simple Schritt-für-Schritt-Anleitung zeigt dir in einer Minute, wie du deine Wirtschaftsordnung einstellst, den Langzeit-Test liest und den Grundgesetz-TÜV erledigst.</p>
+          <span class="portal-cta">Anleitung lesen &rarr;</span>
+        </button>
+
+        <button type="button" class="portal-tile is-primary" id="tileGenerator">
+          <div class="portal-top">
+            <div class="portal-icon" aria-hidden="true">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="4" y1="6" x2="20" y2="6"></line>
+                <circle cx="9" cy="6" r="2.3" fill="currentColor"></circle>
+                <line x1="4" y1="12" x2="20" y2="12"></line>
+                <circle cx="15" cy="12" r="2.3" fill="currentColor"></circle>
+                <line x1="4" y1="18" x2="20" y2="18"></line>
+                <circle cx="11" cy="18" r="2.3" fill="currentColor"></circle>
+              </svg>
+            </div>
+            <span class="portal-tag">Bereich 2</span>
+          </div>
+          <h3>Wirtschaftsordnungs-Generator</h3>
+          <p>Kombiniere Eigentum, Steuerung und Staatsrolle fein abgestuft nach deinen eigenen Vorstellungen, prüfe die Folgen über 100 Jahre und mache den Grundgesetz-Check.</p>
+          <span class="portal-cta" id="tileGeneratorCta">Generator starten &rarr;</span>
+        </button>
+      </div>
     </section>
+
+    <!-- ======================================================
+         LAYER 1A: BEARBEITUNGSANWEISUNG (SCHRITT FÜR SCHRITT)
+         ====================================================== -->
+    <section class="layer-view" id="layerGuide" aria-labelledby="guideHeading">
+      <div class="ios-card">
+        <div class="module-kicker">Bearbeitungsanweisung · So gehst du vor</div>
+        <h2 class="module-title" id="guideHeading">Schritt-für-Schritt-Anleitung</h2>
+        <p class="module-desc" style="margin-bottom:0;">Arbeite die fünf kurzen Schritte einfach von oben nach unten durch – deine Eingaben werden automatisch im Browser gesichert.</p>
+
+        <div class="guide-steps">
+          <div class="guide-step-item">
+            <div class="guide-step-num">1</div>
+            <div>
+              <h4>Grundrichtung per Klick wählen</h4>
+              <p>Starte bei der 1. Dimension und klicke zuerst auf eine der beiden Richtungen (zum Beispiel Kapitalismus oder Sozialismus). Erst danach öffnet sich der Schieberegler.</p>
+            </div>
+          </div>
+
+          <div class="guide-step-item">
+            <div class="guide-step-num">2</div>
+            <div>
+              <h4>Mit dem Schieberegler fein einstellen</h4>
+              <p>Bewege den Regler innerhalb deiner gewählten Richtung von 50 % (offene Mischform) bis 100 % (reine Form). Lies direkt darunter die Stichpunkte für Gesellschaft, Wirtschaft, Politik und das Alltagsbeispiel.</p>
+            </div>
+          </div>
+
+          <div class="guide-step-item">
+            <div class="guide-step-num">3</div>
+            <div>
+              <h4>Bestätigen und nächste Dimension freischalten</h4>
+              <p>Klicke auf „Bestätigen“, um deine Wahl festzuhalten und die nächste Dimension zu öffnen. Alle deine Eingaben bleiben sichtbar. Gehst du einen Extremweg bis ans Ende, legt die App die 3. Dimension als Sonderfall automatisch fest.</p>
+            </div>
+          </div>
+
+          <div class="guide-step-item">
+            <div class="guide-step-num">4</div>
+            <div>
+              <h4>Auswertung &amp; 100-Jahres-Graphen ansehen</h4>
+              <p>Nach dem letzten Schritt erscheinen der Name deiner Wirtschaftsordnung, reale Staaten-Beispiele sowie Chancen und Risiken. Klappe im Langzeit-Test die vier Drop-downs auf, um die Funktionsgraphen für Wirtschaft, Gesellschaft, Innovation und Politik zu erkunden.</p>
+            </div>
+          </div>
+
+          <div class="guide-step-item">
+            <div class="guide-step-num">5</div>
+            <div>
+              <h4>Grundgesetz-TÜV bearbeiten &amp; Lernzettel sichern</h4>
+              <p>Starte den Verfassungs-Check. Schlage die angezeigten Grundgesetz-Artikel mit Absatz selbst im Grundgesetz nach, schreibe zu jedem Artikel deine Begründung in die eigene Eingabemaske, lass deine Antworten prüfen und kopiere oder drucke dir am Ende deinen Lernzettel.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-actions">
+          <button type="button" class="ios-btn" id="btnGuideBackHome">&larr; Zurück zur Startseite</button>
+          <button type="button" class="ios-btn ios-btn-primary ios-btn-large" id="btnGuideToGenerator">Alles klar – zum Generator &rarr;</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         LAYER 2: GENERATOR (3 DIMENSIONEN + AUSWERTUNG + GG-TÜV)
+         ====================================================== -->
+    <div class="layer-view" id="layerGenerator">
+      <section class="intro-card">
+        <h2>Entwirf Schritt für Schritt deine eigene Wirtschaftsordnung</h2>
+        <p>Wähle in jeder Dimension zuerst per Klick eine Richtung, stelle danach mit dem Schieberegler deine individuelle Ausprägung ein und bestätige. Erst am Schluss folgen reale Staaten-Beispiele, Bewertung, 100-Jahres-Test und Grundgesetz-Check.</p>
+      </section>
 
     <!-- ======================================================
          1. DIMENSION: EIGENTUMSORDNUNG
          ====================================================== -->
     <section class="dimension-section is-active" id="dimSection1" aria-labelledby="dim1Title">
       <div class="dim-title-bar">
-        <div style="width:74px;" aria-hidden="true"></div>
+        <span class="dim-num-badge" aria-hidden="true">1</span>
         <div class="dim-title-center">
           <h3 id="dim1Title">1. Dimension: Eigentumsordnung</h3>
           <p>Wem gehören Fabriken, Betriebe, Maschinen und Wohnungen?</p>
@@ -1531,6 +2119,8 @@
           <button type="button" class="snap-btn" data-val="100">100 %</button>
         </div>
         <div class="live-bullets" id="dim1LiveBullets" aria-live="polite"></div>
+        <div class="live-example-box" id="dim1LiveExample" aria-live="polite"></div>
+        <div class="sector-panel" id="dim1Sectors" aria-live="polite"></div>
         <div class="confirm-row" id="dim1ConfirmRow">
           <button type="button" class="ios-btn ios-btn-primary" id="btnConfirm1">1. Dimension bestätigen</button>
         </div>
@@ -1553,7 +2143,7 @@
 
     <section class="dimension-section" id="dimSection2" style="display:none;" aria-labelledby="dim2Title">
       <div class="dim-title-bar">
-        <div style="width:74px;" aria-hidden="true"></div>
+        <span class="dim-num-badge" aria-hidden="true">2</span>
         <div class="dim-title-center">
           <h3 id="dim2Title">2. Dimension: Koordinationsmechanismus</h3>
           <p>Wer entscheidet über Preise, Löhne und Produktionsmengen?</p>
@@ -1593,6 +2183,8 @@
           <button type="button" class="snap-btn" data-val="100">100 %</button>
         </div>
         <div class="live-bullets" id="dim2LiveBullets" aria-live="polite"></div>
+        <div class="live-example-box" id="dim2LiveExample" aria-live="polite"></div>
+        <div class="sector-panel" id="dim2Sectors" aria-live="polite"></div>
         <div class="confirm-row" id="dim2ConfirmRow">
           <button type="button" class="ios-btn ios-btn-primary" id="btnConfirm2">2. Dimension bestätigen</button>
         </div>
@@ -1615,7 +2207,7 @@
 
     <section class="dimension-section" id="dimSection3" style="display:none;" aria-labelledby="dim3Title">
       <div class="dim-title-bar">
-        <div style="width:74px;" aria-hidden="true"></div>
+        <span class="dim-num-badge" aria-hidden="true">3</span>
         <div class="dim-title-center">
           <h3 id="dim3Title">3. Dimension: Staatsauffassung &amp; Ausgleich</h3>
           <p>Wie stark schützt der Staat Wettbewerb, Beschäftigte und Schwächere?</p>
@@ -1655,6 +2247,8 @@
           <button type="button" class="snap-btn" data-val="100">100 %</button>
         </div>
         <div class="live-bullets" id="dim3LiveBullets" aria-live="polite"></div>
+        <div class="live-example-box" id="dim3LiveExample" aria-live="polite"></div>
+        <div class="sector-panel" id="dim3Sectors" aria-live="polite"></div>
         <div class="didactic-hint" id="planHint" role="status">
           <span aria-hidden="true">&#9888;&#65039;</span>
           <span><strong>Hinweis:</strong> Bei starker Planwirtschaft legt der Staat Löhne und Versorgung bereits vorab im Plan fest – ein nachträglicher Marktausgleich verliert an Eigenständigkeit. Du kannst den Regler trotzdem frei einstellen.</span>
@@ -1728,8 +2322,8 @@
             <span class="legend-item"><span class="dot" style="background:#5856D6;"></span>Innovation</span>
             <span class="legend-item"><span class="dot" style="background:#D97706;"></span>Politik (Machtbalance)</span>
           </div>
-          <svg class="graph-svg" id="simOverviewGraph" viewBox="0 0 760 190" role="img" aria-label="Gesamt-Funktionsgraph aller vier Bereiche über 100 Jahre"></svg>
-          <p class="graph-caption" id="simOverviewCaption"></p>
+          <svg class="graph-svg" id="simOverviewGraph" viewBox="0 0 760 225" role="img" aria-label="Gesamt-Funktionsgraph aller vier Bereiche über 100 Jahre"></svg>
+          <div class="graph-caption" id="simOverviewCaption"></div>
         </div>
 
         <div class="sim-dropdown-toolbar">
@@ -1792,6 +2386,7 @@
         </div>
       </section>
     </div>
+    </div><!-- /#layerGenerator -->
   </main>
 
   <!-- Reset Modal -->
@@ -1815,13 +2410,14 @@
       /* ============================================================
          1. STATE & STORAGE (ohne Name / Klasse)
          ============================================================ */
-      const STORAGE_KEY = "pug12_baukasten_steps_v6";
+      const STORAGE_KEY = "pug12_baukasten_steps_v7";
 
       function freshState() {
         return {
-          dim1: { picked: null, strength: 75, confirmed: false },
-          dim2: { picked: null, strength: 75, confirmed: false },
-          dim3: { picked: null, strength: 60, confirmed: false },
+          layer: "home",
+          dim1: { picked: null, strength: 75, confirmed: false, overrides: {} },
+          dim2: { picked: null, strength: 75, confirmed: false, overrides: {} },
+          dim3: { picked: null, strength: 60, confirmed: false, overrides: {} },
           ggChecked: false,
           ggVerified: false,
           ggReasons: {},
@@ -1839,10 +2435,17 @@
           const base = freshState();
           for (const k of ["dim1", "dim2", "dim3"]) {
             if (p[k]) {
+              const cleanOv = {};
+              if (p[k].overrides && typeof p[k].overrides === "object") {
+                for (const [sk, sv] of Object.entries(p[k].overrides)) {
+                  if (Number.isInteger(sv) && sv >= 0 && sv <= 3) cleanOv[sk] = sv;
+                }
+              }
               base[k] = {
                 picked: p[k].picked === "left" || p[k].picked === "right" ? p[k].picked : null,
                 strength: clampStrength(p[k].strength, base[k].strength),
-                confirmed: Boolean(p[k].confirmed)
+                confirmed: Boolean(p[k].confirmed),
+                overrides: cleanOv
               };
             }
           }
@@ -1953,10 +2556,20 @@
       }
 
       function strengthTier(str) {
-        if (str <= 65) return "mod";
-        if (str <= 85) return "strong";
-        return "pure";
+        if (str <= 55) return "t1";
+        if (str <= 65) return "t2";
+        if (str <= 75) return "t3";
+        if (str <= 85) return "t4";
+        return "t5";
       }
+
+      const TIER_LABELS = {
+        t1: "Offene Mischform",
+        t2: "Gemäßigte Ausprägung",
+        t3: "Deutliche Ausprägung",
+        t4: "Sehr starke Ausprägung",
+        t5: "Reine / konsequente Form"
+      };
 
       function band(v) {
         if (v <= 30) return "low";
@@ -1973,140 +2586,393 @@
       }
 
       /* ============================================================
-         2. EINORDNUNGS-LABELS & LIVE-STICHPUNKTE JE GEWÄHLTER ART
-         (Regler bewegt sich strikt innerhalb der gewählten Art!)
+         2. EINORDNUNGS-LABELS & FEIN ABGESTUFTE 5-STUFEN-LIVE-PROFILE
+         (30 individuelle Profile über alle 3 Dimensionen & 2 Arten!)
          ============================================================ */
       const DIM_META = {
         1: {
-          left:  { name: "Kapitalismus",            low: "50 % Gemäßigter Kapitalismus",  mid: "75 % Starker Kapitalismus",  high: "100 % Reiner Kapitalismus" },
-          right: { name: "Sozialismus",             low: "50 % Gemäßigter Sozialismus",   mid: "75 % Starker Sozialismus",   high: "100 % Reiner Sozialismus" }
+          left:  { name: "Kapitalismus",            low: "50 % Offene Mischform",       mid: "75 % Deutlicher Kapitalismus",  high: "100 % Reiner Kapitalismus" },
+          right: { name: "Sozialismus",             low: "50 % Offene Mischform",       mid: "75 % Deutlicher Sozialismus",   high: "100 % Reiner Sozialismus" }
         },
         2: {
-          left:  { name: "Marktwirtschaft",         low: "50 % Gelenkte Marktwirtschaft", mid: "75 % Freie Marktwirtschaft", high: "100 % Reine Marktwirtschaft" },
-          right: { name: "Planwirtschaft",          low: "50 % Teil-Planwirtschaft",      mid: "75 % Starke Planwirtschaft", high: "100 % Totale Planwirtschaft" }
+          left:  { name: "Marktwirtschaft",         low: "50 % Stark gelenkt",          mid: "75 % Deutlich frei",            high: "100 % Reine Marktwirtschaft" },
+          right: { name: "Planwirtschaft",          low: "50 % Teil-Planung",           mid: "75 % Deutliche Planwirtschaft", high: "100 % Totale Planwirtschaft" }
         },
         3: {
-          left:  { name: "Nachtwächterstaat",       low: "50 % Sehr schlanker Staat",     mid: "75 % Starker Minimalstaat",  high: "100 % Reiner Nachtwächterstaat" },
-          right: { name: "Sozial- & Ordnungsstaat", low: "50 % Moderater Sozialstaat",    mid: "75 % Starker Sozialstaat",   high: "100 % Umfassender Umverteilungsstaat" }
+          left:  { name: "Nachtwächterstaat",       low: "50 % Sehr schlanker Staat",   mid: "75 % Deutlicher Minimalstaat",  high: "100 % Reiner Nachtwächterstaat" },
+          right: { name: "Sozial- & Ordnungsstaat", low: "50 % Solides Grundnetz",      mid: "75 % Ausgebauter Sozialstaat",  high: "100 % Maximaler Umverteilungsstaat" }
         }
       };
 
       const LIVE_BULLETS = {
         1: {
           left: {
-            mod: {
-              g: ["Private Aufstiegs- & Eigentumschancen", "Bezahlbare Grundversorgung mitgesichert"],
-              w: ["Handwerk & Industrie in privater Hand", "Wasser, Bahn, Energie & Teil der Wohnungen öffentlich"],
-              p: ["Staat & Kommunen steuern Infrastruktur mit", "Balance zwischen Gemeinwohl und Privatgewinn"]
+            t1: {
+              g: ["Private Aufstiegs- & Gründerchancen bleiben offen", "Bezahlbare Mieten & Nahverkehr öffentlich abgefedert"],
+              w: ["Handwerk, Handel & Industrie liegen in privater Hand", "Bahn, Wasser, Energie, Kliniken & viele Wohnungen öffentlich"],
+              p: ["Städte & Staat steuern zentrale Grundversorgung mit", "Ständige Balance zwischen Gemeinwohl und Privatgewinn"],
+              ex: "Du lernst im privaten Handwerksbetrieb, wohnst aber in einer städtischen Wohnung und fährst mit der öffentlichen Bahn."
             },
-            strong: {
-              g: ["Breite private Eigentumsbildung möglich", "Vermögen verteilt sich spürbar ungleicher"],
-              w: ["Fast alle Betriebe & Mietwohnungen privat", "Unternehmer tragen Verlustrisiko und behalten Gewinne"],
-              p: ["Wirtschaftsverbände mit deutlichem Einfluss", "Staat besitzt kaum eigene Betriebe"]
+            t2: {
+              g: ["Breiter Mittelstand mit privatem Eigentum", "Wichtige Basisversorgung bleibt bezahlbar"],
+              w: ["Überwiegend private Betriebe, Banken und Geschäfte", "Nur Kernnetze (Wasser, Schiene, Stromnetz) in öffentlicher Hand"],
+              p: ["Kommunen sichern Grundnetze gegen reine Spekulation", "Privatwirtschaft dominiert aber klar den Alltag"],
+              ex: "Supermärkte, Werkstätten und Banken gehören Privatleuten, während Stadtwerke Strom und Wasser liefern."
             },
-            pure: {
-              g: ["Starke Vermögenskonzentration bei Eigentümern", "Wohnen und Versorgung rein nach Zahlungskraft"],
-              w: ["Auch Infrastruktur, Wasser & Energie komplett privat", "Maximale Gewinnorientierung in allen Branchen"],
-              p: ["Kein öffentliches Eigentum als Gegengewicht", "Hohe politische Macht großer Kapitaleigentümer"]
+            t3: {
+              g: ["Hohe Anreize für eigene Betriebe & Wohneigentum", "Vermögen verteilt sich spürbar ungleicher"],
+              w: ["Fast alle Betriebe, Wohnungen & Dienstleister privat", "Unternehmer tragen das volle Risiko und behalten Gewinne"],
+              p: ["Wirtschaftsverbände gewinnen deutlichen Einfluss", "Der Staat besitzt kaum noch eigene Unternehmen"],
+              ex: "Vermieter sind fast immer Privatpersonen oder Immobilienfirmen; du kannst dich ohne große Hürden selbstständig machen."
+            },
+            t4: {
+              g: ["Zugang zu Klinik, Bahn oder Wohnen hängt stark vom Einkommen ab", "Große Vermögen wachsen schnell über Firmenanteile"],
+              w: ["Selbst Nahverkehr, Krankenhäuser & Energie privatisiert", "Aktiengesellschaften steuern fast jede Branche nach Rendite"],
+              p: ["Öffentliche Alternativen fehlen fast vollständig", "Große Konzerne prägen politische Debatten massiv"],
+              ex: "Kliniken, Bahnstrecken und Stromanbieter arbeiten als private Gewinnunternehmen – öffentliche Anbieter gibt es kaum."
+            },
+            t5: {
+              g: ["Extreme Vermögenskonzentration bei einzelnen Eigentümern", "Lebensbereiche hängen vollständig von Zahlungskraft ab"],
+              w: ["100 % Privateigentum – auch Wasser, Schulen, Straßen & Boden", "Keinerlei öffentliches oder genossenschaftliches Eigentum"],
+              p: ["Kein öffentliches Eigentum als politisches Gegengewicht", "Höchste wirtschaftliche Macht in privater Hand"],
+              ex: "Jede Straße, Schule, Wasserleitung und Wohnung gehört Privatkonzernen; Nutzung entsteht nur über private Verträge."
             }
           },
           right: {
-            mod: {
-              g: ["Hohe Absicherung bei Wohnen & Grundbedarf", "Kleines privates Gewerbe bleibt möglich"],
-              w: ["Großbetriebe & Banken öffentlich oder genossenschaftlich", "Handwerk und kleine Betriebe noch privat"],
-              p: ["Parlamente & Genossenschaften lenken Schlüsselbereiche", "Politik bestimmt über große Investitionen"]
+            t1: {
+              g: ["Starke Absicherung bei Wohnen, Energie & Grundbedarf", "Kleines privates Handwerk und Läden bleiben möglich"],
+              w: ["Großkonzerne, Banken & Wohnungsbau öffentlich/genossenschaftlich", "Handwerk, Gastronomie & kleine Betriebe noch privat"],
+              p: ["Parlamente & Genossenschaften lenken Schlüsselbranchen", "Politik bestimmt über große Zukunfts-Investitionen"],
+              ex: "Große Fabriken und Wohnungsgesellschaften gehören der Allgemeinheit, der Bäcker oder Kfz-Betrieb nebenan bleibt privat."
             },
-            strong: {
-              g: ["Kaum private Großvermögen", "Fast alle arbeiten in öffentlichen Betrieben"],
-              w: ["Fabriken, Wohnungsbau & Boden vergesellschaftet", "Kaum private Unternehmer oder Start-ups"],
-              p: ["Enge Verknüpfung von Politik und Betrieben", "Wirtschaftsmacht liegt überwiegend beim Staat"]
+            t2: {
+              g: ["Kaum private Großvermögen aus Firmenbesitz", "Breite Mitbestimmung in öffentlichen & kollektiven Betrieben"],
+              w: ["Industrie, Banken & Boden überwiegend vergesellschaftet", "Private Initiative nur noch in Kleinstbetrieben erlaubt"],
+              p: ["Öffentliche Gremien steuern fast die gesamte Wirtschaft", "Kommunen & Staat tragen das Haupt-Investitionsrisiko"],
+              ex: "Fast alle großen Arbeitgeber sind öffentlich oder genossenschaftlich; nur Ein-Personen-Geschäfte arbeiten noch privat."
             },
-            pure: {
-              g: ["Kein privates Betriebs- oder Bodeneigentum", "Einkommen fast ausschließlich über Staatsbetriebe"],
-              w: ["100 % der Produktionsmittel in Staats-/Volkshand", "Privates Unternehmertum vollständig abgeschafft"],
-              p: ["Wirtschaftliche & politische Macht vereint", "Betriebe hängen komplett von Staatsbeschlüssen ab"]
+            t3: {
+              g: ["Einkommen entstehen fast ausschließlich durch eigene Arbeit", "Private Immobilien- oder Firmenimperien sind abgeschafft"],
+              w: ["Fabriken, Wohnraum & Großhandel in Gemein- oder Belegschaftshand", "Privates Unternehmertum bleibt schmale Ausnahme"],
+              p: ["Politik und Betriebsführung rücken sehr eng zusammen", "Wirtschaftsmacht liegt klar bei öffentlichen Stellen"],
+              ex: "Du arbeitest in einem kommunalen oder Belegschaftsbetrieb; private Immobilienkonzerne gibt es nicht mehr."
+            },
+            t4: {
+              g: ["Private Vermögensbildung beschränkt sich auf persönliche Dinge", "Arbeitsleben fast komplett im öffentlichen Sektor"],
+              w: ["Auch Handwerk, Läden und Banken kollektiviert", "Privates Produktiveigentum praktisch abgeschafft"],
+              p: ["Staatliche Stellen entscheiden über Betriebsgründungen", "Kaum wirtschaftliche Unabhängigkeit vom Staat"],
+              ex: "Selbst Handwerksbetriebe sind als Genossenschaften oder Staatsbetriebe organisiert; eigene Firmengründungen entfallen."
+            },
+            t5: {
+              g: ["Keinerlei privates Betriebs-, Wohnungs- oder Bodeneigentum", "Alle Beschäftigten arbeiten direkt für den Staat"],
+              w: ["100 % der Produktionsmittel & Geschäfte in Staats-/Volkshand", "Privates Unternehmertum vollständig verboten"],
+              p: ["Wirtschaftliche & politische Macht vollständig vereint", "Jeder Betrieb hängt direkt an politischen Beschlüssen"],
+              ex: "Jeder Betrieb, jeder Supermarkt und jede Wohnung gehört dem Staat – niemand darf eine eigene Firma oder Mietwohnung besitzen."
             }
           }
         },
         2: {
           left: {
-            mod: {
-              g: ["Freie Berufswahl & breite Konsumauswahl", "Preisdeckel dämpfen extreme Mieten & Energiepreise"],
-              w: ["Marktpreise als Basis im Alltag", "Staatliche Vorgaben oder Quoten in Schlüsselbranchen"],
-              p: ["Politik justiert laufend nach", "Dauer-Abwägung zwischen Markt und Preisgrenzen"]
+            t1: {
+              g: ["Freie Berufswahl & Konsum im Alltag", "Preisdeckel schützen spürbar vor Miet- & Stromschocks"],
+              w: ["Marktpreise bilden die Basis für Konsumgüter", "Staatliche Preisgrenzen & Quoten in Schlüsselbereichen"],
+              p: ["Politik greift regelmäßig korrigierend in Preise ein", "Dauernde Abwägung zwischen Markt und Regulierung"],
+              ex: "Kleidung und Technik kosten nach Angebot und Nachfrage, aber Mieten und Energiepreise sind staatlich gedeckelt."
             },
-            strong: {
-              g: ["Große Auswahl im Handel, freie Berufswahl", "Knappe Güter (z. B. Wohnungen) werden teuer"],
-              w: ["Angebot & Nachfrage bilden Preise und Löhne", "Betriebe und Haushalte planen eigenständig"],
-              p: ["Staat hält sich aus Einzelpreisen heraus", "Steuerung über Millionen Einzelentscheidungen"]
+            t2: {
+              g: ["Große Auswahl und flexible Berufswahl", "Extreme Preissprünge werden punktuell gebremst"],
+              w: ["Freie Märkte in fast allen Branchen", "Staatliche Preisbremsen nur bei Engpässen oder Krisen"],
+              p: ["Politik setzt Leitplanken nur in akuten Ausnahmefällen", "Wettbewerb bleibt das klare Hauptprinzip"],
+              ex: "Du verhandelst deinen Lohn frei am Markt, aber bei extremen Mietsteigerungen in Großstädten greift eine Mietpreisbremse."
             },
-            pure: {
-              g: ["Alle Güter strikt nach Zahlungsfähigkeit", "Keine Preisgrenzen bei Wohnen, Strom oder Medizin"],
-              w: ["Völlig ungebremste Preis- und Lohnbildung", "Keinerlei staatliche Markt- oder Preisvorgaben"],
-              p: ["Kompletter Rückzug aus der Marktsteuerung", "Politik greift auch bei Preisschocks nicht ein"]
+            t3: {
+              g: ["Sehr breite Produktauswahl & freie Arbeitsplatzwahl", "Knappe Güter wie Innenstadt-Wohnungen steigen im Preis"],
+              w: ["Angebot & Nachfrage steuern Preise, Mieten und Löhne", "Betriebe und Haushalte planen vollständig eigenständig"],
+              p: ["Staat hält sich aus einzelnen Preisen heraus", "Millionen Einzelentscheidungen lenken die Wirtschaft"],
+              ex: "Im Supermarkt und bei Ausbildungsplätzen bestimmen Wettbewerb und Nachfrage direkt den Preis und das Gehalt."
+            },
+            t4: {
+              g: ["Sehr hohe Dynamik und schnelle Anpassung an Trends", "Bei Knappheit drohen ungedämpfte Preissprünge"],
+              w: ["Nahezu völlig freie Märkte ohne Miet- oder Stromdeckel", "Auch Gesundheit, Wohnen & Energie streng nach Knappheit"],
+              p: ["Staat verzichtet bewusst auf Preis- oder Mengensteuerung", "Hohes Vertrauen auf Selbstheilung der Märkte"],
+              ex: "Gefragte Stadtwohnungen und knappe Fachkräfte erzielen Höchstpreise – staatliche Bremsen gibt es praktisch nicht."
+            },
+            t5: {
+              g: ["Alle Güter verteilen sich strikt nach Zahlungsfähigkeit", "Keine Preisgrenzen selbst bei Grundbedarf oder Medizin"],
+              w: ["100 % ungebremste Preis- und Lohnbildung überall", "Keinerlei staatliche Markt-, Preis- oder Mengenregeln"],
+              p: ["Vollständiger Rückzug der Politik aus der Marktsteuerung", "Keine Eingriffe selbst bei akuten Versorgungskrisen"],
+              ex: "Selbst lebenswichtige Güter wie Wasser, Strom oder Medikamente kosten exakt so viel, wie die zahlungskräftigsten Käufer bieten."
             }
           },
           right: {
-            mod: {
-              g: ["Gesicherter Grundbedarf zu festen Preisen", "Begrenzte Auswahl über erlaubte Teilmärkte"],
-              w: ["Staatliche Pläne für Schlüsselgüter & Rohstoffe", "Einzelne Konsumbereiche mit flexiblen Preisen"],
-              p: ["Behörden ziehen Grenze zwischen Plan und Markt", "Hoher Steuerungsbedarf bei Engpässen"]
+            t1: {
+              g: ["Grundbedarf zu verlässlichen Festpreisen gesichert", "Bei Freizeit- und Konsumgütern bleibt Wahlfreiheit"],
+              w: ["Staatliche Mengenpläne für Energie, Bau & Grundgüter", "Teilmärkte für Alltagswaren und Dienstleistungen bleiben offen"],
+              p: ["Behörden ziehen die Grenze zwischen Plan- und Marktsektor", "Ständiger Abstimmungsbedarf zwischen Plan und Nachfrage"],
+              ex: "Energie, Wohnungsbau und Grundnahrungsmittel laufen nach Staatsplan, während Freizeit- und Konsumprodukte frei gehandelt werden."
             },
-            strong: {
-              g: ["Feste Grundpreise und geplante Arbeitsplätze", "Häufig Wartezeiten & wenig Produktauswahl"],
-              w: ["Mehrjahrespläne legen Mengen, Löhne & Preise fest", "Betriebe erfüllen vorgegebene Planziele"],
-              p: ["Große Planungsbürokratie lenkt den Alltag", "Fehlplanungen fallen direkt auf die Regierung zurück"]
+            t2: {
+              g: ["Hohe Preisstabilität bei Miete und Lebensmitteln", "Nebenmärkte fangen kleinere Lücken teilweise auf"],
+              w: ["Zentrale Rahmenpläne für die meisten großen Branchen", "Nur kleine Überschüsse dürfen zu freien Preisen verkauft werden"],
+              p: ["Planbehörden geben klare Produktionsquoten vor", "Wachsender Verwaltungsapparat zur Plankontrolle"],
+              ex: "Großbetriebe erfüllen staatliche Mengenquoten, daneben gibt es kleine Wochenmärkte mit flexiblen Preisen."
             },
-            pure: {
-              g: ["Zuweisung von Arbeitsplätzen & Wohnraum", "Konsum strikt über staatliche Vorgaben/Kontingente"],
-              w: ["Totale zentrale Mengen-, Preis- und Lohnplanung", "Keinerlei freie Märkte oder Eigenpreise"],
-              p: ["Vollständige zentrale Staatskontrolle", "Jede wirtschaftliche Entscheidung ist politisch"]
+            t3: {
+              g: ["Feste Grundpreise und geplante Arbeitsplätze", "Spürbare Wartezeiten und geringe Auswahl bei Technik"],
+              w: ["Planbehörde bestimmt Mengen, Großhandelspreise & Lohnstufen", "Betriebe richten sich verbindlich nach Mehrjahresplänen"],
+              p: ["Große Planungsbürokratie lenkt fast den gesamten Alltag", "Jeder Versorgungsengpass fällt direkt auf die Politik zurück"],
+              ex: "Brot und Miete kosten jahrelang exakt gleich viel, doch für ein Auto oder neue Elektronik wartest du auf Zuteilung."
+            },
+            t4: {
+              g: ["Ausbildungs- und Arbeitsplätze folgen dem Staatsbedarf", "Freie Konsumwahl ist auf wenige Standardprodukte begrenzt"],
+              w: ["Mehrjahrespläne steuern Rohstoffe, Fabriken & Handel", "Freie Preisbildung ist fast vollständig verschwunden"],
+              p: ["Hohe politische Machtkonzentration in Planungsministerien", "Kaum eigener Handlungsspielraum für Betriebsleiter"],
+              ex: "Welche Ausbildungsplätze angeboten werden und was im Laden liegt, entscheidet die zentrale Planbehörde Jahre im Voraus."
+            },
+            t5: {
+              g: ["Zuweisung von Arbeitsplätzen, Wohnraum & Konsumgütern", "Keinerlei freie Wahl bei Beruf, Lohn oder Sortiment"],
+              w: ["100 % zentrale Mengen-, Preis- und Lohnplanung ohne Markt", "Jede Schraube und jeder Preis wird staatlich vorgeschrieben"],
+              p: ["Vollständige zentrale Staatskontrolle über die Wirtschaft", "Wirtschaftliche Entscheidungen sind reine Politikbefehle"],
+              ex: "Der Staat teilt Betriebsmengen, Löhne, Wohnungen und Konsumkontingente bis ins kleinste Detail zentral zu."
             }
           }
         },
         3: {
           left: {
-            mod: {
-              g: ["Niedrige Abgaben auf dem Lohnzettel", "Nur minimaler Grundschutz im äußersten Notfall"],
-              w: ["Sehr wenige Arbeits- und Schutzregeln", "Kaum staatliche Wettbewerbsaufsicht"],
-              p: ["Schlanker Staat mit kleinem Sozialbudget", "Großer Raum für private Eigenverantwortung"]
+            t1: {
+              g: ["Spürbar niedrige Steuern & Abgaben auf dem Lohnzettel", "Nur sehr schmale Grundhilfe im äußersten Notfall"],
+              w: ["Sehr lockere Arbeits- und Kündigungsregeln", "Nur minimale staatliche Wettbewerbsaufsicht"],
+              p: ["Schlanker Staat mit kleinem Sozialhaushalt", "Hohe Betonung privater Eigenverantwortung"],
+              ex: "Du zahlst wenig Abgaben vom Bruttolohn, bekommst bei Not aber nur absolute Grundhilfe – für Rente und Krankheit sorgst du privat vor."
             },
-            strong: {
-              g: ["Kaum Steuern & Sozialabgaben vom Lohn", "Krankheit, Alter & Jobverlust rein privat abzusichern"],
-              w: ["Kein Mindestlohn, kein Kündigungsschutz", "Kein Kartellamt gegen Monopole"],
-              p: ["Beschränkt sich fast auf Polizei, Militär & Gerichte", "Soziale Konflikte bleiben unreguliert"]
+            t2: {
+              g: ["Kranken- & Rentenabsicherung fast vollständig privat", "Hohe Netto-Auszahlung bei geringen Sozialleistungen"],
+              w: ["Kein gesetzlicher Mindestlohn, kaum Kündigungsschutz", "Betriebe handeln Arbeitsbedingungen frei aus"],
+              p: ["Staat zieht sich weitgehend aus Sozialpolitik zurück", "Schwächere sind auf Familie oder Spenden angewiesen"],
+              ex: "Kündigungsfristen, Urlaubstage und Lohn verhandelst du allein mit dem Betrieb; ohne private Police trägst du Arztkosten selbst."
             },
-            pure: {
-              g: ["Null staatliche Sozialleistungen oder Transfers", "Volles Existenzrisiko bei Unfall oder Krankheit"],
-              w: ["Keinerlei Arbeitsschutz- oder Wettbewerbsgesetze", "Verträge völlig ohne staatliche Leitplanken"],
-              p: ["Reiner Sicherheitsstaat ohne jede Umverteilung", "Minimalstes Staatsbudget"]
+            t3: {
+              g: ["Fast keine Steuern oder Sozialabgaben vom Gehalt", "Bei Unfall, Krankheit oder Jobverlust droht direkter Absturz"],
+              w: ["Kein Kartellamt, kein Mindestlohn, kein Arbeitsschutz", "Starke Konzerne setzen sich ungehindert durch"],
+              p: ["Staat kümmert sich fast nur um Polizei, Militär & Gerichte", "Soziale Konflikte werden nicht staatlich abgefedert"],
+              ex: "Fast dein gesamtes Brutto landet netto auf dem Konto – wirst du aber länger krank oder gekündigt, springt kein Staat ein."
+            },
+            t4: {
+              g: ["Öffentliche Förderungen und Hilfen fast komplett gestrichen", "Bildung und Absicherung hängen stark vom Geldbeutel ab"],
+              w: ["Verträge gelten praktisch ohne staatliche Schutzgrenzen", "Wettbewerbs- und Verbraucherschutz entfallen weitgehend"],
+              p: ["Minimalstaat mit sehr geringer politischer Gestaltungskraft", "Hohe Abhängigkeit sozialer Fragen von Privatinitiativen"],
+              ex: "Arbeitszeiten, Lohn und Sicherheit am Arbeitsplatz sind reine Vertragssache ohne gesetzliche Schutzvorschriften."
+            },
+            t5: {
+              g: ["Null staatliche Sozialversicherungen oder Transfers", "100 % Eigenrisiko bei Krankheit, Alter und Arbeitslosigkeit"],
+              w: ["Keinerlei Arbeits-, Mieter- oder Kartellrecht", "Absolute Vertragsfreiheit ohne jede staatliche Leitplanke"],
+              p: ["Reiner Sicherheitsstaat (nur Polizei, Militär, Gerichte)", "Keinerlei Umverteilung oder sozialer Ausgleich"],
+              ex: "Es gibt weder staatliche Kranken-, Renten- noch Arbeitslosenversicherung – jede Absicherung muss vollständig privat bezahlt werden."
             }
           },
           right: {
-            mod: {
-              g: ["Kranken-, Renten- & Arbeitslosenversicherung", "Progressive Steuern nach Einkommenshöhe"],
-              w: ["Kartellamt schützt fairen Wettbewerb", "Tarifverträge, Mindestlohn & Kündigungsschutz"],
-              p: ["Demokratischer Ausgleich der Sozialpartner", "Klare Spielregeln ohne volle Lenkung"]
+            t1: {
+              g: ["Kranken-, Renten- & Arbeitslosenversicherung als Basisnetz", "Progressive Steuern nach Leistungsfähigkeit"],
+              w: ["Kartellamt schützt fairen Wettbewerb", "Tarifautonomie, gesetzlicher Mindestlohn & Kündigungsschutz"],
+              p: ["Demokratischer Ausgleich zwischen Gewerkschaften & Arbeitgebern", "Klare Regeln ohne übermäßige Staatslenkung"],
+              ex: "Sozialabgaben auf deinem Lohnzettel sichern dich bei Krankheit und Jobverlust ab; Kündigungsschutz und Tarifverträge gelten."
             },
-            strong: {
-              g: ["Sehr hohes soziales Sicherheitsnetz", "Spürbar höhere Abgaben auf dem Bruttolohn"],
-              w: ["Hohe Spitzensteuern & starke Umverteilung", "Dichtes Netz an Arbeits- und Mieterschutzgesetzen"],
-              p: ["Hohe Staatsquote & starke Daseinsvorsorge", "Staat greift aktiv in Lebenslagen ein"]
+            t2: {
+              g: ["Gezielte Hilfen wie Wohngeld, BAföG oder BAB", "Stärkerer Mieter- und Arbeitnehmerschutz im Alltag"],
+              w: ["Deutliche progressive Steuern auf hohe Einkommen", "Verbindliche Standards für Arbeitsschutz und Mitbestimmung"],
+              p: ["Aktiver Sozialstaat dämpft Ungleichheiten spürbar", "Breite öffentliche Förderung von Ausbildung & Familien"],
+              ex: "Reicht dein Azubi-Gehalt für die erste eigene Wohnung nicht aus, helfen Wohngeld oder Berufsausbildungsbeihilfe (BAB)."
             },
-            pure: {
-              g: ["Umfassende staatliche Rundum-Absicherung", "Sehr hohe Steuer- und Abgabenlast"],
-              w: ["Strenge Regulierungen & maximale Umverteilung", "Geringer finanzieller Spielraum für Betriebe"],
-              p: ["Maximale Staatsverantwortung im Alltag", "Sehr große Verwaltungs- und Sozialbürokratie"]
+            t3: {
+              g: ["Hohe Chancengleichheit durch gebührenfreie Bildung & Pflege", "Spürbar höhere Steuer- und Abgabenlast auf dem Lohnzettel"],
+              w: ["Hohe Spitzensteuern & starke öffentliche Daseinsvorsorge", "Starke Gewerkschaften und dichtes Arbeitsrecht"],
+              p: ["Hohe Staatsquote bei breitem Vertrauen in Institutionen", "Großer öffentlicher Sektor in Gesundheit & Bildung"],
+              ex: "Meisterkurs, Studium und Kinderbetreuung sind gebührenfrei, dafür fallen merklich höhere Lohn- und Konsumsteuern an."
+            },
+            t4: {
+              g: ["Sehr dichtes Leistungsnetz in fast jeder Lebenslage", "Deutlich kleinerer Netto-Anteil vom Bruttolohn"],
+              w: ["Sehr hohe Umverteilung und enge Schutzvorschriften", "Strenge Miet-, Arbeits- und Verbraucherregeln für Betriebe"],
+              p: ["Staat greift tief und aktiv in Lebens- und Arbeitslagen ein", "Wachsende Sozial- und Prüfungsbürokratie"],
+              ex: "Geringe Einkommensabstände und sehr hohe soziale Sicherheit – im Gegenzug fließen große Teile des Bruttolohns in Steuern und Kassen."
+            },
+            t5: {
+              g: ["Umfassende staatliche Rundum-Absicherung für alle", "Extrem hohe Abgabenlast und starke Ämter-Abhängigkeit"],
+              w: ["Maximale Spitzensteuern & dichtestes Netz an Vorschriften", "Sehr enger finanzieller Spielraum für private Betriebe"],
+              p: ["Maximale Staatsverantwortung für alle Lebensbereiche", "Sehr große Verwaltungs- und Umverteilungsbürokratie"],
+              ex: "Der Staat sichert nahezu jedes Lebensrisiko direkt ab und greift über sehr hohe Abgaben und strenge Gesetze tief in jeden Betrieb ein."
             }
           }
         }
       };
 
+      /* Konkrete, benannte Szenarien für JEDEN einzelnen 5-%-Schritt (50 % bis 100 %) */
+      const STEP_SCENARIOS = {
+        1: {
+          left: {
+            50:  { name: "Paritätische Mischform",            desc: "Handwerk und Industrie laufen privat, während Trinkwasser, Schulen, Bahn, Kliniken, Energie und große Wohnungsbestände öffentlich bleiben." },
+            55:  { name: "Privatwirtschaft mit breiter Daseinsvorsorge", desc: "Private Betriebe stellen die Mehrheit der Arbeitsplätze; Stadtwerke, kommunale Kliniken und öffentliche Wohnungen dämpfen Alltagskosten." },
+            60:  { name: "Privatsektor plus öffentliches Kernnetz", desc: "Supermärkte, Werkstätten und Stromversorger sind privat, während Trinkwasser, Schulen, Bahn und viele Kliniken öffentlich betrieben werden." },
+            65:  { name: "Mittelständischer Privatmarkt",     desc: "Private Firmen dominieren Handel, Handwerk und Energie; kommunale Anbieter konzentrieren sich auf Trinkwasser, Bildung und Nahverkehr." },
+            70:  { name: "Ausgeprägtes Privateigentum",       desc: "Betriebe, Mietwohnungen und die meisten Kliniken liegen in privater Hand; nur Trinkwasser, Schulen und Schienen bleiben öffentlich." },
+            75:  { name: "Klassisches Privateigentums-Modell", desc: "Fast alle Betriebe, Wohnungen, Kliniken und Stromversorger sind privat; Trinkwasserleitungen und öffentliche Schulen sichern den Grundbedarf." },
+            80:  { name: "Weitgehende Privatisierung",        desc: "Auch Bahnstrecken und weite Teile der Pflege arbeiten privat gewinnorientiert; der Staat hält nur noch Wasserleitungen und Grundschulen." },
+            85:  { name: "Konzerndominiertes Privateigentum", desc: "Fast die gesamte Infrastruktur von Energie bis Verkehr gehört privaten Aktiengesellschaften; nur noch die Trinkwasserleitung ist kommunal." },
+            90:  { name: "Hochprivatisiertes System",         desc: "Selbst Berufsschulen und Hochschulen verlangen als Privatbetriebe Gebühren; öffentliches Eigentum existiert kaum noch." },
+            95:  { name: "Nahezu totales Privateigentum",     desc: "Bis auf einzelne staatliche Gebäude gehört fast jeder Quadratmeter Boden, jede Leitung und jeder Betrieb privaten Investoren." },
+            100: { name: "Vollständiger Privat-Kapitalismus", desc: "100 % Privateigentum: Selbst Trinkwasserleitungen, Straßen, Schulen und Wohnraum gehören vollständig Privatkonzernen." }
+          },
+          right: {
+            50:  { name: "Paritätische Gemeinwirtschaft",     desc: "Großkonzerne, Banken, Energie und Wohnungsbau liegen in öffentlicher Hand; Handwerk, Bäcker und kleine Läden bleiben privat." },
+            55:  { name: "Öffentlicher Kern mit privatem Handwerk", desc: "Die Schlüsselindustrien und großen Arbeitgeber sind vergesellschaftet; Familienbetriebe und lokale Dienstleister arbeiten privat weiter." },
+            60:  { name: "Starkes Gemeineigentum im Großbetrieb", desc: "Industrie, Banken, Energie und große Mietshäuser gehören der Allgemeinheit; nur kleinere Handwerksbetriebe bleiben in Privatbesitz." },
+            65:  { name: "Genossenschaftlich geprägte Wirtschaft", desc: "Betriebe werden überwiegend von Kommunen oder Belegschaftsgenossenschaften geführt; privates Gewerbe gilt nur für Kleinstbetriebe." },
+            70:  { name: "Überwiegendes Gemeineigentum",      desc: "Fabriken, Wohnungsbau und Großhandel gehören der Gesellschaft; private Firmengründungen sind auf wenige Ausnahmen begrenzt." },
+            75:  { name: "Vergesellschaftete Betriebslandschaft", desc: "Fast alle Betriebe und Wohnungen sind öffentlich oder kollektiv; selbst mittlere Handwerksbetriebe gehen in Genossenschaften über." },
+            80:  { name: "Kollektivierte Alltagswirtschaft",  desc: "Auch Werkstätten, Supermärkte und Gastronomie laufen als öffentliche oder genossenschaftliche Betriebe ohne private Eigentümer." },
+            85:  { name: "Nahezu vollständiges Gemeineigentum", desc: "Privates Produktiveigentum ist praktisch abgeschafft; privater Besitz beschränkt sich auf persönliche Gegenstände und Einrichtung." },
+            90:  { name: "Staatliche Eigentumshoheit",        desc: "Sämtliche Betriebe, Banken, Wohnungen und Grundstücke liegen in Staatshand; selbst Nebengewerbe sind nicht privat erlaubt." },
+            95:  { name: "Geschlossenes Staatseigentum",      desc: "Jeder Arbeitsplatz, jedes Geschäft und jede Wohnung wird direkt von staatlichen Stellen verwaltet." },
+            100: { name: "Vollständiges Gemein-/Staatseigentum", desc: "100 % Vergesellschaftung: Sämtlicher Grund und Boden sowie alle Produktionsmittel gehören vollständig dem Staat." }
+          }
+        },
+        2: {
+          left: {
+            50:  { name: "Stark regulierter Preis-Mix",       desc: "Alltagsgüter laufen über Marktpreise, aber Mieten, Strom, Gas und Grundnahrungsmittel unterliegen strengen staatlichen Preisdeckeln." },
+            55:  { name: "Gelenkte Marktwirtschaft",          desc: "Die meisten Preise entstehen durch Wettbewerb; bei Wohnraum und Energie setzt der Staat feste Obergrenzen und Quoten." },
+            60:  { name: "Markt mit Krisen-Bremsen",          desc: "Du verhandelst Löhne und kaufst frei am Markt, doch bei extremen Mieten oder Strompreisen greift eine gesetzliche Preisbremse." },
+            65:  { name: "Abgefederter Wettbewerb",           desc: "Freie Preisbildung in Handel, Handwerk und Industrie; nur Grundtarife wie Trinkwasser und regionale Mieten werden gebremst." },
+            70:  { name: "Deutliche Marktsteuerung",          desc: "Angebot und Nachfrage steuern Supermarkt, Mieten und Gehälter; staatliche Preiseingriffe beschränken sich auf seltene Ausnahmen." },
+            75:  { name: "Freie Preisbildung im Alltag",      desc: "Betriebe und Haushalte planen eigenständig; knappe Stadtwohnungen und gefragte Fachkräfte steigen spürbar im Preis." },
+            80:  { name: "Offener Wettbewerbsmarkt",          desc: "Auch Strom, Gas und Mieten bilden ihre Preise frei nach Knappheit; staatliche Preisdeckel werden abgeschafft." },
+            85:  { name: "Weitgehend deregulierte Märkte",    desc: "Selbst bei Energie- oder Wohnungsmangel greift der Staat nicht in Preise ein – Angebot und Zahlungskraft entscheiden allein." },
+            90:  { name: "Radikaler Preismechanismus",        desc: "Nahezu jeder Lebensbereich von Wohnraum bis Medizin folgt ungebremst der momentanen Marktnachfrage." },
+            95:  { name: "Nahezu eingriffsfreier Markt",      desc: "Es gibt keinerlei Preisbremsen, Quoten oder staatliche Vorgaben mehr – selbst Grundtarife schwanken frei." },
+            100: { name: "Absolut freie Marktwirtschaft",     desc: "100 % Marktsteuerung: Jeder Preis, jeder Lohn und jedes lebenswichtige Gut richtet sich kompromisslos nach Zahlungsfähigkeit." }
+          },
+          right: {
+            50:  { name: "Rahmenplan mit offenen Konsummärkten", desc: "Staatliche Mengenpläne steuern Energie, Wohnungsbau und Grundbedarf; Kleidung, Technik und Freizeit laufen über freie Märkte." },
+            55:  { name: "Zweigleisige Plan-Markt-Steuerung", desc: "Grundnahrungsmittel, Mieten und Strom haben staatliche Festpreise; kleinere Konsumgüter bleiben flexibel im Preis." },
+            60:  { name: "Industrieplan mit Nebenmärkten",    desc: "Großbetriebe produzieren nach staatlichen Jahresquoten; Überschüsse dürfen auf kleinen Nebenmärkten frei verkauft werden." },
+            65:  { name: "Dominierende Rahmenplanung",        desc: "Behörden legen Produktionsziele und Großhandelspreise für fast alle Branchen fest; freie Preise sind die Ausnahme." },
+            70:  { name: "Verbindliche Mehrjahrespläne",      desc: "Eine zentrale Planbehörde bestimmt Mengen, Preise und Lohnstufen; feste Grundpreise treffen auf erste Wartelisten." },
+            75:  { name: "Zentrale Versorgungsplanung",       desc: "Brot und Miete bleiben jahrelang preisstabil, aber bei Technik, Ersatzteilen und Autos entstehen spürbare Engpässe." },
+            80:  { name: "Umfassende Planungsbürokratie",     desc: "Rohstoffe, Betriebsmengen und Ausbildungsplätze werden zentral zugeteilt; freie Preisbildung ist fast verschwunden." },
+            85:  { name: "Strenge zentrale Lenkung",          desc: "Die Planbehörde legt Jahre im Voraus fest, welche Berufe ausgebildet werden und welche Modelle im Laden stehen." },
+            90:  { name: "Fast vollständige Befehlswirtschaft", desc: "Betriebe erhalten detaillierte Liefer- und Produktionsbefehle; eigenständige Preis- oder Sortimentswahl entfällt." },
+            95:  { name: "Nahezu lückenlose Zuteilung",       desc: "Arbeitsplätze, Wohnraum, Löhne und Konsummengen werden fast vollständig durch staatliche Pläne zugewiesen." },
+            100: { name: "Totale Zentralverwaltungswirtschaft", desc: "100 % Planwirtschaft: Jede Produktionsmenge, jeder Lohn und jeder Preis wird zentral ohne jeden Markt vorgeschrieben." }
+          }
+        },
+        3: {
+          left: {
+            50:  { name: "Schlanker Staat mit Notfall-Netz",  desc: "Deutlich niedrigere Abgaben vom Lohn; der Staat sichert nur das Existenzminimum im äußersten Notfall und hält Regeln minimal." },
+            55:  { name: "Minimaler Sozial- & Regelrahmen",   desc: "Kranken- und Rentenvorsorge wandern überwiegend ins Private; Kündigungsschutz und Kartellaufsicht werden stark gelockert." },
+            60:  { name: "Weitgehend privatisierte Vorsorge", desc: "Auf dem Lohnzettel fallen kaum Sozialabgaben an – Arztkosten, Rente und Arbeitslosigkeit musst du privat absichern." },
+            65:  { name: "Vertragsfreiheit ohne Mindestlohn", desc: "Mindestlohn, Urlaubsgrenzen und Kündigungsfristen entfallen; du handelst deinen Arbeitsvertrag allein mit dem Betrieb aus." },
+            70:  { name: "Starker Rückzug des Sozialstaats",  desc: "Weder Kartellamt noch Arbeitsrecht bremsen starke Betriebe; bei Jobverlust helfen nur eigene Ersparnisse oder Familie." },
+            75:  { name: "Klassischer Minimalstaat",          desc: "Fast dein gesamtes Brutto bleibt netto übrig, doch bei Krankheit oder Unfall springt keine gesetzliche Versicherung ein." },
+            80:  { name: "Sicherheitsstaat mit Mini-Budget",  desc: "Öffentliche Hilfen wie Wohngeld oder Ausbildungsförderung sind komplett gestrichen; Verträge gelten ohne Schutzgrenzen." },
+            85:  { name: "Nahezu regelfreier Arbeitsmarkt",   desc: "Arbeitszeiten, Lohn und Arbeitsschutz hängen allein vom Vertrag ab; der Staat greift nur bei Straftaten ein." },
+            90:  { name: "Strikt reduzierter Nachtwächter",   desc: "Staatliche Umverteilung entfällt komplett; soziale Absicherung und Bildung liegen fast vollständig in privater Hand." },
+            95:  { name: "Fast reiner Sicherheitsstaat",      desc: "Steuern finanzieren nahezu ausschließlich Polizei, Gerichte und Verteidigung – null Transfers oder Sozialkassen." },
+            100: { name: "Reiner Nachtwächterstaat",          desc: "100 % Minimalstaat: Nur Polizei, Militär und Gerichte – keinerlei Sozialversicherungen, Mindestlohn oder Kartellamt." }
+          },
+          right: {
+            50:  { name: "Solides soziales Grundnetz",        desc: "Kranken-, Renten- und Arbeitslosenversicherung, Kartellamt, Tarifautonomie und Mindestlohn bilden ein ausgewogenes Fundament." },
+            55:  { name: "Ausgewogener Sozial- & Ordnungsstaat", desc: "Fairer Wettbewerb und Kündigungsschutz laufen Hand in Hand; progressive Steuern finanzieren Bildung und Grundsicherung." },
+            60:  { name: "Aktiver Förder- & Schutzstaat",     desc: "Gezielte Hilfen wie Wohngeld, BAB und BAföG unterstützen Azubis und Familien; Miet- und Arbeitnehmerschutz werden gestärkt." },
+            65:  { name: "Ausgebauter Sozialstaat",           desc: "Deutliche Entlastung kleiner Einkommen, starke Gewerkschaften und verlässliche öffentliche Absicherung bei Krankheit und Alter." },
+            70:  { name: "Breite öffentliche Daseinsvorsorge", desc: "Meisterkurs, Studium und Kinderbetreuung sind gebührenfrei; höhere Einkommen tragen über Spitzensteuern spürbar mehr bei." },
+            75:  { name: "Starker Wohlfahrtsstaat",           desc: "Sehr hohe soziale Sicherheit und geringe Armut, finanziert durch merklich höhere Steuern und Sozialabgaben auf dem Lohnzettel." },
+            80:  { name: "Umfassender Umverteilungsstaat",    desc: "Hohe Spitzensteuern und enge Miet-, Arbeits- und Verbrauchergesetze halten Einkommensunterschiede dauerhaft klein." },
+            85:  { name: "Sehr dichtes staatliches Schutznetz", desc: "Fast jedes Lebensrisiko wird großzügig staatlich abgefedert; im Gegenzug sinkt der frei verfügbare Netto-Anteil spürbar." },
+            90:  { name: "Hochregulierter Vorsorgestaat",     desc: "Der Staat steuert Lebenslagen über sehr hohe Abgaben, breite Transfers und strenge Vorgaben für Betriebe sehr tiefgehend." },
+            95:  { name: "Fast lückenlose Staatsfürsorge",    desc: "Maximale Absicherung von Ausbildung bis Pflege, verbunden mit sehr hoher Staatsquote und großer Sozialbürokratie." },
+            100: { name: "Maximaler Umverteilungs- & Schutzstaat", desc: "100 % Staatsverantwortung: Höchste Steuern, dichtestes Vorschriftennetz und umfassende staatliche Versorgung in allen Lebenslagen." }
+          }
+        }
+      };
+
+      function getStepScenario(dimNum, side, strength) {
+        const clamped = clampStrength(strength, 75);
+        return STEP_SCENARIOS[dimNum][side][clamped];
+      }
+
       function getEinordnungLabel(dimNum, side, strength) {
         const meta = DIM_META[dimNum][side];
-        const tier = strengthTier(strength);
-        const tag = tier === "mod" ? "Gemäßigt / Mischform" : (tier === "strong" ? "Stark ausgeprägt" : "Rein / Konsequent");
-        return `${meta.name}: ${strength} % (${tag})`;
+        const sc = getStepScenario(dimNum, side, strength);
+        return `${meta.name} ${strength} % · ${sc.name}`;
+      }
+
+      /* Differenzierte Einzelbereiche je Dimension mit 4 realistischen Abstufungen & Glühbirnen-Erklärung (💡) */
+      const SECTORS = {
+        1: {
+          title: "Feinjustierung nach Lebensbereichen (Klick = Stufe wechseln, 💡 = Erklärung):",
+          items: [
+            { id: "wasser",   name: "Trinkwasserleitung", levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Staatlich"],      thresholds: [5, 10, 20],  info: "Wasserwerke, Rohre und Abwasser bis zum Wasserhahn. Ein lebenswichtiges Existenzbedürfnis ohne sinnvollen Leitungs-Wettbewerb." },
+            { id: "schulen",  name: "Schulen & Bildung",  levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Staatlich"],      thresholds: [10, 20, 38], info: "Berufsschulen, Schulen, Hochschulen und Weiterbildung. Entscheidet, ob Bildung kostenlos für alle oder über private Träger mit Schulgeld läuft." },
+            { id: "bahn",     name: "Bahn & ÖPNV",        levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Öffentlich"],     thresholds: [15, 30, 52], info: "Busse, U-Bahnen, Regionalzüge und Schienennetze für den Arbeits- und Schulweg – inklusive Ticketpreise und Anbindung auf dem Land." },
+            { id: "kliniken", name: "Kliniken & Pflege",  levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Öffentlich"],     thresholds: [20, 38, 60], info: "Krankenhäuser, Notaufnahmen und Pflegeheime. Hier entscheidest du, ob überwiegend private Klinik-Ketten oder öffentliche Träger versorgen." },
+            { id: "strom",    name: "Strom & Energie",    levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Staatlich"],      thresholds: [25, 48, 70], info: "Kraftwerke, Wind- und Solarparks sowie Strom- und Gasanbieter. Anders als beim Trinkwasser kannst du hier oft zwischen privaten Anbietern wählen." },
+            { id: "konzerne", name: "Industrie & Banken", levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Staatlich"],      thresholds: [35, 55, 76], info: "Große Fabriken, Schlüsselindustrien und Großbanken, die Kredite für Betriebe, Maschinen und Wohnungsbau vergeben." },
+            { id: "wohnen",   name: "Mietwohnungen",      levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Öffentlich"],     thresholds: [22, 46, 70], info: "Mehrfamilienhäuser und Wohnungsbestände. Bestimmt, ob Mieten vor allem über private Vermieter oder städtische/genossenschaftliche Bestände entstehen." },
+            { id: "handwerk", name: "Handwerk & Läden",   levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Gemeineigentum"], thresholds: [52, 72, 88], info: "Bäckereien, Kfz-Werkstätten, Friseure, Elektrobetriebe und lokale Geschäfte – typische Ausbildungsbetriebe im Mittelstand." }
+          ]
+        },
+        2: {
+          title: "Feinjustierung nach Preis- & Mengensteuerung (Klick = Stufe wechseln, 💡 = Erklärung):",
+          items: [
+            { id: "wasser_p", name: "Wasser & Grundtarif", levels: ["Freier Markt", "Leicht reguliert", "Stark gedeckelt", "Staatl. Festpreis"], thresholds: [8, 22, 42],  info: "Legt fest, ob Wassergebühren frei nach Nachfrage entstehen oder über regulierte bzw. staatliche Festtarife laufen." },
+            { id: "miete_p",  name: "Mieten & Wohnraum",   levels: ["Freier Markt", "Mietpreisbremse", "Starker Mietdeckel", "Staatl. Zuteilung"], thresholds: [15, 38, 68], info: "Ob Vermieter Mieten frei verlangen dürfen, eine Mietpreisbremse dämpft, ein strenger Deckel gilt oder Wohnraum staatlich zugeteilt wird." },
+            { id: "strom_p",  name: "Strom & Gas",         levels: ["Freier Markt", "Preisbremse", "Stark gedeckelt", "Staatl. Festpreis"],      thresholds: [20, 45, 72], info: "Ob Energiepreise frei an Börsen schwanken oder durch Preisbremsen, Deckel und staatliche Festpreise gesteuert werden." },
+            { id: "nahrung",  name: "Grundnahrungsmittel", levels: ["Freier Markt", "Steuer-Rabatt", "Preisgrenzen", "Staatl. Festpreis"],       thresholds: [25, 52, 76], info: "Preise für Brot, Milch, Obst und Alltagslebensmittel – freier Wettbewerb der Händler, reduzierte Steuern oder staatliche Festpreise." },
+            { id: "loehne",   name: "Löhne & Gehälter",    levels: ["Frei verhandelt", "Tarif + Mindestlohn", "Staatl. Leitlinien", "Staatl. Lohnplan"], thresholds: [20, 56, 80], info: "Ob Ausbildungsvergütung und Lohn frei verhandelt, per Tarifvertrag und Mindestlohn abgesichert oder per staatlicher Lohntabelle vorgegeben werden." },
+            { id: "konsum",   name: "Technik & Kleidung",  levels: ["Freier Markt", "Einzelne Quoten", "Stark gelenkt", "Zentral geplant"],       thresholds: [45, 70, 88], info: "Smartphones, Autos, Mode und Freizeitgüter – bestimmen Kundenwünsche das Sortiment oder legt ein Staatsplan Mengen und Modelle fest?" }
+          ]
+        },
+        3: {
+          title: "Feinjustierung nach Schutz- & Ausgleichsbausteinen (Klick = Stufe wechseln, 💡 = Erklärung):",
+          items: [
+            { id: "notfall",  name: "Existenzminimum",          levels: ["Aus", "Notfallhilfe", "Grundsicherung", "Hoch ausgebaut"],             thresholds: [15, 35, 72], info: "Staatliche Grundsicherung (z. B. Bürgergeld/Sozialhilfe), damit niemand bei völliger Mittellosigkeit obdachlos wird oder hungert." },
+            { id: "kranken",  name: "Krankenversicherung",      levels: ["Rein privat", "Privat + Basis", "Gesetzlich + privat", "Bürgerkasse"],  thresholds: [20, 42, 75], info: "Regelt, ob du Arzt- und Klinikkosten komplett privat versicherst, ein duales System aus gesetzlicher und privater Kasse gilt oder alle in eine Bürgerkasse einzahlen." },
+            { id: "rente",    name: "Rente & Arbeitslosengeld", levels: ["Rein privat", "Schmale Basis", "Gesetzlich + privat", "Vollversorgung"], thresholds: [22, 46, 78], info: "Ob du für Alter und Jobverlust komplett privat vorsorgst, eine kleine Grundrente erhältst, gesetzlich plus privat absicherst oder eine staatliche Vollversorgung greift." },
+            { id: "arbeit",   name: "Mindestlohn & Schutz",     levels: ["Aus", "Lockerer Schutz", "Solider Schutz", "Sehr streng"],             thresholds: [20, 45, 75], info: "Gesetzliche Lohnuntergrenze, Kündigungsschutz, Urlaubsanspruch und Arbeitssicherheit zum Schutz von Beschäftigten und Azubis." },
+            { id: "kartell",  name: "Kartellamt (Monopole)",    levels: ["Aus", "Schwach", "Stark aktiv", "Sehr streng"],                        thresholds: [20, 42, 72], info: "Unabhängige Aufsicht, die Preisabsprachen verbietet und verhindert, dass einzelne Großkonzerne alle Konkurrenten verdrängen." },
+            { id: "foerder",  name: "Wohngeld / BAB / BAföG",   levels: ["Aus", "Eng begrenzt", "Gut ausgebaut", "Sehr großzügig"],              thresholds: [28, 52, 78], info: "Gezielte staatliche Zuschüsse für Auszubildende, Studierende und Haushalte mit kleinem Gehalt, damit Ausbildung und Miete bezahlbar bleiben." }
+          ]
+        }
+      };
+
+      function getDefaultSectorLevel(sector, dimObj) {
+        const sc = toScale(dimObj);
+        const [t1, t2, t3] = sector.thresholds;
+        if (sc >= t3) return 3;
+        if (sc >= t2) return 2;
+        if (sc >= t1) return 1;
+        return 0;
+      }
+
+      function getSectorLevel(dimNum, sector, dimObj) {
+        if (dimObj.overrides && Number.isInteger(dimObj.overrides[sector.id])) {
+          return dimObj.overrides[sector.id];
+        }
+        return getDefaultSectorLevel(sector, dimObj);
+      }
+
+      /* Berechnet aus der 4-stufigen Feinjustierung die passende Regler-Stellung (strikt innerhalb der gewählten Art!) */
+      function computeStrengthFromSectors(dimNum, dimObj) {
+        const items = SECTORS[dimNum].items;
+        let sumRight = 0;
+        items.forEach((sec) => {
+          sumRight += getSectorLevel(dimNum, sec, dimObj) / 3;
+        });
+        const avgRight = sumRight / items.length;
+        const ratio = dimObj.picked === "right" ? avgRight : (1 - avgRight);
+        const rawPct = Math.round((ratio * 100) / 5) * 5;
+        return {
+          strength: Math.max(50, Math.min(100, rawPct)),
+          hitFloor: rawPct < 50
+        };
       }
 
       /* ============================================================
@@ -2775,7 +3641,7 @@
       }
 
       function buildOverviewGraphSVG(items) {
-        const W = 760, H = 190, padL = 46, padR = 20, padT = 14, padB = 34;
+        const W = 760, H = 225, padL = 64, padR = 26, padT = 18, padB = 48;
         const plotW = W - padL - padR, plotH = H - padT - padB;
         const years = [0, 20, 40, 60, 80, 100];
         const xOf = (yr) => padL + (yr / 100) * plotW;
@@ -2784,14 +3650,25 @@
         const grid = [0, 25, 50, 75, 100].map((v) => {
           const y = yOf(v);
           return `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="rgba(60,60,67,0.12)" ${v === 50 ? 'stroke-dasharray="4 4"' : ""} />
-                  <text x="${padL - 8}" y="${y + 3.5}" text-anchor="end" font-size="10.5" fill="#7A7A82">${v}</text>`;
+                  <line x1="${padL - 4}" y1="${y}" x2="${padL}" y2="${y}" stroke="#58585E" stroke-width="1.2" />
+                  <text x="${padL - 9}" y="${y + 3.5}" text-anchor="end" font-size="10.5" font-weight="600" fill="#58585E">${v}</text>`;
         }).join("");
 
         const xTicks = years.map((yr) => {
           const x = xOf(yr);
           return `<line x1="${x}" y1="${padT}" x2="${x}" y2="${padT + plotH}" stroke="rgba(60,60,67,0.06)" />
-                  <text x="${x}" y="${H - 12}" text-anchor="middle" font-size="10.5" font-weight="600" fill="#58585E">${yr === 0 ? "Start" : `${yr} J.`}</text>`;
+                  <line x1="${x}" y1="${padT + plotH}" x2="${x}" y2="${padT + plotH + 4}" stroke="#58585E" stroke-width="1.2" />
+                  <text x="${x}" y="${padT + plotH + 17}" text-anchor="middle" font-size="10.5" font-weight="600" fill="#58585E">${yr}</text>`;
         }).join("");
+
+        const axes = `
+          <line x1="${padL}" y1="${padT + plotH}" x2="${W - padR + 8}" y2="${padT + plotH}" stroke="#3A3A3C" stroke-width="1.5" />
+          <polygon points="${W - padR + 12},${padT + plotH} ${W - padR + 5},${padT + plotH - 3.5} ${W - padR + 5},${padT + plotH + 3.5}" fill="#3A3A3C" />
+          <line x1="${padL}" y1="${padT + plotH}" x2="${padL}" y2="${padT - 8}" stroke="#3A3A3C" stroke-width="1.5" />
+          <polygon points="${padL},${padT - 12} ${padL - 3.5},${padT - 5} ${padL + 3.5},${padT - 5}" fill="#3A3A3C" />
+          <text x="${padL + plotW / 2}" y="${H - 8}" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1C1C1E">Zeit t in Jahren (0 bis 100)</text>
+          <text x="17" y="${padT + plotH / 2}" text-anchor="middle" font-size="11" font-weight="700" fill="#1C1C1E" transform="rotate(-90 17 ${padT + plotH / 2})">Entwicklungs-Index (0–100)</text>
+        `;
 
         const paths = items.map((item) => {
           const pts = item.points.map((v, idx) => ({ x: xOf(years[idx]), y: yOf(v) }));
@@ -2801,11 +3678,11 @@
                   <circle cx="${endPt.x.toFixed(1)}" cy="${endPt.y.toFixed(1)}" r="4.2" fill="${item.color}" stroke="#fff" stroke-width="1.5" />`;
         }).join("");
 
-        return `${grid}${xTicks}${paths}`;
+        return `<rect x="${padL}" y="${padT}" width="${plotW}" height="${plotH}" rx="6" fill="#FFFFFF" stroke="rgba(60,60,67,0.08)" />${grid}${xTicks}${axes}${paths}`;
       }
 
       function buildSingleGraphSVG(item) {
-        const W = 720, H = 168, padL = 44, padR = 22, padT = 16, padB = 32;
+        const W = 720, H = 205, padL = 64, padR = 54, padT = 20, padB = 46;
         const plotW = W - padL - padR, plotH = H - padT - padB;
         const years = [0, 20, 40, 60, 80, 100];
         const xOf = (yr) => padL + (yr / 100) * plotW;
@@ -2815,35 +3692,72 @@
         const lineD = buildSmoothPath(pts);
         const areaD = `${lineD} L ${pts[pts.length - 1].x.toFixed(1)} ${(padT + plotH).toFixed(1)} L ${pts[0].x.toFixed(1)} ${(padT + plotH).toFixed(1)} Z`;
 
-        const grid = [0, 50, 100].map((v) => {
+        const grid = [0, 25, 50, 75, 100].map((v) => {
           const y = yOf(v);
-          return `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="rgba(60,60,67,0.13)" ${v === 50 ? 'stroke-dasharray="4 4"' : ""} />
-                  <text x="${padL - 8}" y="${y + 3.5}" text-anchor="end" font-size="10.5" fill="#7A7A82">${v}</text>`;
+          return `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="rgba(60,60,67,0.12)" ${v === 50 ? 'stroke-dasharray="4 4"' : ""} />
+                  <line x1="${padL - 4}" y1="${y}" x2="${padL}" y2="${y}" stroke="#58585E" stroke-width="1.2" />
+                  <text x="${padL - 9}" y="${y + 3.5}" text-anchor="end" font-size="10.5" font-weight="600" fill="#58585E">${v}</text>`;
         }).join("");
 
-        const xTicks = [0, 20, 60, 100].map((yr) => {
+        const levelHints = `
+          <text x="${W - padR + 7}" y="${yOf(85) + 3}" font-size="9.5" font-weight="600" fill="#166534">Stark</text>
+          <text x="${W - padR + 7}" y="${yOf(50) + 3}" font-size="9.5" font-weight="600" fill="#854D0E">Mittel</text>
+          <text x="${W - padR + 7}" y="${yOf(18) + 3}" font-size="9.5" font-weight="600" fill="#B42318">Kritisch</text>
+        `;
+
+        const xTicks = years.map((yr) => {
           const x = xOf(yr);
-          return `<line x1="${x}" y1="${padT}" x2="${x}" y2="${padT + plotH}" stroke="rgba(60,60,67,0.09)" />
-                  <text x="${x}" y="${H - 10}" text-anchor="middle" font-size="10.5" font-weight="600" fill="#58585E">${yr === 0 ? "Jahr 0" : `Jahr ${yr}`}</text>`;
+          return `<line x1="${x}" y1="${padT}" x2="${x}" y2="${padT + plotH}" stroke="rgba(60,60,67,0.07)" />
+                  <line x1="${x}" y1="${padT + plotH}" x2="${x}" y2="${padT + plotH + 4}" stroke="#58585E" stroke-width="1.2" />
+                  <text x="${x}" y="${padT + plotH + 17}" text-anchor="middle" font-size="10.5" font-weight="600" fill="#58585E">${yr}</text>`;
         }).join("");
+
+        const axes = `
+          <line x1="${padL}" y1="${padT + plotH}" x2="${W - padR + 6}" y2="${padT + plotH}" stroke="#3A3A3C" stroke-width="1.5" />
+          <polygon points="${W - padR + 10},${padT + plotH} ${W - padR + 3},${padT + plotH - 3.5} ${W - padR + 3},${padT + plotH + 3.5}" fill="#3A3A3C" />
+          <line x1="${padL}" y1="${padT + plotH}" x2="${padL}" y2="${padT - 8}" stroke="#3A3A3C" stroke-width="1.5" />
+          <polygon points="${padL},${padT - 12} ${padL - 3.5},${padT - 5} ${padL + 3.5},${padT - 5}" fill="#3A3A3C" />
+          <text x="${padL + plotW / 2}" y="${H - 8}" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1C1C1E">Zeit t in Jahren (0 bis 100)</text>
+          <text x="17" y="${padT + plotH / 2}" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1C1C1E" transform="rotate(-90 17 ${padT + plotH / 2})">${escapeHtml(item.cat)} (0–100)</text>
+        `;
 
         const markers = [0, 1, 3, 5].map((idx) => {
           const pt = pts[idx];
-          const labelY = pt.y < 32 ? pt.y + 15 : pt.y - 9;
+          const labelY = pt.y < padT + 18 ? pt.y + 16 : pt.y - 9;
           return `<circle cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="4.5" fill="${item.color}" stroke="#fff" stroke-width="1.6" />
                   <text x="${pt.x.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" fill="${item.color}">${pt.val}</text>`;
         }).join("");
 
         return `
           <svg class="graph-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Funktionsgraph ${escapeHtml(item.cat)}: ${escapeHtml(item.yLabel)} über 100 Jahre">
+            <rect x="${padL}" y="${padT}" width="${plotW}" height="${plotH}" rx="6" fill="#FFFFFF" stroke="rgba(60,60,67,0.08)" />
             ${grid}
             ${xTicks}
+            ${axes}
+            ${levelHints}
             <path d="${areaD}" fill="${item.color}" fill-opacity="0.11" />
             <path d="${lineD}" fill="none" stroke="${item.color}" stroke-width="2.8" stroke-linecap="round" />
             ${markers}
-            <text x="${padL + 6}" y="${padT + 11}" font-size="10" font-weight="700" fill="#58585E">${escapeHtml(item.yLabel)} (Index 0–100)</text>
           </svg>
         `;
+      }
+
+      function buildSingleReadingLine(item) {
+        const years = [0, 20, 40, 60, 80, 100];
+        const start = item.points[0];
+        const end = item.points[5];
+        const diff = end - start;
+        const sign = diff > 0 ? `+${diff}` : `${diff}`.replace("-", "−");
+        let maxVal = item.points[0], maxYr = 0;
+        let minVal = item.points[0], minYr = 0;
+        item.points.forEach((v, i) => {
+          if (v > maxVal) { maxVal = v; maxYr = years[i]; }
+          if (v < minVal) { minVal = v; minYr = years[i]; }
+        });
+        const extNote = maxYr > 0 && maxYr < 100 && maxVal - end >= 8
+          ? `Hochpunkt bei Jahr ${maxYr} (${maxVal} Pkt.), danach Rückgang auf ${end} Pkt`
+          : `Höchstwert: ${maxVal} Pkt. (Jahr ${maxYr}) · Tiefstwert: ${minVal} Pkt. (Jahr ${minYr})`;
+        return `Ablesbare Werte (${item.yLabel}): Start bei ${start} Pkt. (Jahr 0) → Ende bei ${end} Pkt. (Jahr 100, Veränderung ${sign} Pkt.) · ${extNote}.`;
       }
 
       /* ============================================================
@@ -3216,13 +4130,18 @@
         }
       }
 
+      const openSectorInfo = { 1: null, 2: null, 3: null };
+
       function renderLiveBullets(dimNum, side, strength) {
         const container = $(`dim${dimNum}LiveBullets`);
+        const exBox = $(`dim${dimNum}LiveExample`);
         if (!side) {
           container.innerHTML = "";
+          if (exBox) exBox.innerHTML = "";
           return;
         }
         const data = LIVE_BULLETS[dimNum][side][strengthTier(strength)];
+        const sc = getStepScenario(dimNum, side, strength);
         container.innerHTML = `
           <div class="live-bullet-item">
             <strong>Gesellschaft</strong>
@@ -3237,6 +4156,108 @@
             <ul>${data.p.map((x) => `<li>${escapeHtml(x)}</li>`).join("")}</ul>
           </div>
         `;
+        if (exBox) {
+          exBox.innerHTML = `<strong>Szenario bei ${strength} % – ${escapeHtml(sc.name)}:</strong> ${escapeHtml(sc.desc)}`;
+        }
+      }
+
+      function renderSectors(dimNum) {
+        const panel = $(`dim${dimNum}Sectors`);
+        const d = state[`dim${dimNum}`];
+        if (!panel || !d.picked) {
+          if (panel) panel.innerHTML = "";
+          return;
+        }
+        const cfg = SECTORS[dimNum];
+        const hasCustom = d.overrides && Object.keys(d.overrides).length > 0;
+        const activeInfoId = openSectorInfo[dimNum];
+        const activeInfoSec = activeInfoId ? cfg.items.find((x) => x.id === activeInfoId) : null;
+
+        panel.innerHTML = `
+          <div class="sector-panel-head">
+            <span><strong>${escapeHtml(cfg.title)}</strong></span>
+            ${hasCustom ? `<span class="sector-custom-badge">Individuell angepasst</span>` : ""}
+          </div>
+          <div class="sector-grid">
+            ${cfg.items.map((sec) => {
+              const lvl = getSectorLevel(dimNum, sec, d);
+              const lbl = sec.levels[lvl];
+              const isOpen = activeInfoId === sec.id;
+              const dots = [0, 1, 2, 3].map((i) => `<span class="sector-dot ${i <= lvl ? "is-on" : ""}"></span>`).join("");
+              return `
+                <div class="sector-box is-lvl-${lvl} ${isOpen ? "is-info-open" : ""}">
+                  <button type="button" class="sector-toggle" data-sec-id="${sec.id}" ${d.confirmed ? "disabled" : ""} title="${escapeHtml(sec.name)}: ${escapeHtml(lbl)} (klicken für nächste Stufe)">
+                    <span class="sector-chip-name">${escapeHtml(sec.name)}</span>
+                    <span class="sector-chip-bottom">
+                      <span class="sector-chip-state">${escapeHtml(lbl)}</span>
+                      <span class="sector-dots" aria-hidden="true">${dots}</span>
+                    </span>
+                  </button>
+                  <button type="button" class="sector-info-btn" data-info-id="${sec.id}" aria-label="Erklärung zu ${escapeHtml(sec.name)}" aria-expanded="${isOpen}" title="Was ist mit „${escapeHtml(sec.name)}“ gemeint?">&#128161;</button>
+                </div>
+              `;
+            }).join("")}
+          </div>
+          ${activeInfoSec ? `
+            <div class="sector-info-pop" role="note">
+              <span><strong>&#128161; ${escapeHtml(activeInfoSec.name)}:</strong> ${escapeHtml(activeInfoSec.info)}<br><span style="font-size:0.78rem; opacity:0.85;">Auswahlstufen: ${activeInfoSec.levels.map((l) => escapeHtml(l)).join(" · ")}</span></span>
+              <button type="button" class="sector-info-close" data-close-info="${dimNum}" aria-label="Hinweis schließen">&times;</button>
+            </div>
+          ` : ""}
+        `;
+
+        // Glühbirnen-Buttons bleiben immer klickbar (auch nach Bestätigung)
+        panel.querySelectorAll(".sector-info-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const id = btn.dataset.infoId;
+            openSectorInfo[dimNum] = openSectorInfo[dimNum] === id ? null : id;
+            renderSectors(dimNum);
+          });
+        });
+
+        const closeBtn = panel.querySelector("[data-close-info]");
+        if (closeBtn) {
+          closeBtn.addEventListener("click", () => {
+            openSectorInfo[dimNum] = null;
+            renderSectors(dimNum);
+          });
+        }
+
+        // Feinjustierung durchschalten (4 Stufen) -> zieht den Regler automatisch sinnvoll nach!
+        if (!d.confirmed) {
+          panel.querySelectorAll(".sector-toggle").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const secId = btn.dataset.secId;
+              const sec = cfg.items.find((x) => x.id === secId);
+              if (!sec) return;
+
+              // Aktuellen Stand aller Bereiche festhalten, damit nur der geklickte Bereich wechselt
+              const snap = {};
+              cfg.items.forEach((item) => {
+                snap[item.id] = getSectorLevel(dimNum, item, d);
+              });
+              snap[secId] = (snap[secId] + 1) % sec.levels.length;
+              d.overrides = snap;
+
+              // Regler automatisch sinnvoll nachziehen (strikt innerhalb der gewählten Art!)
+              const calc = computeStrengthFromSectors(dimNum, d);
+              d.strength = calc.strength;
+              saveState();
+
+              const slider = $(`slider${dimNum}`);
+              slider.value = d.strength;
+              styleRange(slider, dimNum, false);
+              $(`dim${dimNum}Einordnung`).textContent = getEinordnungLabel(dimNum, d.picked, d.strength);
+              renderLiveBullets(dimNum, d.picked, d.strength);
+              renderSectors(dimNum);
+
+              if (calc.hitFloor) {
+                const otherSide = d.picked === "left" ? DIM_META[dimNum].right.name : DIM_META[dimNum].left.name;
+                showToast(`Regler bei 50 % (Grenze). Für noch mehr „${otherSide}“ wechsle oben die Grundrichtung.`);
+              }
+            });
+          });
+        }
       }
 
       function renderExplainGrid(gridEl, info) {
@@ -3322,6 +4343,7 @@
           styleRange(slider, dimNum, d.confirmed);
           $(`dim${dimNum}Einordnung`).textContent = getEinordnungLabel(dimNum, d.picked, d.strength);
           renderLiveBullets(dimNum, d.picked, d.strength);
+          renderSectors(dimNum);
         }
 
         $(`dim${dimNum}ConfirmRow`).style.display = d.confirmed ? "none" : "flex";
@@ -3408,9 +4430,27 @@
         const items = computeSimulation(e, p, s);
 
         $("simOverviewGraph").innerHTML = buildOverviewGraphSVG(items);
-        const strongest = [...items].sort((a, b) => b.points[5] - a.points[5])[0];
-        const weakest = [...items].sort((a, b) => a.points[5] - b.points[5])[0];
-        $("simOverviewCaption").textContent = `Lesehilfe: Alle Kurven starten um die Mitte (ca. 50–60 Punkte) und zeigen den Trend bis Jahr 100. Langfristig am stärksten entwickelt sich hier der Bereich ${strongest.cat} (${strongest.points[5]}/100), am stärksten unter Druck steht ${weakest.cat} (${weakest.points[5]}/100).`;
+        const sortedEnd = [...items].sort((a, b) => b.points[5] - a.points[5]);
+        const strongest = sortedEnd[0];
+        const weakest = sortedEnd[sortedEnd.length - 1];
+        const spread = strongest.points[5] - weakest.points[5];
+        const rising = items.filter((it) => it.points[5] - it.points[0] >= 8).map((it) => it.cat);
+        const falling = items.filter((it) => it.points[5] - it.points[0] <= -8).map((it) => it.cat);
+
+        const trendLine = [
+          rising.length ? `Langfristig steigend: ${rising.join(", ")}.` : null,
+          falling.length ? `Langfristig fallend: ${falling.join(", ")}.` : null
+        ].filter(Boolean).join(" ") || "Alle vier Kurven verlaufen eher flach ohne extreme Ausschläge.";
+
+        const gapLine = spread >= 25
+          ? `Auffälliger Zielkonflikt: In Jahr 100 liegen zwischen ${strongest.cat} (${strongest.points[5]} Pkt.) und ${weakest.cat} (${weakest.points[5]} Pkt.) ganze ${spread} Punkte Abstand.`
+          : `Ausgewogenes Gesamtbild: Alle Kurven bleiben bis Jahr 100 eng beieinander (${weakest.points[5]} bis ${strongest.points[5]} Pkt.).`;
+
+        $("simOverviewCaption").innerHTML = `
+          <strong>Was du aus dem Übersichtsgraphen herauslesen kannst:</strong>
+          Die waagerechte <em>x-Achse</em> zeigt die Zeit von Jahr 0 bis Jahr 100, die senkrechte <em>y-Achse</em> den Entwicklungs-Index (0 = kritisch, 50 = mittel, 100 = sehr stabil).
+          ${escapeHtml(trendLine)} ${escapeHtml(gapLine)}
+        `;
 
         // Preserve which dropdowns are open across re-renders
         const openIds = new Set(
@@ -3433,7 +4473,11 @@
             </summary>
             <div class="sim-dropdown-body">
               <div class="single-graph-wrap">${buildSingleGraphSVG(item)}</div>
-              <p class="graph-explain"><strong>Was der Funktionsgraph zeigt:</strong> ${escapeHtml(item.graphExplain)}</p>
+              <p class="graph-explain">
+                <strong>Was du aus dem Funktionsgraphen herauslesen kannst:</strong><br>
+                ${escapeHtml(buildSingleReadingLine(item))}<br>
+                <strong>Kurvenverlauf &amp; Bedeutung:</strong> ${escapeHtml(item.graphExplain)}
+              </p>
               <div class="phase-mini-grid">
                 <div class="phase-mini-cell"><strong>Jahr 1–20: Aufbau</strong>${escapeHtml(item.phases[0])}</div>
                 <div class="phase-mini-cell"><strong>Jahr 21–60: Reifephase</strong>${escapeHtml(item.phases[1])}</div>
@@ -3573,7 +4617,32 @@
         $("printMetaLine").textContent = `PuG · 12. Klasse Berufsschule · Datum: ${new Date().toLocaleDateString("de-DE")}`;
       }
 
+      function renderLayer() {
+        const isHome = state.layer === "home";
+        const isGuide = state.layer === "guide";
+        const isGen = state.layer === "generator";
+
+        $("layerHome").classList.toggle("is-active", isHome);
+        $("layerGuide").classList.toggle("is-active", isGuide);
+        $("layerGenerator").classList.toggle("is-active", isGen);
+
+        $("btnBackHome").style.display = isHome ? "none" : "inline-flex";
+        $("btnOpenGuideTop").style.display = isGen ? "inline-flex" : "none";
+        $("btnReset").style.display = isGen ? "inline-flex" : "none";
+        $("progressStrip").style.display = isGen ? "flex" : "none";
+
+        const hasProgress = state.dim1.picked !== null || state.dim1.confirmed;
+        $("tileGeneratorCta").innerHTML = hasProgress ? "Generator fortsetzen &rarr;" : "Generator starten &rarr;";
+      }
+
+      function setLayer(nextLayer) {
+        state.layer = nextLayer;
+        renderLayer();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
       function renderAll() {
+        renderLayer();
         renderProgressChips();
         renderDimension(1);
         renderDimension(2);
@@ -3593,6 +4662,14 @@
         toastTimer = setTimeout(() => $("iosToast").classList.remove("is-visible"), 2600);
       }
 
+      function formatSectorSummary(dimNum) {
+        const d = state[`dim${dimNum}`];
+        if (!d.picked) return "";
+        return SECTORS[dimNum].items
+          .map((sec) => `${sec.name}: ${sec.levels[getSectorLevel(dimNum, sec, d)]}`)
+          .join(" | ");
+      }
+
       function buildLernzettelText() {
         const { e, p, s, special } = getEffectiveScale();
         const diag = diagnoseSystem(e, p, s);
@@ -3604,7 +4681,7 @@
 
         const dim3Text = special
           ? `${special.label} (Sonderfall: 3. Dimension systembedingt festgelegt)`
-          : getEinordnungLabel(3, state.dim3.picked, state.dim3.strength);
+          : `${getEinordnungLabel(3, state.dim3.picked, state.dim3.strength)}\n   Bereiche: ${formatSectorSummary(3)}`;
 
         const articlesText = gg.articles.map((a, idx) => {
           const reason = (state.ggReasons[a.ref] || "").trim();
@@ -3623,7 +4700,9 @@
           "",
           "MEINE ENTSCHEIDUNGEN:",
           `1. Eigentumsordnung: ${getEinordnungLabel(1, state.dim1.picked, state.dim1.strength)}`,
+          `   Bereiche: ${formatSectorSummary(1)}`,
           `2. Koordinationsmechanismus: ${getEinordnungLabel(2, state.dim2.picked, state.dim2.strength)}`,
+          `   Bereiche: ${formatSectorSummary(2)}`,
           `3. Staatsauffassung & Ausgleich: ${dim3Text}`,
           "",
           `ERGEBNIS: ${diag.name}`,
@@ -3667,6 +4746,15 @@
       /* ============================================================
          9. EVENTS
          ============================================================ */
+      // Layer-Navigation (Startseite <-> Bearbeitungsanweisung <-> Generator)
+      $("btnGoHome").addEventListener("click", () => setLayer("home"));
+      $("btnBackHome").addEventListener("click", () => setLayer("home"));
+      $("btnGuideBackHome").addEventListener("click", () => setLayer("home"));
+      $("tileGuide").addEventListener("click", () => setLayer("guide"));
+      $("btnOpenGuideTop").addEventListener("click", () => setLayer("guide"));
+      $("tileGenerator").addEventListener("click", () => setLayer("generator"));
+      $("btnGuideToGenerator").addEventListener("click", () => setLayer("generator"));
+
       document.querySelectorAll(".pole-pill").forEach((btn) => {
         btn.addEventListener("click", () => {
           const dimNum = Number(btn.dataset.dim);
@@ -3675,6 +4763,7 @@
           if (d.confirmed) return;
           d.picked = side;
           d.strength = dimNum === 3 && side === "right" ? 60 : 75;
+          d.overrides = {};
           saveState();
           renderDimension(dimNum);
         });
@@ -3686,10 +4775,12 @@
           const d = state[`dim${dimNum}`];
           if (d.confirmed || !d.picked) return;
           d.strength = Number(slider.value);
+          d.overrides = {};
           saveState();
           styleRange(slider, dimNum, false);
           $(`dim${dimNum}Einordnung`).textContent = getEinordnungLabel(dimNum, d.picked, d.strength);
           renderLiveBullets(dimNum, d.picked, d.strength);
+          renderSectors(dimNum);
         });
 
         document.querySelectorAll(`.snap-ticks[data-dim="${dimNum}"] .snap-btn`).forEach((btn) => {
@@ -3697,6 +4788,7 @@
             const d = state[`dim${dimNum}`];
             if (d.confirmed || !d.picked) return;
             d.strength = Number(btn.dataset.val);
+            d.overrides = {};
             saveState();
             renderDimension(dimNum);
           });
@@ -3769,7 +4861,9 @@
         if (e.target === $("resetModal")) $("resetModal").classList.remove("is-open");
       });
       $("btnConfirmReset").addEventListener("click", () => {
+        const currentLayer = state.layer;
         state = freshState();
+        state.layer = currentLayer;
         saveState();
         renderAll();
         $("resetModal").classList.remove("is-open");
