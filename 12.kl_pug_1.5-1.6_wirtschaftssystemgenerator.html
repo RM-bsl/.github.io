@@ -150,8 +150,8 @@
 
     .portal-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
     }
 
     .portal-tile {
@@ -159,7 +159,7 @@
       border: 1.5px solid rgba(0, 0, 0, 0.05);
       background: var(--ios-card-bg);
       border-radius: 24px;
-      padding: 26px 24px;
+      padding: 24px 22px;
       text-align: left;
       font-family: inherit;
       color: var(--ios-text-primary);
@@ -167,7 +167,7 @@
       box-shadow: var(--ios-shadow-card);
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 13px;
       transition: transform 0.16s ease, opacity 0.16s ease;
     }
 
@@ -188,6 +188,407 @@
     .portal-tile.is-primary {
       background: linear-gradient(155deg, #FFFFFF 0%, #F2F7FF 100%);
       border-color: rgba(0, 122, 255, 0.22);
+    }
+
+    .portal-tile.is-locked {
+      background: #F6F6F9;
+      border: 1.5px dashed rgba(60, 60, 67, 0.22);
+      box-shadow: none;
+      opacity: 0.78;
+      cursor: not-allowed;
+    }
+
+    .portal-tile.is-locked:hover,
+    .portal-tile.is-locked:active {
+      transform: none;
+      border-color: rgba(60, 60, 67, 0.28);
+    }
+
+    .portal-tile.is-locked .portal-icon {
+      background: rgba(60, 60, 67, 0.08);
+      color: var(--ios-text-secondary);
+    }
+
+    .portal-tile.is-locked .portal-cta {
+      color: var(--ios-text-secondary);
+    }
+
+    .portal-tile.is-compare-ready {
+      background: linear-gradient(155deg, #FFFFFF 0%, #EFFAF3 100%);
+      border-color: rgba(36, 138, 61, 0.28);
+    }
+
+    .portal-tile.is-compare-ready .portal-icon {
+      background: linear-gradient(145deg, #248A3D, #34C759);
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(36, 138, 61, 0.22);
+    }
+
+    .portal-tile.is-compare-ready .portal-tag {
+      background: var(--ios-green-tint);
+      color: #166534;
+    }
+
+    .portal-tile.is-compare-ready .portal-cta {
+      color: #1B7A34;
+    }
+
+    .portal-lock-status {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--ios-text-secondary);
+      background: rgba(60, 60, 67, 0.06);
+      border-radius: 10px;
+      padding: 7px 10px;
+      line-height: 1.4;
+    }
+
+    .portal-tile.is-compare-ready .portal-lock-status {
+      background: rgba(52, 199, 89, 0.14);
+      color: #166534;
+    }
+
+    /* Layer 3: System-Vergleich & Prozentuale Deckungsgleichheit */
+    .compare-head-bar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .compare-intro-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .compare-intro-card {
+      background: var(--ios-surface-subtle);
+      border: 1px solid var(--ios-separator);
+      border-radius: var(--ios-radius-lg);
+      padding: 15px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .compare-intro-era {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ios-blue-dark);
+    }
+
+    .compare-intro-card h3 {
+      margin: 0;
+      font-size: 0.96rem;
+      font-weight: 800;
+      line-height: 1.25;
+      color: var(--ios-text-primary);
+    }
+
+    .compare-intro-card p {
+      margin: 0;
+      font-size: 0.855rem;
+      line-height: 1.5;
+      color: var(--ios-text-secondary);
+    }
+
+    .compare-accordion {
+      border: 1.5px solid rgba(0, 122, 255, 0.22);
+      border-radius: var(--ios-radius-lg);
+      background: var(--ios-card-bg);
+      overflow: hidden;
+    }
+
+    .compare-accordion > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 14px 18px;
+      background: linear-gradient(180deg, #F8FAFF 0%, #F2F6FF 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 0.94rem;
+      color: #004A99;
+      user-select: none;
+    }
+
+    .compare-accordion > summary::-webkit-details-marker { display: none; }
+
+    .compare-accordion > summary:hover {
+      background: linear-gradient(180deg, #F0F6FF 0%, #E8F1FF 100%);
+    }
+
+    .compare-accordion-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--ios-blue);
+      white-space: nowrap;
+    }
+
+    .compare-accordion-chev {
+      display: inline-flex;
+      transition: transform 0.2s ease;
+    }
+
+    .compare-accordion[open] .compare-accordion-chev {
+      transform: rotate(180deg);
+    }
+
+    .compare-accordion[open] .compare-accordion-label-open { display: none; }
+    .compare-accordion:not([open]) .compare-accordion-label-close { display: none; }
+
+    .compare-accordion-body {
+      padding: 0;
+      border-top: 1px solid var(--ios-separator);
+    }
+
+    .compare-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      background: var(--ios-card-bg);
+    }
+
+    .compare-table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+      font-size: 0.855rem;
+      line-height: 1.48;
+    }
+
+    .compare-table th,
+    .compare-table td {
+      padding: 13px 14px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--ios-separator);
+      border-right: 1px solid rgba(60, 60, 67, 0.08);
+    }
+
+    .compare-table th:last-child,
+    .compare-table td:last-child {
+      border-right: none;
+    }
+
+    .compare-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .compare-table thead th {
+      background: var(--ios-surface-subtle);
+      font-weight: 800;
+      font-size: 0.84rem;
+      color: var(--ios-text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .compare-table thead th .col-sub {
+      display: block;
+      margin-top: 3px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--ios-text-secondary);
+    }
+
+    .compare-table th.col-prop,
+    .compare-table td.col-prop {
+      width: 16%;
+      background: #F9F9FC;
+      font-weight: 700;
+      color: var(--ios-text-primary);
+    }
+
+    .compare-table th.col-student {
+      background: linear-gradient(180deg, rgba(0, 122, 255, 0.13) 0%, rgba(0, 122, 255, 0.07) 100%);
+      color: #004A99;
+      border-left: 2px solid rgba(0, 122, 255, 0.32);
+    }
+
+    .compare-table td.col-student {
+      background: rgba(0, 122, 255, 0.045);
+      border-left: 2px solid rgba(0, 122, 255, 0.24);
+      color: var(--ios-text-primary);
+    }
+
+    .compare-table tbody tr:nth-child(even) td:not(.col-prop):not(.col-student) {
+      background: rgba(242, 242, 247, 0.35);
+    }
+
+    .compare-pill {
+      display: inline-block;
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--ios-radius-pill);
+      margin-bottom: 5px;
+      background: rgba(0, 122, 255, 0.12);
+      color: #0051A8;
+    }
+
+    .compare-pill.is-good { background: var(--ios-green-tint); color: #166534; }
+    .compare-pill.is-warn { background: var(--ios-yellow-bg); color: #7A5400; border: 1px solid rgba(245, 184, 0, 0.45); }
+    .compare-pill.is-bad  { background: var(--ios-red-bg); color: #9F1239; }
+
+    .match-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .match-card {
+      background: var(--ios-surface-subtle);
+      border: 1.5px solid var(--ios-separator);
+      border-radius: var(--ios-radius-lg);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .match-card.is-winner {
+      background: linear-gradient(155deg, #FFFFFF 0%, #EFFAF3 100%);
+      border-color: rgba(36, 138, 61, 0.42);
+      box-shadow: 0 6px 20px rgba(36, 138, 61, 0.1);
+    }
+
+    .match-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .match-card-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--ios-text-primary);
+      line-height: 1.25;
+    }
+
+    .match-card-era {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ios-text-secondary);
+      margin-top: 2px;
+    }
+
+    .match-winner-badge {
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: var(--ios-radius-pill);
+      background: var(--ios-green-tint);
+      color: #166534;
+      white-space: nowrap;
+    }
+
+    .match-pct-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .match-pct-val {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+      color: var(--ios-text-primary);
+    }
+
+    .match-card.is-winner .match-pct-val {
+      color: #1B7A34;
+    }
+
+    .match-pct-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--ios-text-secondary);
+    }
+
+    .match-bar-track {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(60, 60, 67, 0.12);
+      overflow: hidden;
+    }
+
+    .match-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--ios-blue);
+      transition: transform 0.35s ease;
+      transform-origin: left center;
+    }
+
+    .match-card.is-winner .match-bar-fill {
+      background: linear-gradient(90deg, #248A3D, #34C759);
+    }
+
+    .match-sub-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      padding-top: 6px;
+      border-top: 1px solid var(--ios-separator);
+      font-size: 0.74rem;
+      color: var(--ios-text-secondary);
+    }
+
+    .match-sub-grid span strong {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--ios-text-primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .match-summary-box {
+      margin-top: 14px;
+      background: rgba(0, 122, 255, 0.06);
+      border: 1px solid rgba(0, 122, 255, 0.2);
+      border-radius: var(--ios-radius-lg);
+      padding: 14px 16px;
+      font-size: 0.88rem;
+      line-height: 1.52;
+      color: var(--ios-text-primary);
+    }
+
+    .gg-unlock-banner {
+      display: none;
+      margin-top: 4px;
+      background: linear-gradient(155deg, #FFFFFF 0%, #EFFAF3 100%);
+      border: 1.5px solid rgba(36, 138, 61, 0.35);
+      border-radius: var(--ios-radius-lg);
+      padding: 14px 16px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .gg-unlock-banner.is-visible {
+      display: flex;
+    }
+
+    .gg-unlock-banner p {
+      margin: 0;
+      font-size: 0.88rem;
+      color: #14532D;
     }
 
     .portal-top {
@@ -438,6 +839,17 @@
       align-items: center;
       gap: 3px;
       margin-left: auto;
+    }
+
+    .sector-fixed-tag {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--ios-text-tertiary);
+      margin-left: auto;
+    }
+
+    .sector-box.is-fixed .sector-toggle {
+      cursor: default;
     }
 
     .sector-dot {
@@ -1837,6 +2249,224 @@
     .ios-modal p { margin: 0 0 18px; font-size: 0.9rem; color: var(--ios-text-secondary); }
     .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
 
+    /* Lehrkraft-Modus & Gesamt-Lösungs-Modal */
+    .ios-btn-teacher {
+      background: rgba(88, 86, 214, 0.1);
+      color: #4338CA;
+      border: 1px solid rgba(88, 86, 214, 0.24);
+    }
+
+    .ios-btn-teacher:hover {
+      background: rgba(88, 86, 214, 0.17);
+    }
+
+    .ios-btn-teacher.is-active {
+      background: linear-gradient(145deg, #4338CA, #5856D6);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 14px rgba(88, 86, 214, 0.28);
+    }
+
+    .teacher-code-input {
+      width: 100%;
+      font-family: inherit;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-align: center;
+      padding: 12px 14px;
+      border-radius: var(--ios-radius-md);
+      border: 1.5px solid var(--ios-separator);
+      background: var(--ios-surface-subtle);
+      color: var(--ios-text-primary);
+      margin-bottom: 10px;
+    }
+
+    .teacher-code-input:focus {
+      outline: none;
+      border-color: #5856D6;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(88, 86, 214, 0.18);
+    }
+
+    .teacher-code-error {
+      display: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #B42318;
+      background: var(--ios-red-bg);
+      border: 1px solid rgba(217, 45, 32, 0.25);
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin-bottom: 12px;
+    }
+
+    .teacher-code-error.is-visible { display: block; }
+
+    .teacher-bar {
+      display: none;
+      background: linear-gradient(155deg, #F5F3FF 0%, #EEF2FF 100%);
+      border: 1.5px solid rgba(88, 86, 214, 0.3);
+      border-radius: var(--ios-radius-lg);
+      padding: 13px 16px;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .teacher-bar.is-visible { display: flex; }
+
+    .teacher-bar-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 0.84rem;
+      color: #3730A3;
+    }
+
+    .teacher-bar-actions {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .teacher-inline-box {
+      background: #F5F3FF;
+      border: 1.5px solid rgba(88, 86, 214, 0.28);
+      border-radius: var(--ios-radius-md);
+      padding: 11px 13px;
+      font-size: 0.83rem;
+      line-height: 1.48;
+      color: #312E81;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .teacher-inline-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-weight: 800;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #4338CA;
+    }
+
+    .ios-modal-wide {
+      max-width: 880px;
+      max-height: 88vh;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .teacher-modal-head {
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--ios-separator);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      background: linear-gradient(180deg, #F8F7FF 0%, #FFFFFF 100%);
+    }
+
+    .teacher-modal-head h3 {
+      margin: 0 0 3px;
+      font-size: 1.12rem;
+      color: #1E1B4B;
+    }
+
+    .teacher-modal-head p {
+      margin: 0;
+      font-size: 0.84rem;
+      color: var(--ios-text-secondary);
+    }
+
+    .teacher-tabs {
+      display: flex;
+      gap: 6px;
+      padding: 10px 22px;
+      background: var(--ios-surface-subtle);
+      border-bottom: 1px solid var(--ios-separator);
+      overflow-x: auto;
+    }
+
+    .teacher-tab-btn {
+      appearance: none;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--ios-text-secondary);
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 7px 13px;
+      border-radius: var(--ios-radius-pill);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.14s ease, opacity 0.14s ease;
+    }
+
+    .teacher-tab-btn.is-active {
+      background: #4338CA;
+      color: #fff;
+    }
+
+    .teacher-modal-body {
+      padding: 18px 22px 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      font-size: 0.87rem;
+      line-height: 1.52;
+    }
+
+    .teacher-sol-card {
+      background: var(--ios-surface-subtle);
+      border: 1px solid var(--ios-separator);
+      border-radius: var(--ios-radius-lg);
+      padding: 14px 16px;
+    }
+
+    .teacher-sol-card h4 {
+      margin: 0 0 8px;
+      font-size: 0.94rem;
+      color: var(--ios-text-primary);
+    }
+
+    .teacher-sol-card p {
+      margin: 0 0 8px;
+      color: var(--ios-text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .teacher-sol-card p:last-child { margin-bottom: 0; }
+
+    .teacher-sol-list {
+      margin: 0;
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.85rem;
+    }
+
+    .teacher-demo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    @media (max-width: 680px) {
+      .teacher-demo-grid { grid-template-columns: 1fr; }
+    }
+
     .ios-toast {
       position: fixed;
       bottom: 24px;
@@ -1869,6 +2499,14 @@
       }
     }
 
+    @media (max-width: 900px) {
+      .portal-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 820px) {
+      .match-grid, .compare-intro-grid { grid-template-columns: 1fr; }
+    }
+
     @media (max-width: 780px) {
       .explain-grid, .live-bullets, .phase-mini-grid { grid-template-columns: 1fr; }
     }
@@ -1895,10 +2533,11 @@
     @media print {
       body { background: #fff; color: #000; font-size: 10.5pt; }
       .ios-header, #layerHome, #layerGuide, .intro-card, .pole-hint, .snap-ticks, .confirm-row, .locked-banner,
-      .sim-dropdown-toolbar, .gg-action-bar, .sol-actions, .ios-toast, .modal-backdrop, .no-print {
+      .sim-dropdown-toolbar, .gg-action-bar, .sol-actions, .ios-toast, .modal-backdrop, .no-print, .gg-unlock-banner {
         display: none !important;
       }
-      #layerGenerator { display: flex !important; }
+      #layerGenerator.is-active, #layerCompare.is-active { display: flex !important; }
+      .compare-table { min-width: 0; font-size: 8.5pt; }
       .print-only {
         display: block;
         border-bottom: 2px solid #1C1C1E;
@@ -1906,7 +2545,7 @@
         margin-bottom: 14px;
       }
       .app-container { padding: 0; gap: 12px; }
-      .ios-card, .slider-bar, .explain-bar, .system-hero, .reality-box, .pc-box, .sim-card, .sol-box {
+      .ios-card, .slider-bar, .explain-bar, .system-hero, .reality-box, .pc-box, .sim-card, .sol-box, .match-card {
         box-shadow: none !important;
         border: 1px solid #C8C8CC !important;
         background: #fff !important;
@@ -1940,6 +2579,8 @@
         <button type="button" class="ios-btn" id="btnBackHome" style="display:none;">&larr; Startseite</button>
         <button type="button" class="ios-btn" id="btnOpenGuideTop" style="display:none;">Anleitung</button>
         <button type="button" class="ios-btn" id="btnReset" style="display:none;">Neu starten</button>
+        <button type="button" class="ios-btn ios-btn-teacher" id="btnTeacherSolutions" style="display:none;">Lösungen</button>
+        <button type="button" class="ios-btn ios-btn-teacher" id="btnTeacherToggle" title="Lehrkraft-Modus mit Mastercode">&#128274; Lehrkraft</button>
       </div>
     </div>
 
@@ -1961,13 +2602,13 @@
     </section>
 
     <!-- ======================================================
-         LAYER 1: STARTSEITE MIT ZWEI GROSSEN KACHELN
+         LAYER 1: STARTSEITE MIT DREI BEREICHEN (BEREICH 3 ERST NACH BEREICH 2 FREIGESCHALTET)
          ====================================================== -->
     <section class="layer-view is-active" id="layerHome" aria-labelledby="homeHeading">
       <div class="home-hero">
         <span class="home-kicker">Startbereich · Politik &amp; Gesellschaft</span>
         <h2 id="homeHeading">Wie möchtest du starten?</h2>
-        <p>Wähle zuerst die kurze Schritt-für-Schritt-Anleitung oder öffne direkt den Generator, um deine eigene Wirtschaftsordnung zusammenzubauen.</p>
+        <p>Lies zuerst die kurze Anleitung oder öffne direkt den Generator. Sobald du Bereich 2 vollständig abgeschlossen hast, schaltet sich automatisch der System-Vergleich in Bereich 3 frei.</p>
       </div>
 
       <div class="portal-grid">
@@ -2004,6 +2645,22 @@
           <p>Kombiniere Eigentum, Steuerung und Staatsrolle fein abgestuft nach deinen eigenen Vorstellungen, prüfe die Folgen über 100 Jahre und mache den Grundgesetz-Check.</p>
           <span class="portal-cta" id="tileGeneratorCta">Generator starten &rarr;</span>
         </button>
+
+        <button type="button" class="portal-tile is-locked" id="tileCompare" aria-disabled="true">
+          <div class="portal-top">
+            <div class="portal-icon" id="tileCompareIcon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </div>
+            <span class="portal-tag" id="tileCompareTag">Bereich 3 · Gesperrt</span>
+          </div>
+          <h3>System-Vergleich</h3>
+          <p>Vergleiche dein selbst gebautes Wirtschaftssystem tabellarisch und prozentual mit Ludwig Erhard, Deutschland 2026 und der Zentralverwaltungswirtschaft der DDR.</p>
+          <div class="portal-lock-status" id="tileCompareStatus">Erst nach vollständigem Abschluss von Bereich 2 freigeschaltet.</div>
+          <span class="portal-cta" id="tileCompareCta">Noch gesperrt</span>
+        </button>
       </div>
     </section>
 
@@ -2014,7 +2671,7 @@
       <div class="ios-card">
         <div class="module-kicker">Bearbeitungsanweisung · So gehst du vor</div>
         <h2 class="module-title" id="guideHeading">Schritt-für-Schritt-Anleitung</h2>
-        <p class="module-desc" style="margin-bottom:0;">Arbeite die fünf kurzen Schritte einfach von oben nach unten durch – deine Eingaben werden automatisch im Browser gesichert.</p>
+        <p class="module-desc" style="margin-bottom:0;">Arbeite die sechs kurzen Schritte einfach von oben nach unten durch – deine Eingaben werden automatisch im Browser gesichert.</p>
 
         <div class="guide-steps">
           <div class="guide-step-item">
@@ -2029,7 +2686,7 @@
             <div class="guide-step-num">2</div>
             <div>
               <h4>Mit dem Schieberegler fein einstellen</h4>
-              <p>Bewege den Regler innerhalb deiner gewählten Richtung von 50 % (offene Mischform) bis 100 % (reine Form). Lies direkt darunter die Stichpunkte für Gesellschaft, Wirtschaft, Politik und das Alltagsbeispiel.</p>
+              <p>Bewege den Regler innerhalb deiner gewählten Richtung von 50 % (offene Mischform) bis 100 % (reine Form) oder passe einzelne Lebensbereiche direkt per Klick an. Ein Klick auf die Glühbirne (&#128161;) erklärt jeden Bereich.</p>
             </div>
           </div>
 
@@ -2056,6 +2713,14 @@
               <p>Starte den Verfassungs-Check. Schlage die angezeigten Grundgesetz-Artikel mit Absatz selbst im Grundgesetz nach, schreibe zu jedem Artikel deine Begründung in die eigene Eingabemaske, lass deine Antworten prüfen und kopiere oder drucke dir am Ende deinen Lernzettel.</p>
             </div>
           </div>
+
+          <div class="guide-step-item">
+            <div class="guide-step-num">6</div>
+            <div>
+              <h4>Bereich 3 freischalten: System-Vergleich &amp; Prozent-Match</h4>
+              <p>Sobald alle Dimensionen und der Grundgesetz-TÜV erledigt sind, öffnet sich auf der Startseite der System-Vergleich. Dort siehst du direkt in einer Tabelle und als Prozentwert, wie nahe deine Wahl an Ludwig Erhard, Deutschland 2026 und der DDR liegt.</p>
+            </div>
+          </div>
         </div>
 
         <div class="guide-actions">
@@ -2066,9 +2731,109 @@
     </section>
 
     <!-- ======================================================
+         LAYER 3: SYSTEM-VERGLEICH (ERHARD / DE 2026 / DDR / DEINE AUSWAHL)
+         ====================================================== -->
+    <section class="layer-view" id="layerCompare" aria-labelledby="compareHeading">
+      <div class="teacher-bar no-print" id="teacherCompareBar">
+        <div class="teacher-bar-head">
+          <strong>Lehrkraft-Masterzugang (Smartboard-Demo im System-Vergleich)</strong>
+          <span>Schülerstand im Speicher bleibt unverändert.</span>
+        </div>
+        <div class="teacher-bar-actions">
+          <button type="button" class="ios-btn ios-btn-teacher" data-teacher-demo="de2026" data-demo-layer="compare">Demo: DE 2026</button>
+          <button type="button" class="ios-btn ios-btn-teacher" data-teacher-demo="erhard" data-demo-layer="compare">Demo: Ludwig Erhard</button>
+          <button type="button" class="ios-btn ios-btn-teacher" data-teacher-demo="ddr" data-demo-layer="compare">Demo: DDR</button>
+          <button type="button" class="ios-btn ios-btn-teacher" data-teacher-demo="nachtwaechter" data-demo-layer="compare">Demo: Nachtwächterstaat</button>
+          <button type="button" class="ios-btn ios-btn-primary" data-open-solutions="1">Gesamt-Lösungen öffnen</button>
+        </div>
+      </div>
+
+      <div class="ios-card">
+        <div class="compare-head-bar">
+          <div>
+            <div class="module-kicker">Bereich 3 · System-Vergleich &amp; Deckungsgleichheit</div>
+            <h2 class="module-title" id="compareHeading">Die drei Vergleichsmodelle &amp; deine Wirtschaftsordnung</h2>
+            <p class="module-desc" style="margin-bottom:0;">Lies zuerst die kurze Einordnung der drei realen Vergleichsmodelle und klappe darunter per Klick die detaillierte Vergleichstabelle auf.</p>
+          </div>
+          <div class="no-print" style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="ios-btn" id="btnCompareBackGen">&larr; Zurück zum Generator</button>
+            <button type="button" class="ios-btn ios-btn-primary" id="btnComparePrint">Vergleich drucken</button>
+          </div>
+        </div>
+
+        <div class="compare-intro-grid" aria-label="Kurze Einleitung zu den drei Vergleichsmodellen">
+          <article class="compare-intro-card">
+            <span class="compare-intro-era">Westdeutschland · 1948–1966</span>
+            <h3>Soziale Marktwirtschaft – Ludwig Erhard</h3>
+            <p>Nach dem Zweiten Weltkrieg verband Wirtschaftsminister Ludwig Erhard freie Märkte und privaten Wettbewerb mit klaren Spielregeln gegen Monopole. Sein Leitbild „Wohlstand für alle“ setzte auf Eigenverantwortung, stabile Preise und eine solide Basis-Absicherung (z. B. Rentenreform 1957), während sich der Staat bei Preisen und Löhnen bewusst zurückhielt.</p>
+          </article>
+
+          <article class="compare-intro-card">
+            <span class="compare-intro-era">Bundesrepublik · Gegenwart 2026</span>
+            <h3>Soziale Marktwirtschaft – Deutschland 2026</h3>
+            <p>Das heutige Modell baut auf Erhards Grundidee auf, hat die Rolle des Staates aber spürbar erweitert. Private Betriebe und Wettbewerb bleiben der Kern, doch gesetzlicher Mindestlohn, Mietpreisbremse, Bürgergeld, duale Krankenversicherung sowie Förderungen wie BAföG, BAB und Wohngeld greifen heute deutlich stärker schützend und steuernd ein.</p>
+          </article>
+
+          <article class="compare-intro-card">
+            <span class="compare-intro-era">Ostdeutschland · 1949–1990</span>
+            <h3>Zentralverwaltungswirtschaft – DDR</h3>
+            <p>In der DDR gehörten fast alle Fabriken, Banken und Wohnungen dem Staat (Volkseigene Betriebe, VEB). Eine zentrale Plankommission legte über Fünfjahrespläne fest, welche Waren in welcher Menge zu festen Preisen entstanden – das sicherte Arbeitsplätze und günstige Grundgüter, führte aber zu Mangelwirtschaft, fehlender Freiheit und dem Zusammenbruch 1989/90.</p>
+          </article>
+        </div>
+
+        <details class="compare-accordion" id="compareTableDetails">
+          <summary>
+            <span>Vergleichstabelle (alle 8 Eigenschaften im direkten Vergleich)</span>
+            <span class="compare-accordion-hint">
+              <span class="compare-accordion-label-open">Aufklappen</span>
+              <span class="compare-accordion-label-close">Einklappen</span>
+              <span class="compare-accordion-chev" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </span>
+            </span>
+          </summary>
+          <div class="compare-accordion-body">
+            <div class="compare-table-wrap" id="compareTableWrap"></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="ios-card" aria-labelledby="matchHeading">
+        <div class="module-kicker">Auswertung · Prozentuale Deckungsgleichheit</div>
+        <h2 class="module-title" id="matchHeading">Wie nahe liegt dein Wirtschaftssystem an den Vergleichsmodellen?</h2>
+        <p class="module-desc" style="margin-bottom:0;">Die Prozentzahl misst die Übereinstimmung aus deinen drei Grundrichtungen (65 % Gewicht) und allen feinjustierten Lebensbereichen (35 % Gewicht).</p>
+
+        <div class="match-grid" id="compareMatchGrid"></div>
+        <div class="match-summary-box" id="compareMatchSummary"></div>
+
+        <div class="guide-actions no-print" style="margin-top:18px;">
+          <button type="button" class="ios-btn" id="btnCompareBackHome">&larr; Zurück zur Startseite</button>
+          <button type="button" class="ios-btn" id="btnCompareCopy">Vergleich als Text kopieren</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
          LAYER 2: GENERATOR (3 DIMENSIONEN + AUSWERTUNG + GG-TÜV)
          ====================================================== -->
     <div class="layer-view" id="layerGenerator">
+      <div class="teacher-bar no-print" id="teacherGenBar">
+        <div class="teacher-bar-head">
+          <strong>Lehrkraft-Modus aktiv · Alle Bereiche &amp; Musterlösungen freigeschaltet</strong>
+          <span>Änderungen hier überschreiben den Schüler-Lernstand nicht.</span>
+        </div>
+        <div class="teacher-bar-actions">
+          <button type="button" class="ios-btn ios-btn-teacher" data-teacher-demo="de2026" data-demo-layer="generator">Demo: DE 2026</button>
+          <button type="button" class="ios-btn ios-btn-teacher" data-teacher-demo="erhard" data-demo-layer="generator">Demo: Ludwig Erhard</button>
+          <button type="button" class="ios-btn ios-btn-teacher" data-teacher-demo="ddr" data-demo-layer="generator">Demo: DDR</button>
+          <button type="button" class="ios-btn ios-btn-teacher" data-teacher-demo="nachtwaechter" data-demo-layer="generator">Demo: Nachtwächterstaat</button>
+          <button type="button" class="ios-btn ios-btn-success" id="btnTeacherFillAllGG">Alle GG-Musterlösungen füllen</button>
+          <button type="button" class="ios-btn ios-btn-primary" data-open-solutions="1">Gesamt-Lösungen öffnen</button>
+        </div>
+      </div>
+
       <section class="intro-card">
         <h2>Entwirf Schritt für Schritt deine eigene Wirtschaftsordnung</h2>
         <p>Wähle in jeder Dimension zuerst per Klick eine Richtung, stelle danach mit dem Schieberegler deine individuelle Ausprägung ein und bestätige. Erst am Schluss folgen reale Staaten-Beispiele, Bewertung, 100-Jahres-Test und Grundgesetz-Check.</p>
@@ -2375,6 +3140,11 @@
 
             <div class="gg-overall-feedback" id="ggOverallFeedback" aria-live="polite"></div>
 
+            <div class="gg-unlock-banner no-print" id="ggUnlockBanner" aria-live="polite">
+              <p><strong>Bereich 3 freigeschaltet!</strong> Du hast Bereich 2 vollständig durchlaufen – vergleiche dein System jetzt mit Ludwig Erhard, Deutschland 2026 und der DDR.</p>
+              <button type="button" class="ios-btn ios-btn-success" id="btnGoCompareFromGG">Zum System-Vergleich &rarr;</button>
+            </div>
+
             <div class="sol-actions">
               <div class="sol-buttons">
                 <button type="button" class="ios-btn ios-btn-primary" id="btnCopyNote">Ergebnis als Lernzettel kopieren</button>
@@ -2398,6 +3168,40 @@
         <button type="button" class="ios-btn" id="btnCancelReset">Abbrechen</button>
         <button type="button" class="ios-btn ios-btn-primary" style="background:var(--ios-red); border-color:var(--ios-red);" id="btnConfirmReset">Zurücksetzen</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Lehrkraft Mastercode Modal (iFrame- & mebis-sicher) -->
+  <div class="modal-backdrop" id="teacherCodeModal" role="dialog" aria-modal="true" aria-labelledby="teacherCodeTitle">
+    <div class="ios-modal">
+      <h3 id="teacherCodeTitle">&#128274; Lehrkraft-Zugang</h3>
+      <p>Gib den Mastercode ein, um alle Bereiche, Musterlösungen und Smartboard-Demos sofort freizuschalten. Der Schüler-Lernstand bleibt dabei unberührt.</p>
+      <input type="password" inputmode="numeric" autocomplete="off" class="teacher-code-input" id="teacherCodeInput" placeholder="Code" aria-label="Lehrkraft Mastercode">
+      <div class="teacher-code-error" id="teacherCodeError" role="alert">Falscher Mastercode. Bitte erneut versuchen.</div>
+      <div class="modal-actions">
+        <button type="button" class="ios-btn" id="btnCancelTeacherCode">Abbrechen</button>
+        <button type="button" class="ios-btn ios-btn-primary" id="btnSubmitTeacherCode">Freischalten</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Zentrale Gesamt-Lösungsübersicht (Lehrkraft-Modus) -->
+  <div class="modal-backdrop" id="teacherSolutionModal" role="dialog" aria-modal="true" aria-labelledby="teacherSolTitle">
+    <div class="ios-modal ios-modal-wide">
+      <div class="teacher-modal-head">
+        <div>
+          <h3 id="teacherSolTitle">Gesamt-Lösungsübersicht &amp; Erwartungshorizont</h3>
+          <p>Vollständige Lösungen, Grundgesetz-Musterantworten, Vergleichsprofile und Smartboard-Demos</p>
+        </div>
+        <button type="button" class="ios-btn" id="btnCloseTeacherSol" aria-label="Lösungsübersicht schließen">Schließen &times;</button>
+      </div>
+      <div class="teacher-tabs" role="tablist" aria-label="Lösungsbereiche">
+        <button type="button" class="teacher-tab-btn is-active" data-teacher-tab="gg" role="tab" aria-selected="true">Grundgesetz-Musterlösungen</button>
+        <button type="button" class="teacher-tab-btn" data-teacher-tab="dims" role="tab" aria-selected="false">Dimensionen &amp; Sonderfälle</button>
+        <button type="button" class="teacher-tab-btn" data-teacher-tab="compare" role="tab" aria-selected="false">System-Vergleich &amp; Prozentwerte</button>
+        <button type="button" class="teacher-tab-btn" data-teacher-tab="demos" role="tab" aria-selected="false">Smartboard-Demos</button>
+      </div>
+      <div class="teacher-modal-body" id="teacherSolBody"></div>
     </div>
   </div>
 
@@ -2425,6 +3229,10 @@
         };
       }
 
+      const TEACHER_MASTER_CODE = "86";
+      let teacherMode = false;
+      let studentStateBackup = null;
+      let activeTeacherTab = "gg";
       let state = loadState();
 
       function loadState() {
@@ -2463,8 +3271,8 @@
             }
             base.ggReasons = clean;
           }
-          base.ggChecked = false;
-          base.ggVerified = false;
+          base.ggChecked = Boolean(p.ggChecked);
+          base.ggVerified = Boolean(p.ggVerified);
           base.ggCheckedRefs = {};
           return base;
         } catch {
@@ -2473,12 +3281,15 @@
       }
 
       function saveState() {
+        if (teacherMode) return; // Schüler-Lernstand im localStorage niemals im Lehrkraft-Modus überschreiben
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify({
             dim1: state.dim1,
             dim2: state.dim2,
             dim3: state.dim3,
-            ggReasons: state.ggReasons
+            ggReasons: state.ggReasons,
+            ggChecked: state.ggChecked,
+            ggVerified: state.ggVerified
           }));
         } catch {
           /* Ignore restricted storage in sandboxed iFrames */
@@ -2904,74 +3715,154 @@
         return `${meta.name} ${strength} % · ${sc.name}`;
       }
 
-      /* Differenzierte Einzelbereiche je Dimension mit 4 realistischen Abstufungen & Glühbirnen-Erklärung (💡) */
+      /* Differenzierte Einzelbereiche je Dimension mit pfadabhängigen, sinnvollen Auswahlstufen & 💡-Erklärung */
       const SECTORS = {
         1: {
-          title: "Feinjustierung nach Lebensbereichen (Klick = Stufe wechseln, 💡 = Erklärung):",
+          title: "Feinjustierung nach Lebensbereichen (Klick = passende Stufe wechseln, 💡 = Erklärung):",
           items: [
-            { id: "wasser",   name: "Trinkwasserleitung", levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Staatlich"],      thresholds: [5, 10, 20],  info: "Wasserwerke, Rohre und Abwasser bis zum Wasserhahn. Ein lebenswichtiges Existenzbedürfnis ohne sinnvollen Leitungs-Wettbewerb." },
-            { id: "schulen",  name: "Schulen & Bildung",  levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Staatlich"],      thresholds: [10, 20, 38], info: "Berufsschulen, Schulen, Hochschulen und Weiterbildung. Entscheidet, ob Bildung kostenlos für alle oder über private Träger mit Schulgeld läuft." },
-            { id: "bahn",     name: "Bahn & ÖPNV",        levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Öffentlich"],     thresholds: [15, 30, 52], info: "Busse, U-Bahnen, Regionalzüge und Schienennetze für den Arbeits- und Schulweg – inklusive Ticketpreise und Anbindung auf dem Land." },
-            { id: "kliniken", name: "Kliniken & Pflege",  levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Öffentlich"],     thresholds: [20, 38, 60], info: "Krankenhäuser, Notaufnahmen und Pflegeheime. Hier entscheidest du, ob überwiegend private Klinik-Ketten oder öffentliche Träger versorgen." },
-            { id: "strom",    name: "Strom & Energie",    levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Staatlich"],      thresholds: [25, 48, 70], info: "Kraftwerke, Wind- und Solarparks sowie Strom- und Gasanbieter. Anders als beim Trinkwasser kannst du hier oft zwischen privaten Anbietern wählen." },
-            { id: "konzerne", name: "Industrie & Banken", levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Staatlich"],      thresholds: [35, 55, 76], info: "Große Fabriken, Schlüsselindustrien und Großbanken, die Kredite für Betriebe, Maschinen und Wohnungsbau vergeben." },
-            { id: "wohnen",   name: "Mietwohnungen",      levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Öffentlich"],     thresholds: [22, 46, 70], info: "Mehrfamilienhäuser und Wohnungsbestände. Bestimmt, ob Mieten vor allem über private Vermieter oder städtische/genossenschaftliche Bestände entstehen." },
-            { id: "handwerk", name: "Handwerk & Läden",   levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Gemeineigentum"], thresholds: [52, 72, 88], info: "Bäckereien, Kfz-Werkstätten, Friseure, Elektrobetriebe und lokale Geschäfte – typische Ausbildungsbetriebe im Mittelstand." }
+            { id: "wasser",   name: "Trinkwasserleitung", levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Staatlich"],      thresholds: [5, 10, 20],  allowed: { left: [0, 1, 2, 3], right: [3] },       info: "Wasserwerke, Rohre und Abwasser bis zum Wasserhahn. Als lebenswichtige Daseinsvorsorge ohne Leitungs-Wettbewerb ist Trinkwasser oft selbst im Kapitalismus kommunal oder staatlich." },
+            { id: "schulen",  name: "Schulen & Bildung",  levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Staatlich"],      thresholds: [10, 20, 34], allowed: { left: [0, 1, 2, 3], right: [2, 3] },    info: "Berufsschulen, Schulen und Hochschulen. Auch im Kapitalismus sind Schulen in der Realität oft staatlich (z. B. Deutschland, USA Public Schools), weil Bildung als öffentliche Infrastruktur gilt – nur im sehr radikalen Kapitalismus sind sie überwiegend privat." },
+            { id: "bahn",     name: "Bahn & ÖPNV",        levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Öffentlich"],     thresholds: [15, 28, 42], allowed: { left: [0, 1, 2, 3], right: [2, 3] },    info: "Busse, U-Bahnen, Regionalzüge und Schienennetze. Weil Schienennetze kaum doppelt gebaut werden, betreiben auch viele kapitalistische Staaten Bahn und ÖPNV ganz oder teilweise öffentlich." },
+            { id: "kliniken", name: "Kliniken & Pflege",  levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Öffentlich"],     thresholds: [16, 34, 60], allowed: { left: [0, 1, 2],    right: [2, 3] },    info: "Krankenhäuser, Notaufnahmen und Pflegeheime. Im Kapitalismus gibt es fast immer zumindest teilweise private Träger oder Praxen; ein rein staatliches Monopol passt eher zum Sozialismus." },
+            { id: "strom",    name: "Strom & Energie",    levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Staatlich"],      thresholds: [24, 48, 70], allowed: { left: [0, 1],       right: [2, 3] },    info: "Kraftwerke, Wind- und Solarparks sowie Strom- und Gasanbieter. Im Kapitalismus bleiben Erzeugung und Handel überwiegend privat (höchstens ergänzt um einzelne kommunale Stadtwerke)." },
+            { id: "konzerne", name: "Industrie & Banken", levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Staatlich"],      thresholds: [30, 55, 76], allowed: { left: [0, 1],       right: [2, 3] },    info: "Große Fabriken, Schlüsselindustrien und Großbanken. Im Kapitalismus liegen diese Produktionsmittel per Definition in privater Hand." },
+            { id: "wohnen",   name: "Mietwohnungen",      levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Öffentlich"],     thresholds: [22, 46, 70], allowed: { left: [0, 1],       right: [2, 3] },    info: "Mehrfamilienhäuser und Wohnungsbestände. Im Kapitalismus gehört Wohnraum überwiegend privaten Eigentümern (höchstens ergänzt um städtische oder genossenschaftliche Wohnungen) – fast nur staatlicher Wohnraum wäre sozialistisch." },
+            { id: "handwerk", name: "Handwerk & Läden",   levels: ["Rein privat", "Größtenteils privat", "Wenig privat", "Gemeineigentum"], thresholds: [52, 72, 88], allowed: { left: [0],          right: [1, 2, 3] }, info: "Bäckereien, Kfz-Werkstätten, Friseure, Elektrobetriebe und lokale Geschäfte. Im Kapitalismus gehören kleine Betriebe und Läden systembedingt privaten Inhabern." }
           ]
         },
         2: {
-          title: "Feinjustierung nach Preis- & Mengensteuerung (Klick = Stufe wechseln, 💡 = Erklärung):",
+          title: "Feinjustierung nach Preis- & Mengensteuerung (Klick = passende Stufe wechseln, 💡 = Erklärung):",
           items: [
-            { id: "wasser_p", name: "Wasser & Grundtarif", levels: ["Freier Markt", "Leicht reguliert", "Stark gedeckelt", "Staatl. Festpreis"], thresholds: [8, 22, 42],  info: "Legt fest, ob Wassergebühren frei nach Nachfrage entstehen oder über regulierte bzw. staatliche Festtarife laufen." },
-            { id: "miete_p",  name: "Mieten & Wohnraum",   levels: ["Freier Markt", "Mietpreisbremse", "Starker Mietdeckel", "Staatl. Zuteilung"], thresholds: [15, 38, 68], info: "Ob Vermieter Mieten frei verlangen dürfen, eine Mietpreisbremse dämpft, ein strenger Deckel gilt oder Wohnraum staatlich zugeteilt wird." },
-            { id: "strom_p",  name: "Strom & Gas",         levels: ["Freier Markt", "Preisbremse", "Stark gedeckelt", "Staatl. Festpreis"],      thresholds: [20, 45, 72], info: "Ob Energiepreise frei an Börsen schwanken oder durch Preisbremsen, Deckel und staatliche Festpreise gesteuert werden." },
-            { id: "nahrung",  name: "Grundnahrungsmittel", levels: ["Freier Markt", "Steuer-Rabatt", "Preisgrenzen", "Staatl. Festpreis"],       thresholds: [25, 52, 76], info: "Preise für Brot, Milch, Obst und Alltagslebensmittel – freier Wettbewerb der Händler, reduzierte Steuern oder staatliche Festpreise." },
-            { id: "loehne",   name: "Löhne & Gehälter",    levels: ["Frei verhandelt", "Tarif + Mindestlohn", "Staatl. Leitlinien", "Staatl. Lohnplan"], thresholds: [20, 56, 80], info: "Ob Ausbildungsvergütung und Lohn frei verhandelt, per Tarifvertrag und Mindestlohn abgesichert oder per staatlicher Lohntabelle vorgegeben werden." },
-            { id: "konsum",   name: "Technik & Kleidung",  levels: ["Freier Markt", "Einzelne Quoten", "Stark gelenkt", "Zentral geplant"],       thresholds: [45, 70, 88], info: "Smartphones, Autos, Mode und Freizeitgüter – bestimmen Kundenwünsche das Sortiment oder legt ein Staatsplan Mengen und Modelle fest?" }
+            { id: "wasser_p", name: "Wasser & Grundtarif", levels: ["Freier Markt", "Leicht reguliert", "Stark gedeckelt", "Staatl. Festpreis"],   thresholds: [10, 28, 48], allowed: { left: [0, 1, 2], right: [2, 3] },    info: "Legt fest, ob Wassergebühren frei entstehen oder über behördliche Gebührenaufsicht bzw. kommunale Deckel begrenzt werden. Zentrale staatliche Planpreise passen erst zur Planwirtschaft." },
+            { id: "miete_p",  name: "Mieten & Wohnraum",   levels: ["Freier Markt", "Mietpreisbremse", "Starker Mietdeckel", "Staatl. Zuteilung"], thresholds: [20, 48, 70], allowed: { left: [0, 1],    right: [2, 3] },    info: "In einer kapitalistischen Marktwirtschaft gilt entweder freie Miete oder eine Mietpreisbremse. Strenge staatliche Mietdeckel oder Wohnungszuteilung greifen erst bei Sozialismus oder Planwirtschaft." },
+            { id: "strom_p",  name: "Strom & Gas",         levels: ["Freier Markt", "Preisbremse", "Stark gedeckelt", "Staatl. Festpreis"],        thresholds: [25, 50, 72], allowed: { left: [0, 1],    right: [2, 3] },    info: "In der Marktwirtschaft entstehen Energiepreise an Börsen – höchstens abgefedert durch eine Preisbremse. Dauerhaft staatlich festgelegte Energietarife gehören in die Planwirtschaft." },
+            { id: "nahrung",  name: "Grundnahrungsmittel", levels: ["Freier Markt", "Steuer-Rabatt", "Preisgrenzen", "Staatl. Festpreis"],         thresholds: [25, 52, 76], allowed: { left: [0, 1],    right: [2, 3] },    info: "In der Marktwirtschaft bestimmen Angebot und Nachfrage die Preise für Brot oder Milch; der Staat entlastet höchstens über niedrigere Steuern (z. B. 7 % MwSt.), nicht über staatliche Preisgrenzen." },
+            { id: "loehne",   name: "Löhne & Gehälter",    levels: ["Frei verhandelt", "Tarif + Mindestlohn", "Staatl. Leitlinien", "Staatl. Lohnplan"], thresholds: [18, 56, 80], allowed: { left: [0, 1], right: [2, 3] },   info: "In der Marktwirtschaft werden Löhne frei oder per Tarifvertrag und Mindestlohn ausgehandelt. Staatliche Lohntabellen gehören zur Planwirtschaft." },
+            { id: "konsum",   name: "Technik & Kleidung",  levels: ["Freier Markt", "Einzelne Quoten", "Stark gelenkt", "Zentral geplant"],         thresholds: [45, 70, 88], allowed: { left: [0],       right: [1, 2, 3] }, info: "Smartphones, Autos, Mode und Freizeitgüter. In einer Marktwirtschaft lenken Angebot und Nachfrage diesen Bereich systembedingt komplett frei – ohne staatliche Quoten." }
           ]
         },
         3: {
-          title: "Feinjustierung nach Schutz- & Ausgleichsbausteinen (Klick = Stufe wechseln, 💡 = Erklärung):",
+          title: "Feinjustierung nach Schutz- & Ausgleichsbausteinen (Klick = passende Stufe wechseln, 💡 = Erklärung):",
           items: [
-            { id: "notfall",  name: "Existenzminimum",          levels: ["Aus", "Notfallhilfe", "Grundsicherung", "Hoch ausgebaut"],             thresholds: [15, 35, 72], info: "Staatliche Grundsicherung (z. B. Bürgergeld/Sozialhilfe), damit niemand bei völliger Mittellosigkeit obdachlos wird oder hungert." },
-            { id: "kranken",  name: "Krankenversicherung",      levels: ["Rein privat", "Privat + Basis", "Gesetzlich + privat", "Bürgerkasse"],  thresholds: [20, 42, 75], info: "Regelt, ob du Arzt- und Klinikkosten komplett privat versicherst, ein duales System aus gesetzlicher und privater Kasse gilt oder alle in eine Bürgerkasse einzahlen." },
-            { id: "rente",    name: "Rente & Arbeitslosengeld", levels: ["Rein privat", "Schmale Basis", "Gesetzlich + privat", "Vollversorgung"], thresholds: [22, 46, 78], info: "Ob du für Alter und Jobverlust komplett privat vorsorgst, eine kleine Grundrente erhältst, gesetzlich plus privat absicherst oder eine staatliche Vollversorgung greift." },
-            { id: "arbeit",   name: "Mindestlohn & Schutz",     levels: ["Aus", "Lockerer Schutz", "Solider Schutz", "Sehr streng"],             thresholds: [20, 45, 75], info: "Gesetzliche Lohnuntergrenze, Kündigungsschutz, Urlaubsanspruch und Arbeitssicherheit zum Schutz von Beschäftigten und Azubis." },
-            { id: "kartell",  name: "Kartellamt (Monopole)",    levels: ["Aus", "Schwach", "Stark aktiv", "Sehr streng"],                        thresholds: [20, 42, 72], info: "Unabhängige Aufsicht, die Preisabsprachen verbietet und verhindert, dass einzelne Großkonzerne alle Konkurrenten verdrängen." },
-            { id: "foerder",  name: "Wohngeld / BAB / BAföG",   levels: ["Aus", "Eng begrenzt", "Gut ausgebaut", "Sehr großzügig"],              thresholds: [28, 52, 78], info: "Gezielte staatliche Zuschüsse für Auszubildende, Studierende und Haushalte mit kleinem Gehalt, damit Ausbildung und Miete bezahlbar bleiben." }
+            { id: "notfall",  name: "Existenzminimum",          levels: ["Aus", "Notfallhilfe", "Grundsicherung", "Hoch ausgebaut"],             thresholds: [15, 35, 72], allowed: { left: [0, 1], right: [2, 3] },    info: "Staatliche Grundsicherung (z. B. Bürgergeld/Sozialhilfe), damit niemand bei völliger Mittellosigkeit obdachlos wird oder hungert." },
+            { id: "kranken",  name: "Krankenversicherung",      levels: ["Rein privat", "Privat + Basis", "Gesetzlich + privat", "Bürgerkasse"],  thresholds: [20, 42, 75], allowed: { left: [0, 1], right: [2, 3] },    info: "Regelt, ob du Arzt- und Klinikkosten komplett privat versicherst, ein duales System aus gesetzlicher und privater Kasse gilt oder alle in eine Bürgerkasse einzahlen." },
+            { id: "rente",    name: "Rente & Arbeitslosengeld", levels: ["Rein privat", "Schmale Basis", "Gesetzlich + privat", "Vollversorgung"], thresholds: [22, 46, 78], allowed: { left: [0, 1], right: [2, 3] },    info: "Ob du für Alter und Jobverlust komplett privat vorsorgst, eine kleine Grundrente erhältst, gesetzlich plus privat absicherst oder eine staatliche Vollversorgung greift." },
+            { id: "arbeit",   name: "Mindestlohn & Schutz",     levels: ["Aus", "Lockerer Schutz", "Solider Schutz", "Sehr streng"],             thresholds: [20, 45, 75], allowed: { left: [0, 1], right: [2, 3] },    info: "Gesetzliche Lohnuntergrenze, Kündigungsschutz, Urlaubsanspruch und Arbeitssicherheit zum Schutz von Beschäftigten und Azubis." },
+            { id: "kartell",  name: "Kartellamt (Monopole)",    levels: ["Aus", "Schwach", "Stark aktiv", "Sehr streng"],                        thresholds: [20, 42, 72], allowed: { left: [0, 1], right: [2, 3] },    info: "Unabhängige Aufsicht, die Preisabsprachen verbietet und verhindert, dass einzelne Großkonzerne alle Konkurrenten verdrängen." },
+            { id: "foerder",  name: "Wohngeld / BAB / BAföG",   levels: ["Aus", "Eng begrenzt", "Gut ausgebaut", "Sehr großzügig"],              thresholds: [28, 52, 78], allowed: { left: [0, 1], right: [1, 2, 3] }, info: "Gezielte staatliche Zuschüsse für Auszubildende, Studierende und Haushalte mit kleinem Gehalt, damit Ausbildung und Miete bezahlbar bleiben." }
           ]
         }
       };
 
-      function getDefaultSectorLevel(sector, dimObj) {
+      /* Gibt nur fachlich passende Auswahlstufen zurück – abhängig von gewählter Art UND vorherigen Dimensionen */
+      function getAllowedLevels(dimNum, sector, dimObj) {
+        const side = dimObj.picked === "right" ? "right" : "left";
+        let list = [...sector.allowed[side]];
+
+        // Dimension 1 -> Dimension 2 Konsistenz
+        if (dimNum === 2 && state.dim1.confirmed) {
+          const d1Wasser = getSectorLevel(1, SECTORS[1].items.find((x) => x.id === "wasser"), state.dim1);
+          const d1Strom  = getSectorLevel(1, SECTORS[1].items.find((x) => x.id === "strom"), state.dim1);
+          const d1Wohnen = getSectorLevel(1, SECTORS[1].items.find((x) => x.id === "wohnen"), state.dim1);
+
+          // Sozialismus in Dim 1 + Marktwirtschaft in Dim 2 (Marktsozialismus):
+          // Da Grundversorgung/Wohnen/Energie öffentlich sind, gilt kein völlig freier Markt, aber Deckel sind möglich
+          if (state.dim1.picked === "right" && side === "left") {
+            if (sector.id === "wasser_p") list = [1, 2];
+            if (sector.id === "miete_p")  list = [1, 2];
+            if (sector.id === "strom_p")  list = [1, 2];
+            if (sector.id === "loehne")   list = [1];
+          }
+
+          // Einzelbereichs-Kopplung (auch bei gemischtem Kapitalismus):
+          // Staatliche/weitgehend öffentliche Infrastruktur hat keinen völlig freien Marktpreis
+          if (sector.id === "wasser_p" && d1Wasser >= 2) {
+            const filtered = list.filter((lvl) => lvl >= 1);
+            if (filtered.length) list = filtered;
+          }
+          if (sector.id === "strom_p" && d1Strom === 3) {
+            const filtered = list.filter((lvl) => lvl >= 1);
+            if (filtered.length) list = filtered;
+          }
+          if (sector.id === "miete_p" && d1Wohnen === 3) {
+            const filtered = list.filter((lvl) => lvl >= 1);
+            if (filtered.length) list = filtered;
+          }
+        }
+
+        // Dimension 1 & 2 -> Dimension 3 Konsistenz
+        if (dimNum === 3) {
+          // Komplett öffentliche Kliniken (Dim 1) passen nicht zu rein privater Krankenversicherung
+          if (state.dim1.confirmed) {
+            const d1Kliniken = getSectorLevel(1, SECTORS[1].items.find((x) => x.id === "kliniken"), state.dim1);
+            if (sector.id === "kranken" && d1Kliniken === 3) {
+              const filtered = list.filter((lvl) => lvl >= 1);
+              if (filtered.length) list = filtered;
+            }
+          }
+          // Bereits beschlossene Lohnregeln (Dim 2: Tarif/Mindestlohn oder Plan) schließen "Aus" beim Mindestlohn-Schutz aus
+          if (state.dim2.confirmed) {
+            const d2Loehne = getSectorLevel(2, SECTORS[2].items.find((x) => x.id === "loehne"), state.dim2);
+            if (sector.id === "arbeit" && d2Loehne >= 1) {
+              const filtered = list.filter((lvl) => lvl >= 1);
+              if (filtered.length) list = filtered;
+            }
+            if (state.dim2.picked === "right" && dimObj.picked === "right" && sector.id === "foerder") {
+              const filtered = list.filter((lvl) => lvl >= 2);
+              if (filtered.length) list = filtered;
+            }
+          }
+        }
+
+        return list;
+      }
+
+      function clampToAllowed(lvl, allowed) {
+        if (allowed.includes(lvl)) return lvl;
+        // Nächstgelegene erlaubte Stufe wählen
+        return allowed.reduce((best, cur) => (Math.abs(cur - lvl) < Math.abs(best - lvl) ? cur : best), allowed[0]);
+      }
+
+      function getDefaultSectorLevel(dimNum, sector, dimObj) {
         const sc = toScale(dimObj);
         const [t1, t2, t3] = sector.thresholds;
-        if (sc >= t3) return 3;
-        if (sc >= t2) return 2;
-        if (sc >= t1) return 1;
-        return 0;
+        let raw = 0;
+        if (sc >= t3) raw = 3;
+        else if (sc >= t2) raw = 2;
+        else if (sc >= t1) raw = 1;
+        return clampToAllowed(raw, getAllowedLevels(dimNum, sector, dimObj));
       }
 
       function getSectorLevel(dimNum, sector, dimObj) {
+        const allowed = getAllowedLevels(dimNum, sector, dimObj);
         if (dimObj.overrides && Number.isInteger(dimObj.overrides[sector.id])) {
-          return dimObj.overrides[sector.id];
+          return clampToAllowed(dimObj.overrides[sector.id], allowed);
         }
-        return getDefaultSectorLevel(sector, dimObj);
+        return getDefaultSectorLevel(dimNum, sector, dimObj);
       }
 
-      /* Berechnet aus der 4-stufigen Feinjustierung die passende Regler-Stellung (strikt innerhalb der gewählten Art!) */
+      /* Berechnet aus den erlaubten Stufen der Feinjustierung exakt die passende Regler-Stellung (50 % bis 100 %) */
       function computeStrengthFromSectors(dimNum, dimObj) {
         const items = SECTORS[dimNum].items;
-        let sumRight = 0;
+        let normSum = 0;
+        let adjustableCount = 0;
         items.forEach((sec) => {
-          sumRight += getSectorLevel(dimNum, sec, dimObj) / 3;
+          const allowed = getAllowedLevels(dimNum, sec, dimObj);
+          const minL = allowed[0];
+          const maxL = allowed[allowed.length - 1];
+          if (minL === maxL) return; // fest vorgegebene Bereiche verzerren den Regler nicht
+          const lvl = getSectorLevel(dimNum, sec, dimObj);
+          const norm = dimObj.picked === "right"
+            ? (lvl - minL) / (maxL - minL)
+            : (maxL - lvl) / (maxL - minL);
+          normSum += norm;
+          adjustableCount++;
         });
-        const avgRight = sumRight / items.length;
-        const ratio = dimObj.picked === "right" ? avgRight : (1 - avgRight);
-        const rawPct = Math.round((ratio * 100) / 5) * 5;
+        const avgNorm = adjustableCount > 0 ? normSum / adjustableCount : 0.5;
+        const pct = 50 + Math.round((avgNorm * 50) / 5) * 5;
         return {
-          strength: Math.max(50, Math.min(100, rawPct)),
-          hitFloor: rawPct < 50
+          strength: Math.max(50, Math.min(100, pct)),
+          hitFloor: false
         };
       }
 
@@ -4173,6 +5064,11 @@
         const activeInfoId = openSectorInfo[dimNum];
         const activeInfoSec = activeInfoId ? cfg.items.find((x) => x.id === activeInfoId) : null;
 
+        const activeInfoAllowed = activeInfoSec ? getAllowedLevels(dimNum, activeInfoSec, d) : [];
+        const activeInfoBase = activeInfoSec ? activeInfoSec.allowed[d.picked === "right" ? "right" : "left"] : [];
+        const activeInfoCrossNote = activeInfoSec && activeInfoAllowed.join(",") !== activeInfoBase.join(",") ? " (an deine vorherige Wahl angepasst)" : "";
+        const pickedName = DIM_META[dimNum][d.picked].name;
+
         panel.innerHTML = `
           <div class="sector-panel-head">
             <span><strong>${escapeHtml(cfg.title)}</strong></span>
@@ -4180,17 +5076,22 @@
           </div>
           <div class="sector-grid">
             ${cfg.items.map((sec) => {
+              const allowed = getAllowedLevels(dimNum, sec, d);
               const lvl = getSectorLevel(dimNum, sec, d);
               const lbl = sec.levels[lvl];
               const isOpen = activeInfoId === sec.id;
-              const dots = [0, 1, 2, 3].map((i) => `<span class="sector-dot ${i <= lvl ? "is-on" : ""}"></span>`).join("");
+              const isFixed = allowed.length <= 1;
+              const activeIdx = Math.max(0, allowed.indexOf(lvl));
+              const indicator = isFixed
+                ? `<span class="sector-fixed-tag">Systembedingt fest</span>`
+                : `<span class="sector-dots" aria-hidden="true">${allowed.map((_, i) => `<span class="sector-dot ${i <= activeIdx ? "is-on" : ""}"></span>`).join("")}</span>`;
               return `
-                <div class="sector-box is-lvl-${lvl} ${isOpen ? "is-info-open" : ""}">
-                  <button type="button" class="sector-toggle" data-sec-id="${sec.id}" ${d.confirmed ? "disabled" : ""} title="${escapeHtml(sec.name)}: ${escapeHtml(lbl)} (klicken für nächste Stufe)">
+                <div class="sector-box is-lvl-${lvl} ${isOpen ? "is-info-open" : ""} ${isFixed ? "is-fixed" : ""}">
+                  <button type="button" class="sector-toggle" data-sec-id="${sec.id}" ${(d.confirmed || isFixed) ? "disabled" : ""} title="${escapeHtml(sec.name)}: ${escapeHtml(lbl)}${isFixed ? " (in dieser Grundrichtung fest)" : " (klicken für nächste passende Stufe)"}">
                     <span class="sector-chip-name">${escapeHtml(sec.name)}</span>
                     <span class="sector-chip-bottom">
                       <span class="sector-chip-state">${escapeHtml(lbl)}</span>
-                      <span class="sector-dots" aria-hidden="true">${dots}</span>
+                      ${indicator}
                     </span>
                   </button>
                   <button type="button" class="sector-info-btn" data-info-id="${sec.id}" aria-label="Erklärung zu ${escapeHtml(sec.name)}" aria-expanded="${isOpen}" title="Was ist mit „${escapeHtml(sec.name)}“ gemeint?">&#128161;</button>
@@ -4200,7 +5101,7 @@
           </div>
           ${activeInfoSec ? `
             <div class="sector-info-pop" role="note">
-              <span><strong>&#128161; ${escapeHtml(activeInfoSec.name)}:</strong> ${escapeHtml(activeInfoSec.info)}<br><span style="font-size:0.78rem; opacity:0.85;">Auswahlstufen: ${activeInfoSec.levels.map((l) => escapeHtml(l)).join(" · ")}</span></span>
+              <span><strong>&#128161; ${escapeHtml(activeInfoSec.name)}:</strong> ${escapeHtml(activeInfoSec.info)}<br><span style="font-size:0.78rem; opacity:0.88;">Passende Stufen bei „${escapeHtml(pickedName)}“: ${activeInfoAllowed.map((l) => escapeHtml(activeInfoSec.levels[l])).join(" · ")}${activeInfoAllowed.length === 1 ? " (systembedingt vorgegeben)" : ""}${activeInfoCrossNote}</span></span>
               <button type="button" class="sector-info-close" data-close-info="${dimNum}" aria-label="Hinweis schließen">&times;</button>
             </div>
           ` : ""}
@@ -4223,20 +5124,23 @@
           });
         }
 
-        // Feinjustierung durchschalten (4 Stufen) -> zieht den Regler automatisch sinnvoll nach!
+        // Feinjustierung durchschalten (nur passende Stufen!) -> zieht den Regler automatisch sinnvoll nach!
         if (!d.confirmed) {
           panel.querySelectorAll(".sector-toggle").forEach((btn) => {
             btn.addEventListener("click", () => {
               const secId = btn.dataset.secId;
               const sec = cfg.items.find((x) => x.id === secId);
               if (!sec) return;
+              const allowed = getAllowedLevels(dimNum, sec, d);
+              if (allowed.length <= 1) return;
 
               // Aktuellen Stand aller Bereiche festhalten, damit nur der geklickte Bereich wechselt
               const snap = {};
               cfg.items.forEach((item) => {
                 snap[item.id] = getSectorLevel(dimNum, item, d);
               });
-              snap[secId] = (snap[secId] + 1) % sec.levels.length;
+              const curPos = Math.max(0, allowed.indexOf(snap[secId]));
+              snap[secId] = allowed[(curPos + 1) % allowed.length];
               d.overrides = snap;
 
               // Regler automatisch sinnvoll nachziehen (strikt innerhalb der gewählten Art!)
@@ -4250,11 +5154,6 @@
               $(`dim${dimNum}Einordnung`).textContent = getEinordnungLabel(dimNum, d.picked, d.strength);
               renderLiveBullets(dimNum, d.picked, d.strength);
               renderSectors(dimNum);
-
-              if (calc.hitFloor) {
-                const otherSide = d.picked === "left" ? DIM_META[dimNum].right.name : DIM_META[dimNum].left.name;
-                showToast(`Regler bei 50 % (Grenze). Für noch mehr „${otherSide}“ wechsle oben die Grundrichtung.`);
-              }
             });
           });
         }
@@ -4270,7 +5169,7 @@
 
       function renderDimension(dimNum) {
         const d = state[`dim${dimNum}`];
-        const unlocked = dimNum === 1 || state[`dim${dimNum - 1}`].confirmed;
+        const unlocked = teacherMode || dimNum === 1 || state[`dim${dimNum - 1}`].confirmed;
 
         const lockedBanner = $(`dim${dimNum}Locked`);
         const section = $(`dimSection${dimNum}`);
@@ -4283,7 +5182,7 @@
 
         // Sonderfall-Prüfung für Dimension 3
         if (dimNum === 3) {
-          const special = getDim3SpecialCase(toScale(state.dim1), toScale(state.dim2));
+          const special = (state.dim1.picked && state.dim2.picked) ? getDim3SpecialCase(toScale(state.dim1), toScale(state.dim2)) : null;
           const specialBar = $("dim3SpecialBar");
           section.classList.toggle("is-special", Boolean(special));
 
@@ -4521,7 +5420,9 @@
           overall.innerHTML = "<strong>Noch keine Eingaben vorhanden:</strong> Trage oben bei den einzelnen Grundgesetz-Artikeln deine Begründungen ein und prüfe sie.";
         } else if (goodCount === total) {
           state.ggVerified = true;
+          saveState();
           renderProgressChips();
+          renderLayer();
           overall.className = "gg-overall-feedback is-visible is-good";
           overall.innerHTML = `<strong>Hervorragend!</strong> Alle ${total} von ${total} Artikeln sind fachlich überzeugend begründet und eingeordnet.`;
         } else if (goodCount > 0 || warnCount > 0) {
@@ -4532,9 +5433,43 @@
           overall.innerHTML = `<strong>Noch überarbeiten:</strong> 0 von ${total} Artikeln treffen bisher den Kern der genannten Grundgesetz-Artikel. Schlage die Absätze kurz nach und nutze die Hinweise direkt an den Karten.`;
         }
 
+        const unlockBanner = $("ggUnlockBanner");
+        if (unlockBanner) unlockBanner.classList.toggle("is-visible", isGeneratorComplete());
+
         if (scrollIntoView) {
           overall.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
+      }
+
+      /* Musterlösungen für jeden GG-Artikel + Absatz (Lehrkraft-Modus & Gesamt-Lösungsübersicht) */
+      const GG_MODEL_ANSWERS = {
+        "violated|Art. 20 Abs. 1 GG": "Art. 20 Abs. 1 GG verbietet einen reinen Nachtwächterstaat, weil die Bundesrepublik verbindlich als demokratischer und sozialer Bundesstaat festgelegt ist und der Staat für sozialen Ausgleich sorgen muss.",
+        "violated|Art. 1 Abs. 1 GG i. V. m. Art. 20 Abs. 1 GG": "Art. 1 Abs. 1 GG i. V. m. Art. 20 Abs. 1 GG verbietet den kompletten Wegfall sozialer Absicherung, weil die Menschenwürde ein staatlich gesichertes Existenzminimum für Bedürftige garantiert.",
+        "violated|Art. 12 Abs. 1 GG": "Art. 12 Abs. 1 GG verbietet eine zentrale Planwirtschaft, weil Bürger ihren Beruf, ihre Ausbildung und ihren Arbeitsplatz frei wählen dürfen und nicht staatlich zugewiesen werden können.",
+        "violated|Art. 2 Abs. 1 GG": "Art. 2 Abs. 1 GG verbietet staatlich diktierte Preise und Mengen, weil die allgemeine Handlungsfreiheit Vertrags- und Konsumfreiheit im Alltag schützt.",
+        "violated|Art. 9 Abs. 3 GG": "Art. 9 Abs. 3 GG verbietet staatliche Lohnpläne, weil Gewerkschaften und Arbeitgeber über die Koalitionsfreiheit und Tarifautonomie Löhne selbstständig aushandeln dürfen.",
+        "violated|Art. 14 Abs. 1 GG i. V. m. Art. 19 Abs. 2 GG": "Art. 14 Abs. 1 GG i. V. m. Art. 19 Abs. 2 GG verbietet die vollständige Abschaffung von Privateigentum, weil Eigentum im Wesensgehalt garantiert bleibt und nicht restlos verstaatlicht werden darf.",
+        "violated|Art. 15 GG (Satz 1 & 2) i. V. m. Art. 14 Abs. 3 GG": "Art. 15 GG i. V. m. Art. 14 Abs. 3 GG verbietet pauschale Enteignungen, weil eine Vergesellschaftung von Boden oder Produktionsmitteln nur per Gesetz und zwingend gegen angemessene Entschädigung erlaubt ist.",
+        "limit|Art. 20 Abs. 1 GG & Art. 1 Abs. 1 GG": "Art. 20 Abs. 1 GG und Art. 1 Abs. 1 GG bilden einen Graupunkt, weil selbst bei sehr niedrigen Abgaben das menschenwürdige Existenzminimum und eine soziale Grundsicherung dauerhaft gesichert bleiben müssen.",
+        "protected|Art. 14 Abs. 1 GG & Art. 12 Abs. 1 GG": "Art. 14 Abs. 1 GG und Art. 12 Abs. 1 GG stützen diesen Pfad, weil sie privates Eigentum an Betrieben sowie freie Berufswahl und Selbstständigkeit ausdrücklich schützen.",
+        "limit|Art. 14 Abs. 1 & Abs. 2 GG": "Art. 14 Abs. 1 und Abs. 2 GG markieren hier einen Graupunkt, weil Eigentum zwar dem Gemeinwohl verpflichtet ist, hohe Steuern und Umverteilung aber nicht zu einer Erdrosselung von Privateigentum führen dürfen.",
+        "limit|Art. 12 Abs. 1 GG & Art. 2 Abs. 1 GG": "Art. 12 Abs. 1 GG und Art. 2 Abs. 1 GG setzen einen Graupunkt, weil staatliche Schutzgesetze, Preisdeckel oder Quoten immer verhältnismäßig sein müssen und Betriebe sowie Vertragsfreiheit nicht unverhältnismäßig einschränken dürfen.",
+        "limit|Art. 15 GG (Satz 1 & 2) i. V. m. Art. 14 Abs. 3 GG": "Art. 15 GG i. V. m. Art. 14 Abs. 3 GG ist ein Graupunkt, weil eine Vergesellschaftung von Schlüsselbereichen in Gemeineigentum nur per Gesetz und gegen faire Entschädigung zulässig ist.",
+        "limit|Art. 14 Abs. 1 GG": "Art. 14 Abs. 1 GG zieht hier eine Grenze, weil ein tragfähiger Kern an Privateigentum im Handwerk, bei Betrieben und Wohnungen dauerhaft erhalten bleiben muss.",
+        "limit|Art. 9 Abs. 3 GG": "Art. 9 Abs. 3 GG ist ein Graupunkt, weil der Staat bei stärkerer Lohnlenkung die Tarifautonomie von Gewerkschaften und Arbeitgebern nicht aushöhlen darf.",
+        "protected|Art. 14 Abs. 2 GG & Art. 20 Abs. 1 GG": "Art. 14 Abs. 2 GG und Art. 20 Abs. 1 GG sind mit diesem Teil einverstanden, weil sie die Sozialbindung des Eigentums und den sozialen Ausgleich zugunsten der Allgemeinheit ausdrücklich tragen.",
+        "protected|Art. 2 Abs. 1 GG": "Art. 2 Abs. 1 GG ist mit dem Pfad einverstanden, weil die allgemeine Handlungsfreiheit freie Kaufentscheidungen sowie Vertrags- und Konsumfreiheit im Markt schützt.",
+        "protected|Art. 9 Abs. 3 GG": "Art. 9 Abs. 3 GG ist mit dem Pfad einverstanden, weil Gewerkschaften und Arbeitgeber über die Tarifautonomie Löhne und Arbeitsbedingungen frei aushandeln können.",
+        "protected|Art. 12 Abs. 1 GG": "Art. 12 Abs. 1 GG ist mit dem Pfad einverstanden, weil die Berufsfreiheit eine freie Wahl von Ausbildung, Beruf, Arbeitsplatz und eigener Selbstständigkeit garantiert.",
+        "protected|Art. 14 Abs. 1 & Abs. 2 GG": "Art. 14 Abs. 1 und Abs. 2 GG sind mit dem Pfad einverstanden, weil privates Eigentum an Betrieben und Wohnungen geschützt ist und zugleich der Sozialbindung gegenüber dem Gemeinwohl unterliegt.",
+        "protected|Art. 20 Abs. 1 GG i. V. m. Art. 1 Abs. 1 GG": "Art. 20 Abs. 1 GG i. V. m. Art. 1 Abs. 1 GG ist mit dem Pfad einverstanden, weil das Sozialstaatsprinzip und die Menschenwürde durch soziale Sicherung und das Existenzminimum gewahrt werden.",
+        "limit|Art. 15 GG & Art. 14 Abs. 3 GG": "Art. 15 GG und Art. 14 Abs. 3 GG bilden eine verfassungsrechtliche Grenze, weil Enteignungen oder Vergesellschaftungen in Gemeineigentum nur per Gesetz und niemals ohne Entschädigung zulässig sind."
+      };
+
+      function getGGModelAnswer(art) {
+        const key = `${art.role}|${art.ref}`;
+        if (GG_MODEL_ANSWERS[key]) return GG_MODEL_ANSWERS[key];
+        return `${art.ref} betrifft ${art.keyword}, weil diese Verfassungsnorm für deinen Pfad die Einordnung „${art.statusLabel}“ begründet.`;
       }
 
       function renderGGResult() {
@@ -4548,6 +5483,7 @@
         const grid = $("ggArticlesGrid");
         grid.innerHTML = res.articles.map((art, idx) => {
           const savedVal = state.ggReasons[art.ref] || "";
+          const modelAnswer = getGGModelAnswer(art);
           const placeholder = art.role === "violated"
             ? `Nach dem Nachschlagen von ${art.ref}: Warum verbietet dieser Artikel deinen Pfad?`
             : art.role === "limit"
@@ -4567,6 +5503,15 @@
                 <div class="gg-card-action-row no-print">
                   <button type="button" class="ios-btn" data-check-art="${idx}">Diesen Artikel prüfen</button>
                 </div>
+                ${teacherMode ? `
+                  <div class="teacher-inline-box no-print">
+                    <div class="teacher-inline-head">
+                      <span>Lehrkraft-Musterlösung</span>
+                      <button type="button" class="ios-btn ios-btn-teacher" data-apply-model="${idx}" style="padding:4px 10px; font-size:0.76rem;">Musterlösung übernehmen</button>
+                    </div>
+                    <div>${escapeHtml(modelAnswer)}</div>
+                  </div>
+                ` : ""}
                 <div class="gg-art-feedback" id="ggArtFeedback${idx}" aria-live="polite"></div>
               </div>
             </div>
@@ -4580,7 +5525,7 @@
             const art = res.articles[idx];
             state.ggReasons[art.ref] = ta.value;
             saveState();
-            $("saveStatus").textContent = "Gespeichert";
+            $("saveStatus").textContent = teacherMode ? "Lehrkraft-Sitzung (lokal geschützt)" : "Gespeichert";
           });
         });
 
@@ -4590,11 +5535,35 @@
             const art = res.articles[idx];
             state.ggCheckedRefs[art.ref] = true;
             showArticleFeedback(idx, art);
-            // Check if all articles are now good
+            const allGood = res.articles.every((a) => verifySingleArticleReasoning(state.ggReasons[a.ref] || "", a).level === "good");
+            if (allGood) {
+              state.ggVerified = true;
+              saveState();
+              renderProgressChips();
+              renderLayer();
+              const unlockBanner = $("ggUnlockBanner");
+              if (unlockBanner) unlockBanner.classList.add("is-visible");
+            }
+          });
+        });
+
+        grid.querySelectorAll("button[data-apply-model]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const idx = Number(btn.dataset.applyModel);
+            const art = res.articles[idx];
+            const ans = getGGModelAnswer(art);
+            state.ggReasons[art.ref] = ans;
+            state.ggCheckedRefs[art.ref] = true;
+            const ta = $(`ggArtInput${idx}`);
+            if (ta) ta.value = ans;
+            showArticleFeedback(idx, art);
             const allGood = res.articles.every((a) => verifySingleArticleReasoning(state.ggReasons[a.ref] || "", a).level === "good");
             if (allGood) {
               state.ggVerified = true;
               renderProgressChips();
+              renderLayer();
+              const unlockBanner = $("ggUnlockBanner");
+              if (unlockBanner) unlockBanner.classList.add("is-visible");
             }
           });
         });
@@ -4610,7 +5579,558 @@
           updateOverallGGSummary(res.articles, false);
         } else {
           $("ggOverallFeedback").className = "gg-overall-feedback";
+          const unlockBanner = $("ggUnlockBanner");
+          if (unlockBanner) unlockBanner.classList.remove("is-visible");
         }
+      }
+
+      /* ============================================================
+         7B. SYSTEM-VERGLEICH (BEREICH 3) & PROZENTUALE DECKUNGSGLEICHHEIT
+         ============================================================ */
+      function isGeneratorComplete() {
+        return Boolean(isReadyForFinal() && state.ggChecked && state.ggVerified);
+      }
+
+      function getGeneratorUnlockStatus() {
+        const { special } = getEffectiveScale();
+        const done = (state.dim1.confirmed ? 1 : 0)
+          + (state.dim2.confirmed ? 1 : 0)
+          + ((state.dim3.confirmed || special) ? 1 : 0)
+          + (state.ggVerified ? 1 : 0);
+
+        if (isGeneratorComplete()) {
+          return { unlocked: true, done: 4, hint: "Freigeschaltet ✓ – Bereich 2 vollständig abgeschlossen." };
+        }
+        if (done < 3) {
+          return { unlocked: false, done, hint: `Fortschritt Bereich 2: ${done}/4 Schritte – schließe zuerst alle Dimensionen ab.` };
+        }
+        if (!state.ggChecked) {
+          return { unlocked: false, done: 3, hint: "Fortschritt Bereich 2: 3/4 Schritte – starte noch den Grundgesetz-TÜV am Ende." };
+        }
+        return { unlocked: false, done: 3, hint: "Fortschritt Bereich 2: 3/4 Schritte – prüfe alle Grundgesetz-Artikel erfolgreich." };
+      }
+
+      const COMPARE_MODELS = [
+        {
+          id: "erhard",
+          name: "Soziale Marktwirtschaft nach Ludwig Erhard",
+          shortName: "Ludwig Erhard (1948–1966)",
+          era: "Westdeutschland · 1948–1966",
+          e: 18,
+          p: 14,
+          s: 56,
+          sectors: {
+            wasser: 3, schulen: 3, bahn: 3, kliniken: 1, strom: 1, konzerne: 0, wohnen: 1, handwerk: 0,
+            wasser_p: 1, miete_p: 0, strom_p: 0, nahrung: 0, loehne: 0, konsum: 0,
+            notfall: 1, kranken: 2, rente: 2, arbeit: 1, kartell: 3, foerder: 1
+          },
+          rows: {
+            eigentum: "Überwiegend Privateigentum an Betrieben, Banken und Wohnungen; Wasser, Schulen, Bahn und Post in öffentlicher Hand.",
+            preise: "Freie Preisbildung über Angebot & Nachfrage nach der Währungsreform 1948; kaum Preisdeckel, klares Bekenntnis zum Wettbewerb.",
+            staat: "Starker Ordnungsrahmen (Kartellgesetz 1957, unabhängige Bundesbank), sonst bewusste staatliche Zurückhaltung („Hilfe zur Selbsthilfe“).",
+            arbeit: "Tarifautonomie (Gewerkschaften & Arbeitgeber verhandeln frei), kein gesetzlicher Mindestlohn, Aufbau der Betriebsverfassung.",
+            soziales: "Basis-Absicherung nach dem Versicherungsprinzip: dynamische Rente (1957), gesetzliche Krankenkasse, schlanke Sozialhilfe (ab 1961).",
+            wohnen: "Privater Wohnungsmarkt ergänzt um staatlichen sozialen Wohnungsbau für den Wiederaufbau; Trinkwasser und Bahn öffentlich.",
+            dynamik: "Sehr hoher Wettbewerb, starkes Gründer- und Produktivitätswachstum („Wirtschaftswunder“), Fokus auf stabile Währung.",
+            gg: "Voll im Rahmen des Grundgesetzes: starker Schutz von Eigentum (Art. 14) und Berufsfreiheit (Art. 12) bei solidem Sozialstaats-Kern (Art. 20)."
+          }
+        },
+        {
+          id: "de2026",
+          name: "Soziale Marktwirtschaft (Deutschland 2026)",
+          shortName: "Deutschland 2026",
+          era: "Bundesrepublik · Gegenwart 2026",
+          e: 25,
+          p: 27,
+          s: 76,
+          sectors: {
+            wasser: 3, schulen: 3, bahn: 3, kliniken: 2, strom: 1, konzerne: 0, wohnen: 1, handwerk: 0,
+            wasser_p: 1, miete_p: 1, strom_p: 1, nahrung: 1, loehne: 1, konsum: 0,
+            notfall: 2, kranken: 2, rente: 2, arbeit: 3, kartell: 2, foerder: 2
+          },
+          rows: {
+            eigentum: "Privateigentum prägt Industrie, Banken, Handwerk, Strom & Wohnungen; Schulen, Trinkwasser & ÖPNV meist öffentlich; Kliniken gemischt.",
+            preise: "Marktwirtschaft mit spürbaren Korrekturen: Mietpreisbremse in Ballungsräumen, 7 % MwSt. auf Grundnahrungsmittel, regulierte Netze & CO₂-Preis.",
+            staat: "Aktiv gestaltender Ordnungs-, Sozial- und Transformationsstaat: Bundeskartellamt, EU-Regeln, Förderprogramme und hohe Staatsquote.",
+            arbeit: "Tarifverträge plus gesetzlicher Mindestlohn, starker Kündigungs- und Arbeitsschutz sowie betriebliche Mitbestimmung.",
+            soziales: "Dicht ausgebautes Sozialnetz: Grundsicherung/Bürgergeld, duales Krankenkassensystem (GKV + PKV), gesetzliche Rente, ALG I, Wohngeld, BAföG & BAB.",
+            wohnen: "Überwiegend privater Wohnungsmarkt mit Mietpreisbremse, Wohngeld und kommunalem Wohnbau; Trinkwasser kommunal, Strommarkt privat.",
+            dynamik: "Hohe Forschungs- und Exportstärke, aber spürbarer Fachkräftemangel, demografischer Druck auf Rente/Pflege und hohe Bürokratie- und Abgabenlast.",
+            gg: "Gelebter Verfassungsrahmen des Grundgesetzes: Balance aus Grundrechten (Art. 2, 12, 14) und starkem Sozialstaatsauftrag (Art. 20 Abs. 1)."
+          }
+        },
+        {
+          id: "ddr",
+          name: "Zentralverwaltungswirtschaft DDR",
+          shortName: "DDR (1949–1990)",
+          era: "DDR · 1949–1990",
+          isCommandState: true,
+          e: 94,
+          p: 95,
+          s: 92,
+          sectors: {
+            wasser: 3, schulen: 3, bahn: 3, kliniken: 3, strom: 3, konzerne: 3, wohnen: 3, handwerk: 2,
+            wasser_p: 3, miete_p: 3, strom_p: 3, nahrung: 3, loehne: 3, konsum: 3,
+            notfall: 3, kranken: 3, rente: 3, arbeit: 3, kartell: 0, foerder: 3
+          },
+          rows: {
+            eigentum: "Fast vollständiges Staats- und Gemeineigentum (VEB = Volkseigene Betriebe, LPG); nur winzige Nischen im privaten Kleinsthandwerk.",
+            preise: "Zentrale Fünfjahrespläne der Staatlichen Plankommission bestimmten Mengen, Sortimente und staatliche Festpreise (stark subventionierte Grundgüter).",
+            staat: "Allzuständiger Planungs- und Lenkungsstaat unter SED-Führung; kein freier Wettbewerb, kein unabhängiges Kartellamt, staatliches Außenhandelsmonopol.",
+            arbeit: "Staatliche Lohn- und Gehaltstabellen, Recht und Pflicht auf Arbeit, keine freien Streiks und keine unabhängigen Gewerkschaften.",
+            soziales: "Staatliche Vollversorgung auf schlichtem Niveau: Einheits-Sozialversicherung, sehr günstige Kitas/Mieten, kaum offene Arbeitslosigkeit.",
+            wohnen: "Wohnraum staatlich verwaltet und zugeteilt (KWV) zu extrem niedrigen Festmieten bei gleichzeitigem Verfall vieler Altbauten; Wasser/Kliniken 100 % staatlich.",
+            dynamik: "Geringe Leistungsanreize, chronische Mangelwirtschaft (lange Wartezeiten z. B. auf Autos), veraltete Anlagen und Kollaps 1989/90.",
+            gg: "Mit dem Grundgesetz unvereinbar: verstößt gegen Eigentumsgarantie (Art. 14), Berufsfreiheit (Art. 12), Koalitionsfreiheit (Art. 9 Abs. 3) und Handlungsfreiheit (Art. 2 Abs. 1)."
+          }
+        }
+      ];
+
+      const COMPARE_ROWS_META = [
+        { key: "eigentum", label: "Eigentumsordnung" },
+        { key: "preise",   label: "Preis- & Mengensteuerung" },
+        { key: "staat",    label: "Staatsrolle & Ordnungspolitik" },
+        { key: "arbeit",   label: "Arbeitsmarkt & Löhne" },
+        { key: "soziales", label: "Soziale Sicherung" },
+        { key: "wohnen",   label: "Wohnen & Grundversorgung" },
+        { key: "dynamik",  label: "Innovation & Langzeit-Dynamik" },
+        { key: "gg",       label: "Bezug zum Grundgesetz" }
+      ];
+
+      function getSectorLabel(dimNum, secId) {
+        const sec = SECTORS[dimNum].items.find((x) => x.id === secId);
+        const d = state[`dim${dimNum}`];
+        if (!sec || !d || !d.picked) return "—";
+        return sec.levels[getSectorLevel(dimNum, sec, d)];
+      }
+
+      function computeModelSimilarity(model) {
+        const { e, p, s, special } = getEffectiveScale();
+        const eSim = Math.pow(1 - Math.abs(e - model.e) / 100, 1.35);
+        const pSim = Math.pow(1 - Math.abs(p - model.p) / 100, 1.35);
+        const sSimRaw = Math.pow(1 - Math.abs(s - model.s) / 100, 1.25);
+
+        // Demokratischer Sozial- & Ordnungsstaat vs. autoritärer Planungsstaat sauber trennen
+        const studentIsCommand = Boolean(special && special.s >= 80);
+        const sSim = (Boolean(model.isCommandState) !== studentIsCommand)
+          ? sSimRaw * ((eSim + pSim) / 2)
+          : sSimRaw;
+
+        const dimSim = eSim * 0.4 + pSim * 0.4 + sSim * 0.2;
+
+        let secSum = 0;
+        let secCount = 0;
+        const dimsToCompare = special ? [1, 2] : [1, 2, 3];
+        dimsToCompare.forEach((dimNum) => {
+          const d = state[`dim${dimNum}`];
+          if (!d || !d.picked) return;
+          SECTORS[dimNum].items.forEach((sec) => {
+            const studentLvl = getSectorLevel(dimNum, sec, d);
+            const refLvl = model.sectors[sec.id];
+            secSum += 1 - Math.abs(studentLvl - refLvl) / 3;
+            secCount++;
+          });
+        });
+
+        const secSim = secCount > 0 ? secSum / secCount : dimSim;
+        // Wenn Grundordnung gegensätzlich ist (z. B. Marktwirtschaft vs. DDR-Planwirtschaft),
+        // verhindern wir, dass rein gemeinsame Infrastruktur (Wasser/Schulen) den Wert künstlich verzerrt
+        const secEffective = (Boolean(model.isCommandState) !== studentIsCommand)
+          ? secSim * (0.45 + 0.55 * ((eSim + pSim) / 2))
+          : secSim;
+
+        const pct = Math.max(0, Math.min(100, Math.round((dimSim * 0.65 + secEffective * 0.35) * 100)));
+
+        return {
+          model,
+          pct,
+          ePct: Math.round(eSim * 100),
+          pPct: Math.round(pSim * 100),
+          sPct: Math.round(sSim * 100),
+          secPct: Math.round(secEffective * 100)
+        };
+      }
+
+      function buildStudentCompareRows() {
+        const { e, p, s, special } = getEffectiveScale();
+        const diag = diagnoseSystem(e, p, s);
+        const sim = computeSimulation(e, p, s);
+        const gg = evaluateGrundgesetz(e, p, s);
+
+        const dim1Name = `${DIM_META[1][state.dim1.picked].name} (${state.dim1.strength} %)`;
+        const dim2Name = `${DIM_META[2][state.dim2.picked].name} (${state.dim2.strength} %)`;
+        const dim3Name = special
+          ? `${special.label} (Sonderfall)`
+          : `${DIM_META[3][state.dim3.picked].name} (${state.dim3.strength} %)`;
+
+        const wItem = sim.find((x) => x.id === "wirtschaft");
+        const iItem = sim.find((x) => x.id === "innovation");
+
+        const arbeitDim3 = special
+          ? (special.s >= 80 ? "Staatliche Arbeitslenkung ohne unabhängige Tarifpartner." : "Kaum gesetzlicher Arbeits- oder Kündigungsschutz.")
+          : `Mindestlohn & Schutz: ${getSectorLabel(3, "arbeit")}.`;
+
+        const sozialesText = special
+          ? (special.s >= 80
+            ? "Staatliche Einheits- und Vollversorgung auf Basis des zentralen Plans."
+            : "Weitgehend private Eigenvorsorge ohne ausgebautes staatliches Sozialnetz.")
+          : `Existenzminimum: ${getSectorLabel(3, "notfall")}; Krankenversicherung: ${getSectorLabel(3, "kranken")}; Rente & ALG: ${getSectorLabel(3, "rente")}; Wohngeld/BAB/BAföG: ${getSectorLabel(3, "foerder")}.`;
+
+        const staatText = special
+          ? `${special.text}`
+          : `Kartellamt (Monopole): ${getSectorLabel(3, "kartell")}. ${diag.explain}`;
+
+        const ggClass = gg.status === "green" ? "is-good" : gg.status === "yellow" ? "is-warn" : "is-bad";
+
+        return {
+          subtitle: diag.name,
+          rows: {
+            eigentum: `<span class="compare-pill">${escapeHtml(dim1Name)}</span><br>Industrie &amp; Banken: ${escapeHtml(getSectorLabel(1, "konzerne"))}; Handwerk: ${escapeHtml(getSectorLabel(1, "handwerk"))}; Schulen: ${escapeHtml(getSectorLabel(1, "schulen"))}; Bahn: ${escapeHtml(getSectorLabel(1, "bahn"))}.`,
+            preise: `<span class="compare-pill">${escapeHtml(dim2Name)}</span><br>Technik &amp; Kleidung: ${escapeHtml(getSectorLabel(2, "konsum"))}; Grundnahrungsmittel: ${escapeHtml(getSectorLabel(2, "nahrung"))}; Strom &amp; Gas: ${escapeHtml(getSectorLabel(2, "strom_p"))}.`,
+            staat: `<span class="compare-pill">${escapeHtml(dim3Name)}</span><br>${escapeHtml(staatText)}`,
+            arbeit: `Löhne &amp; Gehälter: <strong>${escapeHtml(getSectorLabel(2, "loehne"))}</strong>. ${escapeHtml(arbeitDim3)}`,
+            soziales: escapeHtml(sozialesText),
+            wohnen: `Mietwohnungen: ${escapeHtml(getSectorLabel(1, "wohnen"))} (${escapeHtml(getSectorLabel(2, "miete_p"))}); Trinkwasser: ${escapeHtml(getSectorLabel(1, "wasser"))} (${escapeHtml(getSectorLabel(2, "wasser_p"))}); Kliniken: ${escapeHtml(getSectorLabel(1, "kliniken"))}.`,
+            dynamik: `100-Jahres-Trend: Wirtschaft endet bei <strong>${wItem ? wItem.points[5] : "—"} Pkt.</strong>, Innovation bei <strong>${iItem ? iItem.points[5] : "—"} Pkt.</strong> Chance: ${escapeHtml(diag.pros[0])} Risiko: ${escapeHtml(diag.cons[0])}`,
+            gg: `<span class="compare-pill ${ggClass}">${escapeHtml(gg.title)}</span><br>${escapeHtml(gg.summary)}`
+          }
+        };
+      }
+
+      function renderCompareLayer() {
+        if (!isCompareAccessible()) return;
+        if (teacherMode && !isReadyForFinal()) {
+          loadTeacherDemoIntoMemory("de2026");
+        }
+        const student = buildStudentCompareRows();
+        const matches = COMPARE_MODELS.map((m) => computeModelSimilarity(m));
+        const ranked = [...matches].sort((a, b) => b.pct - a.pct);
+        const winner = ranked[0];
+        const runnerUp = ranked[1];
+
+        $("compareTableWrap").innerHTML = `
+          <table class="compare-table" aria-label="Vergleichstabelle der Wirtschaftsordnungen">
+            <thead>
+              <tr>
+                <th class="col-prop">Eigenschaft</th>
+                ${COMPARE_MODELS.map((m) => `
+                  <th>${escapeHtml(m.name)}<span class="col-sub">${escapeHtml(m.era)}</span></th>
+                `).join("")}
+                <th class="col-student">Deine Auswahl<span class="col-sub">${escapeHtml(student.subtitle)}</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              ${COMPARE_ROWS_META.map((row) => `
+                <tr>
+                  <td class="col-prop">${escapeHtml(row.label)}</td>
+                  ${COMPARE_MODELS.map((m) => `<td>${escapeHtml(m.rows[row.key])}</td>`).join("")}
+                  <td class="col-student">${student.rows[row.key]}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        `;
+
+        $("compareMatchGrid").innerHTML = matches.map((item) => {
+          const isWinner = item.model.id === winner.model.id;
+          return `
+            <div class="match-card ${isWinner ? "is-winner" : ""}">
+              <div class="match-card-top">
+                <div>
+                  <div class="match-card-title">${escapeHtml(item.model.name)}</div>
+                  <div class="match-card-era">${escapeHtml(item.model.era)}</div>
+                </div>
+                ${isWinner ? `<span class="match-winner-badge">Am nächsten</span>` : ""}
+              </div>
+              <div class="match-pct-row">
+                <span class="match-pct-val">${item.pct} %</span>
+                <span class="match-pct-label">Deckungsgleichheit</span>
+              </div>
+              <div class="match-bar-track" role="progressbar" aria-valuenow="${item.pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Deckungsgleichheit mit ${escapeHtml(item.model.shortName)}: ${item.pct} Prozent">
+                <div class="match-bar-fill" style="transform: scaleX(${(item.pct / 100).toFixed(3)});"></div>
+              </div>
+              <div class="match-sub-grid">
+                <span>Eigentum<strong>${item.ePct} %</strong></span>
+                <span>Steuerung<strong>${item.pPct} %</strong></span>
+                <span>Staatsrolle<strong>${item.sPct} %</strong></span>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        const weakestDim = [
+          { name: "Eigentumsordnung", val: winner.ePct },
+          { name: "Preis- & Mengensteuerung", val: winner.pPct },
+          { name: "Staatsrolle & Ausgleich", val: winner.sPct }
+        ].sort((a, b) => a.val - b.val)[0];
+
+        const gapNote = winner.pct - runnerUp.pct <= 6
+          ? `Knapp dahinter folgt „${runnerUp.model.shortName}“ mit ${runnerUp.pct} % – dein Entwurf liegt also zwischen beiden Modellen.`
+          : `Der Abstand zum zweitnächsten Modell („${runnerUp.model.shortName}“, ${runnerUp.pct} %) ist mit ${winner.pct - runnerUp.pct} Prozentpunkten deutlich.`;
+
+        const diffNote = weakestDim.val >= 90
+          ? `Alle drei Dimensionen liegen sehr eng an diesem Vergleichsmodell (auch die Feinjustierung erreicht ${winner.secPct} % Übereinstimmung).`
+          : `Den größten Unterschied zu diesem Modell hast du im Bereich „${weakestDim.name}“ (${weakestDim.val} % Übereinstimmung) gesetzt.`;
+
+        $("compareMatchSummary").innerHTML = `
+          <strong>Ergebnis deines System-Vergleichs:</strong> Deine getroffene Auswahl hat mit <strong>${winner.pct} %</strong> die höchste Deckungsgleichheit mit <strong>${escapeHtml(winner.model.name)}</strong>.
+          ${escapeHtml(gapNote)} ${escapeHtml(diffNote)}
+        `;
+      }
+
+      function isCompareAccessible() {
+        return teacherMode || isGeneratorComplete();
+      }
+
+      function buildCompareText() {
+        if (!isCompareAccessible() || !isReadyForFinal()) return "";
+        const matches = COMPARE_MODELS.map((m) => computeModelSimilarity(m));
+        const ranked = [...matches].sort((a, b) => b.pct - a.pct);
+        return [
+          "SYSTEM-VERGLEICH & DECKUNGSGLEICHHEIT:",
+          ...matches.map((m) => `- ${m.model.name}: ${m.pct} % (Eigentum ${m.ePct} %, Steuerung ${m.pPct} %, Staatsrolle ${m.sPct} %)`),
+          `Höchste Übereinstimmung: ${ranked[0].model.name} (${ranked[0].pct} %)`
+        ].join("\n");
+      }
+
+      /* ============================================================
+         7C. LEHRKRAFT-MODUS (MASTERCODE 86), SMARTBOARD-DEMOS & LÖSUNGEN
+         ============================================================ */
+      const TEACHER_DEMOS = {
+        de2026: {
+          title: "Soziale Marktwirtschaft (Deutschland 2026)",
+          desc: "Kapitalismus 75 %, Marktwirtschaft 70 %, Sozial- & Ordnungsstaat 75 % – inkl. vollständig ausgefülltem Grundgesetz-TÜV (Einverstanden).",
+          dim1: { picked: "left", strength: 75, confirmed: true, overrides: { wasser: 3, schulen: 3, bahn: 3, kliniken: 2, strom: 1, konzerne: 0, wohnen: 1, handwerk: 0 } },
+          dim2: { picked: "left", strength: 70, confirmed: true, overrides: { wasser_p: 1, miete_p: 1, strom_p: 1, nahrung: 1, loehne: 1, konsum: 0 } },
+          dim3: { picked: "right", strength: 75, confirmed: true, overrides: { notfall: 2, kranken: 2, rente: 2, arbeit: 3, kartell: 2, foerder: 2 } }
+        },
+        erhard: {
+          title: "Soziale Marktwirtschaft nach Ludwig Erhard (1948–1966)",
+          desc: "Kapitalismus 80 %, Marktwirtschaft 85 %, Sozial- & Ordnungsstaat 55 % (starkes Kartellamt, schlankeres Sozialnetz).",
+          dim1: { picked: "left", strength: 80, confirmed: true, overrides: { wasser: 3, schulen: 3, bahn: 3, kliniken: 1, strom: 1, konzerne: 0, wohnen: 1, handwerk: 0 } },
+          dim2: { picked: "left", strength: 85, confirmed: true, overrides: { wasser_p: 1, miete_p: 0, strom_p: 0, nahrung: 0, loehne: 0, konsum: 0 } },
+          dim3: { picked: "right", strength: 55, confirmed: true, overrides: { notfall: 2, kranken: 2, rente: 2, arbeit: 2, kartell: 3, foerder: 1 } }
+        },
+        ddr: {
+          title: "Zentralverwaltungswirtschaft DDR (1949–1990)",
+          desc: "Sozialismus 95 % + Planwirtschaft 95 % (Sonderfall in Dim. 3) – demonstriert GG-Verbot (Art. 14, 15, 12, 2, 9 GG).",
+          dim1: { picked: "right", strength: 95, confirmed: true, overrides: { wasser: 3, schulen: 3, bahn: 3, kliniken: 3, strom: 3, konzerne: 3, wohnen: 3, handwerk: 2 } },
+          dim2: { picked: "right", strength: 95, confirmed: true, overrides: { wasser_p: 3, miete_p: 3, strom_p: 3, nahrung: 3, loehne: 3, konsum: 3 } },
+          dim3: { picked: null, strength: 60, confirmed: false, overrides: {} }
+        },
+        nachtwaechter: {
+          title: "Reiner Kapitalismus & Nachtwächterstaat (Sonderfall)",
+          desc: "Kapitalismus 100 % + Marktwirtschaft 100 % – demonstriert GG-Verstoß gegen Sozialstaatsprinzip & Menschenwürde (Art. 20 Abs. 1, Art. 1 Abs. 1 GG).",
+          dim1: { picked: "left", strength: 100, confirmed: true, overrides: {} },
+          dim2: { picked: "left", strength: 100, confirmed: true, overrides: {} },
+          dim3: { picked: null, strength: 60, confirmed: false, overrides: {} }
+        }
+      };
+
+      function loadTeacherDemoIntoMemory(presetId) {
+        const preset = TEACHER_DEMOS[presetId] || TEACHER_DEMOS.de2026;
+        state.dim1 = JSON.parse(JSON.stringify(preset.dim1));
+        state.dim2 = JSON.parse(JSON.stringify(preset.dim2));
+        state.dim3 = JSON.parse(JSON.stringify(preset.dim3));
+        state.ggChecked = true;
+        state.ggReasons = {};
+        state.ggCheckedRefs = {};
+        const { e, p, s } = getEffectiveScale();
+        const gg = evaluateGrundgesetz(e, p, s);
+        gg.articles.forEach((art) => {
+          state.ggReasons[art.ref] = getGGModelAnswer(art);
+          state.ggCheckedRefs[art.ref] = true;
+        });
+        state.ggVerified = true;
+      }
+
+      function applyTeacherDemo(presetId, targetLayer) {
+        if (!teacherMode) return;
+        loadTeacherDemoIntoMemory(presetId);
+        if (targetLayer) state.layer = targetLayer;
+        $("teacherSolutionModal").classList.remove("is-open");
+        renderAll();
+        const preset = TEACHER_DEMOS[presetId] || TEACHER_DEMOS.de2026;
+        showToast(`Demo geladen: ${preset.title}`);
+        if (state.layer === "generator") {
+          $("finalArea").scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      }
+
+      function fillAllTeacherGGModelAnswers() {
+        if (!teacherMode) return;
+        if (!isReadyForFinal()) {
+          showToast("Bitte erst ein System abschließen oder oben eine Demo laden.");
+          return;
+        }
+        state.ggChecked = true;
+        const { e, p, s } = getEffectiveScale();
+        const gg = evaluateGrundgesetz(e, p, s);
+        gg.articles.forEach((art) => {
+          state.ggReasons[art.ref] = getGGModelAnswer(art);
+          state.ggCheckedRefs[art.ref] = true;
+        });
+        state.ggVerified = true;
+        renderProgressChips();
+        renderLayer();
+        renderGGResult();
+        $("ggResultWrap").scrollIntoView({ behavior: "smooth", block: "start" });
+        showToast("Alle Grundgesetz-Musterlösungen eingetragen & geprüft!");
+      }
+
+      function enterTeacherMode() {
+        if (teacherMode) return;
+        studentStateBackup = JSON.parse(JSON.stringify(state));
+        teacherMode = true;
+        $("teacherCodeModal").classList.remove("is-open");
+        $("teacherCodeInput").value = "";
+        $("teacherCodeError").classList.remove("is-visible");
+        renderAll();
+        showToast("Lehrkraft-Modus aktiv – alle Bereiche & Lösungen freigeschaltet.");
+      }
+
+      function exitTeacherMode() {
+        if (!teacherMode) return;
+        teacherMode = false;
+        $("teacherSolutionModal").classList.remove("is-open");
+        if (studentStateBackup) {
+          state = studentStateBackup;
+          studentStateBackup = null;
+        } else {
+          state = loadState();
+        }
+        renderAll();
+        showToast("Lehrkraft-Modus beendet – Schülerstand wiederhergestellt.");
+      }
+
+      function renderTeacherSolutionsModal(tabId) {
+        activeTeacherTab = tabId || activeTeacherTab || "gg";
+        document.querySelectorAll("[data-teacher-tab]").forEach((btn) => {
+          const active = btn.dataset.teacherTab === activeTeacherTab;
+          btn.classList.toggle("is-active", active);
+          btn.setAttribute("aria-selected", active ? "true" : "false");
+        });
+
+        const body = $("teacherSolBody");
+
+        if (activeTeacherTab === "gg") {
+          const validGG = evaluateGrundgesetz(25, 27, 76);
+          const borderGG = evaluateGrundgesetz(70, 58, 84);
+          const invalidNachtGG = evaluateGrundgesetz(0, 0, 6);
+          const invalidPlanGG = evaluateGrundgesetz(94, 95, 92);
+
+          const renderGroup = (title, badgeClass, verdictText, articles) => `
+            <div class="teacher-sol-card">
+              <h4><span class="compare-pill ${badgeClass}" style="margin-right:6px;">${escapeHtml(verdictText)}</span>${escapeHtml(title)}</h4>
+              <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+                ${articles.map((art) => `
+                  <div style="background:#fff; border:1px solid var(--ios-separator); border-radius:10px; padding:10px 12px;">
+                    <div style="font-weight:700; font-size:0.84rem; margin-bottom:3px;">${escapeHtml(art.ref)} · <span style="color:var(--ios-text-secondary);">${escapeHtml(art.statusLabel)} – ${escapeHtml(art.keyword)}</span></div>
+                    <div style="font-size:0.83rem; color:var(--ios-text-primary);"><strong>Musterlösung:</strong> ${escapeHtml(getGGModelAnswer(art))}</div>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+          `;
+
+          body.innerHTML = `
+            <div class="teacher-sol-card" style="background:#F5F3FF; border-color:rgba(88,86,214,0.28);">
+              <h4>Verfassungsrechtlicher Leitgedanke (BVerfG)</h4>
+              <p style="color:#312E81;">Das Grundgesetz schreibt kein festes Wirtschaftssystem vor (Investitionshilfe-Urteil 1954, Mitbestimmungsurteil 1979). Erwartung an die Klasse: Die wirtschaftspolitische Neutralität gilt nur innerhalb der Grundrechts- und Sozialstaatsgrenzen. Der Freitext-Prüfer bewertet eine Antwort als „fachlich überzeugend“, sobald Thema/Artikel korrekt aufgegriffen und kausal mit dem eigenen Pfad verknüpft werden.</p>
+            </div>
+            ${renderGroup("Pfad 1: Soziale Marktwirtschaft (z. B. DE 2026 / Ludwig Erhard)", "is-good", "Einverstanden", validGG.articles)}
+            ${renderGroup("Pfad 2: Gemischte / stark gelenkte Grenzbereiche", "is-warn", "Graupunkte", borderGG.articles)}
+            ${renderGroup("Pfad 3a: Reiner Nachtwächterstaat (ohne Sozialnetz)", "is-bad", "Verbietet", invalidNachtGG.articles)}
+            ${renderGroup("Pfad 3b: Sozialistische Zentralverwaltungswirtschaft (z. B. DDR)", "is-bad", "Verbietet", invalidPlanGG.articles)}
+          `;
+          return;
+        }
+
+        if (activeTeacherTab === "dims") {
+          body.innerHTML = `
+            <div class="teacher-sol-card">
+              <h4>1. Dimension: Eigentumsordnung (Kapitalismus vs. Sozialismus)</h4>
+              <ul class="teacher-sol-list">
+                <li><strong>Kapitalismus (Privateigentum):</strong> Handwerk &amp; Läden sind systembedingt fest „Rein privat“. Mietwohnungen, Strom &amp; Energie sowie Industrie &amp; Banken bleiben privat dominiert („Rein privat“ / „Größtenteils privat“). Kliniken schließen ein rein staatliches Monopol aus. Öffentliche Infrastruktur (Trinkwasser, Schulen, Bahn) kann als Daseinsvorsorge trotzdem staatlich sein (z. B. Deutschland, USA Public Schools).</li>
+                <li><strong>Sozialismus (Gemeineigentum):</strong> Nirgendwo ist „Rein privat“ wählbar. Trinkwasserleitung ist systembedingt fest „Staatlich“; Schulen, Bahn, Kliniken, Strom, Industrie und Mietwohnungen bleiben im öffentlichen Bereich („Wenig privat“ / „Staatlich“); nur Handwerk &amp; Läden erlauben noch Nischen („Größtenteils privat“).</li>
+              </ul>
+            </div>
+            <div class="teacher-sol-card">
+              <h4>2. Dimension: Koordinationsmechanismus (Marktwirtschaft vs. Planwirtschaft)</h4>
+              <ul class="teacher-sol-list">
+                <li><strong>Marktwirtschaft:</strong> Technik &amp; Kleidung stehen systembedingt fest auf „Freier Markt“. Mieten, Strom, Grundnahrungsmittel und Löhne erlauben unter Kapitalismus nur freie Preise oder marktkonforme Rahmenregeln (Mietpreisbremse, Preisbremse, Steuer-Rabatt, Tarif + Mindestlohn). Nur Wasser als natürliches Monopol erlaubt eine kommunale Deckelung.</li>
+                <li><strong>Planwirtschaft:</strong> Kein „Freier Markt“ in irgendeinem Sektor; Preise, Löhne und Gütermengen werden gelenkt oder zentral per Staatsplan festgelegt.</li>
+                <li><strong>Dimensionen-übergreifende Logik:</strong> Staatliches Trinkwasser, Strom oder Wohnungen in Dim. 1 entfernen in Dim. 2 automatisch den „Freien Markt“. Bei Marktsozialismus (Sozialismus + Marktwirtschaft) gelten Miet-/Stromdeckel und mindestens Tarif + Mindestlohn.</li>
+              </ul>
+            </div>
+            <div class="teacher-sol-card">
+              <h4>3. Dimension: Staatsauffassung &amp; die 4 automatischen Sonderfälle</h4>
+              <ul class="teacher-sol-list">
+                <li><strong>Regelfall:</strong> Nachtwächterstaat erlaubt je Bereich nur niedrige Stufen („Aus“ / schmale Basis); Sozial- &amp; Ordnungsstaat sichert Existenzminimum, Krankenversicherung, Rente, Arbeitsschutz und Kartellamt immer solide bis stark ab.</li>
+                <li><strong>Sonderfall 1 (Sozialismus + Planwirtschaft):</strong> Allzuständiger Planungsstaat (wie DDR) – Dim. 3 automatisch festgelegt.</li>
+                <li><strong>Sonderfall 2 (Konsequenter Sozialismus &ge; 85 %):</strong> Staatliche Lenkung der Grundversorgung – Dim. 3 automatisch festgelegt.</li>
+                <li><strong>Sonderfall 3 (Totale Planwirtschaft &ge; 85 %):</strong> Zentrale Planbehörde erzwingt starken Lenkungsstaat – Dim. 3 automatisch festgelegt.</li>
+                <li><strong>Sonderfall 4 (Reiner Kapitalismus &ge; 90 % + Reine Marktwirtschaft &ge; 90 %):</strong> Minimaler Nachtwächterstaat – Dim. 3 automatisch festgelegt.</li>
+              </ul>
+            </div>
+          `;
+          return;
+        }
+
+        if (activeTeacherTab === "compare") {
+          body.innerHTML = `
+            <div class="teacher-sol-card">
+              <h4>Berechnungsformel der prozentualen Deckungsgleichheit (Bereich 3)</h4>
+              <p>Die Ähnlichkeit zu Ludwig Erhard (1948–1966), Deutschland 2026 und DDR (1949–1990) kombiniert <strong>65 % Grundrichtungen</strong> (Eigentum 40 %, Steuerung 40 %, Staatsrolle 20 %) mit <strong>35 % Feinjustierung</strong> über alle eingestellten Lebensbereiche. Ein demokratischer Sozial- &amp; Ordnungsstaat wird dabei sauber vom autoritären SED-Planungsstaat getrennt, sodass gemeinsame Infrastruktur (z. B. staatliche Schulen oder Trinkwasser) das Ergebnis nicht verzerrt.</p>
+            </div>
+            <div class="teacher-sol-card">
+              <h4>Referenz-Richtwerte im System-Vergleich</h4>
+              <ul class="teacher-sol-list">
+                <li><strong>Profil „Deutschland 2026“:</strong> ~99 % DE 2026 · ~83 % Ludwig Erhard · ~24 % DDR</li>
+                <li><strong>Profil „Ludwig Erhard“:</strong> ~98 % Ludwig Erhard · ~86 % DE 2026 · ~15 % DDR</li>
+                <li><strong>Profil „DDR-Planwirtschaft“:</strong> ~97 % DDR · ~38 % DE 2026 · ~26 % Ludwig Erhard</li>
+                <li><strong>Profil „Reiner Kapitalismus + Marktwirtschaft“:</strong> ~71 % Ludwig Erhard · ~57 % DE 2026 · ~1 % DDR</li>
+              </ul>
+            </div>
+            <div class="teacher-sol-card">
+              <h4>Unterrichtsimpulse für die Sicherungsphase (Plenum)</h4>
+              <ul class="teacher-sol-list">
+                <li><strong>Erhard vs. Deutschland 2026:</strong> Warum liegt ein typischer Schüler-Entwurf oft näher an 2026 als an 1957? (Ausbau von Mindestlohn, Bürgergeld, Mietpreisbremse, stärkerer Sozialstaat vs. höhere Bürokratie &amp; Abgaben).</li>
+                <li><strong>Existenzbedürfnisse:</strong> Warum sind Trinkwasser und Schulen auch im Kapitalismus meist staatlich, während Smartphones und Handwerk privat bleiben?</li>
+                <li><strong>Verfassungsgrenze:</strong> Welche Stellschrauben kippen das Grundgesetz ins „Verbietet“ (Art. 20 Abs. 1 beim Nachtwächterstaat; Art. 14, 12, 9, 2 bei der Planwirtschaft)?</li>
+              </ul>
+            </div>
+          `;
+          return;
+        }
+
+        // Tab 4: Smartboard-Demos
+        body.innerHTML = `
+          <div class="teacher-sol-card" style="background:#F5F3FF; border-color:rgba(88,86,214,0.28);">
+            <h4>Smartboard-Schnellstart (ohne Verlust des Schülerstands)</h4>
+            <p style="color:#312E81;">Mit einem Klick lädst du ein fertiges Referenzsystem inklusive aller ausgefüllten und geprüften Grundgesetz-Musterlösungen. Beim Beenden des Lehrkraft-Modus wird wieder exakt der ursprüngliche Schülerstand geladen.</p>
+          </div>
+          <div class="teacher-demo-grid">
+            ${Object.entries(TEACHER_DEMOS).map(([id, d]) => `
+              <div class="teacher-sol-card" style="display:flex; flex-direction:column; gap:10px;">
+                <h4>${escapeHtml(d.title)}</h4>
+                <p style="flex:1;">${escapeHtml(d.desc)}</p>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                  <button type="button" class="ios-btn ios-btn-primary" data-modal-demo="${id}" data-modal-layer="generator">Im Generator zeigen</button>
+                  <button type="button" class="ios-btn ios-btn-teacher" data-modal-demo="${id}" data-modal-layer="compare">Im Vergleich zeigen</button>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        `;
+
+        body.querySelectorAll("[data-modal-demo]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            applyTeacherDemo(btn.dataset.modalDemo, btn.dataset.modalLayer);
+          });
+        });
       }
 
       function updatePrintMeta() {
@@ -4618,24 +6138,75 @@
       }
 
       function renderLayer() {
+        const unlocked = isCompareAccessible();
+        if (state.layer === "compare" && !unlocked) {
+          state.layer = "home";
+        }
+
         const isHome = state.layer === "home";
         const isGuide = state.layer === "guide";
         const isGen = state.layer === "generator";
+        const isComp = state.layer === "compare";
 
         $("layerHome").classList.toggle("is-active", isHome);
         $("layerGuide").classList.toggle("is-active", isGuide);
         $("layerGenerator").classList.toggle("is-active", isGen);
+        $("layerCompare").classList.toggle("is-active", isComp);
 
         $("btnBackHome").style.display = isHome ? "none" : "inline-flex";
         $("btnOpenGuideTop").style.display = isGen ? "inline-flex" : "none";
         $("btnReset").style.display = isGen ? "inline-flex" : "none";
         $("progressStrip").style.display = isGen ? "flex" : "none";
 
+        // Lehrkraft-Header & Smartboard-Leisten aktualisieren
+        const teacherBtn = $("btnTeacherToggle");
+        teacherBtn.classList.toggle("is-active", teacherMode);
+        teacherBtn.innerHTML = teacherMode ? "&#10003; Lehrkraft aktiv" : "&#128274; Lehrkraft";
+        teacherBtn.title = teacherMode ? "Lehrkraft-Modus beenden und Schülerstand wiederherstellen" : "Lehrkraft-Modus mit Mastercode öffnen";
+        $("btnTeacherSolutions").style.display = teacherMode ? "inline-flex" : "none";
+        $("teacherGenBar").classList.toggle("is-visible", teacherMode);
+        $("teacherCompareBar").classList.toggle("is-visible", teacherMode);
+
         const hasProgress = state.dim1.picked !== null || state.dim1.confirmed;
-        $("tileGeneratorCta").innerHTML = hasProgress ? "Generator fortsetzen &rarr;" : "Generator starten &rarr;";
+        $("tileGeneratorCta").innerHTML = isGeneratorComplete()
+          ? "Generator ansehen &rarr;"
+          : hasProgress
+          ? "Generator fortsetzen &rarr;"
+          : "Generator starten &rarr;";
+
+        // Bereich 3 Kachel auf Layer 1 sperren / freischalten
+        const unlockInfo = getGeneratorUnlockStatus();
+        const compareOpen = teacherMode || unlockInfo.unlocked;
+        const tileComp = $("tileCompare");
+        tileComp.classList.toggle("is-locked", !compareOpen);
+        tileComp.classList.toggle("is-compare-ready", compareOpen);
+        tileComp.setAttribute("aria-disabled", compareOpen ? "false" : "true");
+        $("tileCompareTag").textContent = teacherMode && !unlockInfo.unlocked
+          ? "Bereich 3 · Masterzugang"
+          : compareOpen
+          ? "Bereich 3 · Freigeschaltet"
+          : "Bereich 3 · Gesperrt";
+        $("tileCompareStatus").textContent = teacherMode && !unlockInfo.unlocked
+          ? "Über Lehrkraft-Masterzugang sofort freigeschaltet."
+          : unlockInfo.hint;
+        $("tileCompareCta").innerHTML = compareOpen ? "Vergleich öffnen &rarr;" : "Erst nach Bereich 2";
+        $("tileCompareIcon").innerHTML = compareOpen
+          ? `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>`
+          : `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`;
+
+        const unlockBanner = $("ggUnlockBanner");
+        if (unlockBanner) unlockBanner.classList.toggle("is-visible", compareOpen && isReadyForFinal());
+
+        if (isComp) {
+          renderCompareLayer();
+        }
       }
 
       function setLayer(nextLayer) {
+        if (nextLayer === "compare" && !isCompareAccessible()) {
+          showToast(getGeneratorUnlockStatus().hint);
+          return;
+        }
         state.layer = nextLayer;
         renderLayer();
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -4715,16 +6286,16 @@
           "Kernaussage BVerfG: Wirtschaftspolitische Neutralität des Grundgesetzes innerhalb der Grundrechts- und Sozialstaatsgrenzen.",
           "",
           "BERÜHRTE ARTIKEL, ABSÄTZE & MEINE BEGRÜNDUNGEN:",
-          articlesText
+          articlesText,
+          ...(isGeneratorComplete() ? ["", buildCompareText()] : [])
         ].join("\n");
       }
 
-      async function copyLernzettel() {
-        const text = buildLernzettelText();
+      async function copyTextToClipboard(text, okMsg) {
         try {
           if (navigator.clipboard && navigator.clipboard.writeText) {
             await navigator.clipboard.writeText(text);
-            showToast("Lernzettel in die Zwischenablage kopiert!");
+            showToast(okMsg);
             return;
           }
         } catch { /* fallback below */ }
@@ -4736,17 +6307,21 @@
         tmp.select();
         try {
           document.execCommand("copy");
-          showToast("Lernzettel in die Zwischenablage kopiert!");
+          showToast(okMsg);
         } catch {
           showToast("Kopieren blockiert – nutze den Drucken-Button.");
         }
         document.body.removeChild(tmp);
       }
 
+      function copyLernzettel() {
+        return copyTextToClipboard(buildLernzettelText(), "Lernzettel in die Zwischenablage kopiert!");
+      }
+
       /* ============================================================
          9. EVENTS
          ============================================================ */
-      // Layer-Navigation (Startseite <-> Bearbeitungsanweisung <-> Generator)
+      // Layer-Navigation (Startseite <-> Bearbeitungsanweisung <-> Generator <-> System-Vergleich)
       $("btnGoHome").addEventListener("click", () => setLayer("home"));
       $("btnBackHome").addEventListener("click", () => setLayer("home"));
       $("btnGuideBackHome").addEventListener("click", () => setLayer("home"));
@@ -4754,6 +6329,19 @@
       $("btnOpenGuideTop").addEventListener("click", () => setLayer("guide"));
       $("tileGenerator").addEventListener("click", () => setLayer("generator"));
       $("btnGuideToGenerator").addEventListener("click", () => setLayer("generator"));
+      $("tileCompare").addEventListener("click", () => setLayer("compare"));
+      $("btnGoCompareFromGG").addEventListener("click", () => setLayer("compare"));
+      $("btnCompareBackHome").addEventListener("click", () => setLayer("home"));
+      $("btnCompareBackGen").addEventListener("click", () => setLayer("generator"));
+      $("btnComparePrint").addEventListener("click", () => {
+        const det = $("compareTableDetails");
+        if (det) det.open = true;
+        updatePrintMeta();
+        window.print();
+      });
+      $("btnCompareCopy").addEventListener("click", () => {
+        copyTextToClipboard(buildCompareText(), "System-Vergleich in die Zwischenablage kopiert!");
+      });
 
       document.querySelectorAll(".pole-pill").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -4832,7 +6420,9 @@
       // Grundgesetz-TÜV
       $("btnCheckGG").addEventListener("click", () => {
         state.ggChecked = true;
+        saveState();
         renderProgressChips();
+        renderLayer();
         renderGGResult();
         $("ggResultWrap").scrollIntoView({ behavior: "smooth", block: "nearest" });
       });
@@ -4868,7 +6458,77 @@
         renderAll();
         $("resetModal").classList.remove("is-open");
         window.scrollTo({ top: 0, behavior: "smooth" });
-        showToast("Alle Schritte wurden zurückgesetzt");
+        showToast(teacherMode ? "Lehrkraft-Ansicht zurückgesetzt (Schülerstand bleibt sicher)" : "Alle Schritte wurden zurückgesetzt");
+      });
+
+      // Lehrkraft-Modus (Mastercode 86) & Gesamt-Lösungsübersicht
+      function submitTeacherCode() {
+        const val = ($("teacherCodeInput").value || "").trim();
+        if (val === TEACHER_MASTER_CODE) {
+          enterTeacherMode();
+        } else {
+          $("teacherCodeError").classList.add("is-visible");
+          $("teacherCodeInput").select();
+        }
+      }
+
+      $("btnTeacherToggle").addEventListener("click", () => {
+        if (teacherMode) {
+          exitTeacherMode();
+        } else {
+          $("teacherCodeError").classList.remove("is-visible");
+          $("teacherCodeInput").value = "";
+          $("teacherCodeModal").classList.add("is-open");
+          setTimeout(() => $("teacherCodeInput").focus(), 40);
+        }
+      });
+
+      $("btnCancelTeacherCode").addEventListener("click", () => {
+        $("teacherCodeModal").classList.remove("is-open");
+      });
+      $("teacherCodeModal").addEventListener("click", (e) => {
+        if (e.target === $("teacherCodeModal")) $("teacherCodeModal").classList.remove("is-open");
+      });
+      $("btnSubmitTeacherCode").addEventListener("click", submitTeacherCode);
+      $("teacherCodeInput").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          submitTeacherCode();
+        } else {
+          $("teacherCodeError").classList.remove("is-visible");
+        }
+      });
+
+      function openTeacherSolutions() {
+        if (!teacherMode) return;
+        renderTeacherSolutionsModal(activeTeacherTab);
+        $("teacherSolutionModal").classList.add("is-open");
+      }
+
+      $("btnTeacherSolutions").addEventListener("click", openTeacherSolutions);
+      document.querySelectorAll("[data-open-solutions]").forEach((btn) => {
+        btn.addEventListener("click", openTeacherSolutions);
+      });
+      $("btnCloseTeacherSol").addEventListener("click", () => {
+        $("teacherSolutionModal").classList.remove("is-open");
+      });
+      $("teacherSolutionModal").addEventListener("click", (e) => {
+        if (e.target === $("teacherSolutionModal")) $("teacherSolutionModal").classList.remove("is-open");
+      });
+      document.querySelectorAll("[data-teacher-tab]").forEach((btn) => {
+        btn.addEventListener("click", () => renderTeacherSolutionsModal(btn.dataset.teacherTab));
+      });
+      document.querySelectorAll("[data-teacher-demo]").forEach((btn) => {
+        btn.addEventListener("click", () => applyTeacherDemo(btn.dataset.teacherDemo, btn.dataset.demoLayer));
+      });
+      $("btnTeacherFillAllGG").addEventListener("click", fillAllTeacherGGModelAnswers);
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          $("resetModal").classList.remove("is-open");
+          $("teacherCodeModal").classList.remove("is-open");
+          $("teacherSolutionModal").classList.remove("is-open");
+        }
       });
 
       renderAll();
