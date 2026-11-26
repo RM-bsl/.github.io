@@ -340,10 +340,18 @@
       color: var(--ios-text-primary);
     }
 
-    /* Stretched link makes the entire large rectangular tile clickable */
+    /* Stretched button makes the entire large rectangular tile clickable */
     .tile-primary-link {
+      appearance: none;
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      font: inherit;
+      text-align: left;
       color: inherit;
       text-decoration: none;
+      cursor: pointer;
     }
 
     .tile-primary-link:focus {
@@ -1142,6 +1150,149 @@
       background: #BC2D20;
     }
 
+    /* Embedded Video Layer */
+    .video-layer {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 24px 28px 48px;
+      animation: layerFadeIn 0.24s ease-out;
+    }
+
+    .video-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .video-stage-card {
+      --accent: #007AFF;
+      --accent-soft: rgba(0, 122, 255, 0.11);
+      background: var(--ios-card-bg);
+      border-radius: var(--ios-radius-xl);
+      border: 1px solid rgba(60, 60, 67, 0.10);
+      box-shadow: var(--ios-shadow-card);
+      padding: 22px 24px 24px;
+    }
+
+    .video-stage-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .video-avatar {
+      width: 64px;
+      height: 76px;
+      border-radius: 14px;
+      object-fit: cover;
+      object-position: var(--img-pos, 50% 20%);
+      flex-shrink: 0;
+      background: #E5E5EA;
+      border: 1px solid rgba(60, 60, 67, 0.10);
+    }
+
+    .video-header-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .video-kicker-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+
+    .video-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: var(--ios-radius-pill);
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .video-person-tag {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--ios-text-secondary);
+    }
+
+    .video-stage-title {
+      margin: 0 0 4px;
+      font-size: clamp(1.3rem, 2vw, 1.65rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--ios-text-primary);
+    }
+
+    .video-stage-summary {
+      margin: 0;
+      font-size: 0.93rem;
+      line-height: 1.48;
+      color: var(--ios-text-secondary);
+    }
+
+    .video-embed-frame {
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-top: 56.25%;
+      overflow: hidden;
+      border-radius: 14px;
+      background: #1C1C1E;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.10);
+    }
+
+    .video-embed-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .video-stage-footer {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--ios-separator);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .video-nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .app-title-btn {
+      appearance: none;
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
     /* Tablet & Mobile Responsive */
     @media (max-width: 1060px) {
       .topic-tile {
@@ -1162,7 +1313,8 @@
         padding: 16px 20px;
       }
       .dashboard-main,
-      .sort-layer {
+      .sort-layer,
+      .video-layer {
         padding: 20px 20px 36px;
       }
       .page-footer {
@@ -1207,6 +1359,16 @@
       .tile-body {
         padding: 18px 18px 16px;
       }
+      .video-stage-card {
+        padding: 16px 16px 18px;
+      }
+      .video-stage-header {
+        align-items: flex-start;
+      }
+      .video-avatar {
+        width: 52px;
+        height: 62px;
+      }
       .header-meta {
         width: 100%;
         justify-content: flex-start;
@@ -1230,6 +1392,7 @@
       .sort-launch-btn,
       .principle-chip,
       .sort-layer,
+      .video-layer,
       .sort-board.is-shaking {
         transition: none;
         animation: none;
@@ -1250,9 +1413,11 @@
       <div class="brand-group">
         <div class="kicker-row">
           <span class="subject-pill">PuG · 12. Klasse</span>
-          <p class="header-subtitle">Klicke auf eine Kachel, um direkt zur passenden Canva-Übersicht zu wechseln.</p>
+          <p class="header-subtitle">Klicke auf eine Kachel, um das passende Erklärvideo direkt abzuspielen.</p>
         </div>
-        <h1 class="app-title">Wirtschafts- und Staatsmodelle</h1>
+        <h1 class="app-title">
+          <button type="button" class="app-title-btn" id="homeTitleBtn">Wirtschafts- und Staatsmodelle</button>
+        </h1>
       </div>
 
       <div class="header-meta">
@@ -1274,6 +1439,39 @@
       <!-- Kacheln werden per Script aus dem strukturierten Datenmodell gerendert -->
     </section>
   </main>
+
+  <section class="video-layer app-layer" id="videoLayer" hidden aria-label="Eingebettetes Erklärvideo">
+    <div class="video-topbar">
+      <button type="button" class="back-btn" id="backFromVideoBtn">← Zurück zu den Kacheln</button>
+      <div class="video-nav-buttons">
+        <button type="button" class="secondary-ios-btn" id="prevVideoBtn">← Vorheriges</button>
+        <button type="button" class="secondary-ios-btn" id="nextVideoBtn">Nächstes →</button>
+      </div>
+    </div>
+
+    <div class="video-stage-card" id="videoStageCard">
+      <div class="video-stage-header">
+        <img class="video-avatar" id="videoAvatar" src="" alt="">
+        <div class="video-header-copy">
+          <div class="video-kicker-row">
+            <span class="video-badge" id="videoBadge">Prinzip 01</span>
+            <span class="video-person-tag" id="videoPersonTag"></span>
+          </div>
+          <h2 class="video-stage-title" id="videoStageTitle"></h2>
+          <p class="video-stage-summary" id="videoStageSummary"></p>
+        </div>
+      </div>
+
+      <div class="video-embed-frame" id="videoEmbedFrame">
+        <!-- Eingebettetes Canva-Video wird beim Öffnen geladen -->
+      </div>
+
+      <div class="video-stage-footer">
+        <span class="sort-count-note" id="videoMetaCaption"></span>
+        <button type="button" class="secondary-ios-btn" id="closeVideoBottomBtn">Zurück zur Übersicht</button>
+      </div>
+    </div>
+  </section>
 
   <section class="sort-layer app-layer" id="sortLayer" hidden aria-label="Sortierspiel zur Korrekturhilfe">
     <div class="sort-topbar">
@@ -1358,7 +1556,7 @@
   </div>
 
   <footer class="page-footer">
-    <span>Politik und Gesellschaft (12. Klasse) · Alle Links öffnen in einem neuen Tab.</span>
+    <span>Politik und Gesellschaft (12. Klasse) · Alle Erklärvideos werden direkt in der Lernapp abgespielt.</span>
     <span>Bildquellen direkt auf jeder Kachel verlinkt.</span>
   </footer>
 
@@ -1374,7 +1572,8 @@
           number: '01',
           title: 'Marktwirtschaft',
           theme: 'theme-marktwirtschaft',
-          canvaUrl: 'https://canva.link/8ygw4nu9d6cvx1k',
+          embedUrl: 'https://www.canva.com/design/DAHbd8qeosw/nnVpXjKLjAD7xiPZXSQ2sw/watch?embed',
+          videoCredit: '12.KL_PuG_1.5-1.6_2.O_Marktwirtschaft · michael reball',
           person: 'Adam Smith',
           years: '1723–1790',
           summary: 'Adam Smith zeigte, wie Angebot, Nachfrage und freier Wettbewerb wie eine „unsichtbare Hand“ für Wohlstand sorgen, ohne dass der Staat die Wirtschaft lenkt.',
@@ -1388,7 +1587,8 @@
           number: '02',
           title: 'Sozial- & Ordnungsstaat',
           theme: 'theme-sozialstaat',
-          canvaUrl: 'https://canva.link/b5dxswp6w9gcss7',
+          embedUrl: 'https://www.canva.com/design/DAHbd-QnYG4/3cY08CzSAitvsslbqaLpOw/watch?embed',
+          videoCredit: '12.KL_PuG_1.5-1.6_3.O_Sozial- & Ordnungsstaat · michael reball',
           person: 'Lorenz von Stein',
           years: '1815–1890',
           summary: 'Lorenz von Stein entwickelte die Idee des modernen Sozialstaats, der durch klare Regeln und soziale Absicherung Konflikte ausgleicht und die Gesellschaft stabil hält.',
@@ -1402,7 +1602,8 @@
           number: '03',
           title: 'Planwirtschaft',
           theme: 'theme-planwirtschaft',
-          canvaUrl: 'https://canva.link/nri5pojdnzjcp95',
+          embedUrl: 'https://www.canva.com/design/DAHbd4ENI-U/KwjnIjjoQMhCPZFHzhTt1A/watch?embed',
+          videoCredit: '12.KL_PuG_1.5-1.6_2.O_Planwirtschaft · michael reball',
           person: 'Karl Marx',
           years: '1818–1883',
           summary: 'Karl Marx forderte, das Privateigentum an Fabriken und Betrieben abzuschaffen und die Wirtschaft gemeinsam zu planen, was später zur Grundlage staatlicher Planwirtschaften wurde.',
@@ -1416,7 +1617,8 @@
           number: '04',
           title: 'Sozialismus',
           theme: 'theme-sozialismus',
-          canvaUrl: 'https://canva.link/e1orevawrbhz6ff',
+          embedUrl: 'https://www.canva.com/design/DAHbd9x4CT8/bF-439bZQ4oN5lg2DrlIkg/watch?embed',
+          videoCredit: '12.KL_PuG_1.5-1.6_1.O_Sozialismus · michael reball',
           person: 'Robert Owen',
           years: '1771–1858',
           summary: 'Robert Owen bewies als Frühsozialist in seinen eigenen Musterfabriken, dass faire Löhne, Bildung und Gemeinschaftseigentum das Leben der Arbeiter spürbar verbessern.',
@@ -1430,7 +1632,8 @@
           number: '05',
           title: 'Nachtwächterstaat',
           theme: 'theme-nachtwaechter',
-          canvaUrl: 'https://canva.link/8lpdih11poq6p5c',
+          embedUrl: 'https://www.canva.com/design/DAHbd7oWE8k/r1YbyIb_sZCjLD3IS-DclQ/watch?embed',
+          videoCredit: '12.KL_PuG_1.5-1.6_3.O_Nachtwächterstaat · michael reball',
           person: 'Ferdinand Lassalle',
           years: '1825–1864',
           summary: 'Ferdinand Lassalle prägte den Begriff „Nachtwächterstaat“ spöttisch als Kritik an einem Staat, der sich nur um Sicherheit und den Schutz des Eigentums kümmert.',
@@ -1444,7 +1647,8 @@
           number: '06',
           title: 'Kapitalismus',
           theme: 'theme-kapitalismus',
-          canvaUrl: 'https://canva.link/vmz0h1msis5oagd',
+          embedUrl: 'https://www.canva.com/design/DAHbd57NZxY/Bh9TiWFqOE6o_Bcux8sPuA/watch?embed',
+          videoCredit: '12.KL_PuG_1.5-1.6_1.O_Kapitalismus · michael reball',
           person: 'David Ricardo',
           years: '1772–1823',
           summary: 'David Ricardo erklärte als klassischer Ökonom, wie Kapital, Wettbewerb und freier Handel Gewinne erzeugen und das Wachstum einer kapitalistischen Wirtschaft antreiben.',
@@ -1623,9 +1827,12 @@
       let selectedPrincipleId = null;
       let draggedPrincipleId = null;
       let activeLayer = 'dashboard';
+      let activeVideoId = null;
       let teacherMode = false;
 
+      const homeTitleBtn = document.getElementById('homeTitleBtn');
       const dashboardLayer = document.getElementById('dashboardLayer');
+      const videoLayer = document.getElementById('videoLayer');
       const sortLayer = document.getElementById('sortLayer');
       const gridEl = document.getElementById('dashboardGrid');
       const progressPill = document.getElementById('progressPill');
@@ -1635,6 +1842,18 @@
       const teacherBtn = document.getElementById('teacherBtn');
       const resetBtn = document.getElementById('resetBtn');
       const backToDashboardBtn = document.getElementById('backToDashboardBtn');
+      const backFromVideoBtn = document.getElementById('backFromVideoBtn');
+      const closeVideoBottomBtn = document.getElementById('closeVideoBottomBtn');
+      const prevVideoBtn = document.getElementById('prevVideoBtn');
+      const nextVideoBtn = document.getElementById('nextVideoBtn');
+      const videoStageCard = document.getElementById('videoStageCard');
+      const videoAvatar = document.getElementById('videoAvatar');
+      const videoBadge = document.getElementById('videoBadge');
+      const videoPersonTag = document.getElementById('videoPersonTag');
+      const videoStageTitle = document.getElementById('videoStageTitle');
+      const videoStageSummary = document.getElementById('videoStageSummary');
+      const videoEmbedFrame = document.getElementById('videoEmbedFrame');
+      const videoMetaCaption = document.getElementById('videoMetaCaption');
       const teacherSolutionBox = document.getElementById('teacherSolutionBox');
       const teacherFillBtn = document.getElementById('teacherFillBtn');
       const sortFeedback = document.getElementById('sortFeedback');
@@ -1667,15 +1886,59 @@
         return visited.size === TOPICS.length && getRemainingMs() === 0;
       }
 
+      function unmountVideo() {
+        activeVideoId = null;
+        videoEmbedFrame.innerHTML = '';
+      }
+
       function setLayer(layerName) {
+        if (layerName !== 'video') {
+          unmountVideo();
+        }
         activeLayer = layerName;
-        const showSort = layerName === 'sort';
-        dashboardLayer.hidden = showSort;
-        sortLayer.hidden = !showSort;
-        if (showSort) {
+        dashboardLayer.hidden = layerName !== 'dashboard';
+        videoLayer.hidden = layerName !== 'video';
+        sortLayer.hidden = layerName !== 'sort';
+        if (layerName === 'sort') {
           renderSortBoard();
         }
+        updateUnlockButtonUI();
         window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function openVideo(topicId) {
+        const idx = TOPICS.findIndex(function (t) { return t.id === topicId; });
+        if (idx === -1) return;
+        const topic = TOPICS[idx];
+
+        visited.add(topic.id);
+        saveVisited(visited);
+        activeVideoId = topic.id;
+
+        videoStageCard.className = 'video-stage-card ' + topic.theme;
+        videoAvatar.src = topic.image;
+        videoAvatar.alt = 'Porträt von ' + topic.person;
+        videoAvatar.style.setProperty('--img-pos', topic.imgPos);
+        videoBadge.textContent = 'Prinzip ' + topic.number;
+        videoPersonTag.textContent = topic.person + ' (' + topic.years + ')';
+        videoStageTitle.textContent = topic.title;
+        videoStageSummary.textContent = topic.summary;
+        videoMetaCaption.textContent = topic.videoCredit;
+
+        videoEmbedFrame.innerHTML = '';
+        const iframe = document.createElement('iframe');
+        iframe.src = topic.embedUrl;
+        iframe.title = 'Erklärvideo: ' + topic.title;
+        iframe.loading = 'eager';
+        iframe.setAttribute('allowfullscreen', 'allowfullscreen');
+        iframe.setAttribute('allow', 'fullscreen');
+        videoEmbedFrame.appendChild(iframe);
+
+        prevVideoBtn.disabled = idx === 0;
+        nextVideoBtn.disabled = idx === TOPICS.length - 1;
+
+        setLayer('video');
+        updateProgressUI();
       }
 
       function updateUnlockButtonUI() {
@@ -2075,7 +2338,32 @@
 
       backToDashboardBtn.addEventListener('click', function () {
         setLayer('dashboard');
-        updateUnlockButtonUI();
+      });
+
+      backFromVideoBtn.addEventListener('click', function () {
+        setLayer('dashboard');
+      });
+
+      closeVideoBottomBtn.addEventListener('click', function () {
+        setLayer('dashboard');
+      });
+
+      homeTitleBtn.addEventListener('click', function () {
+        setLayer('dashboard');
+      });
+
+      prevVideoBtn.addEventListener('click', function () {
+        const idx = TOPICS.findIndex(function (t) { return t.id === activeVideoId; });
+        if (idx > 0) {
+          openVideo(TOPICS[idx - 1].id);
+        }
+      });
+
+      nextVideoBtn.addEventListener('click', function () {
+        const idx = TOPICS.findIndex(function (t) { return t.id === activeVideoId; });
+        if (idx !== -1 && idx < TOPICS.length - 1) {
+          openVideo(TOPICS[idx + 1].id);
+        }
       });
 
       function openTeacherModal() {
@@ -2162,8 +2450,13 @@
 
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
-          if (!teacherModal.hidden) closeTeacherModal();
-          if (!resetModal.hidden) closeResetModal();
+          if (!teacherModal.hidden) {
+            closeTeacherModal();
+          } else if (!resetModal.hidden) {
+            closeResetModal();
+          } else if (activeLayer === 'video') {
+            setLayer('dashboard');
+          }
         }
       });
 
@@ -2217,20 +2510,16 @@
         const heading = document.createElement('h2');
         heading.className = 'tile-title';
 
-        const mainLink = document.createElement('a');
-        mainLink.className = 'tile-primary-link';
-        mainLink.href = topic.canvaUrl;
-        mainLink.target = '_blank';
-        mainLink.rel = 'noopener noreferrer';
-        mainLink.setAttribute('aria-label', topic.title + ' – ' + topic.person + ' in Canva öffnen');
-        mainLink.textContent = topic.title;
-        mainLink.addEventListener('click', function () {
-          visited.add(topic.id);
-          saveVisited(visited);
-          updateProgressUI();
+        const mainBtn = document.createElement('button');
+        mainBtn.type = 'button';
+        mainBtn.className = 'tile-primary-link';
+        mainBtn.setAttribute('aria-label', 'Erklärvideo zu ' + topic.title + ' (' + topic.person + ') abspielen');
+        mainBtn.textContent = topic.title;
+        mainBtn.addEventListener('click', function () {
+          openVideo(topic.id);
         });
 
-        heading.appendChild(mainLink);
+        heading.appendChild(mainBtn);
 
         const summary = document.createElement('p');
         summary.className = 'tile-summary';
@@ -2250,10 +2539,10 @@
         ctaPill.className = 'canva-pill';
         ctaPill.setAttribute('aria-hidden', 'true');
         ctaPill.innerHTML =
-          '<span>In Canva öffnen</span>' +
-          '<svg class="canva-arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">' +
-          '<path d="M6 14L14 6M8 6h6v6"/>' +
-          '</svg>';
+          '<svg class="canva-arrow" viewBox="0 0 20 20" fill="currentColor">' +
+          '<path d="M6.5 4.8a.9.9 0 0 1 1.36-.77l8.2 5.2a.9.9 0 0 1 0 1.54l-8.2 5.2A.9.9 0 0 1 6.5 15.2V4.8Z"/>' +
+          '</svg>' +
+          '<span>Video abspielen</span>';
 
         ctaRow.appendChild(ctaPill);
 
