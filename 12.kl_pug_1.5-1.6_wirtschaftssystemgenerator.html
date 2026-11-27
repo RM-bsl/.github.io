@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+
+ <!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8">
@@ -1792,6 +1793,26 @@
     .pc-box.is-pro .pc-list li::before { background: var(--ios-green); }
     .pc-box.is-con .pc-list li::before { background: var(--ios-red); }
 
+    .dim-pros-cons {
+      margin-top: 12px;
+    }
+
+    .dim-pros-cons .pc-box {
+      padding: 12px 14px;
+      border-radius: var(--ios-radius-md);
+    }
+
+    .dim-pros-cons .pc-title {
+      font-size: 0.81rem;
+      margin-bottom: 6px;
+    }
+
+    .dim-pros-cons .pc-list {
+      gap: 5px;
+      font-size: 0.83rem;
+      color: var(--ios-text-primary);
+    }
+
     /* Sonderfall-Hinweis in Dimension 3 */
     .special-case-bar {
       display: none;
@@ -2467,6 +2488,188 @@
       .teacher-demo-grid { grid-template-columns: 1fr; }
     }
 
+    /* Motivierende 2D-Mikro-Animationen (ausschließlich GPU-kompositierte transform & opacity) */
+    @keyframes pillPop {
+      0%   { transform: scale(0.95); }
+      55%  { transform: scale(1.045); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes pillSheen {
+      0%   { transform: translateX(-130%) skewX(-20deg); opacity: 0; }
+      25%  { opacity: 0.42; }
+      100% { transform: translateX(230%) skewX(-20deg); opacity: 0; }
+    }
+
+    @keyframes bumpScale {
+      0%   { transform: scale(1); }
+      45%  { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes tilePop {
+      0%   { transform: scale(0.95); }
+      55%  { transform: scale(1.035); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes dotPop {
+      0%   { transform: scale(0.5); opacity: 0.5; }
+      65%  { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes softReveal {
+      0%   { opacity: 0; transform: translateY(10px) scale(0.985); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes chipPop {
+      0%   { transform: scale(0.9); }
+      55%  { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes sparkFly {
+      0%   { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+      70%  { opacity: 0.95; }
+      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.35) rotate(var(--rot)); }
+    }
+
+    @keyframes tileStagger {
+      0%   { opacity: 0; transform: translateY(12px) scale(0.985); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    #layerHome.is-active .portal-tile {
+      animation: tileStagger 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    #layerHome.is-active .portal-tile:nth-child(2) { animation-delay: 0.06s; }
+    #layerHome.is-active .portal-tile:nth-child(3) { animation-delay: 0.12s; }
+
+    .portal-icon {
+      transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .portal-tile:not(.is-locked):hover .portal-icon {
+      transform: translateY(-2px) scale(1.07);
+    }
+
+    .portal-tile.is-compare-ready {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .portal-tile.is-compare-ready::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      width: 45%;
+      background: linear-gradient(90deg, transparent, rgba(52, 199, 89, 0.18), transparent);
+      transform: translateX(-130%) skewX(-20deg);
+      pointer-events: none;
+      animation: pillSheen 1.2s ease 0.18s 1;
+    }
+
+    .pole-pill {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pole-pill:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+
+    .pole-pill.is-selected {
+      animation: pillPop 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .pole-pill.is-selected::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      width: 42%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.34), transparent);
+      transform: translateX(-130%) skewX(-20deg);
+      pointer-events: none;
+      animation: pillSheen 0.65s ease forwards;
+    }
+
+    .einordnung-pill.is-bumping {
+      animation: bumpScale 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .sector-box {
+      transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.16s ease;
+    }
+
+    .sector-box:not(.is-fixed):hover {
+      transform: translateY(-1.5px);
+    }
+
+    .sector-box.is-just-clicked {
+      animation: tilePop 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .sector-box.is-just-clicked .sector-dot.is-on {
+      animation: dotPop 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .explain-bar.is-visible,
+    .slider-bar.is-visible,
+    .gg-art-feedback.is-visible.is-good,
+    .gg-unlock-banner.is-visible,
+    .match-card {
+      animation: softReveal 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .step-chip.is-done {
+      animation: chipPop 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Fließender Fortschrittsbalken im Header */
+    .progress-track {
+      flex-basis: 100%;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(60, 60, 67, 0.1);
+      overflow: hidden;
+      margin-top: 2px;
+    }
+
+    .progress-fill {
+      width: 100%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #007AFF 0%, #5856D6 55%, #34C759 100%);
+      transform-origin: left center;
+      transform: scaleX(0);
+      transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Dezenter Konfetti-/Funken-Layer für Erfolgsmomente */
+    .spark-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 120;
+      overflow: hidden;
+    }
+
+    .spark-dot {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      border-radius: 3px;
+      pointer-events: none;
+      will-change: transform, opacity;
+      animation: sparkFly 0.78s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .match-bar-fill {
+      transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
     .ios-toast {
       position: fixed;
       bottom: 24px;
@@ -2592,6 +2795,7 @@
       <span class="step-chip" id="chipStep3">3. Staat</span>
       <span class="step-arrow" aria-hidden="true">&rarr;</span>
       <span class="step-chip" id="chipStep4">Auswertung &amp; GG-Check</span>
+      <div class="progress-track" aria-hidden="true"><div class="progress-fill" id="progressFill"></div></div>
     </div>
   </header>
 
@@ -2897,7 +3101,8 @@
           <button type="button" class="ios-btn ios-btn-ghost no-print" data-edit-dim="1">Auswahl ändern</button>
         </div>
         <div class="explain-grid" id="dim1ExplainGrid"></div>
-        <p class="neutral-note">Hinweis: Eine Bewertung erfolgt noch nicht. Lege jetzt die 2. Dimension fest.</p>
+        <div class="pros-cons-grid dim-pros-cons" id="dim1ProsCons"></div>
+        <p class="neutral-note">Hinweis: Lege jetzt die 2. Dimension fest – reale Staaten-Beispiele und das Gesamturteil folgen am Schluss.</p>
       </div>
     </section>
 
@@ -2961,7 +3166,8 @@
           <button type="button" class="ios-btn ios-btn-ghost no-print" data-edit-dim="2">Auswahl ändern</button>
         </div>
         <div class="explain-grid" id="dim2ExplainGrid"></div>
-        <p class="neutral-note">Hinweis: Eine Bewertung erfolgt noch nicht. Mit der 3. Dimension wird dein System vollständig.</p>
+        <div class="pros-cons-grid dim-pros-cons" id="dim2ProsCons"></div>
+        <p class="neutral-note">Hinweis: Mit der 3. Dimension wird dein System vollständig – erst danach folgen reale Staaten und Gesamtauswertung.</p>
       </div>
     </section>
 
@@ -3029,12 +3235,14 @@
           <button type="button" class="ios-btn ios-btn-ghost no-print" data-edit-dim="3">Auswahl ändern</button>
         </div>
         <div class="explain-grid" id="dim3ExplainGrid"></div>
+        <div class="pros-cons-grid dim-pros-cons" id="dim3ProsCons"></div>
       </div>
 
       <div class="special-case-bar" id="dim3SpecialBar" aria-live="polite">
         <h4 id="dim3SpecialTitle"></h4>
         <p id="dim3SpecialReason"></p>
         <p id="dim3SpecialHint" style="font-size:0.83rem; opacity:0.9;"></p>
+        <div class="pros-cons-grid dim-pros-cons" id="dim3SpecialProsCons"></div>
       </div>
     </section>
 
@@ -3206,6 +3414,7 @@
   </div>
 
   <div class="ios-toast" id="iosToast" role="status" aria-live="polite"></div>
+  <div class="spark-layer no-print" id="sparkLayer" aria-hidden="true"></div>
 
   <script>
     (() => {
@@ -5022,6 +5231,53 @@
       }
 
       const openSectorInfo = { 1: null, 2: null, 3: null };
+      let lastClickedSector = { dim: null, id: null };
+
+      function prefersReducedMotion() {
+        return Boolean(typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+      }
+
+      function bumpElement(el, cls = "is-bumping") {
+        if (!el || prefersReducedMotion()) return;
+        el.classList.remove(cls);
+        void el.offsetWidth;
+        el.classList.add(cls);
+      }
+
+      function spawnSparks(anchorEl, count = 14, palette = ["#007AFF", "#34C759", "#5856D6", "#FF9500"]) {
+        if (prefersReducedMotion()) return;
+        const layer = $("sparkLayer");
+        if (!layer) return;
+        let cx = window.innerWidth * 0.5;
+        let cy = window.innerHeight * 0.35;
+        if (anchorEl && anchorEl.getBoundingClientRect) {
+          const r = anchorEl.getBoundingClientRect();
+          if (r.width > 0 && r.height > 0) {
+            cx = r.left + r.width / 2;
+            cy = r.top + r.height / 2;
+          }
+        }
+        const frag = document.createDocumentFragment();
+        const nodes = [];
+        for (let i = 0; i < count; i++) {
+          const dot = document.createElement("span");
+          dot.className = "spark-dot";
+          const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.45;
+          const dist = 36 + Math.random() * 68;
+          dot.style.left = `${Math.round(cx)}px`;
+          dot.style.top = `${Math.round(cy)}px`;
+          dot.style.background = palette[i % palette.length];
+          dot.style.setProperty("--tx", `${Math.round(Math.cos(angle) * dist)}px`);
+          dot.style.setProperty("--ty", `${Math.round(Math.sin(angle) * dist - 18)}px`);
+          dot.style.setProperty("--rot", `${Math.round((Math.random() - 0.5) * 260)}deg`);
+          frag.appendChild(dot);
+          nodes.push(dot);
+        }
+        layer.appendChild(frag);
+        setTimeout(() => {
+          nodes.forEach((n) => n.remove());
+        }, 840);
+      }
 
       function renderLiveBullets(dimNum, side, strength) {
         const container = $(`dim${dimNum}LiveBullets`);
@@ -5085,8 +5341,9 @@
               const indicator = isFixed
                 ? `<span class="sector-fixed-tag">Systembedingt fest</span>`
                 : `<span class="sector-dots" aria-hidden="true">${allowed.map((_, i) => `<span class="sector-dot ${i <= activeIdx ? "is-on" : ""}"></span>`).join("")}</span>`;
+              const isJustClicked = lastClickedSector.dim === dimNum && lastClickedSector.id === sec.id;
               return `
-                <div class="sector-box is-lvl-${lvl} ${isOpen ? "is-info-open" : ""} ${isFixed ? "is-fixed" : ""}">
+                <div class="sector-box is-lvl-${lvl} ${isOpen ? "is-info-open" : ""} ${isFixed ? "is-fixed" : ""} ${isJustClicked ? "is-just-clicked" : ""}">
                   <button type="button" class="sector-toggle" data-sec-id="${sec.id}" ${(d.confirmed || isFixed) ? "disabled" : ""} title="${escapeHtml(sec.name)}: ${escapeHtml(lbl)}${isFixed ? " (in dieser Grundrichtung fest)" : " (klicken für nächste passende Stufe)"}">
                     <span class="sector-chip-name">${escapeHtml(sec.name)}</span>
                     <span class="sector-chip-bottom">
@@ -5145,18 +5402,360 @@
 
               // Regler automatisch sinnvoll nachziehen (strikt innerhalb der gewählten Art!)
               const calc = computeStrengthFromSectors(dimNum, d);
+              const prevStrength = d.strength;
               d.strength = calc.strength;
+              lastClickedSector = { dim: dimNum, id: secId };
               saveState();
 
               const slider = $(`slider${dimNum}`);
               slider.value = d.strength;
               styleRange(slider, dimNum, false);
-              $(`dim${dimNum}Einordnung`).textContent = getEinordnungLabel(dimNum, d.picked, d.strength);
+              const einPill = $(`dim${dimNum}Einordnung`);
+              einPill.textContent = getEinordnungLabel(dimNum, d.picked, d.strength);
+              if (d.strength !== prevStrength) bumpElement(einPill, "is-bumping");
               renderLiveBullets(dimNum, d.picked, d.strength);
               renderSectors(dimNum);
+              lastClickedSector = { dim: null, id: null };
             });
           });
         }
+      }
+
+      /* Präzise, kurze Vor- & Nachteile (je 3 Punkte) für die individuelle Auswahl nach jeder Dimension */
+      const DIM_PROS_CONS = {
+        1: {
+          left: {
+            low: {
+              pros: [
+                "Private Betriebe behalten starken Innovations- und Leistungsanreiz.",
+                "Öffentliche Daseinsvorsorge (Wasser, Schulen, Bahn) bleibt für alle zugänglich.",
+                "Ausgewogene Machtverteilung zwischen Privatwirtschaft und Kommunen."
+              ],
+              cons: [
+                "Höherer Abstimmungsaufwand zwischen öffentlichen und privaten Trägern.",
+                "Steuern und Gebühren müssen öffentliche Betriebe dauerhaft mitfinanzieren.",
+                "Vermögensunterschiede zwischen Eigentümern und Beschäftigten bleiben bestehen."
+              ]
+            },
+            mid: {
+              pros: [
+                "Hohe Gründer- und Investitionsbereitschaft schafft viele Arbeitsplätze.",
+                "Private Unternehmen reagieren schnell auf neue Kundenwünsche.",
+                "Freie Eigentums- und Vermögensbildung für Betriebe und Privatpersonen."
+              ],
+              cons: [
+                "Wachsende Vermögens- und Einkommensschere in der Gesellschaft.",
+                "Private Vermieter und Konzerne erhöhen den Kostendruck beim Wohnen.",
+                "Insolvenz- und Krisenrisiken treffen oft auch die Belegschaft."
+              ]
+            },
+            high: {
+              pros: [
+                "Maximaler Gewinn- und Leistungsanreiz für Gründer und Investoren.",
+                "Kaum staatliche Bürokratie bremst neue Geschäftsmodelle aus.",
+                "Sehr hohe Kapital- und Wettbewerbsdynamik in fast allen Branchen."
+              ],
+              cons: [
+                "Starke Vermögenskonzentration in wenigen privaten Händen.",
+                "Zugang zu Bildung, Kliniken oder Wasser hängt stark vom Einkommen ab.",
+                "Hohe Gefahr von Marktmacht, Monopolen und sozialer Spaltung."
+              ]
+            }
+          },
+          right: {
+            low: {
+              pros: [
+                "Grundversorgung (Wasser, Wohnen, Kliniken) bleibt gemeinwohlorientiert.",
+                "Geringere Vermögensunterschiede durch breites Gemeineigentum.",
+                "Handwerk und kleinere Läden behalten noch private Spielräume."
+              ],
+              cons: [
+                "Weniger private Investoren bei Industrie und Großprojekten.",
+                "Politische Gremien verlangsamen wirtschaftliche Entscheidungen.",
+                "Geringerer finanzieller Anreiz für riskante Firmengründungen."
+              ]
+            },
+            mid: {
+              pros: [
+                "Bezahlbare Grundgüter ohne Gewinninteresse privater Großkonzerne.",
+                "Sehr geringe Schere zwischen wohlhabenden und armen Haushalten.",
+                "Hohe Arbeitsplatzsicherheit in öffentlichen und genossenschaftlichen Betrieben."
+              ],
+              cons: [
+                "Schwächere Leistungs- und Innovationsanreize in Staatsbetrieben.",
+                "Hohe Bürokratie verlangsamt Modernisierung von Maschinen und Abläufen.",
+                "Stark eingeschränkte Freiheit, selbst ein Unternehmen aufzubauen."
+              ]
+            },
+            high: {
+              pros: [
+                "Kein privates Großkapital kann Politik oder Märkte dominieren.",
+                "Einheitliche, gemeinwohlorientierte Steuerung aller Schlüsselbranchen.",
+                "Kaum private Vermögensungleichheit im Produktionsbereich."
+              ],
+              cons: [
+                "Wirtschaftliche und politische Macht ballt sich komplett beim Staat.",
+                "Private Eigeninitiative und unternehmerische Freiheit fallen fast weg.",
+                "Hohes Risiko von Ineffizienz, Misswirtschaft und Anlagenverfall."
+              ]
+            }
+          }
+        },
+        2: {
+          left: {
+            low: {
+              pros: [
+                "Technik, Kleidung und Konsumgüter bleiben vielfältig und kundenorientiert.",
+                "Mietpreisbremse, Preisbremsen und Mindestlohn federn soziale Härten ab.",
+                "Echter Wettbewerb bleibt erhalten, während klare Grenzen schützen."
+              ],
+              cons: [
+                "Preisbremsen können private Investitionen (z. B. Wohnungsbau) bremsen.",
+                "Spürbarer Kontroll- und Bürokratieaufwand für Unternehmen.",
+                "Geringere Preisflexibilität bei plötzlichen Krisen oder Engpässen."
+              ]
+            },
+            mid: {
+              pros: [
+                "Schnelle Reaktion von Angebot und Nachfrage verhindert Warenmangel.",
+                "Tarifverträge und gezielte Regeln sichern faire Rahmenbedingungen.",
+                "Starke Innovations- und Produktvielfalt durch lebendigen Wettbewerb."
+              ],
+              cons: [
+                "Spürbare Preisschwankungen bei Energie, Wohnen und Lebensmitteln.",
+                "Wettbewerbsdruck kann einzelne Branchen oder Regionen hart treffen.",
+                "Ständige Konflikte um das richtige Maß an staatlichen Eingriffen."
+              ]
+            },
+            high: {
+              pros: [
+                "Sehr schnelle, effiziente Preisbildung ohne staatliche Verzögerungen.",
+                "Maximale Vertrags-, Berufs- und Konsumfreiheit im Alltag.",
+                "Hoher Wettbewerbsdruck senkt Produktionskosten dauerhaft."
+              ],
+              cons: [
+                "Starke Preis- und Mietsteigerungen treffen kleine Einkommen ungebremst.",
+                "Ohne Lohnuntergrenzen drohen Dumpinglöhne und Existenzdruck.",
+                "Marktversagen (Umweltschäden, Monopole) korrigiert sich nicht von selbst."
+              ]
+            }
+          },
+          right: {
+            low: {
+              pros: [
+                "Stabile, bezahlbare Preise für Wohnen, Wasser und Grundnahrungsmittel.",
+                "Gezielte staatliche Lenkung wichtiger Zukunfts- und Grundgüter.",
+                "Konsumgüter behalten noch kleine marktwirtschaftliche Nischen."
+              ],
+              cons: [
+                "Abstimmungsprobleme zwischen Planvorgaben und realer Nachfrage.",
+                "Wachsende Planungsbürokratie erschwert schnelle Anpassungen.",
+                "Geringere Produktauswahl und langsamerer technischer Fortschritt."
+              ]
+            },
+            mid: {
+              pros: [
+                "Kaum Preis- oder Mietexplosionen dank staatlicher Festpreise.",
+                "Planbare Produktion sichert rechnerisch hohe Beschäftigung.",
+                "Staatliche Lohnleitlinien verhindern extreme Einkommenssprünge."
+              ],
+              cons: [
+                "Häufige Engpässe bei beliebten Produkten und Ersatzteilen.",
+                "Planbehörden reagieren viel zu träge auf neue Bedürfnisse.",
+                "Tarifautonomie und freie Kaufentscheidungen werden stark beschnitten."
+              ]
+            },
+            high: {
+              pros: [
+                "Verlässliche Festpreise für Grundbedarf, Mieten und Energie.",
+                "Keine offenen Konjunkturkrisen oder Börsencrashs.",
+                "Vollständige staatliche Kontrolle über Ressourcen und Mengen."
+              ],
+              cons: [
+                "Chronische Mangelwirtschaft mit langen Wartezeiten und Schwarzmarkt.",
+                "Extrem schwache Innovations- und Leistungsanreize in Betrieben.",
+                "Verlust von Konsum-, Vertrags- und freier Berufswahl."
+              ]
+            }
+          }
+        },
+        3: {
+          left: {
+            low: {
+              pros: [
+                "Niedrige Steuern und Abgaben lassen deutlich mehr Netto vom Brutto.",
+                "Schlanker Staat mit wenig Bürokratie entlastet Betriebe und Gründer.",
+                "Schmale Notfallhilfe fängt zumindest akute Extremnot ab."
+              ],
+              cons: [
+                "Hohes Armutsrisiko bei schwerer Krankheit, Unfall oder Jobverlust.",
+                "Schwaches Kartellamt erleichtert marktbeherrschende Großkonzerne.",
+                "Geringere Aufstiegschancen für Azubis ohne familiäre Rücklagen."
+              ]
+            },
+            mid: {
+              pros: [
+                "Maximale Eigenverantwortung und sehr hohes verfügbares Nettoeinkommen.",
+                "Minimaler Staatsapparat hält Lohnnebenkosten extrem niedrig.",
+                "Schnelle unternehmerische Entscheidungen ohne strenge Auflagen."
+              ],
+              cons: [
+                "Kaum soziale Absicherung bei Krankheit, Alter oder Arbeitslosigkeit.",
+                "Beschäftigte sind ohne Kündigungsschutz leicht austauschbar.",
+                "Monopole und Preisabsprachen bleiben weitgehend ungebremst."
+              ]
+            },
+            high: {
+              pros: [
+                "Geringstmögliche Abgabenquote – fast jeder Euro bleibt privat.",
+                "Vollständige staatliche Zurückhaltung in Wirtschaft und Verträgen.",
+                "Sehr hohe Anreize für private Vorsorge und Eigenleistung."
+              ],
+              cons: [
+                "Kein Existenzminimum – Armut und Obdachlosigkeit bleiben unaufgefangen.",
+                "Ungebremste Monopolbildung zerstört langfristig den freien Wettbewerb.",
+                "Verstößt klar gegen das Sozialstaatsprinzip und die Menschenwürde."
+              ]
+            }
+          },
+          right: {
+            low: {
+              pros: [
+                "Starkes Kartellamt schützt fairen Wettbewerb gegen Monopole.",
+                "Verlässliche Basis-Absicherung bei Krankheit, Alter und Notlagen.",
+                "Moderate Abgaben erhalten starke Leistungs- und Gründeranreize."
+              ],
+              cons: [
+                "Engere Förderung (BAB, BAföG, Wohngeld) lässt Lücken bei kleinen Löhnen.",
+                "Spürbare soziale Ungleichheit bleibt trotz Grundnetz bestehen.",
+                "Höhere Eigenkosten für private Zusatzabsicherung im Alter."
+              ]
+            },
+            mid: {
+              pros: [
+                "Dichtes Sozialnetz schützt zuverlässig vor Armut und sozialem Absturz.",
+                "Mindestlohn und Arbeitsschutz sichern faire Ausbildungs- und Jobbedingungen.",
+                "Kartellamt und Förderungen (BAB/BAföG/Wohngeld) stärken Chancengleichheit."
+              ],
+              cons: [
+                "Hohe Steuern und Sozialabgaben drücken auf das Nettoeinkommen.",
+                "Spürbare Bürokratie und Auflagen belasten kleine und mittlere Betriebe.",
+                "Demografischer Wandel setzt Renten- und Pflegekassen stark unter Druck."
+              ]
+            },
+            high: {
+              pros: [
+                "Sehr hohe soziale Sicherheit und umfassende staatliche Vollversorgung.",
+                "Sehr geringe Einkommens- und Armutsunterschiede in der Gesellschaft.",
+                "Maximaler Schutz für Beschäftigte, Mieter und Bedürftige."
+              ],
+              cons: [
+                "Sehr hohe Steuer- und Abgabenlast senkt Leistungs- und Investitionsanreize.",
+                "Stark wachsende Sozialbürokratie und hohe Finanzierungsrisiken.",
+                "Gefahr von Überregulierung und Abwanderung von Unternehmen."
+              ]
+            }
+          }
+        }
+      };
+
+      function getDimensionProsCons(dimNum, dimObj, special) {
+        if (dimNum === 3 && special) {
+          if (special.autoScale <= 20) {
+            return {
+              pros: [
+                "Minimale Steuern und Bürokratie für Bürger und Unternehmen.",
+                "Maximale Vertrags-, Preis- und Unternehmerfreiheit im Alltag.",
+                "Sehr starke finanzielle Anreize für Innovation und Eigenleistung."
+              ],
+              cons: [
+                "Wegfall des sozialen Sicherheitsnetzes bei Krankheit, Alter oder Armut.",
+                "Ungebremste Monopolbildung gefährdet dauerhaft den Wettbewerb.",
+                "Unvereinbar mit dem Sozialstaatsprinzip des Grundgesetzes."
+              ]
+            };
+          }
+          if (special.title.includes("Planwirtschaft")) {
+            return {
+              pros: [
+                "Verlässliche Festpreise ohne akute Inflationsschocks im Grundbedarf.",
+                "Rechnerisch hohe Jobsicherheit ohne offene Konjunkturkrisen.",
+                "Zentrale Bündelung von Ressourcen für staatliche Großprojekte."
+              ],
+              cons: [
+                "Fehlende Preissignale erzeugen Warenmangel, Wartelisten und Schwarzmarkt.",
+                "Übermächtige Staatsbürokratie ohne freie wirtschaftliche Kontrolle.",
+                "Starke Einschränkung von Berufs-, Tarif- und Konsumfreiheit."
+              ]
+            };
+          }
+          return {
+            pros: [
+              "Umfassende öffentliche Daseinsvorsorge ohne privates Profitinteresse.",
+              "Starke Begrenzung privater Vermögenskonzentration.",
+              "Einheitliche soziale Grundstandards für alle Bürger."
+            ],
+            cons: [
+              "Übermächtige Staatsverwaltung verdrängt private Eigeninitiative.",
+              "Langsame Anpassung an neue Technik und individuelle Wünsche.",
+              "Fehlender privater Wettbewerb als Innovations- und Qualitätskorrektiv."
+            ]
+          };
+        }
+
+        const tier = dimObj.strength <= 60 ? "low" : dimObj.strength <= 80 ? "mid" : "high";
+        const base = DIM_PROS_CONS[dimNum][dimObj.picked][tier];
+        const pros = [...base.pros];
+        const cons = [...base.cons];
+
+        // Individuelle Feinjustierung gezielt in je einen konkreten Stichpunkt einfließen lassen
+        const hasOverrides = dimObj.overrides && Object.keys(dimObj.overrides).length > 0;
+        if (hasOverrides) {
+          if (dimNum === 1) {
+            const wasserLvl = getSectorLevel(1, SECTORS[1].items.find((x) => x.id === "wasser"), dimObj);
+            const schulenLvl = getSectorLevel(1, SECTORS[1].items.find((x) => x.id === "schulen"), dimObj);
+            const handwerkLvl = getSectorLevel(1, SECTORS[1].items.find((x) => x.id === "handwerk"), dimObj);
+            if (dimObj.picked === "left" && wasserLvl === 3 && schulenLvl === 3) {
+              pros[1] = "Deine Wahl hält Trinkwasser und Schulen staatlich und damit für alle zugänglich.";
+            } else if (dimObj.picked === "left" && (wasserLvl === 0 || schulenLvl === 0)) {
+              cons[1] = "Durch rein private Wasser- oder Schulangebote entstehen spürbare Zugangs- und Preisrisiken.";
+            } else if (dimObj.picked === "right" && handwerkLvl === 1) {
+              pros[2] = "Deine Wahl lässt Handwerk und Läden größtenteils privat und stärkt so lokale Vielfalt.";
+            }
+          } else if (dimNum === 2) {
+            const mieteLvl = getSectorLevel(2, SECTORS[2].items.find((x) => x.id === "miete_p"), dimObj);
+            const loehneLvl = getSectorLevel(2, SECTORS[2].items.find((x) => x.id === "loehne"), dimObj);
+            if (dimObj.picked === "left" && mieteLvl === 1 && loehneLvl === 1) {
+              pros[1] = "Mietpreisbremse sowie Tarif und Mindestlohn schützen Mieter und Beschäftigte gezielt.";
+            } else if (dimObj.picked === "left" && mieteLvl === 0 && loehneLvl === 0) {
+              cons[0] = "Freie Mieten und frei verhandelte Löhne erhöhen den Druck auf kleine Einkommen.";
+            }
+          } else if (dimNum === 3) {
+            const kartellLvl = getSectorLevel(3, SECTORS[3].items.find((x) => x.id === "kartell"), dimObj);
+            const krankenLvl = getSectorLevel(3, SECTORS[3].items.find((x) => x.id === "kranken"), dimObj);
+            if (dimObj.picked === "right" && kartellLvl === 3) {
+              pros[2] = "Ein sehr strenges Kartellamt verhindert Monopole und schützt fairen Wettbewerb.";
+            } else if (dimObj.picked === "left" && krankenLvl === 0) {
+              cons[0] = "Eine rein private Krankenversicherung macht Behandlungskosten vom eigenen Einkommen abhängig.";
+            }
+          }
+        }
+
+        return { pros, cons };
+      }
+
+      function renderDimProsCons(containerEl, pc) {
+        if (!containerEl || !pc) return;
+        containerEl.innerHTML = `
+          <div class="pc-box is-pro">
+            <h5 class="pc-title">Positive Aspekte deiner Auswahl</h5>
+            <ul class="pc-list">${pc.pros.map((x) => `<li>${escapeHtml(x)}</li>`).join("")}</ul>
+          </div>
+          <div class="pc-box is-con">
+            <h5 class="pc-title">Negative Aspekte deiner Auswahl</h5>
+            <ul class="pc-list">${pc.cons.map((x) => `<li>${escapeHtml(x)}</li>`).join("")}</ul>
+          </div>
+        `;
       }
 
       function renderExplainGrid(gridEl, info) {
@@ -5197,6 +5796,7 @@
             $("dim3SpecialTitle").textContent = special.title;
             $("dim3SpecialReason").textContent = special.reason;
             $("dim3SpecialHint").textContent = special.hint;
+            renderDimProsCons($("dim3SpecialProsCons"), getDimensionProsCons(3, d, special));
             specialBar.classList.add("is-visible");
             return;
           } else {
@@ -5251,7 +5851,7 @@
           $("planHint").classList.toggle("is-visible", toScale(state.dim2) >= 80);
         }
 
-        // Erklärungs-Balken nach Bestätigung
+        // Erklärungs-Balken nach Bestätigung (inkl. 3 positive & 3 negative Aspekte zur individuellen Auswahl)
         const explainBar = $(`dim${dimNum}ExplainBar`);
         explainBar.classList.toggle("is-visible", d.confirmed);
 
@@ -5264,6 +5864,7 @@
 
           $(`dim${dimNum}StageTitle`).textContent = info.title;
           renderExplainGrid($(`dim${dimNum}ExplainGrid`), info);
+          renderDimProsCons($(`dim${dimNum}ProsCons`), getDimensionProsCons(dimNum, d, null));
         }
       }
 
@@ -5274,6 +5875,16 @@
         $("chipStep2").className = "step-chip " + (state.dim2.confirmed ? "is-done" : (state.dim1.confirmed ? "is-active" : ""));
         $("chipStep3").className = "step-chip " + ((state.dim3.confirmed || special) ? "is-done" : (state.dim2.confirmed ? "is-active" : ""));
         $("chipStep4").className = "step-chip " + (state.ggVerified ? "is-done" : (ready ? "is-active" : ""));
+
+        const fill = $("progressFill");
+        if (fill) {
+          let ratio = state.dim1.picked ? 0.14 : 0.06;
+          if (state.dim1.confirmed) ratio = 0.34;
+          if (state.dim2.confirmed) ratio = 0.62;
+          if (ready) ratio = 0.84;
+          if (state.ggVerified) ratio = 1;
+          fill.style.transform = `scaleX(${ratio})`;
+        }
       }
 
       function renderFinalArea() {
@@ -5419,12 +6030,17 @@
           overall.className = "gg-overall-feedback is-visible is-warn";
           overall.innerHTML = "<strong>Noch keine Eingaben vorhanden:</strong> Trage oben bei den einzelnen Grundgesetz-Artikeln deine Begründungen ein und prüfe sie.";
         } else if (goodCount === total) {
+          const wasVerified = state.ggVerified;
           state.ggVerified = true;
           saveState();
           renderProgressChips();
           renderLayer();
           overall.className = "gg-overall-feedback is-visible is-good";
           overall.innerHTML = `<strong>Hervorragend!</strong> Alle ${total} von ${total} Artikeln sind fachlich überzeugend begründet und eingeordnet.`;
+          if (scrollIntoView && !wasVerified) {
+            spawnSparks($("btnVerifyGG"), 24, ["#248A3D", "#34C759", "#007AFF", "#5856D6", "#FF9500"]);
+            showToast("★ Bereich 3 freigeschaltet! Dein System-Vergleich wartet.");
+          }
         } else if (goodCount > 0 || warnCount > 0) {
           overall.className = "gg-overall-feedback is-visible is-warn";
           overall.innerHTML = `<strong>Zwischenstand:</strong> ${goodCount} von ${total} Artikeln sind bereits fachlich überzeugend eingeordnet. Schärfe die gelb oder rot markierten Felder direkt in der jeweiligen Karte nach.`;
@@ -5534,15 +6150,23 @@
             const idx = Number(btn.dataset.checkArt);
             const art = res.articles[idx];
             state.ggCheckedRefs[art.ref] = true;
-            showArticleFeedback(idx, art);
+            const checkRes = showArticleFeedback(idx, art);
+            if (checkRes && checkRes.level === "good") {
+              spawnSparks(btn, 9, ["#248A3D", "#34C759", "#007AFF"]);
+            }
             const allGood = res.articles.every((a) => verifySingleArticleReasoning(state.ggReasons[a.ref] || "", a).level === "good");
             if (allGood) {
+              const wasVerified = state.ggVerified;
               state.ggVerified = true;
               saveState();
               renderProgressChips();
               renderLayer();
               const unlockBanner = $("ggUnlockBanner");
               if (unlockBanner) unlockBanner.classList.add("is-visible");
+              if (!wasVerified) {
+                spawnSparks(btn, 22, ["#248A3D", "#34C759", "#007AFF", "#5856D6", "#FF9500"]);
+                showToast("★ Alle Artikel gemeistert – Bereich 3 ist jetzt freigeschaltet!");
+              }
             }
           });
         });
@@ -5711,7 +6335,7 @@
         const sSimRaw = Math.pow(1 - Math.abs(s - model.s) / 100, 1.25);
 
         // Demokratischer Sozial- & Ordnungsstaat vs. autoritärer Planungsstaat sauber trennen
-        const studentIsCommand = Boolean(special && special.s >= 80);
+        const studentIsCommand = Boolean(special && special.autoScale >= 60);
         const sSim = (Boolean(model.isCommandState) !== studentIsCommand)
           ? sSimRaw * ((eSim + pSim) / 2)
           : sSimRaw;
@@ -5767,17 +6391,17 @@
         const iItem = sim.find((x) => x.id === "innovation");
 
         const arbeitDim3 = special
-          ? (special.s >= 80 ? "Staatliche Arbeitslenkung ohne unabhängige Tarifpartner." : "Kaum gesetzlicher Arbeits- oder Kündigungsschutz.")
+          ? (special.autoScale >= 60 ? "Staatliche Arbeitslenkung ohne unabhängige Tarifpartner." : "Kaum gesetzlicher Arbeits- oder Kündigungsschutz.")
           : `Mindestlohn & Schutz: ${getSectorLabel(3, "arbeit")}.`;
 
         const sozialesText = special
-          ? (special.s >= 80
+          ? (special.autoScale >= 60
             ? "Staatliche Einheits- und Vollversorgung auf Basis des zentralen Plans."
             : "Weitgehend private Eigenvorsorge ohne ausgebautes staatliches Sozialnetz.")
           : `Existenzminimum: ${getSectorLabel(3, "notfall")}; Krankenversicherung: ${getSectorLabel(3, "kranken")}; Rente & ALG: ${getSectorLabel(3, "rente")}; Wohngeld/BAB/BAföG: ${getSectorLabel(3, "foerder")}.`;
 
         const staatText = special
-          ? `${special.text}`
+          ? `${special.reason}`
           : `Kartellamt (Monopole): ${getSectorLabel(3, "kartell")}. ${diag.explain}`;
 
         const ggClass = gg.status === "green" ? "is-good" : gg.status === "yellow" ? "is-warn" : "is-bad";
@@ -5847,7 +6471,7 @@
                 <span class="match-pct-label">Deckungsgleichheit</span>
               </div>
               <div class="match-bar-track" role="progressbar" aria-valuenow="${item.pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Deckungsgleichheit mit ${escapeHtml(item.model.shortName)}: ${item.pct} Prozent">
-                <div class="match-bar-fill" style="transform: scaleX(${(item.pct / 100).toFixed(3)});"></div>
+                <div class="match-bar-fill" data-target-scale="${(item.pct / 100).toFixed(3)}" style="transform: scaleX(${prefersReducedMotion() ? (item.pct / 100).toFixed(3) : "0"});"></div>
               </div>
               <div class="match-sub-grid">
                 <span>Eigentum<strong>${item.ePct} %</strong></span>
@@ -5857,6 +6481,16 @@
             </div>
           `;
         }).join("");
+
+        if (!prefersReducedMotion() && typeof requestAnimationFrame === "function") {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              document.querySelectorAll("#compareMatchGrid .match-bar-fill[data-target-scale]").forEach((bar) => {
+                bar.style.transform = `scaleX(${bar.dataset.targetScale})`;
+              });
+            });
+          });
+        }
 
         const weakestDim = [
           { name: "Eigentumsordnung", val: winner.ePct },
@@ -6349,11 +6983,17 @@
           const side = btn.dataset.side;
           const d = state[`dim${dimNum}`];
           if (d.confirmed) return;
+          const changed = d.picked !== side;
           d.picked = side;
           d.strength = dimNum === 3 && side === "right" ? 60 : 75;
           d.overrides = {};
           saveState();
           renderDimension(dimNum);
+          renderProgressChips();
+          if (changed) {
+            bumpElement($(`dim${dimNum}Einordnung`), "is-bumping");
+            spawnSparks(btn, 7, ["#007AFF", "#5856D6", "#34C759"]);
+          }
         });
       });
 
@@ -6362,11 +7002,15 @@
         slider.addEventListener("input", () => {
           const d = state[`dim${dimNum}`];
           if (d.confirmed || !d.picked) return;
-          d.strength = Number(slider.value);
+          const nextVal = Number(slider.value);
+          const moved = nextVal !== d.strength;
+          d.strength = nextVal;
           d.overrides = {};
           saveState();
           styleRange(slider, dimNum, false);
-          $(`dim${dimNum}Einordnung`).textContent = getEinordnungLabel(dimNum, d.picked, d.strength);
+          const einPill = $(`dim${dimNum}Einordnung`);
+          einPill.textContent = getEinordnungLabel(dimNum, d.picked, d.strength);
+          if (moved) bumpElement(einPill, "is-bumping");
           renderLiveBullets(dimNum, d.picked, d.strength);
           renderSectors(dimNum);
         });
@@ -6379,16 +7023,32 @@
             d.overrides = {};
             saveState();
             renderDimension(dimNum);
+            bumpElement($(`dim${dimNum}Einordnung`), "is-bumping");
           });
         });
 
-        $(`btnConfirm${dimNum}`).addEventListener("click", () => {
+        $(`btnConfirm${dimNum}`).addEventListener("click", (ev) => {
           state[`dim${dimNum}`].confirmed = true;
           state.ggChecked = false;
           state.ggVerified = false;
           state.ggCheckedRefs = {};
           saveState();
           renderAll();
+
+          const { special } = getEffectiveScale();
+          const isFinish = dimNum === 3 || (dimNum === 2 && Boolean(special));
+          spawnSparks(ev.currentTarget, isFinish ? 20 : 12);
+
+          if (dimNum === 1) {
+            showToast("✓ Schritt 1 geschafft – jetzt bestimmst du Preise & Steuerung!");
+          } else if (dimNum === 2 && special) {
+            showToast("★ Sonderfall ausgelöst – deine Auswertung ist sofort bereit!");
+          } else if (dimNum === 2) {
+            showToast("✓ Stark! Noch 1 Schritt bis zu deiner Auswertung.");
+          } else {
+            showToast("★ System komplett! Entdecke jetzt Auswertung & 100-Jahres-Test.");
+          }
+
           const target = $(`dim${dimNum}ExplainBar`);
           target.scrollIntoView({ behavior: "smooth", block: "nearest" });
         });
